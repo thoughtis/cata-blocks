@@ -5,14 +5,6 @@
 	"author": "Thought and Expression Co. <devjobs@thought.is>",
 	"license": "GPL-3.0-or-later",
 	"main": "build/index.js",
-	"scripts": {
-		"build": "wp-scripts build",
-		"format": "wp-scripts format",
-		"lint:css": "wp-scripts lint-style",
-		"lint:js": "wp-scripts lint-js",
-		"start": "wp-scripts start",
-		"packages-update": "wp-scripts packages-update"
-	},
 	"dependencies": {
 		"@wordpress/block-editor": "^6.1.0",
 		"@wordpress/blocks": "^9.1.0",
