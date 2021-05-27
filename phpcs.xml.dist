@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<ruleset name="Cata_Blocks">
+  <description>WordPress-VIP-Go</description>
+  <file>./</file>
+  <exclude-pattern>*/node_modules/*</exclude-pattern>
+  <exclude-pattern>*/vendor/*</exclude-pattern>
+  <exclude-pattern>*.(asset.php|json|js|scss|css)</exclude-pattern>
+  <rule ref="WordPress"/>
+  <rule ref="WordPress-VIP-Go"/>
+</ruleset>
