@@ -1,6 +1,6 @@
 {
     "name": "thoughtis/cata-blocks",
-    "description": "Custom blocks, patterns and formats for the WordPress Block Editor for use with the Cata theme.",
+    "description": "Block Editor components for use with the Cata theme.",
     "type": "wordpress-plugin",
     "authors": [
         {

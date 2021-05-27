@@ -8,8 +8,8 @@
  * @license   GNU GENERAL PUBLIC LICENSE
  *
  * @wordpress-plugin
- * Plugin Name: Cata Block Editor
- * Description: Custom blocks, patterns and formats for the WordPress Block Editor for use with the Cata theme.
+ * Plugin Name: Cata Blocks
+ * Description: Block Editor components for use with the Cata theme.
  * Author:      Thought & Expression Co. <devjobs@thought.is>
  * Author URI:  https://thought.is
  * Version:     0.1.0

@@ -1,7 +1,7 @@
 {
 	"name": "cata-blocks",
 	"version": "0.1.0",
-	"description": "Custom blocks, patterns and formats for the WordPress Block Editor for use with the Cata theme.",
+	"description": "Block Editor components for use with the Cata theme.",
 	"author": "Thought and Expression Co. <devjobs@thought.is>",
 	"license": "GPL-3.0-or-later",
 	"main": "build/index.js",
