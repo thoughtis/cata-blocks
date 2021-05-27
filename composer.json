@@ -1,0 +1,17 @@
+{
+    "name": "thoughtis/cata-blocks",
+    "description": "Custom blocks, patterns and formats for the WordPress Block Editor for use with the Cata theme.",
+    "type": "wordpress-plugin",
+    "authors": [
+        {
+            "name": "Thought and Expression Co.",
+            "email": "devjobs@thought.is"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+	"require-dev": {
+		"automattic/vipwpcs": "^2.0",
+		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.0"
+	}
+}
