@@ -1,30 +1,24 @@
 {
 	"apiVersion": 2,
-	"name": "cata/kicker",
-	"title": "Kicker",
-	"category": "text",
-	"description": "Text block that reduces the space between itself and the next block. Use before a heading to provide context or on its own as a deemphasized title.",
+	"name": "cata/aside",
+	"title": "Aside",
+	"category": "design",
+	"description": "Grouping element for tangentially related content.",
 	"example": {
-		"attributes": {
-			"content": "KICKER"
-		}
+		"innerBlocks": [
+			{
+				"name" : "core/paragraph",
+				"attributes" : {
+					"content" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent et eros eu felis."
+				}
+			}
+		]
 	},
 	"supports": {
 		"html": false,
-		"customClassName": false,
-		"fontSize": true
+		"customClassName": false
 	},
-	"attributes": {
-		"content": {
-			"type": "string",
-			"source": "html",
-			"selector": "p",
-			"default": ""
-		},
-		"textAlign": {
-			"type": "string"
-		}
-	},
+	"attributes": {},
 	"textdomain": "cata",
 	"editorScript": "file:./build/index.js",
 	"editorStyle": "file:./build/index.css"
