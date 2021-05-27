@@ -1,0 +1,16 @@
+/**
+ * The following styles get applied inside the editor only.
+ */
+
+.editor-styles-wrapper {
+
+	.wp-block-cata-aside {
+		border: dashed 0.125em currentColor;
+	}
+
+	.wp-block-cata-aside__inner-container {
+		padding-inline-start: 1.5em;
+		padding-inline-end: 1.5em;
+	}
+
+}

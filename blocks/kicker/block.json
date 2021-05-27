@@ -1,0 +1,25 @@
+{
+	"apiVersion": 2,
+	"name": "cata/aside",
+	"title": "Aside",
+	"category": "design",
+	"description": "Grouping element for tangentially related content.",
+	"example": {
+		"innerBlocks": [
+			{
+				"name" : "core/paragraph",
+				"attributes" : {
+					"content" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent et eros eu felis."
+				}
+			}
+		]
+	},
+	"supports": {
+		"html": false,
+		"customClassName": false
+	},
+	"attributes": {},
+	"textdomain": "cata",
+	"editorScript": "file:./build/index.js",
+	"editorStyle": "file:./build/index.css"
+}
