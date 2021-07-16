@@ -16,7 +16,12 @@
 	},
 	"supports": {
 		"html": false,
-		"customClassName": false
+		"customClassName": false,
+		"color" : {
+			"background": true,
+			"gradients": true,
+			"text": true
+		}
 	},
 	"attributes": {},
 	"textdomain": "cata",
