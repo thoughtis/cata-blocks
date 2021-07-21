@@ -12,7 +12,9 @@
 	"supports": {
 		"html": false,
 		"customClassName": false,
-		"fontSize": true
+		"typography" : {
+			"fontSize": true
+		}
 	},
 	"attributes": {
 		"content": {
