@@ -37,7 +37,7 @@ An aside block containing a kicker as the title, paragraph for the question and 
 - **The Cata parent theme** contains styles sufficient to make the front-end content match the editor.
 - **A child theme** is responsible to making the front-end styles match the look and feel of an individual site.
 
-# How Add A Block
+# How To Add A Block
 
 WordPress has a `create-block` script for this.
 
