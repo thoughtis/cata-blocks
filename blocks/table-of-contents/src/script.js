@@ -3,7 +3,7 @@
  * Create a table of contents for a post from its h2s.
  */
 function parse_post() {
-	const entryContent = document.getElementById('main');
+	const entryContent = document.querySelector('.entry__content');
 
 	if ( null === entryContent ) {
 		return;
