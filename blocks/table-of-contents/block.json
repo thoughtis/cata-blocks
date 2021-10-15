@@ -20,20 +20,5 @@
 	"script": "file:./build/script.js",
 	"editorScript": "file:./build/index.js",
 	"editorStyle": "file:./build/index.css",
-	"style": "file:./build/style-index.css",
-	"attributes": {
-		"content": {
-			"type": "string",
-			"source": "html",
-			"selector": "p",
-			"default": ""
-		},
-		"textAlign": {
-			"type": "string"
-		},
-		"fontSize": {
-			"type": "string",
-			"default": "small"
-		}
-	}
+	"style": "file:./build/style-index.css"
 }
