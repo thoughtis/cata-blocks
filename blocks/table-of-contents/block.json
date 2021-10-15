@@ -1,6 +1,6 @@
 {
 	"apiVersion": 2,
-	"name": "cata/table-of-contents",
+	"name": "cata/toc",
 	"version": "0.1.0",
 	"title": "Table Of Contents",
 	"category": "widgets",

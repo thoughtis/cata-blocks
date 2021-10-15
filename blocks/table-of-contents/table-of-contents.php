@@ -37,7 +37,7 @@ add_action( 'init', __NAMESPACE__ . '\\register_toc_block' );
  * @return string - Returns the script tag either unmodified or, if it is the Table of Contents script it adds the defer tag.
  */
 function add_defer_to_toc_script( $tag, $handle, $src ) {
-	if ( 'cata-table-of-contents-script' !== $handle ) {
+	if ( 'cata-toc-script' !== $handle ) {
 		return $tag;
 	}
 	return '<script defer="defer" type="text/javascript" src="' . $src . '"></script>';
@@ -53,8 +53,8 @@ add_filter( 'script_loader_tag', __NAMESPACE__ . '\\add_defer_to_toc_script', 10
  * @return void
  */
 function remove_editor_toc_script() {
-	wp_dequeue_script( 'cata-table-of-contents-script' );
-	wp_deregister_script( 'cata-table-of-contents-script' );
+	wp_dequeue_script( 'cata-toc-script' );
+	wp_deregister_script( 'cata-toc-script' );
 }
 
 add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\remove_editor_toc_script', 10, 0 );

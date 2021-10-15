@@ -38,7 +38,7 @@ export default function Edit() {
 
 	return (
 		<div { ...blockProps } >
-			{ __( 'A Table of Contents will populate here using heading 2\'s/h2\'s', 'table-of-contents' ) }
+			{ __( 'A Table of Contents will populate here using heading 2\'s/h2\'s', 'toc' ) }
 		</div>
 	);
 }
