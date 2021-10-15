@@ -3,7 +3,7 @@
 	"name": "cata/table-of-contents",
 	"version": "0.1.0",
 	"title": "Table Of Contents",
-	"category": "text",
+	"category": "widgets",
 	"description": "Wdiget which adds a Table of Contents by checking for Heading 2 tags (h2) and creating a list of links to these sections wherever this block is placed.",
 	"keywords": [ "contents", "table of contents", "table of" ],
 	"supports": {
