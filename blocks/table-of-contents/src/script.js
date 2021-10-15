@@ -2,7 +2,7 @@
  * Table of Contents
  * Create a table of contents for a post from its h2s.
  */
-function parse_post() {
+function parsePost() {
 	const entryContent = document.querySelector('.entry__content');
 
 	if ( null === entryContent ) {
@@ -196,4 +196,4 @@ function createId( textContent ) {
 		.substring( 0, 64 );
 }
 
-parse_post();
+parsePost();
