@@ -2,6 +2,9 @@
 	"name": "cata-blocks",
 	"version": "0.2.2",
 	"description": "Block Editor components for use with the Cata theme.",
+	"scripts": {
+		"build:table-of-contents": "wp-scripts build ./blocks/table-of-contents/src/index.js ./blocks/table-of-contents/src/script.js --output-path=./blocks/table-of-contents/build/"
+	},
 	"author": "Thought and Expression Co. <devjobs@thought.is>",
 	"license": "GPL-3.0-or-later",
 	"main": "build/index.js",

@@ -23,6 +23,13 @@ An `<aside>` element with `InnerBlocks`.
 
 A `<p>` element styled to reduce the margin of the element immediately after it.
 
+### Table of Contents
+
+A `<details>` element populated with links to Heading 2's (`<h2>`'s) in the post body.
+
+#### To build Table of Content
+Go to `plugins/cata-blocks` and execute `npm run build:table-of-contents`. This will build the Table of Contents block.
+
 ## Patterns
 
 ### Trivia

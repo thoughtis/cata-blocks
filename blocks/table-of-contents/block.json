@@ -1,0 +1,39 @@
+{
+	"apiVersion": 2,
+	"name": "cata/table-of-contents",
+	"version": "0.1.0",
+	"title": "Table Of Contents",
+	"category": "text",
+	"description": "Wdiget which adds a Table of Contents by checking for Heading 2 tags (h2) and creating a list of links to these sections wherever this block is placed.",
+	"keywords": [ "contents", "table of contents", "table of" ],
+	"supports": {
+		"html": false,
+		"reusable": false,
+		"customClassName": false
+	},
+	"example": {
+		"attributes": {
+			"content": "Table Of Contents"
+		}
+	},
+	"textdomain": "cata",
+	"script": "file:./build/script.js",
+	"editorScript": "file:./build/index.js",
+	"editorStyle": "file:./build/index.css",
+	"style": "file:./build/style-index.css",
+	"attributes": {
+		"content": {
+			"type": "string",
+			"source": "html",
+			"selector": "p",
+			"default": ""
+		},
+		"textAlign": {
+			"type": "string"
+		},
+		"fontSize": {
+			"type": "string",
+			"default": "small"
+		}
+	}
+}
