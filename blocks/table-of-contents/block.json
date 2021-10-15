@@ -4,7 +4,7 @@
 	"version": "0.1.0",
 	"title": "Table Of Contents",
 	"category": "widgets",
-	"description": "Wdiget which adds a Table of Contents by checking for Heading 2 tags (h2) and creating a list of links to these sections wherever this block is placed.",
+	"description": "This widget produces a table of contents based on H2 headings. Preview or Publish to view the table of contents in the live post.",
 	"keywords": [ "contents", "table of contents", "table of" ],
 	"supports": {
 		"html": false,
