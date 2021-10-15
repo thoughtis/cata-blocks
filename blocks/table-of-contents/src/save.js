@@ -24,11 +24,7 @@ import { useBlockProps } from '@wordpress/block-editor';
  */
 export default function save() {
 	return (
-		<p { ...useBlockProps.save() } id="toc-entry-point">
-			{ __(
-				'Table Of Contents will be inserted here!',
-				'table-of-contents'
-			) }
-		</p>
+		<div { ...useBlockProps.save() } id="toc-entry-point">
+		</div>
 	);
 }

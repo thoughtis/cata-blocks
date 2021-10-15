@@ -51,7 +51,7 @@ function appendToc( insertPoint, links ) {
 		),
 	] );
 
-	insertPoint.insertAdjacentElement( 'afterend', toc );
+	insertPoint.insertAdjacentElement( 'afterbegin', toc );
 }
 
 /**
