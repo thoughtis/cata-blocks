@@ -76,6 +76,9 @@ function renderNav( children ) {
  */
 function renderToc( children ) {
 	const toc = document.createElement( 'details' );
+
+	toc.setAttribute( "open", "" );
+
 	children.forEach( ( child ) => {
 		toc.appendChild( child );
 	} );
