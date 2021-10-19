@@ -56,5 +56,20 @@ function remove_editor_toc_script() {
 	wp_dequeue_script( 'cata-toc-script' );
 	wp_deregister_script( 'cata-toc-script' );
 }
-
 add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\remove_editor_toc_script', 10, 0 );
+
+/**
+ * Conditionally Remove Script
+ * Remove block script if the post or page does not contain it.
+ */
+function conditionally_remove_script() : void {
+	// singular includes a page used as front-page, single does not.
+	if ( ! is_singular() ) {
+		return;
+	}
+	if ( has_block( 'cata/toc' ) ) {
+		return;
+	}
+	wp_dequeue_script( 'cata-toc-script' );
+}
+add_action( 'wp_enqueue_scripts', __NAMESPACE__. '\\conditionally_remove_script' ); 
