@@ -3,7 +3,7 @@
 	"version": "0.3.3",
 	"description": "Block Editor components for use with the Cata theme.",
 	"scripts": {
-		"build:table-of-contents": "wp-scripts build ./blocks/table-of-contents/src/index.js ./blocks/table-of-contents/src/script.js --output-path=./blocks/table-of-contents/build/"
+		"build:table-of-contents": "wp-scripts build ./blocks/table-of-contents/src/index.js --config=./blocks/table-of-contents/webpack.config.js ./blocks/table-of-contents/src/script.js --output-path=./blocks/table-of-contents/build/"
 	},
 	"author": "Thought and Expression Co. <devjobs@thought.is>",
 	"license": "GPL-3.0-or-later",
@@ -16,6 +16,6 @@
 		"classnames": "^2.3.1"
 	},
 	"devDependencies": {
-		"@wordpress/scripts": "^16.1.0"
+		"@wordpress/scripts": "^18.1.0"
 	}
 }
