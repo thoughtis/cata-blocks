@@ -25,5 +25,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require_once __DIR__ . '/blocks/aside/aside.php';
 require_once __DIR__ . '/blocks/kicker/kicker.php';
+require_once __DIR__ . '/blocks/newsletter-form/newsletter-form.php';
 require_once __DIR__ . '/blocks/table-of-contents/table-of-contents.php';
 require_once __DIR__ . '/patterns/trivia/trivia.php';
