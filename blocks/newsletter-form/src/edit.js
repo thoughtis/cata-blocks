@@ -23,7 +23,7 @@ import './editor.scss';
 
 import { Button, ResponsiveWrapper, TextControl, PanelBody } from '@wordpress/components';
 import { MediaUpload, MediaUploadCheck, InspectorControls, RichText } from '@wordpress/block-editor';
-import { useState, Fragment } from "@wordpress/element";
+import { Fragment } from "@wordpress/element";
 
 /**
  * The edit function describes the structure of your block in the context of the
