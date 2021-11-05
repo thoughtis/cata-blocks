@@ -2,15 +2,6 @@
  * Mailchimp Form
  */
 
-const MESSAGES = {
-	DEFAULT: '',
-	ERROR: "We're sorry, an error occurred.",
-	EXISTING_SUBSCRIBER: "You're already subscribed!",
-	INVALID: 'Please enter a valid email.',
-	SENDING: 'Sending...',
-	SUCCESS: 'Thanks and stay spooky!',
-};
-
 /**
  * Mailchimp Form
  *
@@ -30,15 +21,33 @@ export default class MailchimpForm {
 		this.output = this.form.querySelector( '[role="alert"]' );
 		this.action = this.updateActionforJSONP( this.form.action );
 		this.isSending = false;
-
+		
 		this.onError = this.onError.bind( this );
 		this.onSubmit = this.onSubmit.bind( this );
 		this.onSuccess = this.onSuccess.bind( this );
 		this.setCallbackFunction = this.setCallbackFunction.bind( this );
 		this.send = this.send.bind( this );
 		this.setSending = this.setSending.bind( this );
-
+		this.successMsg = this.form.dataset.mailchimpSuccessMessage;
+		this.MESSAGES = {
+			DEFAULT: '',
+			ERROR: "We're sorry, an error occurred.",
+			EXISTING_SUBSCRIBER: "You're already subscribed!",
+			INVALID: 'Please enter a valid email.',
+			SENDING: 'Sending...',
+			SUCCESS: this.successMsg,
+		}
 		this.form.addEventListener( 'submit', this.onSubmit );
+		this.setSuccessMessage = this.setSuccessMessage.bind( this );
+		this.setSuccessMessage();
+	}
+
+	setSuccessMessage() {
+		if ( !this.successMsg ) {
+			return;
+		}
+
+		this.MESSAGES.SUCCESS = this.successMsg;
 	}
 
 	/**
@@ -91,7 +100,7 @@ export default class MailchimpForm {
 		this.isSending = sendingState;
 		if ( this.isSending ) {
 			this.button.disabled = true;
-			this.output.textContent = MESSAGES.SENDING;
+			this.output.textContent = this.MESSAGES.SENDING;
 		} else {
 			this.button.disabled = false;
 		}
@@ -106,11 +115,11 @@ export default class MailchimpForm {
 		this.setSending( false );
 		this.email.value = '';
 		if ( this.isSuccessResponse( response ) ) {
-			this.output.textContent = MESSAGES.SUCCESS;
+			this.output.textContent = this.MESSAGES.SUCCESS;
 		} else if ( this.isErrorResponse( response ) ) {
 			this.output.textContent = this.formatErrorMessage( response );
 		} else {
-			this.output.textContent = MESSAGES.ERROR;
+			this.output.textContent = this.MESSAGES.ERROR;
 		}
 	}
 
@@ -150,16 +159,16 @@ export default class MailchimpForm {
 	 */
 	formatErrorMessage( response ) {
 		if ( 'object' !== typeof response || ! ( 'msg' in response ) ) {
-			return MESSAGES.ERROR;
+			return this.MESSAGES.ERROR;
 		}
 		// Beautify common errors.
 		if ( -1 !== response.msg.indexOf( 'already subscribed' ) ) {
-			return MESSAGES.EXISTING_SUBSCRIBER;
+			return this.MESSAGES.EXISTING_SUBSCRIBER;
 		} else if ( -1 !== response.msg.indexOf( 'is invalid' ) ) {
-			return MESSAGES.INVALID;
+			return this.MESSAGES.INVALID;
 		}
 		// Use default.
-		return MESSAGES.ERROR;
+		return this.MESSAGES.ERROR;
 	}
 
 	/**
@@ -167,7 +176,7 @@ export default class MailchimpForm {
 	 */
 	onError() {
 		this.setSending( false );
-		this.output.textContent = MESSAGES.ERROR;
+		this.output.textContent = this.MESSAGES.ERROR;
 		this.email.value = '';
 	}
 

@@ -26,6 +26,8 @@ export default function save(props) {
 
 	const blockProps = useBlockProps.save();
 
+	const { attributes } = props;
+
 	return (
 		<div { ...blockProps }>
 			<div 
@@ -36,8 +38,8 @@ export default function save(props) {
 			>
 				<img 
 					class="cata-block-streaming-guide__bg-img"
-					alt={ props.attributes.mediaAltText }
-					src={ props.attributes.mediaUrl }
+					alt={ attributes.mediaAltText }
+					src={ attributes.mediaUrl }
 					style={{
 						position: "absolute",
 						zIndex: -1,
@@ -45,21 +47,21 @@ export default function save(props) {
 						height: '100%',
 						objectFit: 'cover',
 						overflow: 'hidden',
-						display: !props.attributes.mediaUrl && 'none' 
+						display: !attributes.mediaUrl && 'none' 
 					}}
 				/>
 				<div class="cata-block-streaming-guide-newsletter__inner">
 					<div class="cata-block-streaming-guide-newsletter__layout">
 						<div class="cata-block-streaming-guide-newsletter__start">
 							<h3 class="cata-block-streaming-guide-newsletter__title">
-								{ props.attributes.title }
+								{ attributes.title }
 							</h3>
 						</div>
 						<div class="cata-block-streaming-guide-newsletter__end">
 							<p class="cata-block-streaming-guide-newsletter__description">
-								{props.attributes.description}
+								{attributes.description}
 							</p>
-							<form action={'' + props.attributes.mailchimpUrlBase + props.attributes.mailchimpUserId + props.attributes.mailchimpUrlAmp + props.attributes.mailchimpAudienceId} method="post" name="mc-embedded-subscribe-form" target="_blank" validate data-mailchimp>
+							<form action={'' + attributes.mailchimpUrlBase + attributes.mailchimpUserId + attributes.mailchimpUrlAmp + attributes.mailchimpAudienceId} method="post" name="mc-embedded-subscribe-form" target="_blank" validate data-mailchimp data-mailchimp-success-message={attributes.successMessage}>
 								<div class="cata-block-streaming-guide-newsletter__response" role="alert"></div>
 								<fieldset class="cata-block-streaming-guide-newsletter__fieldset">
 									<label for="mce-EMAIL" class="screen-reader-text">
@@ -72,12 +74,12 @@ export default function save(props) {
 									{/* <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups--> */}
 									<div style="position: absolute; left: -5000px;" aria-hidden="true">
 										<input type="text" 
-										name={"" + "b_" +  props.attributes.mailchimpUserId + '_' + props.attributes.mailchimpAudienceId} tabindex="-1" value=""/>
+										name={"" + "b_" +  attributes.mailchimpUserId + '_' + attributes.mailchimpAudienceId} tabindex="-1" value=""/>
 									</div>
 								</fieldset>
 							</form>
 							<p class="cata-block-streaming-guide-newsletter__details">
-								{props.attributes.legalText}
+								{attributes.legalText}
 							</p>
 						</div>
 					</div>

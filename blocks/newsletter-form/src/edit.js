@@ -37,8 +37,10 @@ export default function Edit( props ) {
 
 	const blockProps = useBlockProps();
 
+	const { attributes, setAttributes, media } = props;
+
 	const onSelectMedia = (media) => {
-		props.setAttributes({
+		setAttributes({
 			mediaId: media.id,
 			mediaUrl: media.url,
 			mediaWidth: media.width,
@@ -47,7 +49,7 @@ export default function Edit( props ) {
 	}
 
 	const removeMedia = () => {
-		props.setAttributes({
+		setAttributes({
 			mediaId: 0,
 			mediaUrl: '',
 			mediaWidth: 0,
@@ -60,8 +62,8 @@ export default function Edit( props ) {
 			{ ...blockProps } 
 			style={{
 				border: "2px solid black",
-				backgroundColor: props.attributes.mediaUrl ? 'transparent' : '#7E7D83',
-				backgroundImage: props.attributes.mediaUrl ? 'url(' + props.attributes.mediaUrl + ')' : 'none',
+				backgroundColor: attributes.mediaUrl ? 'transparent' : '#7E7D83',
+				backgroundImage: attributes.mediaUrl ? 'url(' + attributes.mediaUrl + ')' : 'none',
 				backgroundSize: "cover",
 				backgroundPosition: "center",
 				backgroundRepeat: "no-repeat"
@@ -78,23 +80,23 @@ export default function Edit( props ) {
 							<MediaUploadCheck>
 								<MediaUpload
 									onSelect={onSelectMedia}
-									value={props.attributes.mediaId}
+									value={attributes.mediaId}
 									allowedTypes={ [ 'image' ] }
 									render={({open}) => (
 										<Button 
 											onClick={open}
-											className={props.attributes.mediaId == 0 ? 'editor-post-featured-image__toggle' : 'editor-post-featured-image__preview'}
+											className={attributes.mediaId == 0 ? 'editor-post-featured-image__toggle' : 'editor-post-featured-image__preview'}
 										>
 
-											{props.attributes.mediaId == 0 && 'Choose an image'}
+											{attributes.mediaId == 0 && 'Choose an image'}
 											{props.media != undefined && 
 												<ResponsiveWrapper
-													naturalWidth={ props.attributes.mediaWidth }
-													naturalHeight={ props.attributes.mediaHeight }
+													naturalWidth={ attributes.mediaWidth }
+													naturalHeight={ attributes.mediaHeight }
 												>
 													<img 
 														src={props.media.source_url}
-														alt={props.media.alt_text ? props.media.alt_text : props.attributes.mediaAltText }
+														alt={props.media.alt_text ? props.media.alt_text : attributes.mediaAltText }
 														style={{
 															position: 'absolute',
 															zIndex: '-1',
@@ -112,11 +114,11 @@ export default function Edit( props ) {
 							</MediaUploadCheck>
 
 							<div className="newsletter-signup-block__panel-button-wrapper">
-								{props.attributes.mediaId != 0 && 
+								{attributes.mediaId != 0 && 
 									<MediaUploadCheck>
 										<MediaUpload
 											title='Replace image'
-											value={props.attributes.mediaId}
+											value={attributes.mediaId}
 											onSelect={onSelectMedia}
 											allowedTypes={ [ 'image' ] }
 											render={({open}) => (
@@ -128,7 +130,7 @@ export default function Edit( props ) {
 									</MediaUploadCheck>
 								}
 
-								{props.attributes.mediaId != 0 && 
+								{attributes.mediaId != 0 && 
 									<MediaUploadCheck>
 										<Button onClick={removeMedia} isDestructive>
 											Remove Image
@@ -148,8 +150,8 @@ export default function Edit( props ) {
 
 							<div>
 								<TextControl 
-									value={ props.attributes.mailchimpAudienceId } 
-									onChange={ (mailchimpAudienceId) => props.setAttributes({ mailchimpAudienceId })}
+									value={ attributes.mailchimpAudienceId } 
+									onChange={ (mailchimpAudienceId) => setAttributes({ mailchimpAudienceId })}
 									label="Mailchimp ID"
 								/>
 							</div>
@@ -165,8 +167,8 @@ export default function Edit( props ) {
 
 							<div>
 								<TextControl 
-									value={ props.attributes.successMessage } 
-									onChange={ (successMessage) => props.setAttributes({ successMessage })}
+									value={ attributes.successMessage } 
+									onChange={ (successMessage) => setAttributes({ successMessage })}
 									label="Success Message"
 								/>
 							</div>
@@ -182,8 +184,8 @@ export default function Edit( props ) {
 						<div class="cata-block-streaming-guide-newsletter__start">
 							<RichText
 								tagName="h3"
-								value={ props.attributes.title }
-								onChange={ ( title ) => props.setAttributes({ title }) }
+								value={ attributes.title }
+								onChange={ ( title ) => setAttributes({ title }) }
 								className='cata-block-streaming-guide-newsletter__title'
 								placeholder='apply to the newsletter'
 								keepPlaceholderOnFocus={ true }
@@ -192,8 +194,8 @@ export default function Edit( props ) {
 						<div class="cata-block-streaming-guide-newsletter__end">
 							<RichText
 									tagName="P"
-									value={ props.attributes.description }
-									onChange={ ( description ) => props.setAttributes({ description }) }
+									value={ attributes.description }
+									onChange={ ( description ) => setAttributes({ description }) }
 									className='cata-block-streaming-guide-newsletter__description'
 									placeholder='Join our free newsletter for weekly updates about what TV shows and movies are streaming online.'
 									keepPlaceholderOnFocus={ true }
@@ -211,8 +213,8 @@ export default function Edit( props ) {
 							</div>
 							<RichText
 								tagName="p"
-								value={ props.attributes.legalText }
-								onChange={ ( legalText ) => props.setAttributes({ legalText }) }
+								value={ attributes.legalText }
+								onChange={ ( legalText ) => setAttributes({ legalText }) }
 								className='cata-block-streaming-guide-newsletter__details'
 								placeholder='Unsubscribe at any time. By subscribing, you agree to the terms of our %%Privacy Policy%%'
 								keepPlaceholderOnFocus={ true }
