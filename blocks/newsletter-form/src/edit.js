@@ -202,9 +202,6 @@ export default function Edit( props ) {
 								/>
 							<div class="cata-block-streaming-guide-newsletter__form-placeholder">
 								<div class="cata-block-streaming-guide-newsletter__fieldset">
-									<label for="mce-EMAIL" class="screen-reader-text">
-										Enter Your Email
-									</label>
 									<input type="email" value="" name="EMAIL" placeholder="Enter Your Email" readonly/>
 									<button class="button is-primary is-filled" type="submit" disabled>
 										Subscribe
