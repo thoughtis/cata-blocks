@@ -54,21 +54,12 @@ add_filter( "render_block_cata/newsletter-form", __NAMESPACE__ . '\\insert_priva
  * 
  * The script enqueued by the block editor runs before the DOM is fully built; this deferment ensures the script can parse the DOM after it's built.
  *
- * @param [type] $tag - The <script> tag of the enqueued script being filtered.
- * @param [type] $handle - The registered handle of the enqueued script being filtered.
- * @param [type] $src - The src URL of the enqueued script being filtered.
+ * @param string $tag - The <script> tag of the enqueued script being filtered.
+ * @param string $handle - The registered handle of the enqueued script being filtered.
+ * @param string $src - The src URL of the enqueued script being filtered.
  * @return string - Returns the script tag either unmodified or, if it is the Newsletter Signup Form script it adds the defer tag.
  */
 function add_defer_to_newsletter_script( $tag, $handle, $src ) {
-	error_log( print_r( 'add_defer_to_newsletter_script - gettype( tag )', true ) );
-	error_log( print_r( gettype( $tag ), true ) );
-
-	error_log( print_r( 'add_defer_to_newsletter_script - gettype( handle )', true ) );
-	error_log( print_r( gettype( $handle ), true ) );
-
-	error_log( print_r( 'add_defer_to_newsletter_script - gettype( src )', true ) );
-	error_log( print_r( gettype( $src ), true ) );
-
 	if ( 'cata-newsletter-form-script' !== $handle ) {
 		return $tag;
 	}
