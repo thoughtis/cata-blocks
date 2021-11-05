@@ -59,6 +59,10 @@
 		"legalText": {
 			"type": "string",
 			"default": "Unsubscribe at any time. By subscribing, you agree to the terms of our %%Privacy Policy%%"
+		},
+		"successMessage": {
+			"type": "string",
+			"default": "Thanks and stay spooky!"
 		}
 	},
 	"editorScript": "file:./build/index.js",

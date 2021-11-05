@@ -89,19 +89,19 @@ add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\remove_editor_news
  * @return void
  */
 function conditionally_remove_newsletter_script() {
+	// dequeue custom block script to then re-enqueue in footer if conditions are met
+	wp_dequeue_script( 'cata-newsletter-form-script' );
+	
 	// singular includes a page used as front-page, single does not.
-
 	// Check/ ask Doug, are all our wp sites using  a template or page as the front page?
-	if ( is_singular() ) {
+	if ( ! is_singular() ) {
 		return;
 	}
 	if ( has_block( 'cata/newsletter-form' ) ) {
-		return;
+		wp_enqueue_script( 'cata/newsletter-form', './build/script.js', array(), wp_get_theme()->get( 'Version' ), true );
 	}
-	wp_dequeue_script( 'cata-newsletter-form-script' );
 }
 
+
+
 add_action( 'wp_enqueue_scripts', __NAMESPACE__. '\\conditionally_remove_newsletter_script', 10, 0 ); 
-
-
-// ASSIGN to enqueue in footer explicitly, unlike TOC, this block does not affect layout

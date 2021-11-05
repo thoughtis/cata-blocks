@@ -150,7 +150,24 @@ export default function Edit( props ) {
 								<TextControl 
 									value={ props.attributes.mailchimpAudienceId } 
 									onChange={ (mailchimpAudienceId) => props.setAttributes({ mailchimpAudienceId })}
-									label="New Mailchimp ID"
+									label="Mailchimp ID"
+								/>
+							</div>
+						</PanelBody>
+
+						<PanelBody
+							title='Set Success Message'
+							initialOpen={ false }
+						>
+							<p className="newsletter-signup-block__success-msg-display">
+								Successful Signup response Message<br/>defaults to: <span>"Thanks and stay spooky!"</span>
+							</p>
+
+							<div>
+								<TextControl 
+									value={ props.attributes.successMessage } 
+									onChange={ (successMessage) => props.setAttributes({ successMessage })}
+									label="Success Message"
 								/>
 							</div>
 						</PanelBody>
@@ -186,8 +203,8 @@ export default function Edit( props ) {
 									<label for="mce-EMAIL" class="screen-reader-text">
 										Enter Your Email
 									</label>
-									<input type="email" value="" name="EMAIL" id="mce-EMAIL" placeholder="Enter Your Email" required/>
-									<button class="button is-primary is-filled" type="submit">
+									<input type="email" value="" name="EMAIL" placeholder="Enter Your Email" readonly/>
+									<button class="button is-primary is-filled" type="submit" disabled>
 										Subscribe
 									</button>
 								</div>

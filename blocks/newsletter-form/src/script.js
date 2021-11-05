@@ -17,8 +17,6 @@ import MailchimpForm from './class-mailchimp-form.js';
 ( function() {
 	const forms = document.querySelectorAll( 'form[data-mailchimp]' );
 
-	console.log( 'forms', forms )
-
 	Array.from( forms ).forEach( initForm );
 } )();
 
@@ -34,6 +32,4 @@ function initForm( form ) {
 	}
 
 	new MailchimpForm( form );
-
-	console.log( 'form', form);
 }
