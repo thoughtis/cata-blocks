@@ -26,6 +26,15 @@ function register_newsletter_block() {
 add_action( 'init', __NAMESPACE__ . '\\register_newsletter_block' );
 
 
+/** 
+ * Insert Privacy Policy Link
+ * 
+ * This replaces the privacy policy placeholder %%Privacy Policy%% with the themes privacy policy link.
+ *
+ * @param string $block_content The block content about to be appended.
+ * @param array $block The full block, including name and attributes.
+ * @return string $new_html The modified block.
+ */
 function insert_privacy_link( $block_content, $block ) {
 
 	$privacy_policy = get_the_privacy_policy_link();
@@ -39,3 +48,65 @@ function insert_privacy_link( $block_content, $block ) {
 	return $new_html;
 }
 add_filter( "render_block_cata/newsletter-form", __NAMESPACE__ . '\\insert_privacy_link', 10, 2);
+
+/**
+ * Add defer attribute to the Newsletter Signup Form script tag
+ * 
+ * The script enqueued by the block editor runs before the DOM is fully built; this deferment ensures the script can parse the DOM after it's built.
+ *
+ * @param [type] $tag - The <script> tag of the enqueued script being filtered.
+ * @param [type] $handle - The registered handle of the enqueued script being filtered.
+ * @param [type] $src - The src URL of the enqueued script being filtered.
+ * @return string - Returns the script tag either unmodified or, if it is the Newsletter Signup Form script it adds the defer tag.
+ */
+function add_defer_to_newsletter_script( $tag, $handle, $src ) {
+	error_log( print_r( 'add_defer_to_newsletter_script - gettype( tag )', true ) );
+	error_log( print_r( gettype( $tag ), true ) );
+
+	error_log( print_r( 'add_defer_to_newsletter_script - gettype( handle )', true ) );
+	error_log( print_r( gettype( $handle ), true ) );
+
+	error_log( print_r( 'add_defer_to_newsletter_script - gettype( src )', true ) );
+	error_log( print_r( gettype( $src ), true ) );
+
+	if ( 'cata-newsletter-form-script' !== $handle ) {
+		return $tag;
+	}
+	return '<script defer="defer" type="text/javascript" src="' . $src . '"></script>';
+}
+
+add_filter( 'script_loader_tag', __NAMESPACE__ . '\\add_defer_to_newsletter_script', 10, 3 );
+
+/**
+ * Remove Newsletter Signup Form from Block Editor
+ * 
+ * Prevents Newsletter Signup Form script from running in the block editor without affecting the front end execution.
+ *
+ * @return void
+ */
+function remove_editor_newsletter_script() {
+	wp_dequeue_script( 'cata-newsletter-form-script' );
+	wp_deregister_script( 'cata-newsletter-form-script' );
+}
+add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\remove_editor_newsletter_script', 10, 0 );
+
+/**
+ * Conditionally Remove Script
+ * Remove block script if the post or page does not contain it.
+ */
+function conditionally_remove_script() : void {
+	// singular includes a page used as front-page, single does not.
+
+	// Check/ ask Doug, are all our wp sites using  a template or page as the front page?
+	if ( ! is_singular() ) {
+		return;
+	}
+	if ( has_block( 'cata/newsletter-form' ) ) {
+		return;
+	}
+	wp_dequeue_script( 'cata-newsletter-form-script' );
+}
+add_action( 'wp_enqueue_scripts', __NAMESPACE__. '\\conditionally_remove_script' ); 
+
+
+// ASSIGN to enqueue in footer explicitly, unlike TOC, this block does not affect layout
