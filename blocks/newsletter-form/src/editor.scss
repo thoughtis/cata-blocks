@@ -13,10 +13,6 @@
 	max-inline-size: var(--wp--custom--wide-size, 54rem);
 
 	border: "2px solid black";
-	// background-image: url(props.attributes.mediaUrl);
-	// background: #636965;
-	// background: linear-gradient(180deg, black 0%, #F7F7F8 100% );
-	// background: #7E7D83;
 	background-size: cover;
 	background-position: center;
 	background-repeat: no-repeat;
@@ -45,14 +41,11 @@
 	text-align: justify;
 	text-align-last: justify;
 	text-justify: inter-character;
-	// using custom font scaling to cause the title to grow more than the rest of the text elements
 	font-size: calc( 2.25 * ( 14px + 0.625vw ) );
-	// font-family: @ff-condensed;
 	text-transform: uppercase;
 	font-weight: 700;
 	line-height: 1.125;
 	color: #0C0E0B;
-	// white-space: normal !important;
 }
 
 .cata-block-streaming-guide-newsletter__end {
@@ -68,7 +61,6 @@
 
 .cata-block-streaming-guide-newsletter__description {
 	font-size: 0.375em + 0.75em;
-	// font-family: @ff-serif;
 }
 
 .cata-block-streaming-guide-newsletter__fieldset {
@@ -100,7 +92,6 @@
 
 .cata-block-streaming-guide-newsletter__details {
 	font-size: 0.75em;
-	// font-family: @ff-system-sans;
 	color: #0C0E0B;
 	a {
 		color: #0C0E0B;
