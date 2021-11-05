@@ -38,16 +38,6 @@ export default class MailchimpForm {
 			SUCCESS: this.successMsg,
 		}
 		this.form.addEventListener( 'submit', this.onSubmit );
-		this.setSuccessMessage = this.setSuccessMessage.bind( this );
-		this.setSuccessMessage();
-	}
-
-	setSuccessMessage() {
-		if ( !this.successMsg ) {
-			return;
-		}
-
-		this.MESSAGES.SUCCESS = this.successMsg;
 	}
 
 	/**
