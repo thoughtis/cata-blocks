@@ -31,13 +31,13 @@ export default function save(props) {
 	return (
 		<div { ...blockProps }>
 			<div 
-				class="cata-block-streaming-guide-newsletter"
+				className={ `${attributes.classnameBase}__wrapper` }
 				style={{
 					position: "relative"
 				}}
 			>
 				<img 
-					class="cata-block-streaming-guide__bg-img"
+					className={ `${attributes.classnameBase}__bg-img` }
 					alt={ attributes.mediaAltText }
 					src={ attributes.mediaUrl }
 					style={{
@@ -50,25 +50,25 @@ export default function save(props) {
 						display: !attributes.mediaUrl && 'none' 
 					}}
 				/>
-				<div class="cata-block-streaming-guide-newsletter__inner">
-					<div class="cata-block-streaming-guide-newsletter__layout">
-						<div class="cata-block-streaming-guide-newsletter__start">
-							<h3 class="cata-block-streaming-guide-newsletter__title">
+				<div className={ `${attributes.classnameBase}__inner` }>
+					<div className={ `${attributes.classnameBase}__layout` }>
+						<div className={ `${attributes.classnameBase}__start` }>
+							<h3 className={ `${attributes.classnameBase}__title` }>
 								{ attributes.title }
 							</h3>
 						</div>
-						<div class="cata-block-streaming-guide-newsletter__end">
-							<p class="cata-block-streaming-guide-newsletter__description">
+						<div className={ `${attributes.classnameBase}__end` }>
+							<p className={ `${attributes.classnameBase}__description` }>
 								{attributes.description}
 							</p>
 							<form action={'' + attributes.mailchimpUrlBase + attributes.mailchimpUserId + attributes.mailchimpUrlAmp + attributes.mailchimpAudienceId} method="post" name="mc-embedded-subscribe-form" target="_blank" validate data-mailchimp data-mailchimp-success-message={attributes.successMessage}>
-								<div class="cata-block-streaming-guide-newsletter__response" role="alert"></div>
-								<fieldset class="cata-block-streaming-guide-newsletter__fieldset">
-									<label for="mce-EMAIL" class="screen-reader-text">
+								<div className={ `${attributes.classnameBase}__response` }role="alert"></div>
+								<fieldset className={ `${attributes.classnameBase}__fieldset` }>
+									<label for="mce-EMAIL" className="screen-reader-text">
 										Enter Your Email
 									</label>
 									<input type="email" value="" name="EMAIL" id="mce-EMAIL" placeholder="Enter Your Email" required/>
-									<button class="button is-primary is-filled" type="submit">
+									<button className="button is-primary is-filled" type="submit">
 										Subscribe
 									</button>
 									{/* <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups--> */}
@@ -78,7 +78,7 @@ export default function save(props) {
 									</div>
 								</fieldset>
 							</form>
-							<p class="cata-block-streaming-guide-newsletter__details">
+							<p className={ `${attributes.classnameBase}__details` }>
 								{attributes.legalText}
 							</p>
 						</div>

@@ -12,6 +12,10 @@
 		"customClassName": false
 	},
 	"attributes": {
+		"classnameBase": {
+			"type": "string",
+			"default": "wp-block-cata-newsletter"
+		},
 		"mailchimpUrlBase": {
 			"type": "string",
 			"default": "https://thoughtcatalog.us2.list-manage.com/subscribe/post?u="
