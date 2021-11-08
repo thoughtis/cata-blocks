@@ -1,6 +1,6 @@
 {
 	"apiVersion": 2,
-	"name": "cata/newsletter-form",
+	"name": "cata/newsletter",
 	"version": "0.1.0",
 	"title": "Newsletter Signup Form",
 	"category": "widgets",

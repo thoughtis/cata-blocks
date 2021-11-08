@@ -8,7 +8,6 @@
  * Author:            The WordPress Contributors
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       newsletter-form
  *
  * @package           Cata\Blocks
  */
@@ -47,7 +46,7 @@ function insert_privacy_link( $block_content, $block ) {
 
 	return $new_html;
 }
-add_filter( "render_block_cata/newsletter-form", __NAMESPACE__ . '\\insert_privacy_link', 10, 2);
+add_filter( "render_block_cata/newsletter", __NAMESPACE__ . '\\insert_privacy_link', 10, 2);
 
 /**
  * Add defer attribute to the Newsletter Signup Form script tag
@@ -60,7 +59,7 @@ add_filter( "render_block_cata/newsletter-form", __NAMESPACE__ . '\\insert_priva
  * @return string - Returns the script tag either unmodified or, if it is the Newsletter Signup Form script it adds the defer tag.
  */
 function add_defer_to_newsletter_script( $tag, $handle, $src ) {
-	if ( 'cata-newsletter-form-script' !== $handle ) {
+	if ( 'cata-newsletter-script' !== $handle ) {
 		return $tag;
 	}
 	return '<script defer="defer" type="text/javascript" src="' . $src . '"></script>';
@@ -76,8 +75,8 @@ add_filter( 'script_loader_tag', __NAMESPACE__ . '\\add_defer_to_newsletter_scri
  * @return void
  */
 function remove_editor_newsletter_script() {
-	wp_dequeue_script( 'cata-newsletter-form-script' );
-	wp_deregister_script( 'cata-newsletter-form-script' );
+	wp_dequeue_script( 'cata-newsletter-script' );
+	wp_deregister_script( 'cata-newsletter-script' );
 }
 
 add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\remove_editor_newsletter_script', 10, 0 );
@@ -90,15 +89,15 @@ add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\remove_editor_news
  */
 function conditionally_remove_newsletter_script() {
 	// dequeue custom block script to then re-enqueue in footer if conditions are met
-	wp_dequeue_script( 'cata-newsletter-form-script' );
+	wp_dequeue_script( 'cata-newsletter-script' );
 	
 	// singular includes a page used as front-page, single does not.
 	// Check/ ask Doug, are all our wp sites using  a template or page as the front page?
 	if ( ! is_singular() ) {
 		return;
 	}
-	if ( has_block( 'cata/newsletter-form' ) ) {
-		wp_enqueue_script( 'cata/newsletter-form', './build/script.js', array(), wp_get_theme()->get( 'Version' ), true );
+	if ( has_block( 'cata/newsletter' ) ) {
+		wp_enqueue_script( 'cata/newsletter', './build/script.js', array(), wp_get_theme()->get( 'Version' ), true );
 	}
 }
 

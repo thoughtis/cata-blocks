@@ -27,7 +27,7 @@ import save from './save';
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
  */
-registerBlockType( 'cata/newsletter-form', {
+registerBlockType( 'cata/newsletter', {
 	/**
 	 * @see ./edit.js
 	 */
