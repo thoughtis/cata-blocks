@@ -12,7 +12,7 @@
 		"customClassName": false
 	},
 	"attributes": {
-		"classnameBase": {
+		"classNameBase": {
 			"type": "string",
 			"default": "wp-block-cata-newsletter"
 		},

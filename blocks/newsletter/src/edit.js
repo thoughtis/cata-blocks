@@ -70,7 +70,7 @@ export default function Edit( props ) {
 			}}
 		>
 
-			<div className={ `${attributes.classnameBase}__panel-wrapper` }>
+			<div className={ `${attributes.classNameBase}__panel-wrapper` }>
 				<Fragment>
 					<InspectorControls>
 						<PanelBody
@@ -113,7 +113,7 @@ export default function Edit( props ) {
 								/>
 							</MediaUploadCheck>
 
-							<div className={ `${attributes.classnameBase}__panel-button-wrapper` }>
+							<div className={ `${attributes.classNameBase}__panel-button-wrapper` }>
 								{attributes.mediaId != 0 && 
 									<MediaUploadCheck>
 										<MediaUpload
@@ -144,7 +144,7 @@ export default function Edit( props ) {
 							title='Set Mailchimp Audience ID'
 							initialOpen={ false }
 						>
-							<p className={ `${attributes.classnameBase}__mailchimpId-display` }>
+							<p className={ `${attributes.classNameBase}__mailchimpId-display` }>
 								Mailchimp campaign ID<br/>defaults to: <span>"829754e1b3"</span> <br/>which is the CreepyCatalog Streaming Guide
 							</p>
 
@@ -161,7 +161,7 @@ export default function Edit( props ) {
 							title='Set Success Message'
 							initialOpen={ false }
 						>
-							<p className={ `${attributes.classnameBase}__success-msg-display` }>
+							<p className={ `${attributes.classNameBase}__success-msg-display` }>
 								Successful Signup response Message<br/>defaults to: <span>"Thanks and stay spooky!"</span>
 							</p>
 
@@ -178,30 +178,30 @@ export default function Edit( props ) {
 			</div>
 
 
-			<div className={ `${attributes.classnameBase}__wrapper` }>
-				<div className={ `${attributes.classnameBase}__inner` }>
-					<div className={ `${attributes.classnameBase}__layout` }>
-						<div className={ `${attributes.classnameBase}__start` }>
+			<div className={ `${attributes.classNameBase}__wrapper` }>
+				<div className={ `${attributes.classNameBase}__inner` }>
+					<div className={ `${attributes.classNameBase}__layout` }>
+						<div className={ `${attributes.classNameBase}__start` }>
 							<RichText
 								tagName="h3"
 								value={ attributes.title }
 								onChange={ ( title ) => setAttributes({ title }) }
-								className={ `${attributes.classnameBase}__title` }
+								className={ `${attributes.classNameBase}__title` }
 								placeholder='apply to the newsletter'
 								keepPlaceholderOnFocus={ true }
 							/>
 						</div>
-						<div className={ `${attributes.classnameBase}__end` }>
+						<div className={ `${attributes.classNameBase}__end` }>
 							<RichText
 									tagName="P"
 									value={ attributes.description }
 									onChange={ ( description ) => setAttributes({ description }) }
-									className={ `${attributes.classnameBase}__description` }
+									className={ `${attributes.classNameBase}__description` }
 									placeholder='Join our free newsletter for weekly updates about what TV shows and movies are streaming online.'
 									keepPlaceholderOnFocus={ true }
 								/>
-							<div className={ `${attributes.classnameBase}__form-placeholder` }>
-								<div className={ `${attributes.classnameBase}__fieldset` }>
+							<div className={ `${attributes.classNameBase}__form-placeholder` }>
+								<div className={ `${attributes.classNameBase}__fieldset` }>
 									<input type="email" value="" name="EMAIL" placeholder="Enter Your Email" readonly/>
 									<button className="button is-primary is-filled" type="submit" disabled>
 										Subscribe
@@ -212,7 +212,7 @@ export default function Edit( props ) {
 								tagName="p"
 								value={ attributes.legalText }
 								onChange={ ( legalText ) => setAttributes({ legalText }) }
-								className={ `${attributes.classnameBase}__details` }
+								className={ `${attributes.classNameBase}__details` }
 								placeholder='Unsubscribe at any time. By subscribing, you agree to the terms of our %%Privacy Policy%%'
 								keepPlaceholderOnFocus={ true }
 							/>

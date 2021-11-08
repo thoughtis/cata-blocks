@@ -31,13 +31,13 @@ export default function save(props) {
 	return (
 		<div { ...blockProps }>
 			<div 
-				className={ `${attributes.classnameBase}__wrapper` }
+				className={ `${attributes.classNameBase}__wrapper` }
 				style={{
 					position: "relative"
 				}}
 			>
 				<img 
-					className={ `${attributes.classnameBase}__bg-img` }
+					className={ `${attributes.classNameBase}__bg-img` }
 					alt={ attributes.mediaAltText }
 					src={ attributes.mediaUrl }
 					style={{
@@ -50,20 +50,20 @@ export default function save(props) {
 						display: !attributes.mediaUrl && 'none' 
 					}}
 				/>
-				<div className={ `${attributes.classnameBase}__inner` }>
-					<div className={ `${attributes.classnameBase}__layout` }>
-						<div className={ `${attributes.classnameBase}__start` }>
-							<h3 className={ `${attributes.classnameBase}__title` }>
+				<div className={ `${attributes.classNameBase}__inner` }>
+					<div className={ `${attributes.classNameBase}__layout` }>
+						<div className={ `${attributes.classNameBase}__start` }>
+							<h3 className={ `${attributes.classNameBase}__title` }>
 								{ attributes.title }
 							</h3>
 						</div>
-						<div className={ `${attributes.classnameBase}__end` }>
-							<p className={ `${attributes.classnameBase}__description` }>
+						<div className={ `${attributes.classNameBase}__end` }>
+							<p className={ `${attributes.classNameBase}__description` }>
 								{attributes.description}
 							</p>
 							<form action={'' + attributes.mailchimpUrlBase + attributes.mailchimpUserId + attributes.mailchimpUrlAmp + attributes.mailchimpAudienceId} method="post" name="mc-embedded-subscribe-form" target="_blank" validate data-mailchimp data-mailchimp-success-message={attributes.successMessage}>
-								<div className={ `${attributes.classnameBase}__response` }role="alert"></div>
-								<fieldset className={ `${attributes.classnameBase}__fieldset` }>
+								<div className={ `${attributes.classNameBase}__response` }role="alert"></div>
+								<fieldset className={ `${attributes.classNameBase}__fieldset` }>
 									<label for="mce-EMAIL" className="screen-reader-text">
 										Enter Your Email
 									</label>
@@ -78,7 +78,7 @@ export default function save(props) {
 									</div>
 								</fieldset>
 							</form>
-							<p className={ `${attributes.classnameBase}__details` }>
+							<p className={ `${attributes.classNameBase}__details` }>
 								{attributes.legalText}
 							</p>
 						</div>
