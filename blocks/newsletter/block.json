@@ -9,7 +9,8 @@
 	"supports": {
 		"html": false,
 		"multiple": false,
-		"customClassName": false
+		"customClassName": false,
+		"align": true
 	},
 	"attributes": {
 		"classNameBase": {
