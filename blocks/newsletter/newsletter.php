@@ -31,7 +31,7 @@ add_action( 'init', __NAMESPACE__ . '\\register_newsletter_block' );
  * This replaces the privacy policy placeholder %%Privacy Policy%% with the themes privacy policy link.
  *
  * @param string $block_content The block content about to be appended.
- * @param array $block The full block, including name and attributes.
+ * @param array  $block The full block, including name and attributes.
  * @return string $new_html The modified block.
  */
 function insert_privacy_link( $block_content, $block ) {
@@ -46,7 +46,7 @@ function insert_privacy_link( $block_content, $block ) {
 
 	return $new_html;
 }
-add_filter( "render_block_cata/newsletter", __NAMESPACE__ . '\\insert_privacy_link', 10, 2);
+add_filter( 'render_block_cata/newsletter', __NAMESPACE__ . '\\insert_privacy_link', 10, 2 );
 
 /**
  * Add defer attribute to the Newsletter Signup Form script tag
@@ -88,7 +88,7 @@ add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\remove_editor_news
  * @return void
  */
 function conditionally_remove_newsletter_script() {
-	// dequeue custom block script to then re-enqueue in footer if conditions are met
+	// dequeue custom block script to then re-enqueue in footer if conditions are met.
 	wp_dequeue_script( 'cata-newsletter-script' );
 	
 	// singular includes a page used as front-page, single does not.
@@ -103,4 +103,4 @@ function conditionally_remove_newsletter_script() {
 
 
 
-add_action( 'wp_enqueue_scripts', __NAMESPACE__. '\\conditionally_remove_newsletter_script', 10, 0 ); 
+add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\\conditionally_remove_newsletter_script', 10, 0 ); 
