@@ -83,24 +83,31 @@ add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\remove_editor_news
 
 /**
  * Conditionally Remove Script
- * Remove block script if the post or page does not contain it.
+ * Remove block script.
  * 
  * @return void
  */
-function conditionally_remove_newsletter_script() {
-	// dequeue custom block script to then re-enqueue in footer if conditions are met.
+function remove_newsletter_script() {
 	wp_dequeue_script( 'cata-newsletter-script' );
-	
-	// singular includes a page used as front-page, single does not.
-	// Check/ ask Doug, are all our wp sites using  a template or page as the front page?
+}
+
+add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\\remove_newsletter_script', 10, 0 ); 
+
+/**
+ * Conditionally Add Script
+ * Add block script if the post or page contains the cata newsletter block.
+ * 
+ * @return void
+ */
+function conditionally_add_newsletter_script() {
 	if ( ! is_singular() ) {
 		return;
 	}
-	if ( has_block( 'cata/newsletter' ) ) {
-		wp_enqueue_script( 'cata/newsletter', './build/script.js', array(), wp_get_theme()->get( 'Version' ), true );
+	if ( ! has_block( 'cata/newsletter' ) ) {
+		return;
 	}
+
+	wp_enqueue_script( 'cata/newsletter', './build/script.js', array(), wp_get_theme()->get( 'Version' ), true );
 }
 
-
-
-add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\\conditionally_remove_newsletter_script', 10, 0 ); 
+add_action( 'wp_body_open', __NAMESPACE__ . '\\conditionally_add_newsletter_script', 10, 0 );
