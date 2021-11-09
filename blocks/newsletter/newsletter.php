@@ -99,15 +99,34 @@ add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\\remove_newsletter_script', 
  * 
  * @return void
  */
-function conditionally_add_newsletter_script() {
+function conditionally_add_newsletter_script() : void {
 	if ( ! is_singular() ) {
 		return;
 	}
 	if ( ! has_block( 'cata/newsletter' ) ) {
 		return;
 	}
-
-	wp_enqueue_script( 'cata/newsletter', './build/script.js', array(), wp_get_theme()->get( 'Version' ), true );
+	wp_enqueue_script( 'cata-newsletter-script' );
 }
 
 add_action( 'wp_body_open', __NAMESPACE__ . '\\conditionally_add_newsletter_script', 10, 0 );
+
+/**
+ * Sidebar Function
+ * 
+ * Filter function whcih causes a side effect to conditionally enqueue newsletter script.
+ *
+ * @param string $content
+ * @param array $instance
+ * @return string
+ */
+function sidebar_function( string $content, array $instance ) : string {
+	if ( ! has_block( 'cata/newsletter', $instance[ 'content' ] ) ) {
+		return $content;
+	}
+	wp_enqueue_script( 'cata-newsletter-script' );
+
+	return $content;
+}
+
+add_filter( 'widget_block_content', __NAMESPACE__ .  '\\sidebar_function', 10, 2 );
