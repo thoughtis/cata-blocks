@@ -12,7 +12,7 @@
  * Description: Block Editor components for use with the Cata theme.
  * Author:      Thought & Expression Co. <devjobs@thought.is>
  * Author URI:  https://thought.is
- * Version:     0.3.5
+ * Version:     0.3.6-beta05
  * License:     GPL v3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.txt
  */
@@ -25,5 +25,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require_once __DIR__ . '/blocks/aside/aside.php';
 require_once __DIR__ . '/blocks/kicker/kicker.php';
+require_once __DIR__ . '/blocks/newsletter/newsletter.php';
 require_once __DIR__ . '/blocks/table-of-contents/table-of-contents.php';
 require_once __DIR__ . '/patterns/trivia/trivia.php';

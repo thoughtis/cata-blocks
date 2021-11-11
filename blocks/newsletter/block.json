@@ -1,0 +1,76 @@
+{
+	"apiVersion": 2,
+	"name": "cata/newsletter",
+	"version": "0.1.0",
+	"title": "Newsletter Signup Form",
+	"category": "widgets",
+	"icon": "feedback",
+	"description": "This widget places a mailchimp newsletter signup form on the page wherever it is used.",
+	"supports": {
+		"html": false,
+		"multiple": false,
+		"customClassName": false,
+		"align": true
+	},
+	"attributes": {
+		"classNameBase": {
+			"type": "string",
+			"default": "wp-block-cata-newsletter"
+		},
+		"mailchimpUrlBase": {
+			"type": "string",
+			"default": "https://thoughtcatalog.us2.list-manage.com/subscribe/post?u="
+		},
+		"mailchimpUserId": {
+			"type": "string",
+			"default": "ce27c7f9ab856e12c6f2bf1da"
+		},
+		"mailchimpUrlAmp": {
+			"type": "string",
+			"default": "&amp;id="
+		},
+		"mailchimpAudienceId": {
+			"type": "string",
+			"default": "829754e1b3"
+		},
+		"mediaId": {
+			"type": "number",
+			"default": 0
+		},
+		"mediaUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"mediaAltText": {
+			"type": "string",
+			"default": "newsletter sign up form background image"
+		},
+		"mediaHeight": {
+			"type": "number",
+			"default": 0
+		},
+		"mediaWidth": {
+			"type": "number",
+			"default": 0
+		},
+		"description": {
+			"type": "string",
+			"default" : "Join our free newsletter for weekly updates about what TV shows and movies are streaming online."
+		},
+		"title": {
+			"type": "string",
+			"default": "apply to the newsletter"
+		},
+		"legalText": {
+			"type": "string",
+			"default": "Unsubscribe at any time. By subscribing, you agree to the terms of our %%Privacy Policy%%"
+		},
+		"successMessage": {
+			"type": "string",
+			"default": "Thanks and stay spooky!"
+		}
+	},
+	"editorScript": "file:./build/index.js",
+	"editorStyle": "file:./build/index.css",
+	"script": "file:./build/script.js"
+}
