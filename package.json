@@ -1,6 +1,6 @@
 {
 	"name": "cata-blocks",
-	"version": "0.3.7-beta01",
+	"version": "0.3.7",
 	"description": "Block Editor components for use with the Cata theme.",
 	"scripts": {
 		"build:table-of-contents": "wp-scripts build ./blocks/table-of-contents/src/index.js --config=./blocks/table-of-contents/webpack.config.js ./blocks/table-of-contents/src/script.js --output-path=./blocks/table-of-contents/build/",
