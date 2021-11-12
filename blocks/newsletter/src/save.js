@@ -32,24 +32,13 @@ export default function save(props) {
 		<div { ...blockProps }>
 			<div 
 				className={ `${attributes.classNameBase}__wrapper` }
-				style={{
-					position: "relative"
-				}}
 			>
-				<img 
-					className={ `${attributes.classNameBase}__bg-img` }
-					alt={ attributes.mediaAltText }
-					src={ attributes.mediaUrl }
-					style={{
-						position: "absolute",
-						zIndex: -1,
-						width: '100%',
-						height: '100%',
-						objectFit: 'cover',
-						overflow: 'hidden',
-						display: !attributes.mediaUrl && 'none' 
-					}}
-				/>
+				{attributes.mediaUrl && 
+					<img 
+						className={ `${attributes.classNameBase}__bg-img` }
+						alt={ attributes.mediaAltText }
+						src={ attributes.mediaUrl }
+					/>}
 				<div className={ `${attributes.classNameBase}__inner` }>
 					<div className={ `${attributes.classNameBase}__layout` }>
 						<div className={ `${attributes.classNameBase}__start` }>
