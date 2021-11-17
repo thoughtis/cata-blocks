@@ -41,8 +41,13 @@ class Renderer {
 		$form        = $this->get_form();
 		$description = $this->get_description();
 		$legal_text  = $this->get_legal_text();
+		$classes     = $this->get_classes(
+			array(
+				'wp-block-cata-newsletter',
+			)
+		);
 
-		return "<div class=\"wp-block-cata-newsletter\">
+		return "<div class=\"${classes}\">
 			${background}
 			<div class=\"wp-block-cata-newsletter__inner\">
 				<div class=\"wp-block-cata-newsletter__layout\">
@@ -168,7 +173,18 @@ class Renderer {
 			),
 			self::MAILCHIMP_POST_URL
 		);
-
 	}
 
+	/**
+	 * Get Classes
+	 * 
+	 * @param array $classes
+	 * @return string
+	 */
+	private function get_classes( array $classes ) : string {
+		if ( isset( $this->attributes['align'] ) ) {
+			$classes[] = 'align' . sanitize_html_class( $this->attributes['align'], '' ); 
+		}
+		return implode( ' ', $classes );
+	}
 }
