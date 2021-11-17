@@ -65,24 +65,6 @@ class Renderer {
 	 * @return string
 	 */
 	private function get_background() : string {
-		$image = $this->get_image();
-
-		if ( '' === $image ) {
-			return '';
-		}
-
-		return "<figure class=\"wp-block-cata-newsletter__background\" role=\"presentation\">
-			${image}
-		</figure>";
-	}
-
-	/**
-	 * Get Image
-	 * 
-	 * @return string
-	 */
-	private function get_image() : string {
-
 		$image_id = absint( $this->attributes['mediaId'] );
 
 		if ( 0 === $image_id ) {
@@ -98,7 +80,8 @@ class Renderer {
 			'medium_large',
 			false,
 			array(
-				'alt' => 'ooooooooh so creepy background image'
+				'alt'   => 'ooooooooh so creepy background image',
+				'class' => 'wp-block-cata-newsletter__background',
 			)
 		);
 	}
