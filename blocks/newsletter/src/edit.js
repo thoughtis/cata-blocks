@@ -70,113 +70,108 @@ export default function Edit( props ) {
 			}}
 		>
 
-			<div className={ `${attributes.classNameBase}__panel-wrapper` }>
-				<Fragment>
-					<InspectorControls>
-						<PanelBody
-							title='Select Newsletter Background Image'
-							initialOpen={ false }
-						>
+			<InspectorControls>
+				<PanelBody
+					title='Select Newsletter Background Image'
+					initialOpen={ false }
+				>
+					<MediaUploadCheck>
+						<MediaUpload
+							onSelect={onSelectMedia}
+							value={attributes.mediaId}
+							allowedTypes={ [ 'image' ] }
+							render={({open}) => (
+								<Button 
+									onClick={open}
+									className={attributes.mediaId == 0 ? 'editor-post-featured-image__toggle' : 'editor-post-featured-image__preview'}
+								>
+
+									{attributes.mediaId == 0 && 'Choose an image'}
+									{props.media != undefined && 
+										<ResponsiveWrapper
+											naturalWidth={ attributes.mediaWidth }
+											naturalHeight={ attributes.mediaHeight }
+										>
+											<img 
+												src={props.media.source_url}
+												alt={props.media.alt_text ? props.media.alt_text : attributes.mediaAltText }
+												style={{
+													position: 'absolute',
+													zIndex: '-1',
+													width: '100%',
+													height: '100%',
+													objectFit: 'cover',
+													overflow: 'hidden'
+												}}
+											/>
+										</ResponsiveWrapper>
+									}
+								</Button>
+							)}
+						/>
+					</MediaUploadCheck>
+
+					<div className={ `${attributes.classNameBase}__panel-button-wrapper` }>
+						{attributes.mediaId != 0 && 
 							<MediaUploadCheck>
 								<MediaUpload
-									onSelect={onSelectMedia}
+									title='Replace image'
 									value={attributes.mediaId}
+									onSelect={onSelectMedia}
 									allowedTypes={ [ 'image' ] }
 									render={({open}) => (
-										<Button 
-											onClick={open}
-											className={attributes.mediaId == 0 ? 'editor-post-featured-image__toggle' : 'editor-post-featured-image__preview'}
-										>
-
-											{attributes.mediaId == 0 && 'Choose an image'}
-											{props.media != undefined && 
-												<ResponsiveWrapper
-													naturalWidth={ attributes.mediaWidth }
-													naturalHeight={ attributes.mediaHeight }
-												>
-													<img 
-														src={props.media.source_url}
-														alt={props.media.alt_text ? props.media.alt_text : attributes.mediaAltText }
-														style={{
-															position: 'absolute',
-															zIndex: '-1',
-															width: '100%',
-															height: '100%',
-															objectFit: 'cover',
-															overflow: 'hidden'
-														}}
-													/>
-												</ResponsiveWrapper>
-											}
+										<Button onClick={open} isDefault isLarge>
+											Replace image
 										</Button>
 									)}
 								/>
 							</MediaUploadCheck>
+						}
 
-							<div className={ `${attributes.classNameBase}__panel-button-wrapper` }>
-								{attributes.mediaId != 0 && 
-									<MediaUploadCheck>
-										<MediaUpload
-											title='Replace image'
-											value={attributes.mediaId}
-											onSelect={onSelectMedia}
-											allowedTypes={ [ 'image' ] }
-											render={({open}) => (
-												<Button onClick={open} isDefault isLarge>
-													Replace image
-												</Button>
-											)}
-										/>
-									</MediaUploadCheck>
-								}
+						{attributes.mediaId != 0 && 
+							<MediaUploadCheck>
+								<Button onClick={removeMedia} isDestructive>
+									Remove Image
+								</Button>
+							</MediaUploadCheck>
+						}
+					</div>
+				</PanelBody>
 
-								{attributes.mediaId != 0 && 
-									<MediaUploadCheck>
-										<Button onClick={removeMedia} isDestructive>
-											Remove Image
-										</Button>
-									</MediaUploadCheck>
-								}
-							</div>
-						</PanelBody>
+				<PanelBody
+					title='Set Mailchimp Audience ID'
+					initialOpen={ false }
+				>
+					<p className={ `${attributes.classNameBase}__mailchimpId-display` }>
+						Mailchimp campaign ID<br/>defaults to: <span>"829754e1b3"</span> <br/>which is the CreepyCatalog Streaming Guide
+					</p>
 
-						<PanelBody
-							title='Set Mailchimp Audience ID'
-							initialOpen={ false }
-						>
-							<p className={ `${attributes.classNameBase}__mailchimpId-display` }>
-								Mailchimp campaign ID<br/>defaults to: <span>"829754e1b3"</span> <br/>which is the CreepyCatalog Streaming Guide
-							</p>
+					<div>
+						<TextControl 
+							value={ attributes.mailchimpAudienceId } 
+							onChange={ (mailchimpAudienceId) => setAttributes({ mailchimpAudienceId })}
+							label="Mailchimp ID"
+						/>
+					</div>
+				</PanelBody>
 
-							<div>
-								<TextControl 
-									value={ attributes.mailchimpAudienceId } 
-									onChange={ (mailchimpAudienceId) => setAttributes({ mailchimpAudienceId })}
-									label="Mailchimp ID"
-								/>
-							</div>
-						</PanelBody>
+				<PanelBody
+					title='Set Success Message'
+					initialOpen={ false }
+				>
+					<p className={ `${attributes.classNameBase}__success-msg-display` }>
+						Successful Signup response Message<br/>defaults to: <span>"Thanks and stay spooky!"</span>
+					</p>
 
-						<PanelBody
-							title='Set Success Message'
-							initialOpen={ false }
-						>
-							<p className={ `${attributes.classNameBase}__success-msg-display` }>
-								Successful Signup response Message<br/>defaults to: <span>"Thanks and stay spooky!"</span>
-							</p>
-
-							<div>
-								<TextControl 
-									value={ attributes.successMessage } 
-									onChange={ (successMessage) => setAttributes({ successMessage })}
-									label="Success Message"
-								/>
-							</div>
-						</PanelBody>
-					</InspectorControls>
-				</Fragment>
-			</div>
-
+					<div>
+						<TextControl 
+							value={ attributes.successMessage } 
+							onChange={ (successMessage) => setAttributes({ successMessage })}
+							label="Success Message"
+						/>
+					</div>
+				</PanelBody>
+			</InspectorControls>
 
 			<div className={ `${attributes.classNameBase}__wrapper` }>
 				<div className={ `${attributes.classNameBase}__inner` }>
@@ -188,22 +183,20 @@ export default function Edit( props ) {
 								onChange={ ( title ) => setAttributes({ title }) }
 								className={ `${attributes.classNameBase}__title` }
 								placeholder='apply to the newsletter'
-								keepPlaceholderOnFocus={ true }
 							/>
 						</div>
 						<div className={ `${attributes.classNameBase}__end` }>
 							<RichText
-									tagName="P"
+									tagName="p"
 									value={ attributes.description }
 									onChange={ ( description ) => setAttributes({ description }) }
 									className={ `${attributes.classNameBase}__description` }
 									placeholder='Join our free newsletter for weekly updates about what TV shows and movies are streaming online.'
-									keepPlaceholderOnFocus={ true }
 								/>
 							<div className={ `${attributes.classNameBase}__form-placeholder` }>
 								<div className={ `${attributes.classNameBase}__fieldset` }>
-									<input type="email" value="" name="EMAIL" placeholder="Enter Your Email" readonly/>
-									<button className="button is-primary is-filled" type="submit" disabled>
+									<input type="email" placeholder="Enter Your Email" readOnly/>
+									<button className="button is-primary is-filled" type="button" disabled>
 										Subscribe
 									</button>
 								</div>
@@ -214,7 +207,6 @@ export default function Edit( props ) {
 								onChange={ ( legalText ) => setAttributes({ legalText }) }
 								className={ `${attributes.classNameBase}__details` }
 								placeholder='Unsubscribe at any time. By subscribing, you agree to the terms of our %%Privacy Policy%%'
-								keepPlaceholderOnFocus={ true }
 							/>
 						</div>
 					</div>

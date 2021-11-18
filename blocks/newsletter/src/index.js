@@ -19,7 +19,6 @@ import { withSelect } from '@wordpress/data';
  * Internal dependencies
  */
 import Edit from './edit';
-import save from './save';
 
 /**
  * Every block starts by registering a new block type definition.
@@ -32,10 +31,5 @@ registerBlockType( 'cata/newsletter', {
 	 */
 	edit: withSelect((select, props) => {
 		return { media: props.attributes.mediaId ? select('core').getMedia(props.attributes.mediaId) : undefined };
-	})(Edit),
-
-	/**
-	 * @see ./save.js
-	 */
-	save,
+	})(Edit)
 } );

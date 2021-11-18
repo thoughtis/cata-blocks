@@ -14,39 +14,32 @@
 
 namespace Cata\Blocks;
 
+use Cata\Blocks\Newsletter\Renderer;
+
 /**
  * Register Newsletter Sign-Up Form block
  *
  * @return void
  */
 function register_newsletter_block() {
-	register_block_type_from_metadata( __DIR__ );
+	register_block_type_from_metadata(
+		__DIR__,
+		array(
+			'render_callback' => __NAMESPACE__ . '\\render_newsletter_block'
+		)
+	);
 }
 add_action( 'init', __NAMESPACE__ . '\\register_newsletter_block' );
 
-
-/** 
- * Insert Privacy Policy Link
+/**
+ * Render Newsletter Block
  * 
- * This replaces the privacy policy placeholder %%Privacy Policy%% with the themes privacy policy link.
- *
- * @param string $block_content The block content about to be appended.
- * @param array  $block The full block, including name and attributes.
- * @return string $new_html The modified block.
+ * @param array $block_attributes
+ * @return string
  */
-function insert_privacy_link( $block_content, $block ) {
-
-	$privacy_policy = get_the_privacy_policy_link();
-
-	if ( '' === $privacy_policy ) {
-		$privacy_policy = 'Privacy Policy';
-	}
-
-	$new_html = str_replace( '%%Privacy Policy%%', $privacy_policy, $block_content );
-
-	return $new_html;
+function render_newsletter_block( array $block_attributes ) : string {
+	return ( new Renderer( $block_attributes ) )->get_content();
 }
-add_filter( 'render_block_cata/newsletter', __NAMESPACE__ . '\\insert_privacy_link', 10, 2 );
 
 /**
  * Add defer attribute to the Newsletter Signup Form script tag
