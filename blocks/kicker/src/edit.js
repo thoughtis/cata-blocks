@@ -11,6 +11,7 @@ import {
 	RichText,
 	useBlockProps
 } from '@wordpress/block-editor';
+import { createBlock, getDefaultBlockName } from '@wordpress/blocks';
 
 /**
  * Edit
