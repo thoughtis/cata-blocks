@@ -29,6 +29,14 @@
 		"fontSize": {
 			"type": "string",
 			"default": "small"
+		},
+		"style": {
+			"type": "object",
+			"default": {
+				"typography": {
+					"textTransform": "uppercase"
+				}
+			}
 		}
 	},
 	"textdomain": "cata",
