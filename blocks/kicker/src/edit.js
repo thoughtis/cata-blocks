@@ -51,6 +51,29 @@ import { createBlock, getDefaultBlockName } from '@wordpress/blocks';
 					onChange={ ( nextContent ) =>
 						setAttributes( { content: nextContent } )
 					}
+					onMerge={ mergeBlocks }
+					onReplace={ onReplace }
+					onRemove={ onRemove }
+					onSplit={ ( value, isOriginal ) => {
+						let block;
+	
+						if ( isOriginal || value ) {
+							block = createBlock( 'cata/kicker', {
+								...attributes,
+								content: value,
+							} );
+						} else {
+							block = createBlock(
+								getDefaultBlockName() ?? 'cata/kicker'
+							);
+						}
+	
+						if ( isOriginal ) {
+							block.clientId = clientId;
+						}
+	
+						return block;
+					} }
 			/>
 		</Fragment>
 	);
