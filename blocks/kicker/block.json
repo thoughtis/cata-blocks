@@ -12,8 +12,9 @@
 	"supports": {
 		"html": false,
 		"customClassName": false,
-		"typography" : {
-			"fontSize": true
+		"typography": {
+			"fontSize": true,
+			"__experimentalTextTransform": true
 		}
 	},
 	"attributes": {
