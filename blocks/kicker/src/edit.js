@@ -18,7 +18,14 @@ import { createBlock, getDefaultBlockName } from '@wordpress/blocks';
  *
  * @return {WPElement} Element to render.
  */
-export default function Edit( { attributes, setAttributes } ) {
+ export default function Edit( {
+	attributes,
+	setAttributes,
+	clientId,
+	mergeBlocks,
+	onReplace,
+	onRemove
+} ) {
 	const { textAlign, content } = attributes;
 	const blockProps = useBlockProps({
 		className: classnames({
