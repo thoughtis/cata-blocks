@@ -12,8 +12,9 @@
 	"supports": {
 		"html": false,
 		"customClassName": false,
-		"typography" : {
-			"fontSize": true
+		"typography": {
+			"fontSize": true,
+			"__experimentalTextTransform": true
 		}
 	},
 	"attributes": {
@@ -29,6 +30,14 @@
 		"fontSize": {
 			"type": "string",
 			"default": "small"
+		},
+		"style": {
+			"type": "object",
+			"default": {
+				"typography": {
+					"textTransform": "uppercase"
+				}
+			}
 		}
 	},
 	"textdomain": "cata",
