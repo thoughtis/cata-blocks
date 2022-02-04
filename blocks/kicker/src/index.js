@@ -47,4 +47,11 @@ registerBlockType( 'cata/kicker', {
 			},
 		]
 	},
+	merge( attributes, attributesToMerge ) {
+		return {
+			content:
+				( attributes.content || '' ) +
+				( attributesToMerge.content || '' ),
+		};
+	},
 } );
