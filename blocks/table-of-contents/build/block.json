@@ -16,7 +16,7 @@
 			"content": "Table Of Contents"
 		}
 	},
-	"script": "file:/build/script.js",
-	"editorScript": "file:./build/index.js",
-	"editorStyle": "file:./build/index.css"
+	"script": "file:./script.js",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css"
 }

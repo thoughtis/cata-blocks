@@ -41,6 +41,6 @@
 		}
 	},
 	"textdomain": "cata",
-	"editorScript": "file:./build/index.js",
-	"editorStyle": "file:./build/index.css"
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css"
 }
