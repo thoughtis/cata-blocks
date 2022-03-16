@@ -27,5 +27,6 @@ require_once __DIR__ . '/blocks/aside/aside.php';
 require_once __DIR__ . '/blocks/kicker/kicker.php';
 require_once __DIR__ . '/blocks/newsletter/includes/class-renderer.php';
 require_once __DIR__ . '/blocks/newsletter/newsletter.php';
+require_once __DIR__ . '/blocks/shop/shop.php';
 require_once __DIR__ . '/blocks/table-of-contents/table-of-contents.php';
 require_once __DIR__ . '/patterns/trivia/trivia.php';
