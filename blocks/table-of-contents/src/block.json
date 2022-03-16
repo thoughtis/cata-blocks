@@ -1,0 +1,22 @@
+{
+	"apiVersion": 2,
+	"name": "cata/toc",
+	"version": "0.1.0",
+	"title": "Table Of Contents",
+	"category": "widgets",
+	"description": "This widget produces a table of contents based on H2 headings. Preview or Publish to view the table of contents in the live post.",
+	"keywords": [ "contents", "table of contents", "table of" ],
+	"supports": {
+		"html": false,
+		"reusable": false,
+		"customClassName": false
+	},
+	"example": {
+		"attributes": {
+			"content": "Table Of Contents"
+		}
+	},
+	"script": "file:./script.js",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css"
+}

@@ -23,7 +23,7 @@ use Cata\Blocks\Newsletter\Renderer;
  */
 function register_newsletter_block() {
 	register_block_type_from_metadata(
-		__DIR__,
+		__DIR__ . '/build',
 		array(
 			'render_callback' => __NAMESPACE__ . '\\render_newsletter_block'
 		)

@@ -3,12 +3,12 @@ Block Editor components for use with the Cata theme.
 
 # How To Build
 
-Navigate to a component's folder and run `wp-scripts build`.
+Navigate to a component's folder and run `npm run build`.
 
 Example:
 ```
 cd blocks/aside
-wp-scripts build
+npm run build
 ```
 
 # Components
@@ -23,12 +23,13 @@ An `<aside>` element with `InnerBlocks`.
 
 A `<p>` element styled to reduce the margin of the element immediately after it.
 
+### Newsletter
+
+A `<form>` for MailChimp newsletter sign ups. 
+
 ### Table of Contents
 
 A `<details>` element populated with links to Heading 2's (`<h2>`'s) in the post body.
-
-#### To build Table of Content
-Go to `plugins/cata-blocks` and execute `npm run build:table-of-contents`. This will build the Table of Contents block.
 
 ## Patterns
 
@@ -42,7 +43,7 @@ An aside block containing a kicker as the title, paragraph for the question and 
 
 - **This plugin** contains scripts and styles sufficient to use these components in the editor and save them in post content.
 - **The Cata parent theme** contains styles sufficient to make the front-end content match the editor.
-- **A child theme** is responsible to making the front-end styles match the look and feel of an individual site.
+- **A child theme** is responsible for making the front-end styles match the look and feel of an individual site.
 
 # How To Add A Block
 
@@ -61,6 +62,8 @@ But, it acts like each block is its own plugin. It's not optimized for the way w
 - Remove node_modules
   - `rm -r node_modules`
 - Remove other package files
-  - `rm package.json package-lock.json readme.txt`
-- Include your new block's file in `cata-blocks.php`
+  - `rm package-lock.json readme.txt`
+- Remove everything from the package.json file except the build script.
+  - The default build command is `../../node_modules/.bin/wp-scripts build`
+- Require your new block's file in `cata-blocks.php`
   - `require_once __DIR__ . '/blocks/my-cool-block-name/my-cool-block-name.php';`
