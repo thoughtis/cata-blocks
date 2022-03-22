@@ -26,3 +26,21 @@ function create_block_shop_block_init() {
 	register_block_type( __DIR__ . '/build' );
 }
 add_action( 'init', __NAMESPACE__ . '\\create_block_shop_block_init' );
+
+function wpHeadersFilterCallback( $headers, $wp ) {
+	error_log( print_r( 'wpHeadersFilterCallback() - $headers', true ) );
+	error_log( print_r( $headers, true ) );
+	// error_log( print_r( 'wpHeadersCallback() - $wp', true ) );
+	// error_log( print_r( $wp, true ) );
+
+	unset( $headers['X-WP-nonce'] );
+
+	return $headers;
+}
+add_filter( 'wp_headers', __NAMESPACE__ . '\\wpHeadersFilterCallback', 999, 2 );
+
+// function wpHeadersActionCallback( $wp) {
+// 	error_log( print_r( 'wpHeadersActionCallback() - $wp', true ) );
+// 	error_log( print_r( $wp, true ) );
+// }
+// add_action( 'send_headers', __NAMESPACE__ . '\\wpHeadersActionCallback', 10, 1 );
