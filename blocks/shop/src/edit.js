@@ -64,12 +64,6 @@ export default function Edit( props ) {
 	// console.log('props');
 	// console.log(props);
 
-	const onChangeUrl = (value) => {
-		setAttributes({
-			attribute: value
-		});
-	}
-
 	const shopUrl = 
 	attributes.shopCatalogApiUrlBase + 
 	"?category=" + 
@@ -81,9 +75,6 @@ export default function Edit( props ) {
 	"&order=" +
 	attributes.order;
 
-	// console.log('shopUrl');
-	// console.log(shopUrl);
-
 	const isMountedRef = useRef( true );
 	const fetchRequestRef = useRef();
 	const [ response, setResponse ] = useState( null );
@@ -93,40 +84,13 @@ export default function Edit( props ) {
 
 	const controller = new AbortController();
 
-	// const wpHeadersCallback = (headers, wp) => {
-	// 	console.log('wpHeadersCallback() - headers');
-	// 	console.log(headers);
-	// 	console.log('wpHeadersCallback() - wp');
-	// 	console.log(wp);
-
-		// return headers;
-	// }
-
-	// addFilter('wp_headers', 'cata/modify_headers', wpHeadersCallback, 10 );
-	// addAction('send_headers', 'cata/modify_headers', wpHeadersCallback, 199 );
-
 	const fetchData = () => {
 		if ( ! isMountedRef.current ) {
 			return;
 		}
 
-		// applyFilters('wp_headers');
 
 		// setIsLoading( true );
-
-		// const nonce = null;
-		// apiFetch.use( apiFetch.createNonceMiddleware( ( options, next ) => {
-
-		// 	console.log('nonce middleware callback func - options:');
-		// 	console.log(options);
-
-		// 	return next(options);
-		// } ) );
-		// apiFetch.nonceMiddleware = null;
-		// apiFetch.nonceEndpoint = null;
-
-		// const nonce = null;
-		// apiFetch.use( apiFetch.createNonceMiddleware( nonce ) );
 
 		apiFetch.use( ( options, next ) => {
 
@@ -136,34 +100,36 @@ export default function Edit( props ) {
 			return next(options);
 		} );
 
-		console.log('apiFetch');
-		console.log(apiFetch);
-
-		// console.log('apiFetch.fetchAllMiddleware()');
-		// console.log(apiFetch.fetchAllMiddleware());
-
 		const fetchRequest = ( fetchRequestRef.current = apiFetch( {
-			url: shopUrl,
+			url: '/wp-json/cata/v1/proxy/?url=' + encodeURIComponent( shopUrl ),
 			signal: controller.signal,
 			// credentials: 'omit',
 		} ) )
 			.then( ( fetchResponse) => {
+				console.log('isMountedRef.current');
+				console.log(isMountedRef.current);
+
+				console.log('fetchRequest');
+				console.log(fetchRequest);
+
+				console.log('fetchRequestRef.current.value');
+				console.log(fetchRequestRef.current.value);
 
 				console.log('fetchResponse');
 				console.log(fetchResponse);
 
 				if (
 					isMountedRef.current &&
-					fetchRequest === fetchRequestRef.current &&
+					// 'fulfilled' === fetchRequestRef.current.state &&
 					fetchResponse
 				) {
-					setResponse( fetchResponse.rendered );
+					setResponse( fetchResponse );
 				}
 			} )
 			.catch( ( error ) => {
 				if (
-					isMountedRef.current &&
-					fetchRequest === fetchRequestRef.current
+					isMountedRef.current 
+					// && 'fulfilled' === fetchRequestRef.current.state
 				) {
 					setResponse( {
 						error: true,
@@ -173,8 +139,8 @@ export default function Edit( props ) {
 			} )
 			.finally( () => {
 				if (
-					isMountedRef.current &&
-					fetchRequest === fetchRequestRef.current
+					isMountedRef.current 
+					// && 'fulfilled' === fetchRequestRef.current.state
 				) {
 					// setIsLoading( false );
 				}
@@ -182,9 +148,6 @@ export default function Edit( props ) {
 
 		return fetchRequest;
 	}
-
-	// console.log('fetchData');
-	// console.log(fetchData);
 
 	return (
 		<div { ...blockProps } >
@@ -200,7 +163,99 @@ export default function Edit( props ) {
 				</p>)
 			}
 			{ response &&
-				(JSON.stringify(response))
+
+			<div className='wp-block-cata-products alignwide'>
+				<div className='wp-block-cata-products__layout'>
+				{(response.map( prod => {
+					return (
+						<article className="wp-block-cata-product">
+							<div className='wp-block-cata-product__layout tappable-card'>
+								<figure className='wp-block-cata-product__image'>
+									{/* a ::before would go here with the svg frame on CC */}
+									<img
+										loading="lazy"
+										src={prod.images[0].src}
+										alt={prod.images[0].alt}
+										sizes="(max-width: 576px) 92.5vw, 576px"
+										srcset={prod.images[0].src + "?resize=384,384 384w, " + prod.images[0].src + "?resize=768,768 768w, " + prod.images[0].src + "?resize=1152,1152 1152w"}
+										width="384"
+										height="384"
+									/>
+								</figure>
+								<h3 className='wp-block-cata-product__title'>
+									<a 
+										className='wp-block-cata-product__link tappable-card-anchor'
+										href={prod.permalink}
+									>
+										{prod.name}
+									</a>
+								</h3>
+								<div className='wp-block-cata-product__byline'>
+									{/* "from Thought Catalog" or the author byline */}
+									{prod.cap_guest_authors.length > 0 &&
+										"by " +
+										prod.cap_guest_authors.reduce( 
+											(prev, curr, idx, array) => {
+												const spacer = array.length - 1 === idx ? "" : ", ";
+												return prev + curr.display_name + spacer;
+											},
+											""
+										)
+									}
+									{!prod.cap_guest_authors.length > 0 &&
+										prod.brands.length > 0 &&
+										"from " +
+										prod.brands.reduce(
+											(prev, curr, idx, array) => {
+												const spacer = array.length - 1 === idx ? "" : ", ";
+												return prev + curr.name + spacer
+											},
+											""
+										)
+									}
+								</div>
+								<div className='wp-block-cata-product__price'>
+									{/* price */}
+										{/* product.price? */}
+										{
+											(prod.on_sale) &&
+											(<del>
+												<span>
+													<span>$</span>{prod.regular_price}
+												</span>
+											</del> &&
+											<ins>
+												<span>
+													<span>$</span>{prod.sale_price}
+												</span>
+											</ins>)
+										}
+										{
+											(prod.price !== prod.regular_price) &&
+											(<span>
+												<span>$</span>{prod.price}
+											</span>
+											+
+											" - "
+											+
+											<span>
+												<span>$</span>{prod.regular_price}
+											</span>
+											)
+										}
+										{
+											(prod.price === prod.regular_price && !prod.on_sale) &&
+											(<span>
+												<span>$</span>{prod.regular_price}
+											</span>)
+										}
+								</div>
+							</div>
+						</article>
+					);
+				}))}
+				</div>
+			</div>
 			}
 			<Button
 				onClick={() => {fetchData()}}
@@ -216,11 +271,7 @@ export default function Edit( props ) {
 				<PanelBody title="Product API URL" icon={more} initialOpen={false}>
 					<TextControl
 						label="SC API Product Category"
-						onChange={(category) => {
-							console.log('category');
-							console.log(category);
-							setAttributes({category})
-						}}
+						onChange={(category) => setAttributes({category})}
 						type="text"
 						value={attributes.category}
 						help="Shop Catalog API Product Category. Creepy Products: 1752"
@@ -232,16 +283,6 @@ export default function Edit( props ) {
 						value={attributes.per_page}
 						help="Quantity of Shop Catalog products to be returned from the API."
 					/>
-					{/* <RadioControl
-						label="Product Ordering"
-						selected={ attributes.order }
-						options={ [
-							{ label: 'Ascending', value: 'asc' },
-							{ label: 'Descending', value: 'desc' },
-						] }
-						onChange={(order) => setAttributes({order})}
-						help="Choose to order products in Ascending or Descending order"
-					/> */}
 				</PanelBody>
 			</InspectorControls>
 		</div>
