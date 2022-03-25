@@ -59,11 +59,6 @@ export default function Edit( props ) {
 
 	const { attributes, setAttributes } = props;
 
-	// console.log('blockProps');
-	// console.log(blockProps);
-	// console.log('props');
-	// console.log(props);
-
 	const shopUrl = 
 	attributes.shopCatalogApiUrlBase + 
 	"?category=" + 
@@ -94,9 +89,6 @@ export default function Edit( props ) {
 
 		apiFetch.use( ( options, next ) => {
 
-			console.log('middleware callback func - options:');
-			console.log(options);
-
 			return next(options);
 		} );
 
@@ -106,17 +98,6 @@ export default function Edit( props ) {
 			// credentials: 'omit',
 		} ) )
 			.then( ( fetchResponse) => {
-				console.log('isMountedRef.current');
-				console.log(isMountedRef.current);
-
-				console.log('fetchRequest');
-				console.log(fetchRequest);
-
-				console.log('fetchRequestRef.current.value');
-				console.log(fetchRequestRef.current.value);
-
-				console.log('fetchResponse');
-				console.log(fetchResponse);
 
 				if (
 					isMountedRef.current &&
@@ -124,6 +105,7 @@ export default function Edit( props ) {
 					fetchResponse
 				) {
 					setResponse( fetchResponse );
+					setAttributes({ results: fetchResponse });
 				}
 			} )
 			.catch( ( error ) => {
@@ -151,12 +133,6 @@ export default function Edit( props ) {
 
 	return (
 		<div { ...blockProps } >
-			<p>
-				{ __(  'WP REST API URL:', 'cata' ) }
-			</p>
-			<p>
-				{ shopUrl }
-			</p>
 			{ !response &&
 				(<p>
 					{ __( 'Shop Catalog Merch will go here!', 'cata' ) }
@@ -216,9 +192,10 @@ export default function Edit( props ) {
 								</div>
 								<div className='wp-block-cata-product__price'>
 									{/* price */}
-										{/* product.price? */}
 										{
-											(prod.on_sale) &&
+											prod.on_sale &&
+											prod.regular_price &&
+											prod.sale_price
 											(<del>
 												<span>
 													<span>$</span>{prod.regular_price}
@@ -231,20 +208,26 @@ export default function Edit( props ) {
 											</ins>)
 										}
 										{
+											prod.price &&
+											prod.regular_price &&
+											!prod.on_sale &&
 											(prod.price !== prod.regular_price) &&
 											(<span>
 												<span>$</span>{prod.price}
-											</span>
+											</span>)
 											+
-											" - "
+											(" - ")
 											+
-											<span>
+											(<span>
 												<span>$</span>{prod.regular_price}
 											</span>
 											)
 										}
 										{
-											(prod.price === prod.regular_price && !prod.on_sale) &&
+											prod.price &&
+											prod.regular_price &&
+											!prod.on_sale &&
+											(prod.price === prod.regular_price ) &&
 											(<span>
 												<span>$</span>{prod.regular_price}
 											</span>)
@@ -257,16 +240,6 @@ export default function Edit( props ) {
 				</div>
 			</div>
 			}
-			<Button
-				onClick={() => {fetchData()}}
-			>
-				FETCH
-			</Button>
-			<Button
-				onClick={() => {controller.abort()}}
-			>
-				ABORT
-			</Button>
 			<InspectorControls>
 				<PanelBody title="Product API URL" icon={more} initialOpen={false}>
 					<TextControl
@@ -283,6 +256,16 @@ export default function Edit( props ) {
 						value={attributes.per_page}
 						help="Quantity of Shop Catalog products to be returned from the API."
 					/>
+					<Button
+						onClick={() => {fetchData()}}
+					>
+						FETCH
+					</Button>
+					<Button
+						onClick={() => {controller.abort()}}
+					>
+						ABORT
+					</Button>
 				</PanelBody>
 			</InspectorControls>
 		</div>

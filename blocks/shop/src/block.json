@@ -31,6 +31,10 @@
 		"order": {
 			"type": "string",
 			"default": "asc"
+		},
+		"results": {
+			"type": "object",
+			"default": {}
 		}
 	},
 	"editorScript": "file:./index.js",
