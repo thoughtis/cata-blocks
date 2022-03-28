@@ -15,13 +15,10 @@ import { useBlockProps } from '@wordpress/block-editor';
 
 
 import { InspectorControls } from '@wordpress/block-editor';
-import { Fragment, useEffect, useRef, useState  } from "@wordpress/element";
-import { Button, Panel, PanelBody, TextControl, RadioControl, Spinner } from '@wordpress/components';
+import { useRef, useState  } from "@wordpress/element";
+import { Button, PanelBody, TextControl } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
-import { addQueryArgs } from '@wordpress/url';
-import { more } from '@wordpress/icons';
-
-import { addFilter, applyFilters, addAction, doAction } from '@wordpress/hooks';
+import { store } from '@wordpress/icons';
 
 /**
  * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
@@ -40,21 +37,6 @@ import './editor.scss';
  * @return {WPElement} Element to render.
  */
 export default function Edit( props ) {
-	/*
-
-	$url = add_query_arg(
-		array(
-			'category' => absint( $category_id ),
-			'per_page' => 6,
-			'orderby'  => 'menu_order',
-			'order'    => 'asc',
-		),
-		'https://shopcatalog.com/wp-json/wc/v3/products/'
-	);
-
-	https://shopcatalog.com/wp-json/wc/v3/products/?category=1752&per_page=6&orderby=menu_order&order=asc
-	*/
-
 	const blockProps = { ...useBlockProps() };
 
 	const { attributes, setAttributes } = props;
@@ -70,23 +52,11 @@ export default function Edit( props ) {
 	"&order=" +
 	attributes.order;
 
-	const isMountedRef = useRef( true );
 	const fetchRequestRef = useRef();
 	const [ response, setResponse ] = useState( null );
-	// const [ showLoader, setShowLoader ] = useState( false );
-	// const prevProps = usePrevious( props );
-	// const [ isLoading, setIsLoading ] = useState( false );
-
 	const controller = new AbortController();
 
 	const fetchData = () => {
-		if ( ! isMountedRef.current ) {
-			return;
-		}
-
-
-		// setIsLoading( true );
-
 		apiFetch.use( ( options, next ) => {
 
 			return next(options);
@@ -95,37 +65,19 @@ export default function Edit( props ) {
 		const fetchRequest = ( fetchRequestRef.current = apiFetch( {
 			url: '/wp-json/cata/v1/proxy/?url=' + encodeURIComponent( shopUrl ),
 			signal: controller.signal,
-			// credentials: 'omit',
 		} ) )
 			.then( ( fetchResponse) => {
 
-				if (
-					isMountedRef.current &&
-					// 'fulfilled' === fetchRequestRef.current.state &&
-					fetchResponse
-				) {
+				if ( fetchResponse ) {
 					setResponse( fetchResponse );
 					setAttributes({ results: fetchResponse });
 				}
 			} )
 			.catch( ( error ) => {
-				if (
-					isMountedRef.current 
-					// && 'fulfilled' === fetchRequestRef.current.state
-				) {
-					setResponse( {
-						error: true,
-						errorMsg: error.message,
-					} );
-				}
-			} )
-			.finally( () => {
-				if (
-					isMountedRef.current 
-					// && 'fulfilled' === fetchRequestRef.current.state
-				) {
-					// setIsLoading( false );
-				}
+				setResponse( {
+					error: true,
+					errorMsg: error.message,
+				} );
 			} )
 
 		return fetchRequest;
@@ -134,12 +86,12 @@ export default function Edit( props ) {
 	return (
 		<div { ...blockProps } >
 			{ !response &&
-				(<p>
+				(<p className="wp-block-cata-products__placeholder">
 					{ __( 'Shop Catalog Merch will go here!', 'cata' ) }
 				</p>)
 			}
 			{ response &&
-
+			!response.error &&
 			<div className='wp-block-cata-products alignwide'>
 				<div className='wp-block-cata-products__layout'>
 				{(response.map( prod => {
@@ -191,17 +143,16 @@ export default function Edit( props ) {
 									}
 								</div>
 								<div className='wp-block-cata-product__price'>
-									{/* price */}
 										{
 											prod.on_sale &&
 											prod.regular_price &&
-											prod.sale_price
+											prod.sale_price &&
 											(<del>
 												<span>
 													<span>$</span>{prod.regular_price}
 												</span>
-											</del> &&
-											<ins>
+											</del>) &&
+											(<ins>
 												<span>
 													<span>$</span>{prod.sale_price}
 												</span>
@@ -215,9 +166,9 @@ export default function Edit( props ) {
 											(<span>
 												<span>$</span>{prod.price}
 											</span>)
-											+
+											&&
 											(" - ")
-											+
+											&&
 											(<span>
 												<span>$</span>{prod.regular_price}
 											</span>
@@ -240,8 +191,14 @@ export default function Edit( props ) {
 				</div>
 			</div>
 			}
+			{response &&
+			response.error &&
+			<div>
+				{response.errorMsg}
+			</div>
+			}
 			<InspectorControls>
-				<PanelBody title="Product API URL" icon={more} initialOpen={false}>
+				<PanelBody title="Product API URL" icon={store} initialOpen={false}>
 					<TextControl
 						label="SC API Product Category"
 						onChange={(category) => setAttributes({category})}

@@ -24,22 +24,11 @@ import classnames from 'classnames';
  * @return {WPElement} Element to render.
  */
 export default function save( { attributes } ) {
-
-	// console.log('save.js() - attributes');
-	// console.log(attributes);
-
 	const { results } = attributes;
 
 	const blockProps = useBlockProps.save({
 		className: classnames('wp-block-cata-products', 'alignwide'),
 	});
-
-	// console.log('save.js() - useBlockProps.save()');
-	// console.log(blockProps);
-
-	console.log('save.js- save() - results');
-	console.log(results);
-	console.table(results, ["name", "id", "price", "regular_price", "on_sale", "sale_price"]);
 
 	return (
 		<div { ...blockProps }>
@@ -50,7 +39,6 @@ export default function save( { attributes } ) {
 						<article className="wp-block-cata-product">
 							<div className='wp-block-cata-product__layout tappable-card'>
 								<figure className='wp-block-cata-product__image'>
-									{/* a ::before would go here with the svg frame on CC */}
 									<img
 										loading="lazy"
 										src={prod.images[0].src}
@@ -70,7 +58,6 @@ export default function save( { attributes } ) {
 									</a>
 								</h3>
 								<div className='wp-block-cata-product__byline'>
-									{/* "from Thought Catalog" or the author byline */}
 									{prod.cap_guest_authors.length > 0 &&
 										"by " +
 										prod.cap_guest_authors.reduce( 
@@ -94,17 +81,16 @@ export default function save( { attributes } ) {
 									}
 								</div>
 								<div className='wp-block-cata-product__price'>
-									{/* price */}
 										{
 											prod.on_sale &&
 											prod.regular_price &&
-											prod.sale_price
+											prod.sale_price &&
 											(<del>
 												<span>
 													<span>$</span>{prod.regular_price}
 												</span>
-											</del> &&
-											<ins>
+											</del>) &&
+											(<ins>
 												<span>
 													<span>$</span>{prod.sale_price}
 												</span>
@@ -118,9 +104,9 @@ export default function save( { attributes } ) {
 											(<span>
 												<span>$</span>{prod.price}
 											</span>)
-											+
+											&&
 											(" - ")
-											+
+											&&
 											(<span>
 												<span>$</span>{prod.regular_price}
 											</span>

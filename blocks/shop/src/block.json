@@ -5,7 +5,7 @@
 	"version": "0.1.0",
 	"title": "Shop",
 	"category": "widgets",
-	"icon": "smiley",
+	"icon": "store",
 	"description": "This block produces a block of products pulled from Shop Catalog.",
 	"supports": {
 		"html": false,
