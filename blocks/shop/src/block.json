@@ -32,10 +32,6 @@
 			"type": "string",
 			"default": "asc"
 		},
-		"results": {
-			"type": "object",
-			"default": {}
-		},
 		"query_url": {
 			"type": "string",
 			"default": ""

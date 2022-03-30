@@ -15,7 +15,7 @@ import { useBlockProps } from '@wordpress/block-editor';
 
 
 import { InspectorControls } from '@wordpress/block-editor';
-import { useRef, useState  } from "@wordpress/element";
+import { useRef, useState, useEffect  } from "@wordpress/element";
 import { Button, PanelBody, TextControl } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 import { store } from '@wordpress/icons';
@@ -56,14 +56,15 @@ export default function Edit( props ) {
 	const [ response, setResponse ] = useState( null );
 	const controller = new AbortController();
 
-	const fetchData = () => {
-		apiFetch.use( ( options, next ) => {
+	useEffect(() => {
+		if (!response && attributes.query_url) {
+			fetchData(attributes.query_url);
+		}
+	}, [])
 
-			return next(options);
-		} );
-
+	const fetchData = (queryUrl = shopUrl) => {
 		const fetchRequest = ( fetchRequestRef.current = apiFetch( {
-			url: '/wp-json/cata/v1/proxy/?url=' + encodeURIComponent( shopUrl ),
+			url: '/wp-json/cata/v1/proxy/?url=' + encodeURIComponent( queryUrl ),
 			signal: controller.signal,
 		} ) )
 			.then( ( fetchResponse) => {
@@ -71,7 +72,6 @@ export default function Edit( props ) {
 				if ( fetchResponse ) {
 					setResponse( fetchResponse );
 					setAttributes({ query_url: shopUrl });
-					// setAttributes({ results: fetchResponse });
 				}
 			} )
 			.catch( ( error ) => {
@@ -205,7 +205,7 @@ export default function Edit( props ) {
 						onChange={(category) => setAttributes({category})}
 						type="text"
 						value={attributes.category}
-						help="Shop Catalog API Product Category. Creepy Products: 1752"
+						help="Shop Catalog API Product Category.\nCategory numbers can be found in the URL of the Shop Catalog category edit page. (&tag_ID=XXXX)"
 					/>
 					<TextControl
 						label="SC API Product Quantity"
