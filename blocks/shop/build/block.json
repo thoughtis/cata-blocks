@@ -9,7 +9,7 @@
 	"description": "This block produces a block of products pulled from Shop Catalog.",
 	"supports": {
 		"html": false,
-		"align": true
+		"align": ["wide", "full"]
 	},
 	"attributes": {
 		"shopCatalogApiUrlBase": {
@@ -35,6 +35,14 @@
 		"results": {
 			"type": "object",
 			"default": {}
+		},
+		"query_url": {
+			"type": "string",
+			"default": ""
+		},
+		"align": {
+			"type": "string",
+			"default": "wide"
 		}
 	},
 	"editorScript": "file:./index.js",

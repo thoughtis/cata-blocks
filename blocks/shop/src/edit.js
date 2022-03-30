@@ -70,7 +70,8 @@ export default function Edit( props ) {
 
 				if ( fetchResponse ) {
 					setResponse( fetchResponse );
-					setAttributes({ results: fetchResponse });
+					setAttributes({ query_url: shopUrl });
+					// setAttributes({ results: fetchResponse });
 				}
 			} )
 			.catch( ( error ) => {

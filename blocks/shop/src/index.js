@@ -30,8 +30,4 @@ registerBlockType( 'cata/shop', {
 	 * @see ./edit.js
 	 */
 	edit: Edit,
-	/**
-	 * @see ./save.js
-	 */
-	save,
 } );
