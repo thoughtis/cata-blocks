@@ -32,7 +32,7 @@ function create_block_shop_block_init() {
 add_action( 'init', __NAMESPACE__ . '\\create_block_shop_block_init' );
 
 /**
- * Render Products Block Callback
+ * Products Block Render Callback
  * 
  * @param array $block_attributes
  * @return string
@@ -55,10 +55,13 @@ function render_callback( $block_attributes) {
 	}
 
 	if ( empty( $transient ) ) {
-		// return/cancel the rendering to display nothing if no transient of products data found?
 		return;
 	} else {
 		$decoded_results = json_decode( $transient );
+	}
+
+	if ( empty( $decoded_results ) ) {
+		return;
 	}
 
 	$products = array_map(

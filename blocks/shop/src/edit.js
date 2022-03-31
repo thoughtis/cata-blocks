@@ -62,6 +62,11 @@ export default function Edit( props ) {
 		}
 	}, [])
 
+	/**
+	 * 
+	 * @param {string} queryUrl Defaults to a URL constructed from block input default values.
+	 * @returns {object} Response from SC api.
+	 */
 	const fetchData = (queryUrl = shopUrl) => {
 		const fetchRequest = ( fetchRequestRef.current = apiFetch( {
 			url: '/wp-json/cata/v1/proxy/?url=' + encodeURIComponent( queryUrl ),
@@ -86,14 +91,21 @@ export default function Edit( props ) {
 
 	return (
 		<div { ...blockProps } >
-			{ !response &&
+			{!response &&
 				(<p className="wp-block-cata-products__placeholder">
 					{ __( 'Shop Catalog Merch will go here!', 'cata' ) }
 				</p>)
 			}
-			{ response &&
+			{response &&
+				response.length === 0 &&
+				(<p className="wp-block-cata-products__placeholder">
+					{ __( 'Oops, looks like there\'s nothing here!\n\nThis product category may be empty, or the category number may be incorrect.\n\nWithout any products, this block will not display on the front end.', 'cata' ) }
+				</p>)
+			}
+			{response &&
+			response.length > 0 &&
 			!response.error &&
-			<div className='wp-block-cata-products alignwide'>
+			<div className='wp-block-cata-products'>
 				<div className='wp-block-cata-products__layout'>
 				{(response.map( prod => {
 					return (
@@ -122,7 +134,7 @@ export default function Edit( props ) {
 								<div className='wp-block-cata-product__byline'>
 									{/* "from Thought Catalog" or the author byline */}
 									{prod.cap_guest_authors.length > 0 &&
-										"by " +
+										__("by ", 'cata') +
 										prod.cap_guest_authors.reduce( 
 											(prev, curr, idx, array) => {
 												const spacer = array.length - 1 === idx ? "" : ", ";
@@ -133,7 +145,7 @@ export default function Edit( props ) {
 									}
 									{!prod.cap_guest_authors.length > 0 &&
 										prod.brands.length > 0 &&
-										"from " +
+										__("from ", "cata") +
 										prod.brands.reduce(
 											(prev, curr, idx, array) => {
 												const spacer = array.length - 1 === idx ? "" : ", ";
@@ -205,21 +217,26 @@ export default function Edit( props ) {
 						onChange={(category) => setAttributes({category})}
 						type="text"
 						value={attributes.category}
-						help="Shop Catalog API Product Category.\nCategory numbers can be found in the URL of the Shop Catalog category edit page. (&tag_ID=XXXX)"
+						help="Shop Catalog API Product Category.
+						Category numbers can be found in the URL of the Shop Catalog category edit page. 
+						Like this -> (...&tag_ID=XXXX...)."
 					/>
 					<TextControl
 						label="SC API Product Quantity"
 						onChange={(per_page) => setAttributes({per_page})}
-						type="text"
+						type="number"
 						value={attributes.per_page}
 						help="Quantity of Shop Catalog products to be returned from the API."
 					/>
-					<Button
+					<Button 
+						className='wp-block-cata-products-fetch-btn'
+						variant="secondary"
 						onClick={() => {fetchData()}}
 					>
 						FETCH
 					</Button>
 					<Button
+						variant="secondary"
 						onClick={() => {controller.abort()}}
 					>
 						ABORT

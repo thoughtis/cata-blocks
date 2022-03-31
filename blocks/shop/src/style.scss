@@ -12,6 +12,9 @@
 .wp-block-cata-products__placeholder {
 	width: 100%;
 	text-align: center;
+	white-space: pre-line;
+	padding: 0.25em;
+	border: 0.125em black solid;
 }
 
 // .wp-block-cata-products {}
