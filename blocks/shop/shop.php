@@ -86,7 +86,7 @@ function render_callback( $block_attributes) {
  * @return string
  */
 function render_product( stdClass $product ) : string {
-	$link   = esc_url( apply_filters( 'creepycatalog_product_block_link', $product->permalink ) );
+	$link   = esc_url( apply_filters( 'cata_product_block_link', $product->permalink ) );
 	$title  = esc_html( $product->name );
 	$price  = render_price( $product );
 	$byline = render_byline( $product );
