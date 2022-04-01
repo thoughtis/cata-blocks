@@ -101,7 +101,11 @@ function cata_add_product_link_utm( string $link ) {
 		return $link;
 	}
 
-	$site_name = get_bloginfo( 'show' );
+	// get current site name and get rid of any spaces/linebreaks/ and make lowercase
+	$site_name = strtolower( preg_replace("/\s+/", "", get_bloginfo( 'show' ) ) );
+
+	error_log( print_r( '$site_name', true ) );
+	error_log( print_r( $site_name, true ) );
 
 	$new_link = add_query_arg( 
 		array(
