@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:       Shop
+ * Plugin Name:       Products
  * Description:       Dynamic Block which renders a block of Shop Catalog Products.
  * Requires at least: 5.8
  * Requires PHP:      7.0
@@ -71,8 +71,7 @@ function render_callback( $block_attributes) {
 
 	$products_string = implode( "\n", $products );
 
-	// TO-DO: change all classnames/rules to ...-shop from ...-products
-	$classnames = get_classnames('wp-block-cata-products wp-block-cata-shop', $block_attributes);
+	$classnames = get_classnames('wp-block-cata-products', $block_attributes);
 
 	return "<div class=\"${classnames}\">
 		<div class=\"wp-block-cata-products__layout\">${products_string}</div>

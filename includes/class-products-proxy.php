@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop Catalog External Request Proxy
+ * Shop Catalog Products External Request Proxy
  *
  * @package Cata\Blocks
  * @since 0.4.0
@@ -13,9 +13,9 @@ use WP_REST_Response;
 use WP_Error;
 
 /**
- * External REST API Request Proxy
+ * External Products REST API Request Proxy
  */
-class Shop_Proxy {
+class Products_Proxy {
 	/**
 	 * Construct
 	 */

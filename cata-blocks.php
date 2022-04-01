@@ -27,12 +27,12 @@ require_once __DIR__ . '/blocks/aside/aside.php';
 require_once __DIR__ . '/blocks/kicker/kicker.php';
 require_once __DIR__ . '/blocks/newsletter/includes/class-renderer.php';
 require_once __DIR__ . '/blocks/newsletter/newsletter.php';
-require_once __DIR__ . '/blocks/shop/shop.php';
+require_once __DIR__ . '/blocks/products/products.php';
 require_once __DIR__ . '/blocks/table-of-contents/table-of-contents.php';
+require_once __DIR__ . '/includes/class-products-proxy.php';
 require_once __DIR__ . '/patterns/trivia/trivia.php';
-require_once __DIR__ . '/includes/class-shop-proxy.php';
 
 /**
  * Instantiate Classes
  */
-new Shop_Proxy();
+new Products_Proxy();

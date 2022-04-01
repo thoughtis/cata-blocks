@@ -1,9 +1,9 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 2,
-	"name": "cata/shop",
+	"name": "cata/products",
 	"version": "0.1.0-beta09",
-	"title": "Shop",
+	"title": "Shop Catalog Products",
 	"category": "widgets",
 	"icon": "store",
 	"description": "This block produces a block of products pulled from Shop Catalog.",
@@ -41,6 +41,7 @@
 			"default": "wide"
 		}
 	},
+	"keywords": [ "shop", "product" ],
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",
 	"style": "file:./style-index.css"

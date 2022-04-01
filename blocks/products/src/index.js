@@ -24,7 +24,7 @@ import Edit from './edit';
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
  */
-registerBlockType( 'cata/shop', {
+registerBlockType( 'cata/products', {
 	/**
 	 * @see ./edit.js
 	 */

@@ -5,7 +5,11 @@
  * Replace them with your own styles or remove the file completely.
  */
 
-.wp-block-cata-shop {
+// .wp-block-cata-shop {
+// 	max-width: var(--wp--custom--wide-size, 64rem) !important;
+// }
+
+.wp-block-cata-products {
 	max-width: var(--wp--custom--wide-size, 64rem) !important;
 }
 
@@ -16,8 +20,6 @@
 	padding: 0.25em;
 	border: 0.125em black solid;
 }
-
-// .wp-block-cata-products {}
 
 .wp-block-cata-products__layout {
 	display: grid;
