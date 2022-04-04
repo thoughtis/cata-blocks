@@ -69,7 +69,7 @@ export default function Edit( props ) {
 	 */
 	const fetchData = (queryUrl = shopUrl) => {
 		const fetchRequest = ( fetchRequestRef.current = apiFetch( {
-			url: '/wp-json/cata/v1/proxy/?url=' + encodeURIComponent( queryUrl ),
+			path: '/cata/v1/proxy/?url=' + encodeURIComponent( queryUrl ),
 			signal: controller.signal,
 		} ) )
 			.then( ( fetchResponse) => {
