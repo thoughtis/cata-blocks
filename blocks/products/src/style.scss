@@ -5,14 +5,6 @@
  * Replace them with your own styles or remove the file completely.
  */
 
-// .wp-block-cata-shop {
-// 	max-width: var(--wp--custom--wide-size, 64rem) !important;
-// }
-
-.wp-block-cata-products {
-	max-width: var(--wp--custom--wide-size, 64rem) !important;
-}
-
 .wp-block-cata-products__placeholder {
 	width: 100%;
 	text-align: center;
@@ -35,9 +27,8 @@
 	max-inline-size: 22em;
 	margin-inline-start: auto;
 	margin-inline-end: auto;
-	// .stack--tight();
 	> * + * {
-		margin-block-start: 1.5em / 2;
+		margin-block-start: 0.75em;
 	}
 }
 
@@ -65,9 +56,7 @@
 
 .wp-block-cata-product__title,
 .wp-block-cata-product__price {
-	// font-size: @fs-h4;
 	font-size: 1.25em;
-	// font-family: @ff-condensed;
 	font-family: Oswald, Impact, 'Avenir Next Condensed', 'Arial Narrow', sans-serif;
 	text-transform: uppercase;
 }
@@ -88,7 +77,6 @@
 
 .wp-block-cata-product__byline {
 	font-style: italic;
-	// font-size: @fs-xs;
 	font-size: 0.75em;
 }
 

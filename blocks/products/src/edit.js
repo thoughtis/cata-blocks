@@ -239,7 +239,7 @@ export default function Edit( props ) {
 						variant="secondary"
 						onClick={() => {controller.abort()}}
 					>
-						ABORT
+						CANCEL
 					</Button>
 				</PanelBody>
 			</InspectorControls>
