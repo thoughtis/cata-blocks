@@ -1,0 +1,48 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "cata/products",
+	"version": "0.1.0-beta11",
+	"title": "Shop Catalog Products",
+	"category": "widgets",
+	"icon": "store",
+	"description": "This block produces a block of products pulled from Shop Catalog.",
+	"supports": {
+		"html": false,
+		"align": ["wide", "full"]
+	},
+	"attributes": {
+		"shopCatalogApiUrlBase": {
+			"type": "string",
+			"default": "https://shopcatalog.com/wp-json/wc/v3/products/"
+		},
+		"category": {
+			"type": "string",
+			"default": "1752"
+		},
+		"per_page": {
+			"type": "string",
+			"default": "6"
+		},
+		"orderby": {
+			"type": "string",
+			"default": "menu_order"
+		},
+		"order": {
+			"type": "string",
+			"default": "asc"
+		},
+		"query_url": {
+			"type": "string",
+			"default": ""
+		},
+		"align": {
+			"type": "string",
+			"default": "wide"
+		}
+	},
+	"keywords": [ "shop", "product" ],
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css"
+}

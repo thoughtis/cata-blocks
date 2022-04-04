@@ -1,0 +1,82 @@
+/**
+ * The following styles get applied both on the front of your site
+ * and in the editor.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+
+.wp-block-cata-products__placeholder {
+	width: 100%;
+	text-align: center;
+	white-space: pre-line;
+	padding: 0.25em;
+	border: 0.125em black solid;
+}
+
+.wp-block-cata-products__layout {
+	display: grid;
+	gap: 1.5em;
+	grid-template-columns: repeat( auto-fill, minmax( 15.375em, 1fr ) );
+}
+
+.wp-block-cata-product {
+	text-align: center;
+}
+
+.wp-block-cata-product__layout {
+	max-inline-size: 22em;
+	margin-inline-start: auto;
+	margin-inline-end: auto;
+	> * + * {
+		margin-block-start: 0.75em;
+	}
+}
+
+.wp-block-cata-product__image {
+
+	position: relative;
+
+	&:before {
+		content:"";
+		display: block;
+		position: absolute;
+		pointer-events: none;
+		inline-size: 100%;
+		block-size: 100%;
+		background-repeat: no-repeat;
+		background-size: cover;
+		top: 0;
+		left: 0;
+	}
+
+	img {
+		inline-size: 100%;
+	}
+}
+
+.wp-block-cata-product__title,
+.wp-block-cata-product__price {
+	font-size: 1.25em;
+	font-family: Oswald, Impact, 'Avenir Next Condensed', 'Arial Narrow', sans-serif;
+	text-transform: uppercase;
+}
+
+.wp-block-cata-product__price {
+	color: var(--color-accent);
+}
+
+.wp-block-cata-product__link {
+	color: var(--color-text);
+	text-decoration: none;
+
+	&:hover,
+	&:active {
+		text-decoration: underline;
+	}
+}
+
+.wp-block-cata-product__byline {
+	font-style: italic;
+	font-size: 0.75em;
+}
+
