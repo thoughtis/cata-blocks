@@ -25,9 +25,6 @@ function products_block_render_callback( $block_attributes) {
 		$url_hash = wp_hash( $block_attributes['query_url'] );
 	}
 
-	error_log( '$url_hash' );
-	error_log( $url_hash );
-
 	if ( empty( $url_hash ) ) {
 		return;
 	} else {
