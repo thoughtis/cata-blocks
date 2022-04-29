@@ -33,9 +33,10 @@
 		},
 		"style": {
 			"type": "object",
-			"default": {
-				"typography": {
-					"textTransform": "uppercase"
+			"typography": {
+				"textTransform": {
+					"type": "string",
+					"default": "uppercase"
 				}
 			}
 		}
