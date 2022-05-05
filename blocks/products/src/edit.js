@@ -244,7 +244,7 @@ export default function Edit( props ) {
 						CANCEL
 					</Button>
 				</PanelBody>
-				<PanelBody title="Product Block Options" icon={generic} initialOpen={true}>
+				<PanelBody title="Product Block Options" icon={generic} initialOpen={false}>
 					<ToggleControl
 						label="Display product byline"
 						help={
