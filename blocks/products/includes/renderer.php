@@ -72,7 +72,7 @@ function render_product( stdClass $product , bool $display_byline) : string {
 	$link   = esc_url( apply_filters( 'cata_product_block_link', $product->permalink ) );
 	$title  = esc_html( $product->name );
 	$price  = render_price( $product );
-	$byline = render_byline( $product, $display_byline );
+	$byline = true === $display_byline ? render_byline( $product ) : '';
 	$image  = render_image(
 		current( $product->images ),
 		array(
@@ -105,11 +105,7 @@ function render_product( stdClass $product , bool $display_byline) : string {
  * @param bool $display_byline
  * @return string
  */
-function render_byline( stdClass $product, bool $display_byline ) : string {
-	if ( false === $display_byline ) {
-		return '';
-	}
-
+function render_byline( stdClass $product ) : string {
 	$byline_start = '<div class=\"wp-block-cata-product__byline\">';
 	$byline_end   = '</div>';
 
