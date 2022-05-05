@@ -109,11 +109,15 @@ function render_byline( stdClass $product, bool $display_byline ) : string {
 	if ( false === $display_byline ) {
 		return '';
 	}
+
+	$byline_start = '<div class=\"wp-block-cata-product__byline\">';
+	$byline_end   = '</div>';
+
 	if ( is_array( $product->cap_guest_authors ) && ! empty( $product->cap_guest_authors ) ) {
-		return '<div class=\"wp-block-cata-product__byline\">' . 'by ' . esc_html( implode( ', ', array_column( $product->cap_guest_authors, 'display_name' ) ) ) . '</div>';
+		return $byline_start . 'by ' . esc_html( implode( ', ', array_column( $product->cap_guest_authors, 'display_name' ) ) ) . $byline_end;
 	}
 	if ( is_array( $product->brands ) && ! empty( $product->brands ) ) {
-		return '<div class=\"wp-block-cata-product__byline\">' .  'from ' . esc_html( implode( ', ', array_column( $product->brands, 'name' ) ) ) . '</div>';
+		return $byline_start .  'from ' . esc_html( implode( ', ', array_column( $product->brands, 'name' ) ) ) . $byline_end;
 	}
 	return '';
 }
