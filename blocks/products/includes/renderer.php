@@ -41,9 +41,14 @@ function products_block_render_callback( $block_attributes) {
 		return;
 	}
 
+	if ( ! isset( $block_attributes['display_byline'] ) ) {
+		$block_attributes['display_byline'] = true;
+	}
+
 	$products = array_map(
 		__NAMESPACE__ . '\\render_product',
-		$decoded_results
+		$decoded_results,
+		array_fill( 0, count($decoded_results), $block_attributes['display_byline'] )
 	);
 
 	$products_string = implode( "\n", $products );
@@ -59,13 +64,14 @@ function products_block_render_callback( $block_attributes) {
  * Render Product
  * 
  * @param stdClass $product
+ * @param bool $display_byline
  * @return string
  */
-function render_product( stdClass $product ) : string {
+function render_product( stdClass $product , bool $display_byline) : string {
 	$link   = esc_url( apply_filters( 'cata_product_block_link', $product->permalink ) );
 	$title  = esc_html( $product->name );
 	$price  = render_price( $product );
-	$byline = render_byline( $product );
+	$byline = true === $display_byline ? render_byline( $product ) : '';
 	$image  = render_image(
 		current( $product->images ),
 		array(
@@ -85,7 +91,7 @@ function render_product( stdClass $product ) : string {
 			<h3 class=\"wp-block-cata-product__title\">
 				<a class=\"wp-block-cata-product__link tappable-card-anchor\" href=\"${link}\">${title}</a>
 			</h3>
-			<div class=\"wp-block-cata-product__byline\">${byline}</div>
+			${byline}
 			<div class=\"wp-block-cata-product__price\">${price}</div>
 		</div>
 	</article>";
@@ -95,14 +101,18 @@ function render_product( stdClass $product ) : string {
  * Render Byline
  * 
  * @param stdClass $product
+ * @param bool $display_byline
  * @return string
  */
 function render_byline( stdClass $product ) : string {
+	$byline_start = '<div class=\"wp-block-cata-product__byline\">';
+	$byline_end   = '</div>';
+
 	if ( is_array( $product->cap_guest_authors ) && ! empty( $product->cap_guest_authors ) ) {
-		return 'by ' . esc_html( implode( ', ', array_column( $product->cap_guest_authors, 'display_name' ) ) );
+		return $byline_start . 'by ' . esc_html( implode( ', ', array_column( $product->cap_guest_authors, 'display_name' ) ) ) . $byline_end;
 	}
 	if ( is_array( $product->brands ) && ! empty( $product->brands ) ) {
-		return 'from ' . esc_html( implode( ', ', array_column( $product->brands, 'name' ) ) );
+		return $byline_start .  'from ' . esc_html( implode( ', ', array_column( $product->brands, 'name' ) ) ) . $byline_end;
 	}
 	return '';
 }
