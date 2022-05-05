@@ -41,7 +41,6 @@ function products_block_render_callback( $block_attributes) {
 		return;
 	}
 
-	// fallback to displaying byline in case value not set which may happen where a block was previously placed and saved before this update?
 	if ( ! isset( $block_attributes['display_byline'] ) ) {
 		$block_attributes['display_byline'] = true;
 	}
