@@ -2,7 +2,7 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 2,
 	"name": "cata/products",
-	"version": "0.2.0-beta04",
+	"version": "0.2.0",
 	"title": "Shop Catalog Products",
 	"category": "widgets",
 	"icon": "store",
