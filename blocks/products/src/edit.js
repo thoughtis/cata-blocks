@@ -16,9 +16,9 @@ import { useBlockProps } from '@wordpress/block-editor';
 
 import { InspectorControls } from '@wordpress/block-editor';
 import { useRef, useState, useEffect  } from "@wordpress/element";
-import { Button, PanelBody, TextControl } from '@wordpress/components';
+import { Button, PanelBody, TextControl, ToggleControl } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
-import { store } from '@wordpress/icons';
+import { store, generic } from '@wordpress/icons';
 
 /**
  * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
@@ -131,30 +131,32 @@ export default function Edit( props ) {
 										{prod.name}
 									</a>
 								</h3>
-								<div className='wp-block-cata-product__byline'>
-									{/* "from Thought Catalog" or the author byline */}
-									{prod.cap_guest_authors.length > 0 &&
-										__("by ", 'cata') +
-										prod.cap_guest_authors.reduce( 
-											(prev, curr, idx, array) => {
-												const spacer = array.length - 1 === idx ? "" : ", ";
-												return prev + curr.display_name + spacer;
-											},
-											""
-										)
-									}
-									{!prod.cap_guest_authors.length > 0 &&
-										prod.brands.length > 0 &&
-										__("from ", "cata") +
-										prod.brands.reduce(
-											(prev, curr, idx, array) => {
-												const spacer = array.length - 1 === idx ? "" : ", ";
-												return prev + curr.name + spacer
-											},
-											""
-										)
-									}
-								</div>
+								{attributes.display_byline && 
+									(<div className='wp-block-cata-product__byline'>
+										{/* "from Thought Catalog" or the author byline */}
+										{prod.cap_guest_authors.length > 0 &&
+											__("by ", 'cata') +
+											prod.cap_guest_authors.reduce( 
+												(prev, curr, idx, array) => {
+													const spacer = array.length - 1 === idx ? "" : ", ";
+													return prev + curr.display_name + spacer;
+												},
+												""
+											)
+										}
+										{!prod.cap_guest_authors.length > 0 &&
+											prod.brands.length > 0 &&
+											__("from ", "cata") +
+											prod.brands.reduce(
+												(prev, curr, idx, array) => {
+													const spacer = array.length - 1 === idx ? "" : ", ";
+													return prev + curr.name + spacer
+												},
+												""
+											)
+										}
+									</div>)
+								}
 								<div className='wp-block-cata-product__price'>
 										{
 											prod.on_sale &&
@@ -241,6 +243,19 @@ export default function Edit( props ) {
 					>
 						CANCEL
 					</Button>
+				</PanelBody>
+				<PanelBody title="Product Block Options" icon={generic} initialOpen={true}>
+					<ToggleControl
+						label="Display product byline"
+						help={
+							attributes.display_byline
+								? 'Product byline shown.'
+								: 'No product byline.'
+						}
+						checked={attributes.display_byline}
+						onChange={(option) => {setAttributes({ display_byline: option})}}
+						// onChange={(option) => {console.log(option)}}
+					/>
 				</PanelBody>
 			</InspectorControls>
 		</div>
