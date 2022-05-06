@@ -105,7 +105,7 @@ function render_product( stdClass $product , bool $display_byline) : string {
  * @return string
  */
 function render_byline( stdClass $product ) : string {
-	$byline_start = '<div class=\"wp-block-cata-product__byline\">';
+	$byline_start = '<div class=wp-block-cata-product__byline>';
 	$byline_end   = '</div>';
 
 	if ( is_array( $product->cap_guest_authors ) && ! empty( $product->cap_guest_authors ) ) {
