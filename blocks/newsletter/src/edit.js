@@ -120,7 +120,7 @@ export default function Edit( props ) {
 									onSelect={onSelectMedia}
 									allowedTypes={ [ 'image' ] }
 									render={({open}) => (
-										<Button onClick={open} isDefault isLarge>
+										<Button onClick={open} variant="secondary">
 											Replace image
 										</Button>
 									)}
