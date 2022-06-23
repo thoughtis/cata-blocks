@@ -23,17 +23,44 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Aside
+ */
 require_once __DIR__ . '/blocks/aside/aside.php';
+
+/**
+ * Kicker
+ */
 require_once __DIR__ . '/blocks/kicker/kicker.php';
+
+/**
+ * Newsletter
+ */
 require_once __DIR__ . '/blocks/newsletter/includes/class-renderer.php';
 require_once __DIR__ . '/blocks/newsletter/newsletter.php';
+
+/**
+ * Products
+ */
+require_once __DIR__ . '/blocks/products/includes/feed/class-feed.php';
+require_once __DIR__ . '/blocks/products/includes/feed/cache/class-cache.php';
+require_once __DIR__ . '/blocks/products/includes/feed/fetch/class-fetch.php';
+require_once __DIR__ . '/blocks/products/includes/feed/update/class-update.php';
+require_once __DIR__ . '/blocks/products/includes/proxy/class-proxy.php';
 require_once __DIR__ . '/blocks/products/includes/renderer.php';
 require_once __DIR__ . '/blocks/products/products.php';
+
+/**
+ * Table of Contents
+ */
 require_once __DIR__ . '/blocks/table-of-contents/table-of-contents.php';
-require_once __DIR__ . '/includes/class-products-proxy.php';
+
+/**
+ * Trivia Pattern
+ */
 require_once __DIR__ . '/patterns/trivia/trivia.php';
 
 /**
  * Instantiate Classes
  */
-new Products_Proxy();
+new Products\Proxy();

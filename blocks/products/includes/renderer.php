@@ -9,51 +9,22 @@ namespace Cata\Blocks\Products;
 use stdClass;
 
 /**
- * Products Block Render Callback
+ * Render Products
  * 
  * @param array $block_attributes
  * @return string
  */
-function products_block_render_callback( $block_attributes) {
-	$url_hash = "";
-	$decoded_results = [];
-	$transient = "";
-
-	if ( empty( $block_attributes['query_url'] )  ) {
-		return;
-	} else {
-		$url_hash = wp_hash( $block_attributes['query_url'] );
-	}
-
-	if ( empty( $url_hash ) ) {
-		return;
-	} else {
-		$transient = get_transient( "cata-blocks-shop-proxy-req-result-" . $url_hash );
-	}
-
-	if ( empty( $transient ) ) {
-		return;
-	} else {
-		$decoded_results = json_decode( $transient );
-	}
-
-	if ( empty( $decoded_results ) ) {
-		return;
-	}
-
-	if ( ! isset( $block_attributes['display_byline'] ) ) {
-		$block_attributes['display_byline'] = true;
-	}
+function render_products( array $attributes, array $products ) : string {
 
 	$products = array_map(
 		__NAMESPACE__ . '\\render_product',
-		$decoded_results,
-		array_fill( 0, count($decoded_results), $block_attributes['display_byline'] )
+		$products,
+		array_fill( 0, count($products), $attributes['display_byline'] )
 	);
 
 	$products_string = implode( "\n", $products );
 
-	$classnames = get_classnames('wp-block-cata-products', $block_attributes);
+	$classnames = get_classnames('wp-block-cata-products', $attributes);
 
 	return "<div class=\"${classnames}\">
 		<div class=\"wp-block-cata-products__layout\">${products_string}</div>
