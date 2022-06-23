@@ -26,6 +26,10 @@ add_action( 'init', __NAMESPACE__ . '\\init_products_block' );
 
 /**
  * Render Block
+ * 
+ * @param array $attributes
+ * @param string $content
+ * @return string $new_content
  */
 function render_products_block( array $attributes, string $content ) : string {
 
@@ -59,7 +63,7 @@ function render_products_block( array $attributes, string $content ) : string {
 }
 
 /**
- * Convert URL to Posts
+ * Convert URL to Products
  * 
  * @param string $url
  * @return array
