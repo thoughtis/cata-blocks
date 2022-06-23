@@ -3,7 +3,7 @@
  * Feed
  * 
  * @package Cata\Blocks\Products
- * @since
+ * @since 0.6.0-beta1
  */
 
 namespace Cata\Blocks\Products;
