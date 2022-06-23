@@ -1,7 +1,7 @@
 <?php
 /**
  * Update
- * 
+ *
  * @package Cata\Blocks\Products\Feed
  * @since
  */
@@ -24,7 +24,7 @@ class Update {
 
 	/**
 	 * Do Scheduled Update
-	 * 
+	 *
 	 * @param string $url
 	 */
 	public static function do_scheduled_update( string $url ) : void {

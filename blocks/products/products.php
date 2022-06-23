@@ -1,7 +1,7 @@
 <?php
 /**
  * Products
- * 
+ *
  * @package Cata\Blocks
  */
 
@@ -26,8 +26,8 @@ add_action( 'init', __NAMESPACE__ . '\\init_products_block' );
 
 /**
  * Render Block
- * 
- * @param array $attributes
+ *
+ * @param array  $attributes
  * @param string $content
  * @return string $new_content
  */
@@ -64,10 +64,10 @@ function render_products_block( array $attributes, string $content ) : string {
 
 /**
  * Convert URL to Products
- * 
+ *
  * @param string $url
  * @return array
  */
 function convert_url_to_products( string $url ) : array {
-	return (new Products\Feed( new Products\Feed\Cache( $url ), $url ) )->get_posts_allow_side_effects();
+	return ( new Products\Feed( new Products\Feed\Cache( $url ), $url ) )->get_posts_allow_side_effects();
 }

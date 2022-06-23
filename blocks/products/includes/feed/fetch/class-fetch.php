@@ -25,7 +25,7 @@ class Fetch {
 
 	/**
 	 * Construct
-	 * 
+	 *
 	 * @param string $url
 	 */
 	public function __construct( string $url ) {
@@ -54,7 +54,7 @@ class Fetch {
 
 	/**
 	 * Get Posts
-	 * 
+	 *
 	 * @return array|WP_Error
 	 */
 	public function get_posts() {
@@ -79,7 +79,7 @@ class Fetch {
 				'cata-blocks',
 				'Unable to fetch posts from remote.',
 				array(
-					'url' => $this->url
+					'url' => $this->url,
 				)
 			);
 		}
@@ -92,7 +92,7 @@ class Fetch {
 				'Unable to fetch posts from remote.',
 				array(
 					'status' => $status,
-					'url'    => $this->url
+					'url'    => $this->url,
 				)
 			);
 		}
@@ -106,16 +106,16 @@ class Fetch {
 					'cata-blocks',
 					'Unusable response from remove',
 					array(
-						'url' => $this->url
+						'url' => $this->url,
 					)
 				);
 			}
-		} catch( Exception $e ) {
+		} catch ( Exception $e ) {
 			return new WP_Error(
 				'cata-blocks',
 				$e->getMessage(),
 				array(
-					'url' => $this->url
+					'url' => $this->url,
 				)
 			);
 		}
