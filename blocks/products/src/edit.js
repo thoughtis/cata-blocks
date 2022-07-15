@@ -11,14 +11,11 @@ import { __ } from '@wordpress/i18n';
  *
  * @see https://developer.wordpress.org/block-editor/packages/packages-block-editor/#useBlockProps
  */
-import { useBlockProps } from '@wordpress/block-editor';
-
-
-import { InspectorControls } from '@wordpress/block-editor';
+import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { useRef, useState, useEffect  } from "@wordpress/element";
 import { Button, PanelBody, TextControl, ToggleControl } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
-import { store, generic } from '@wordpress/icons';
+import { store } from '@wordpress/icons';
 
 /**
  * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
@@ -36,10 +33,7 @@ import './editor.scss';
  *
  * @return {WPElement} Element to render.
  */
-export default function Edit( props ) {
-	const blockProps = { ...useBlockProps() };
-
-	const { attributes, setAttributes } = props;
+export default function Edit( { attributes, setAttributes } ) {
 
 	const shopUrl = 
 	attributes.shopCatalogApiUrlBase + 
@@ -90,7 +84,7 @@ export default function Edit( props ) {
 	}
 
 	return (
-		<div { ...blockProps } >
+		<div { ...useBlockProps() }>
 			{!response &&
 				(<p className="wp-block-cata-products__placeholder">
 					{ __( 'Shop Catalog Merch will go here!', 'cata' ) }
@@ -244,7 +238,7 @@ export default function Edit( props ) {
 						CANCEL
 					</Button>
 				</PanelBody>
-				<PanelBody title="Product Block Options" icon={generic} initialOpen={false}>
+				<PanelBody title="Product Block Options" initialOpen={false}>
 					<ToggleControl
 						label="Display product byline"
 						help={
@@ -254,7 +248,6 @@ export default function Edit( props ) {
 						}
 						checked={attributes.display_byline}
 						onChange={(option) => {setAttributes({ display_byline: option})}}
-						// onChange={(option) => {console.log(option)}}
 					/>
 				</PanelBody>
 			</InspectorControls>
