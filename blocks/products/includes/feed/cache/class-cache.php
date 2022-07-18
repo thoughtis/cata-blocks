@@ -58,8 +58,8 @@ class Cache {
 	 * @param string $url
 	 */
 	public function __construct( string $url ) {
-		$this->url = $url;
-		$this->hash = md5( $url );
+		$this->url  = html_entity_decode( $url );
+		$this->hash = md5( $this->url );
 
 		error_log( $url );
 		error_log( $this->hash );
