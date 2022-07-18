@@ -69,5 +69,6 @@ function render_products_block( array $attributes, string $content ) : string {
  * @return array
  */
 function convert_url_to_products( string $url ) : array {
+	error_log( 'setup cache in render' );
 	return ( new Products\Feed( new Products\Feed\Cache( $url ), $url ) )->get_posts_allow_side_effects();
 }

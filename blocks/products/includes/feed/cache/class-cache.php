@@ -60,6 +60,9 @@ class Cache {
 	public function __construct( string $url ) {
 		$this->url = $url;
 		$this->hash = md5( $url );
+
+		error_log( $this->hash );
+
 		$this->data_key = self::$data_key_base . $this->hash;
 		$this->time_key = self::$time_key_base . $this->hash;
 		$this->duration = HOUR_IN_SECONDS;

@@ -69,6 +69,7 @@ class Proxy {
 	public static function handle_request( WP_REST_Request $request ) {
 		$url   = $request->get_param( 'url' );
 		$fetch = new Fetch( $url );
+		error_log( 'setup cache in proxy' );
 		$cache = new Cache( $url );
 
 		if ( false === $fetch->validate() ) {
