@@ -61,6 +61,7 @@ class Cache {
 		$this->url = $url;
 		$this->hash = md5( $url );
 
+		error_log( $url );
 		error_log( $this->hash );
 
 		$this->data_key = self::$data_key_base . $this->hash;
