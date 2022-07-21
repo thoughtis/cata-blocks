@@ -72,14 +72,19 @@ class Feed {
 
 	/**
 	 * Set Update Schedule
+	 * If no event is scheduled, schedule one.
 	 */
 	public function set_update_schedule() : void {
+		$options = array(
+			'url' => $this->url
+		);
+		if ( false !== wp_next_scheduled( Feed\Update::ACTION, $options ) ) {
+			return;
+		}
 		wp_schedule_single_event(
 			time(),
 			Feed\Update::ACTION,
-			array(
-				'url' => $this->url
-			)
+			$options
 		);
 	}
 
