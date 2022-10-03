@@ -61,6 +61,11 @@ require_once __DIR__ . '/blocks/table-of-contents/table-of-contents.php';
 require_once __DIR__ . '/patterns/trivia/trivia.php';
 
 /**
+ * Overhang Format
+ */
+require_once __DIR__ . '/formats/overhang/overhang.php';
+
+/**
  * Instantiate Classes
  */
 new Products\Proxy();
