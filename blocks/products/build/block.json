@@ -12,10 +12,6 @@
 		"align": ["wide", "full"]
 	},
 	"attributes": {
-		"shopCatalogApiUrlBase": {
-			"type": "string",
-			"default": "https://shopcatalog.com/wp-json/wc/v3/products/"
-		},
 		"category": {
 			"type": "string",
 			"default": "1752"
@@ -41,6 +37,10 @@
 			"default": "wide"
 		},
 		"display_byline": {
+			"type": "boolean",
+			"default": true
+		},
+		"display_price": {
 			"type": "boolean",
 			"default": true
 		}
