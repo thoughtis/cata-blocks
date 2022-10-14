@@ -19,7 +19,8 @@ function render_products( array $attributes, array $products ) : string {
 	$products = array_map(
 		__NAMESPACE__ . '\\render_product',
 		$products,
-		array_fill( 0, count($products), $attributes['display_byline'] )
+		array_fill( 0, count($products), $attributes['display_byline'] ),
+		array_fill( 0, count($products), $attributes['display_price'] )
 	);
 
 	$products_string = implode( "\n", $products );
@@ -38,10 +39,10 @@ function render_products( array $attributes, array $products ) : string {
  * @param bool $display_byline
  * @return string
  */
-function render_product( stdClass $product , bool $display_byline) : string {
+function render_product( stdClass $product , bool $display_byline, bool $display_price ) : string {
 	$link   = esc_url( apply_filters( 'cata_product_block_link', $product->permalink ) );
 	$title  = esc_html( $product->name );
-	$price  = render_price( $product );
+	$price  = true === $display_price ? wrap_price( render_price( $product ) ) : '';
 	$byline = true === $display_byline ? render_byline( $product ) : '';
 	$image  = render_image(
 		current( $product->images ),
@@ -63,7 +64,7 @@ function render_product( stdClass $product , bool $display_byline) : string {
 				<a class=\"wp-block-cata-product__link tappable-card-anchor\" href=\"${link}\">${title}</a>
 			</h3>
 			${byline}
-			<div class=\"wp-block-cata-product__price\">${price}</div>
+			${price}
 		</div>
 	</article>";
 }
@@ -176,6 +177,16 @@ function render_price( stdClass $product ) : string {
 	}
 
 	return $regular_price;
+}
+
+/**
+ * Wrap Price
+ * 
+ * @param string $price
+ * @return string
+ */
+function wrap_price( string $price ) : string {
+	return "<div class=\"wp-block-cata-product__price\">${price}</div>";
 }
 
 /**
