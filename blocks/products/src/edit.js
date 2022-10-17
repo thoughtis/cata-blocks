@@ -207,7 +207,7 @@ export default function Edit( props ) {
 					<ToggleControl
 						label="Display product price"
 						help={
-							attributes.display_byline
+							attributes.display_price
 								? 'Product price shown.'
 								: 'No product price.'
 						}
