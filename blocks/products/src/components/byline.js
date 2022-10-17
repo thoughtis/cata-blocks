@@ -1,5 +1,11 @@
 import { __ } from '@wordpress/i18n';
 
+/**
+ * Byline
+ *
+ * @param {Array} authors
+ * @param {Array} brands
+ */
 export default function Byline( {authors, brands} ) {
 	return (<div className="wp-block-cata-product__byline">
 		{authors.length > 0 &&

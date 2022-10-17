@@ -112,7 +112,7 @@ export default function Edit( props ) {
 				<div className='wp-block-cata-products__layout'>
 				{(response.map( prod => {
 					return (
-						<article className="wp-block-cata-product">
+						<article className="wp-block-cata-product" key={`cata-product-${prod.id}`}>
 							<div className='wp-block-cata-product__layout tappable-card'>
 								<figure className='wp-block-cata-product__image'>
 									{/* a ::before would go here with the svg frame on CC */}
@@ -121,7 +121,7 @@ export default function Edit( props ) {
 										src={prod.images[0].src}
 										alt={prod.images[0].alt}
 										sizes="(max-width: 576px) 92.5vw, 576px"
-										srcset={prod.images[0].src + "?resize=384,384 384w, " + prod.images[0].src + "?resize=768,768 768w, " + prod.images[0].src + "?resize=1152,1152 1152w"}
+										srcSet={prod.images[0].src + "?resize=384,384 384w, " + prod.images[0].src + "?resize=768,768 768w, " + prod.images[0].src + "?resize=1152,1152 1152w"}
 										width="384"
 										height="384"
 									/>

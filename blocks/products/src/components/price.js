@@ -1,10 +1,18 @@
+/**
+ * Price
+ *
+ * @param {boolean} onSale
+ * @param {string} price
+ * @param {string} regularPrice
+ * @param {string} salePrice
+ */
 export default function Price( {onSale, price, regularPrice, salePrice} ) {
 
 	const isOnSale = onSale && regularPrice && salePrice;
 	const hasPriceRange = price && regularPrice && !onSale && (price !== regularPrice);
 
 	return (
-		<div className='wp-block-cata-product__price'>
+		<div className="wp-block-cata-product__price">
 		{
 			isOnSale && 
 			(<>
