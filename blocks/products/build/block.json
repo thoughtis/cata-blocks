@@ -43,6 +43,10 @@
 		"display_byline": {
 			"type": "boolean",
 			"default": true
+		},
+		"display_price": {
+			"type": "boolean",
+			"default": true
 		}
 	},
 	"keywords": [ "shop", "product" ],

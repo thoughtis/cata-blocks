@@ -20,6 +20,9 @@ import { Button, PanelBody, TextControl, ToggleControl } from '@wordpress/compon
 import apiFetch from '@wordpress/api-fetch';
 import { store, generic } from '@wordpress/icons';
 
+import Byline from './components/byline';
+import Price from './components/price';
+
 /**
  * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
  * Those files can contain any CSS code that gets applied to the editor.
@@ -109,7 +112,7 @@ export default function Edit( props ) {
 				<div className='wp-block-cata-products__layout'>
 				{(response.map( prod => {
 					return (
-						<article className="wp-block-cata-product">
+						<article className="wp-block-cata-product" key={`cata-product-${prod.id}`}>
 							<div className='wp-block-cata-product__layout tappable-card'>
 								<figure className='wp-block-cata-product__image'>
 									{/* a ::before would go here with the svg frame on CC */}
@@ -118,7 +121,7 @@ export default function Edit( props ) {
 										src={prod.images[0].src}
 										alt={prod.images[0].alt}
 										sizes="(max-width: 576px) 92.5vw, 576px"
-										srcset={prod.images[0].src + "?resize=384,384 384w, " + prod.images[0].src + "?resize=768,768 768w, " + prod.images[0].src + "?resize=1152,1152 1152w"}
+										srcSet={prod.images[0].src + "?resize=384,384 384w, " + prod.images[0].src + "?resize=768,768 768w, " + prod.images[0].src + "?resize=1152,1152 1152w"}
 										width="384"
 										height="384"
 									/>
@@ -132,73 +135,19 @@ export default function Edit( props ) {
 									</a>
 								</h3>
 								{attributes.display_byline && 
-									(<div className='wp-block-cata-product__byline'>
-										{/* "from Thought Catalog" or the author byline */}
-										{prod.cap_guest_authors.length > 0 &&
-											__("by ", 'cata') +
-											prod.cap_guest_authors.reduce( 
-												(prev, curr, idx, array) => {
-													const spacer = array.length - 1 === idx ? "" : ", ";
-													return prev + curr.display_name + spacer;
-												},
-												""
-											)
-										}
-										{!prod.cap_guest_authors.length > 0 &&
-											prod.brands.length > 0 &&
-											__("from ", "cata") +
-											prod.brands.reduce(
-												(prev, curr, idx, array) => {
-													const spacer = array.length - 1 === idx ? "" : ", ";
-													return prev + curr.name + spacer
-												},
-												""
-											)
-										}
-									</div>)
+									<Byline
+										authors={prod.cap_guest_authors}
+										brands={prod.brands}
+									/>
 								}
-								<div className='wp-block-cata-product__price'>
-										{
-											prod.on_sale &&
-											prod.regular_price &&
-											prod.sale_price &&
-											(<del>
-												<span>
-													<span>$</span>{prod.regular_price}
-												</span>
-											</del>) &&
-											(<ins>
-												<span>
-													<span>$</span>{prod.sale_price}
-												</span>
-											</ins>)
-										}
-										{
-											prod.price &&
-											prod.regular_price &&
-											!prod.on_sale &&
-											(prod.price !== prod.regular_price) &&
-											(<span>
-												<span>$</span>{prod.price}
-											</span>)
-											&&
-											(" - ")
-											&&
-											(<span>
-												<span>$</span>{prod.regular_price}
-											</span>
-											)
-										}
-										{
-											prod.price &&
-											prod.regular_price &&
-											!prod.on_sale &&
-											(prod.price === prod.regular_price ) &&
-											(<span>
-												<span>$</span>{prod.regular_price}
-											</span>)
-										}
-								</div>
+								{attributes.display_price && 
+									<Price
+										onSale={prod.on_sale}
+										price={prod.price}
+										regularPrice={prod.regular_price}
+										salePrice={prod.sale_price}
+									/>
+								}
 							</div>
 						</article>
 					);
@@ -254,7 +203,16 @@ export default function Edit( props ) {
 						}
 						checked={attributes.display_byline}
 						onChange={(option) => {setAttributes({ display_byline: option})}}
-						// onChange={(option) => {console.log(option)}}
+					/>
+					<ToggleControl
+						label="Display product price"
+						help={
+							attributes.display_price
+								? 'Product price shown.'
+								: 'No product price.'
+						}
+						checked={attributes.display_price}
+						onChange={(option) => {setAttributes({ display_price: option})}}
 					/>
 				</PanelBody>
 			</InspectorControls>

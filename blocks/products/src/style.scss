@@ -32,33 +32,12 @@
 	}
 }
 
-.wp-block-cata-product__image {
-
-	position: relative;
-
-	&:before {
-		content:"";
-		display: block;
-		position: absolute;
-		pointer-events: none;
-		inline-size: 100%;
-		block-size: 100%;
-		background-repeat: no-repeat;
-		background-size: cover;
-		top: 0;
-		left: 0;
-	}
-
-	img {
-		inline-size: 100%;
-	}
+.wp-block-cata-product__image img {
+	inline-size: 100%;
 }
 
-.wp-block-cata-product__title,
-.wp-block-cata-product__price {
+.wp-block-cata-product__title {
 	font-size: 1.25em;
-	font-family: Oswald, Impact, 'Avenir Next Condensed', 'Arial Narrow', sans-serif;
-	text-transform: uppercase;
 }
 
 .wp-block-cata-product__price {
@@ -68,7 +47,6 @@
 .wp-block-cata-product__link {
 	color: var(--color-text);
 	text-decoration: none;
-
 	&:hover,
 	&:active {
 		text-decoration: underline;
@@ -76,7 +54,5 @@
 }
 
 .wp-block-cata-product__byline {
-	font-style: italic;
 	font-size: 0.75em;
 }
-
