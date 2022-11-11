@@ -99,6 +99,8 @@ function render_byline( stdClass $product ) : string {
 function get_classnames( string $block_class, array $block_attributes ) : string {
 	$classes = array( $block_class );
 
+	$classes[] = sanitize_html_class( $block_attributes['className'] );
+
 	if ( isset( $block_attributes['align'] ) ) {
 		$classes[] = 'align' . sanitize_html_class( $block_attributes['align'], '' );
 	}
