@@ -1,99 +1,81 @@
 /**
- * Retrieves the translation of text.
- *
- * @see https://developer.wordpress.org/block-editor/packages/packages-i18n/
+ * Products Blocks > Edit
  */
-import { __ } from '@wordpress/i18n';
 
 /**
- * React hook that is used to mark the block wrapper element.
- * It provides all the necessary props like the class name.
- *
- * @see https://developer.wordpress.org/block-editor/packages/packages-block-editor/#useBlockProps
+ * External dependencies
  */
-import { useBlockProps } from '@wordpress/block-editor';
-
-
-import { InspectorControls } from '@wordpress/block-editor';
-import { useRef, useState, useEffect  } from "@wordpress/element";
+import { __ } from '@wordpress/i18n';
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
+import { useState, useEffect  } from '@wordpress/element';
 import { Button, PanelBody, TextControl, ToggleControl } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 import { store, generic } from '@wordpress/icons';
 
+/**
+ * Internal Dependencies
+ */
 import Byline from './components/byline';
 import Price from './components/price';
 
 /**
- * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
- * Those files can contain any CSS code that gets applied to the editor.
- *
- * @see https://www.npmjs.com/package/@wordpress/scripts#using-css
+ * Editor styles
  */
 import './editor.scss';
 
 /**
- * The edit function describes the structure of your block in the context of the
- * editor. This represents what the editor will render when the block is used.
- *
- * @see https://developer.wordpress.org/block-editor/developers/block-api/block-edit-save/#edit
- *
+ * Edit
+ * 
+ * @param {Object} props
  * @return {WPElement} Element to render.
  */
-export default function Edit( props ) {
-	const blockProps = { ...useBlockProps() };
+export default function Edit( { attributes, setAttributes } ) {
 
-	const { attributes, setAttributes } = props;
+	const {
+		shopCatalogApiUrlBase,
+		category,
+		per_page,
+		orderby,
+		order,
+		query_url
+	} = attributes;
 
-	const shopUrl = 
-	attributes.shopCatalogApiUrlBase + 
-	"?category=" + 
-	attributes.category + 
-	"&per_page=" + 
-	attributes.per_page +
-	"&orderby=" +
-	attributes.orderby +
-	"&order=" +
-	attributes.order;
+	const [response, setResponse] = useState( null );
 
-	const fetchRequestRef = useRef();
-	const [ response, setResponse ] = useState( null );
-	const controller = new AbortController();
+	useEffect( () => {
+		setAttributes( {
+			query_url: shopCatalogApiUrlBase + '?' + (new URLSearchParams({
+				category,
+				per_page,
+				orderby,
+				order
+			})).toString()
+		})
+	}, [category, per_page] );
 
-	useEffect(() => {
-		if (!response && attributes.query_url) {
-			fetchData(attributes.query_url);
-		}
-	}, [])
+	useEffect(fetchData, [query_url])
 
 	/**
-	 * 
-	 * @param {string} queryUrl Defaults to a URL constructed from block input default values.
-	 * @returns {object} Response from SC api.
+	 * Fetch Data
 	 */
-	const fetchData = (queryUrl = shopUrl) => {
-		const fetchRequest = ( fetchRequestRef.current = apiFetch( {
-			path: '/cata/v1/proxy/?url=' + encodeURIComponent( queryUrl ),
-			signal: controller.signal,
-		} ) )
-			.then( ( fetchResponse) => {
-
-				if ( fetchResponse ) {
-					setResponse( fetchResponse );
-					setAttributes({ query_url: shopUrl });
-				}
-			} )
-			.catch( ( error ) => {
-				setResponse( {
-					error: true,
-					errorMsg: error.message,
-				} );
-			} )
-
-		return fetchRequest;
+	function fetchData() {
+		apiFetch( {
+			path: query_url,
+			proxy: true,
+			cache: true
+		} )
+		.then( setResponse )
+		.catch( ( error ) => {
+			setResponse( {
+				error: true,
+				errorMsg: error.message,
+			} );
+		} )
 	}
 
 	return (
-		<div { ...blockProps } >
+		<>
+		<div { ...useBlockProps() } >
 			{!response &&
 				(<p className="wp-block-cata-products__placeholder">
 					{ __( 'Shop Catalog Merch will go here!', 'cata' ) }
@@ -115,7 +97,6 @@ export default function Edit( props ) {
 						<article className="wp-block-cata-product" key={`cata-product-${prod.id}`}>
 							<div className='wp-block-cata-product__layout tappable-card'>
 								<figure className='wp-block-cata-product__image'>
-									{/* a ::before would go here with the svg frame on CC */}
 									<img
 										loading="lazy"
 										src={prod.images[0].src}
@@ -161,7 +142,8 @@ export default function Edit( props ) {
 				{response.errorMsg}
 			</div>
 			}
-			<InspectorControls>
+		</div>
+		<InspectorControls>
 				<PanelBody title="Product API URL" icon={store} initialOpen={false}>
 					<TextControl
 						label="SC API Product Category"
@@ -182,15 +164,9 @@ export default function Edit( props ) {
 					<Button 
 						className='wp-block-cata-products-fetch-btn'
 						variant="secondary"
-						onClick={() => {fetchData()}}
+						onClick={fetchData}
 					>
 						FETCH
-					</Button>
-					<Button
-						variant="secondary"
-						onClick={() => {controller.abort()}}
-					>
-						CANCEL
 					</Button>
 				</PanelBody>
 				<PanelBody title="Product Block Options" icon={generic} initialOpen={false}>
@@ -216,6 +192,6 @@ export default function Edit( props ) {
 					/>
 				</PanelBody>
 			</InspectorControls>
-		</div>
+		</>
 	);
 }
