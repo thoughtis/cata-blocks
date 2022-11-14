@@ -1,23 +1,29 @@
 /**
- * Registers a new block provided a unique name and an object defining its behavior.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
+ * Products block
  */
 import { registerBlockStyle, registerBlockType } from '@wordpress/blocks';
 
 /**
- * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
- * All files containing `style` keyword are bundled together. The code used
- * gets applied both to the front of your site and to the editor.
- *
- * @see https://www.npmjs.com/package/@wordpress/scripts#using-css
+ * External dependencies
  */
-import './style.scss';
+import apiFetch from '@wordpress/api-fetch';
 
 /**
  * Internal dependencies
  */
+import { cacheMiddleware, proxyMiddleware } from './api-fetch-middleware';
 import Edit from './edit';
+
+/**
+ * Style shared between editor and content
+ */
+import './style.scss';
+
+/**
+ * Use middleware
+ */
+apiFetch.use( proxyMiddleware );
+apiFetch.use( cacheMiddleware );
 
 /**
  * Every block starts by registering a new block type definition.
