@@ -8,7 +8,7 @@
 import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { useState, useEffect  } from '@wordpress/element';
-import { Button, PanelBody, TextControl, ToggleControl } from '@wordpress/components';
+import { PanelBody, TextControl, ToggleControl } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 import { store, generic } from '@wordpress/icons';
 import { useDispatch } from '@wordpress/data'
@@ -105,7 +105,7 @@ export default function Edit( { attributes, setAttributes } ) {
 					label="SC API Product Category"
 					onChange={(category) => setAttributes({category})}
 					type="text"
-					value={attributes.category}
+					value={category}
 					help="Shop Catalog API Product Category.
 					Category numbers can be found in the URL of the Shop Catalog category edit page. 
 					Like this -> (...&tag_ID=XXXX...)."
@@ -114,16 +114,9 @@ export default function Edit( { attributes, setAttributes } ) {
 					label="SC API Product Quantity"
 					onChange={(per_page) => setAttributes({per_page})}
 					type="number"
-					value={attributes.per_page}
+					value={per_page}
 					help="Quantity of Shop Catalog products to be returned from the API."
 				/>
-				<Button 
-					className='wp-block-cata-products-fetch-btn'
-					variant="secondary"
-					onClick={fetchData}
-				>
-					FETCH
-				</Button>
 			</PanelBody>
 			<PanelBody title="Product Block Options" icon={generic} initialOpen={false}>
 				<ToggleControl
