@@ -162,32 +162,33 @@ export default function Edit( props ) {
 											prod.on_sale &&
 											prod.regular_price &&
 											prod.sale_price &&
-											(<del>
-												<span>
-													<span>$</span>{prod.regular_price}
-												</span>
-											</del>) &&
-											(<ins>
-												<span>
-													<span>$</span>{prod.sale_price}
-												</span>
-											</ins>)
+											(<>
+												<del>
+													<span>
+														<span>$</span>{prod.regular_price}
+													</span>
+												</del>
+												<ins>
+													<span>
+														<span>$</span>{prod.sale_price}
+													</span>
+												</ins>
+											</>)
 										}
 										{
 											prod.price &&
 											prod.regular_price &&
 											!prod.on_sale &&
 											(prod.price !== prod.regular_price) &&
-											(<span>
-												<span>$</span>{prod.price}
-											</span>)
-											&&
-											(" - ")
-											&&
-											(<span>
-												<span>$</span>{prod.regular_price}
-											</span>
-											)
+											(<>
+												<span>
+													<span>$</span>{prod.price}
+												</span>
+												<span> - </span>
+												<span>
+													<span>$</span>{prod.regular_price}
+												</span>
+											</>)
 										}
 										{
 											prod.price &&
