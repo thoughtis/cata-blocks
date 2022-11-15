@@ -23,13 +23,15 @@ function render_products( array $attributes, array $products ) : string {
 		array_fill( 0, count($products), $attributes['display_price'] )
 	);
 
+	$wrapper_attributes = get_block_wrapper_attributes();
+
 	$products_string = implode( "\n", $products );
 
-	$classnames = get_classnames('wp-block-cata-products', $attributes);
-
-	return "<div class=\"${classnames}\">
-		<div class=\"wp-block-cata-products__layout\">${products_string}</div>
-	</div>";
+	return sprintf(
+		'<div %1$s><div class="wp-block-cata-products__layout">%2$s</div></div>',
+		$wrapper_attributes,
+		$products_string
+	);
 }
 
 /**
@@ -87,23 +89,6 @@ function render_byline( stdClass $product ) : string {
 		return $byline_start .  'from ' . esc_html( implode( ', ', array_column( $product->brands, 'name' ) ) ) . $byline_end;
 	}
 	return '';
-}
-
-/**
- * Get Classnames
- * 
- * @param string $block_class
- * @param array  $block_attributes
- * @return string
- */
-function get_classnames( string $block_class, array $block_attributes ) : string {
-	$classes = array( $block_class );
-
-	if ( isset( $block_attributes['align'] ) ) {
-		$classes[] = 'align' . sanitize_html_class( $block_attributes['align'], '' );
-	}
-
-	return implode( ' ', $classes );
 }
 
 /**

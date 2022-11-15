@@ -5,7 +5,7 @@
 /**
  * External dependencies
  */
-import { registerBlockType } from '@wordpress/blocks';
+import { registerBlockType, registerBlockStyle } from '@wordpress/blocks';
 import apiFetch from '@wordpress/api-fetch';
 
 /**
@@ -13,6 +13,7 @@ import apiFetch from '@wordpress/api-fetch';
  */
 import { cacheMiddleware, proxyMiddleware } from './api-fetch-middleware';
 import Edit from './edit';
+import save from './save';
 
 /**
  * Style shared between editor and content
@@ -35,4 +36,10 @@ registerBlockType( 'cata/products', {
 	 * @see ./edit.js
 	 */
 	edit: Edit,
+	save
+} );
+
+registerBlockStyle( 'cata/products', {
+	name: 'reel',
+	label: 'Reel'
 } );

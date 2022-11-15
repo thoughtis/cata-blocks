@@ -36,10 +36,6 @@
 			"type": "string",
 			"default": ""
 		},
-		"align": {
-			"type": "string",
-			"default": "wide"
-		},
 		"display_byline": {
 			"type": "boolean",
 			"default": true
