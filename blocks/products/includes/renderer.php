@@ -23,9 +23,7 @@ function render_products( array $attributes, array $products ) : string {
 		array_fill( 0, count($products), $attributes['display_price'] )
 	);
 
-	$align_attribute = array( 'class' => sanitize_html_class( 'align'.$attributes['align'] ) );
-
-	$wrapper_attributes = get_block_wrapper_attributes( $align_attribute );
+	$wrapper_attributes = get_block_wrapper_attributes();
 
 	$products_string = implode( "\n", $products );
 
