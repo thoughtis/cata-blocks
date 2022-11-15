@@ -34,6 +34,7 @@ export default function Edit( { attributes, setAttributes } ) {
 	const {
 		shopCatalogApiUrlBase,
 		category,
+		tag,
 		per_page,
 		orderby,
 		order,
@@ -43,16 +44,26 @@ export default function Edit( { attributes, setAttributes } ) {
 	const [products, setProducts] = useState([]);
 	const noticesDispatch = useDispatch('core/notices');
 
-	useEffect(updateQueryURL, [category, per_page]);
+	useEffect(updateQueryURL, [category, tag, per_page]);
 	useEffect(fetchData, [query_url]);
 
 	/**
 	 * Update Query URL
 	 */
 	function updateQueryURL() {
+		
+		const taxonomies = Object.fromEntries(
+			Object.entries({
+				category,
+				tag
+			}).filter( ( [key, value] ) => {
+				return 0 < value.length;
+			})
+		);
+		
 		setAttributes( {
 			query_url: shopCatalogApiUrlBase + '?' + (new URLSearchParams({
-				category,
+				...taxonomies,
 				per_page,
 				orderby,
 				order,
@@ -101,22 +112,26 @@ export default function Edit( { attributes, setAttributes } ) {
 			/>
 		</div>
 		<InspectorControls>
-			<PanelBody title="Product API URL" icon={store} initialOpen={false}>
+			<PanelBody title="Product Selection" icon={store} initialOpen={false}>
 				<TextControl
-					label="SC API Product Category"
+					label="Product Category Id"
 					onChange={(category) => setAttributes({category})}
 					type="text"
 					value={category}
-					help="Shop Catalog API Product Category.
-					Category numbers can be found in the URL of the Shop Catalog category edit page. 
-					Like this -> (...&tag_ID=XXXX...)."
+					help="A product category id can be found in the URL of the Shop Catalog category edit page. Like this -> (...&tag_ID=XXXX...)."
 				/>
 				<TextControl
-					label="SC API Product Quantity"
+					label="Product Tag Id"
+					onChange={(tag) => setAttributes({tag})}
+					type="text"
+					value={tag}
+					help="A product tag id can be found in the URL of the Shop Catalog tag edit page. Like this -> (...&tag_ID=XXXX...)."
+				/>
+				<TextControl
+					label="Number of Products"
 					onChange={(per_page) => setAttributes({per_page})}
 					type="number"
 					value={per_page}
-					help="Quantity of Shop Catalog products to be returned from the API."
 				/>
 			</PanelBody>
 			<PanelBody title="Product Block Options" icon={generic} initialOpen={false}>

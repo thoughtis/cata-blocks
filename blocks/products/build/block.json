@@ -20,6 +20,10 @@
 			"type": "string",
 			"default": "1752"
 		},
+		"tag": {
+			"type": "string",
+			"default": ""
+		},
 		"per_page": {
 			"type": "string",
 			"default": "6"
