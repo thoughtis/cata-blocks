@@ -55,7 +55,8 @@ export default function Edit( { attributes, setAttributes } ) {
 				category,
 				per_page,
 				orderby,
-				order
+				order,
+				status: 'publish'
 			})).toString()
 		});
 	}
