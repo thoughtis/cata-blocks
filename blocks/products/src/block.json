@@ -18,7 +18,7 @@
 		},
 		"category": {
 			"type": "string",
-			"default": "1752"
+			"default": ""
 		},
 		"tag": {
 			"type": "string",
