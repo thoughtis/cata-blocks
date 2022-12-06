@@ -81,8 +81,10 @@ export default function Edit( { attributes, setAttributes } ) {
 		}
 		apiFetch( {
 			path: query_url,
-			proxy: true,
-			cache: true
+			cata: {
+				useProxy: true,
+				useCache: true
+			}
 		} )
 		.then( setProducts )
 		.catch( handleError )
