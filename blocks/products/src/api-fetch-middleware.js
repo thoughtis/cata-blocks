@@ -13,7 +13,7 @@ const cache = {};
  */
 export function cacheMiddleware( options, next ) {
 	// Skip Cache
-	if ( ! ( ('cache' in options ) && true === options.cache ) ) {
+	if ( true !== options?.cata?.useCache ) {
 		return next( options );
 	}
 	// Data in Cache
@@ -23,10 +23,7 @@ export function cacheMiddleware( options, next ) {
 		});
 	}
 	// Proceed with query, set in cache.
-	cache[options.path] = next({
-		...options,
-		cache: 'default'
-	});
+	cache[options.path] = next( options );
 	return cache[options.path];
 }
 
@@ -37,7 +34,7 @@ export function cacheMiddleware( options, next ) {
  * @param {function} next
  */
 export function proxyMiddleware( options, next ) {
-	if ( ! ( ( 'proxy' in options ) && true === options.proxy ) ) {
+	if ( true !== options?.cata?.useProxy ) {
 		return next( options );
 	}
 	return next( {
