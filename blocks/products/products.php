@@ -15,6 +15,9 @@ namespace Cata\Blocks;
  * @see https://developer.wordpress.org/reference/functions/register_block_type/
  */
 function init_products_block() {
+	if ( ! apply_filters( 'cata_blocks_support_products_block', true ) ) {
+		return;
+	}
 	register_block_type(
 		__DIR__ . '/build',
 		array(
