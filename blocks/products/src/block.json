@@ -20,6 +20,10 @@
 			"type": "string",
 			"default": ""
 		},
+		"coauthor": {
+			"type": "string",
+			"default": ""
+		},
 		"tag": {
 			"type": "string",
 			"default": ""

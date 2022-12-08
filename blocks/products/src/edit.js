@@ -7,7 +7,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import { useState, useEffect  } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { PanelBody, TextControl, ToggleControl } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 import { store, generic } from '@wordpress/icons';
@@ -16,6 +16,7 @@ import { useDispatch } from '@wordpress/data'
 /**
  * Internal Dependencies
  */
+import DebouncedTextControl from './components/debounced-text-control';
 import Products from './components/products';
 
 /**
@@ -34,6 +35,7 @@ export default function Edit( { attributes, setAttributes } ) {
 	const {
 		shopCatalogApiUrlBase,
 		category,
+		coauthor,
 		tag,
 		per_page,
 		orderby,
@@ -44,7 +46,7 @@ export default function Edit( { attributes, setAttributes } ) {
 	const [products, setProducts] = useState([]);
 	const noticesDispatch = useDispatch('core/notices');
 
-	useEffect(updateQueryURL, [category, tag, per_page]);
+	useEffect(updateQueryURL, [category, coauthor, tag, per_page]);
 	useEffect(fetchData, [query_url]);
 
 	/**
@@ -55,6 +57,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		const taxonomies = Object.fromEntries(
 			Object.entries({
 				category,
+				coauthor,
 				tag
 			}).filter( ( [key, value] ) => {
 				return 0 < value.length;
@@ -79,15 +82,23 @@ export default function Edit( { attributes, setAttributes } ) {
 		if ( '' === query_url ) {
 			return;
 		}
+
+		const controller = new AbortController();
+
 		apiFetch( {
 			path: query_url,
 			cata: {
 				useProxy: true,
 				useCache: true
-			}
+			},
+			signal: controller.signal
 		} )
 		.then( setProducts )
 		.catch( handleError )
+
+		return () => {
+			controller.abort();
+		}
 	}
 
 	/**
@@ -96,6 +107,9 @@ export default function Edit( { attributes, setAttributes } ) {
 	 * @param {Error}
 	 */
 	function handleError( error ) {
+		if ( 'AbortError' === error.name ) {
+			return;
+		}
 		noticesDispatch.createErrorNotice(
 			error.message,
 			{
@@ -128,6 +142,15 @@ export default function Edit( { attributes, setAttributes } ) {
 					type="text"
 					value={tag}
 					help="A product tag id can be found in the URL of the Shop Catalog tag edit page. Like this -> (...&tag_ID=XXXX...)."
+				/>
+				<DebouncedTextControl
+					label="Product Author Slug"
+					onDebouncedChange={(nextCoauthor) => setAttributes({coauthor: nextCoauthor})}
+					timeout={300}
+					type="text"
+					value={coauthor}
+					placeholder="author-name"
+					help="Find an author's slug in the URL of their profile. Ex: https://shopcatalog.com/people/author-name/"
 				/>
 				<TextControl
 					label="Number of Products"
