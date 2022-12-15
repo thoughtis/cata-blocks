@@ -9,7 +9,7 @@ function parsePost() {
 		return;
 	}
 
-	const entryContent = insertPoint.closest( '.has-cata-toc-block' );
+	const entryContent = insertPoint.closest( '.wp-site-blocks,.entry__content' );
 
 	if ( null === entryContent ) {
 		return;
