@@ -84,3 +84,19 @@ function enabled_generate_anchors( array $settings ) : array {
 		)
 	);
 }
+
+/**
+ * Add Selector to Post Classes
+ * 
+ * @param array $classes
+ * @param array $custom_classes Should already be included in $classes
+ * @param int $post_id
+ * @return array
+*/
+function add_selector_to_post_classes( array $classes, array $custom_classes, int $post_id ) : array {
+   if ( ! has_block( 'cata/toc', $post_id ) ) {
+	   return $classes;
+   }
+   return array_merge( $classes, array( 'has-cata-toc-block' ) );
+}
+add_filter( 'post_class', __NAMESPACE__ . '\\add_selector_to_post_classes', 10, 3 );
