@@ -17,6 +17,7 @@ function register_toc_block() : void {
 		return;
 	}
 	register_block_type( __DIR__ . '/build' );
+	add_filter( 'block_editor_settings_all', __NAMESPACE__ . '\\enabled_generate_anchors' );
 }
 add_action( 'init', __NAMESPACE__ . '\\register_toc_block' );
 
@@ -66,4 +67,20 @@ function conditionally_remove_script() : void {
 	}
 	wp_dequeue_script( 'cata-toc-script' );
 }
-add_action( 'wp_enqueue_scripts', __NAMESPACE__. '\\conditionally_remove_script' ); 
+add_action( 'wp_enqueue_scripts', __NAMESPACE__. '\\conditionally_remove_script' );
+
+/**
+ * Enable Generate Anchors
+ *
+ * @link https://github.com/WordPress/gutenberg/pull/38780#issuecomment-1122412396
+ * @param array $settings
+ * @return array
+ */
+function enabled_generate_anchors( array $settings ) : array {			
+	return array_merge(
+		$settings,
+		array(
+			'generateAnchors' => true,
+		)
+	);
+}
