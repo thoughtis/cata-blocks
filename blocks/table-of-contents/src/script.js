@@ -3,15 +3,15 @@
  * Create a table of contents for a post from its h2s.
  */
 function parsePost() {
-	const entryContent = document.querySelector('.entry__content');
+	const insertPoint = document.getElementById( 'toc-entry-point' );
 
-	if ( null === entryContent ) {
+	if ( null === insertPoint ) {
 		return;
 	}
 
-	const insertPoint = entryContent.querySelector( '#toc-entry-point' );
+	const entryContent = insertPoint.closest( '.wp-site-blocks,.entry__content' );
 
-	if ( null === insertPoint ) {
+	if ( null === entryContent ) {
 		return;
 	}
 
