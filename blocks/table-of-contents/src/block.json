@@ -11,6 +11,14 @@
 		"reusable": false,
 		"customClassName": false
 	},
+	"attributes": {
+		"summary": {
+			"type": "string",
+			"source": "html",
+			"selector": "summary",
+			"default": "Table of Contents"
+		}
+	},
 	"example": {
 		"attributes": {
 			"content": "Table Of Contents"

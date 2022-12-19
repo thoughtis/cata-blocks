@@ -26,4 +26,11 @@ registerBlockType( 'cata/toc', {
 	 * @see ./save.js
 	 */
 	save,
+	merge( attributes, attributesToMerge ) {
+		return {
+			summary:
+				( attributes.summary || '' ) +
+				( attributesToMerge.summary || '' ),
+		};
+	},
 } );

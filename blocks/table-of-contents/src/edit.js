@@ -4,7 +4,8 @@
  *
  * @see https://developer.wordpress.org/block-editor/packages/packages-block-editor/#useBlockProps
  */
-import { useBlockProps } from '@wordpress/block-editor';
+import { useBlockProps, RichText } from '@wordpress/block-editor';
+import { createBlock, getDefaultBlockName } from '@wordpress/blocks';
 
 /**
  * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
@@ -23,15 +24,29 @@ import './editor.scss';
  *
  * @return {WPElement} Element to render.
  */
-export default function Edit() {
-
-	const blockProps = { ...useBlockProps() };
-
-	blockProps.className = blockProps.className + ' has-text-align-center	';
-
+export default function Edit( { attributes, setAttributes, clientId, onReplace, mergeBlocks } ) {
 	return (
-		<div { ...blockProps } >
-			Placeholder for Table of Contents
+		<div { ...useBlockProps() } >
+			<RichText
+				allowedFormats={ [ 'core/bold', 'core/italic' ] }
+				tagName="div"
+				value={attributes.summary}
+				onChange={(nextSummary)=>{ setAttributes({summary: nextSummary})}}
+				onReplace={ onReplace }
+				onMerge={mergeBlocks}
+				onSplit={ ( value, isOriginal ) => {
+					if ( isOriginal || value ) {
+						return createBlock( 'cata/toc', {
+							...attributes,
+							summary: value,
+							clientId: isOriginal ? clientId : null
+						} );
+					}
+					return createBlock(
+						getDefaultBlockName()
+					)
+				} }
+			/>
 		</div>
 	);
 }
