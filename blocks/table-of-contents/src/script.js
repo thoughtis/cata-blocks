@@ -42,16 +42,23 @@ function appendToc( insertPoint, links ) {
 		return;
 	}
 
-	const toc = renderToc( [
-		renderSummary(),
-		renderNav(
-			[
-				renderList( links ),
-			]
-		),
-	] );
+	const details = insertPoint.querySelector('details');
+	const nav = renderNav(
+		[
+			renderList( links ),
+		]
+	);
 
-	insertPoint.insertAdjacentElement( 'afterbegin', toc );
+	if ( null !== details ) {
+		// After v0.7.6 <details> is server-side generated
+		details.append( nav );
+	} else {
+		// Previous to v0.7.6 <details> was client-side generated
+		insertPoint.append(renderToc( [
+			renderSummary(),
+			nav,
+		] ));
+	}
 }
 
 /**
