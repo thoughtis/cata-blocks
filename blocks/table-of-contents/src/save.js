@@ -19,7 +19,7 @@ export default function save( { attributes } ) {
 	return (
 		<div { ...useBlockProps.save() } id="toc-entry-point">
 			<details open>
-				<RichText.Content tagName="summary" value={attributes.summary} />
+				<RichText.Content tagName="summary" value={attributes?.summary || 'Table of Contents'} />
 			</details>
 		</div>
 	);

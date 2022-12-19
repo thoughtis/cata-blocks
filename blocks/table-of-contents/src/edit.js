@@ -30,7 +30,7 @@ export default function Edit( { attributes, setAttributes, clientId, onReplace, 
 			<RichText
 				allowedFormats={ [ 'core/bold', 'core/italic' ] }
 				tagName="div"
-				value={attributes.summary}
+				value={attributes?.summary || 'Table of Contents'}
 				onChange={(nextSummary)=>{ setAttributes({summary: nextSummary})}}
 				onReplace={ onReplace }
 				onMerge={mergeBlocks}
