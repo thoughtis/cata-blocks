@@ -2,7 +2,7 @@
  * Table of Contents
  * Create a table of contents for a post from its h2s.
  */
-function parsePost() {
+(function() {
 	const insertPoint = document.getElementById( 'toc-entry-point' );
 
 	if ( null === insertPoint ) {
@@ -18,6 +18,8 @@ function parsePost() {
 	const headings = entryContent.querySelectorAll( 'h2' );
 
 	if ( 0 === headings.length ) {
+		// If there are no headings, remove the TOC.
+		insertPoint.parentNode.removeChild(insertPoint);
 		return;
 	}
 
@@ -29,7 +31,7 @@ function parsePost() {
 		.map( renderListItem );
 
 	appendToc( insertPoint, links );
-}
+})();
 
 /**
  * Append TOC
@@ -205,5 +207,3 @@ function createId( textContent ) {
 		.replace( /-$/, '' )
 		.substring( 0, 64 );
 }
-
-parsePost();
