@@ -4,9 +4,7 @@
  * Replace them with your own styles or remove the file completely.
  */
 
-.wp-block-cata-toc {
-	border: 0.125em double currentColor;
-	font-size: 1.5em;
-	margin-block-start: .667em;
-	margin-block-end: .667em;
+.wp-block-cata-toc ul {
+	margin-block-start: 0.5em;
+	opacity: 0.625;
 }
