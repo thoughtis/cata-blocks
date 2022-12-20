@@ -28,6 +28,7 @@ export default function Edit( { attributes, setAttributes, clientId, onReplace, 
 	return (
 		<div { ...useBlockProps() } >
 			<RichText
+				placeholder="Add a label to the Table of Contents"
 				allowedFormats={ [ 'core/bold', 'core/italic' ] }
 				tagName="div"
 				value={attributes?.summary || 'Table of Contents'}
@@ -47,6 +48,9 @@ export default function Edit( { attributes, setAttributes, clientId, onReplace, 
 					)
 				} }
 			/>
+			<ul>
+				<li><a>Links will be generated in the live content</a></li>
+			</ul>
 		</div>
 	);
 }

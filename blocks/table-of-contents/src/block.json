@@ -4,7 +4,7 @@
 	"version": "0.1.0",
 	"title": "Table Of Contents",
 	"category": "widgets",
-	"description": "This widget produces a table of contents based on H2 headings. Preview or Publish to view the table of contents in the live post.",
+	"description": "This block produces a table of contents based on H2 headings. Preview or Publish to view the table of contents in the live post.",
 	"keywords": [ "contents", "table of contents", "table of" ],
 	"supports": {
 		"html": false,
