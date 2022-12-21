@@ -218,6 +218,9 @@ function setTextContent( data ) {
  * @return {Function}
  */
 function getRegexFunction( regexPattern ) {
+	if ( ! isNonEmptyString( regexPattern ) ) {
+		return data => data;
+	}
 	return ( data ) => {
 		const result = (new RegExp( regexPattern, 'mi' )).exec( data.textContent );
 		if ( ! Array.isArray( result ) ) {
