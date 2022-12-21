@@ -1,62 +1,114 @@
 /**
  * Table of Contents
- * Create a table of contents for a post from its h2s.
  */
-(function() {
-	const insertPoint = document.getElementById( 'toc-entry-point' );
-
-	if ( null === insertPoint ) {
-		return;
-	}
-
-	const entryContent = insertPoint.closest( '.wp-site-blocks,.entry__content' );
-
-	if ( null === entryContent ) {
-		return;
-	}
-
-	const headings = entryContent.querySelectorAll( 'h2' );
-
-	if ( 0 === headings.length ) {
-		// If there are no headings, remove the TOC.
-		insertPoint.parentNode.removeChild(insertPoint);
-		return;
-	}
-
-	const links = Array.from( headings )
-		.map( ensureId )
-		.map( simplifyObject )
-		.filter( validate )
-		.map( renderLink )
-		.map( renderListItem );
-
-	appendToc( insertPoint, links );
-})();
+document.querySelectorAll( '.wp-block-cata-toc' ).forEach(handleBlock);
 
 /**
- * Append TOC
+ * Handle Block
+ * Create a table of contents for a post from its h2s.
+ * If there are no headings, remove the TOC.
  *
- * @param {HTMLElement} insertPoint
- * @param {Array} links A elements.
+ * @param {HTMLElement} block
  */
-function appendToc( insertPoint, links ) {
-	if ( 0 === links.length ) {
+function handleBlock( block ) {
+
+	const headings = getHeadings(
+		getContent( block )
+	);
+
+	if ( 0 === headings.length ) {
+		return (block.parentNode.removeChild(block));
+	}
+
+	const regexPattern = block.dataset?.regexPattern ? block.dataset.regexPattern : '';
+
+	/**
+	 * Data
+	 * headings -> objects -> textContent w/ regex -> id
+	 */
+	const data = headings
+		.map(heading => ({heading}))
+		.map(setTextContent)
+		.map(getRegexFunction( regexPattern ))
+		.map(setId)
+		.filter(validate);
+
+	/**
+	 * Fail
+	 */
+	if ( 0 === data.length ) {
 		return;
 	}
 
-	const details = insertPoint.querySelector('details');
-	const nav = renderNav(
-		[
-			renderList( links ),
-		]
-	);
+	/**
+	 * Side Effect
+	 * set id on headings without them
+	 */
+	data.forEach( d => {
+		if ( ! headingHasId( d.heading ) ) {
+			d.heading.id = d.id;
+		}
+	});
+
+	/**
+	 * Render
+	 * data -> links -> listItems -> list -> nav
+	 */
+	const nav = renderNav([
+		renderList(
+			data.map( renderLink ).map( renderListItem )
+		)
+	]);
+
+	/**
+	 * Append
+	 */
+	appendNav( block, nav );
+}
+
+/**
+ * Get Content
+ * 
+ * @param {HTMLElement|null} block
+ * @return {HTMLElement|null}
+ */
+function getContent( block ) {
+	if ( null === block ) {
+		return null;
+	}
+	return block.closest( '.wp-site-blocks,.entry__content' );
+}
+
+/**
+ * Get Headings
+ * 
+ * @param {HTMLElement|null} content
+ * @return {HTMLHeadingElement[]}
+ */
+function getHeadings( content ) {
+	if ( null === content ) {
+		return [];
+	}
+	return [...content.querySelectorAll( 'h2' )];
+}
+
+
+/**
+ * Append Nav
+ *
+ * @param {HTMLElement} block
+ * @param {Array} links A elements.
+ */
+function appendNav( block, nav ) {
+
+	const details = block.querySelector('details');
 
 	if ( null !== details ) {
 		// After v0.7.6 <details> is server-side generated
 		details.append( nav );
 	} else {
 		// Previous to v0.7.6 <details> was client-side generated
-		insertPoint.append(renderToc( [
+		block.append(renderDetails( [
 			renderSummary(),
 			nav,
 		] ));
@@ -66,31 +118,25 @@ function appendToc( insertPoint, links ) {
 /**
  * Render Nav
  *
- * @param {Array} children
+ * @param {HTMLElement[]} children
  * @return {HTMLElement} nav
  */
 function renderNav( children ) {
 	const nav = document.createElement( 'nav' );
-	children.forEach( ( child ) => {
-		nav.appendChild( child );
-	} );
+	nav.append(...children);
 	return nav;
 }
 
 /**
  * Render Toc
  *
- * @param {Array} children
+ * @param {HTMLElement[]} children
  * @return {HTMLElement} toc
  */
-function renderToc( children ) {
+function renderDetails( children ) {
 	const toc = document.createElement( 'details' );
-
-	toc.setAttribute( "open", "" );
-
-	children.forEach( ( child ) => {
-		toc.appendChild( child );
-	} );
+	toc.setAttribute( 'open', 'open' );
+	toc.append(...children);
 	return toc;
 }
 
@@ -108,16 +154,12 @@ function renderSummary() {
 /**
  * Render List
  *
- * @param {Array} children HTMLElements
+ * @param {HTMLElement[]} children HTMLElements
  * @return {HTMLElement} list
  */
 function renderList( children ) {
 	const list = document.createElement( 'ul' );
-
-	children.forEach( ( child ) => {
-		list.appendChild( child );
-	} );
-
+	list.append(...children)
 	return list;
 }
 
@@ -136,13 +178,13 @@ function renderListItem( child ) {
 /**
  * Insert Link
  *
- * @param {Object} articleHeading
+ * @param {Object} heading
  * @return {HTMLElement} link
  */
-function renderLink( articleHeading ) {
+function renderLink( heading ) {
 	const link = document.createElement( 'a' );
-	link.href = '#' + articleHeading.id;
-	link.textContent = articleHeading.textContent;
+	link.href = '#' + heading.id;
+	link.textContent = heading.textContent;
 	return link;
 }
 
@@ -153,43 +195,104 @@ function renderLink( articleHeading ) {
  * @return {boolean} Whether heading has an ID and text content.
  */
 function validate( heading ) {
-	return 0 < heading.id.length && 0 < heading.textContent.length;
+	return isNonEmptyString( heading.id ) && isNonEmptyString( heading.textContent );
 }
 
 /**
- * Simplify Object
+ * Set Text Content
  *
- * @param {HTMLElement} headingElement
- * @return {Object} Simplified object with only id and textContent.
+ * @param {Object} data
+ * @return {Object}
  */
-function simplifyObject( headingElement ) {
+function setTextContent( data ) {
 	return {
-		id: headingElement.id,
-		textContent: headingElement.textContent,
-	};
+		...data,
+		textContent: data.heading.hasChildNodes ? getElementTextContent( data.heading ) : ''
+	}
 }
 
 /**
- * Ensure Id
- * Either use the exising ID or create one.
+ * Get Regex Function
  *
- * @param {HTMLElement} articleHeading
- * @return {Object} articleHeading
+ * @param {String} regexPattern
+ * @return {Function}
  */
-function ensureId( articleHeading ) {
-	if ( 'string' === typeof articleHeading.id && '' !== articleHeading.id ) {
-		return articleHeading;
+function getRegexFunction( regexPattern ) {
+	return ( data ) => {
+		const result = (new RegExp( regexPattern, 'mi' )).exec( data.textContent );
+		if ( ! Array.isArray( result ) ) {
+			return data
+		}
+		return {
+			...data,
+			textContent: result.pop()
+		};
 	}
+}
 
-	const newId = createId( articleHeading.textContent );
-
-	if ( '' === newId ) {
-		return articleHeading;
+/**
+ * Set Id
+ * 
+ * @param {Object} data
+ */
+function setId( data ) {
+	return {
+		...data,
+		id: getId( data.heading.id, data.textContent )
 	}
+}
 
-	articleHeading.setAttribute( 'id', newId );
+/**
+ * Heading Needs Id
+ * 
+ * @param {HTMLHeadingElement} headingElement
+ */
+function headingHasId( headingElement ) {
+	return isNonEmptyString( headingElement.id );
+}
 
-	return articleHeading;
+/**
+ * Get Element Text Content
+ * 
+ * @param {HTMLElement} element
+ */
+function getElementTextContent( element ) {
+	return getChildNodesTextContent( element.childNodes ).flat().join(' ').replace(/\s+/g, ' ');
+}
+
+/**
+ * Get Child Nodes Text Content
+ *
+ * @param {NodeList} nodes 
+ * @return {Array}
+ */
+function getChildNodesTextContent( nodes ) {
+	return [...nodes].map( ( n ) => {
+		if ( n.hasChildNodes() ) {
+		  return getChildNodesTextContent( n.childNodes );
+		}
+		return n.textContent;
+	} );
+}
+
+/**
+ * Is Non-Empty String
+ * 
+ * @param {string} maybeString
+ * @return {boolean}
+ */
+function isNonEmptyString( maybeString ) {
+	return 'string' === typeof maybeString && 0 < maybeString.length;
+}
+
+/**
+ * Get Id
+ * 
+ * @param {string} originalId
+ * @return {string}
+ */
+function getId( originalId, headingTextContent ) {
+	return isNonEmptyString( originalId ) ? originalId : createId( headingTextContent );
 }
 
 /**
@@ -201,7 +304,6 @@ function ensureId( articleHeading ) {
 function createId( textContent ) {
 	return textContent
 		.toLowerCase()
-		.replace( /\s+/g, ' ' )
 		.replace( /[^a-z0-9\-]/g, '-' )
 		.replace( /-+/g, '-' )
 		.replace( /-$/, '' )
