@@ -35,6 +35,7 @@ export default function Edit( { attributes, setAttributes } ) {
 	const {
 		shopCatalogApiUrlBase,
 		category,
+		product_cat_exclude,
 		coauthor,
 		tag,
 		per_page,
@@ -46,7 +47,7 @@ export default function Edit( { attributes, setAttributes } ) {
 	const [products, setProducts] = useState([]);
 	const noticesDispatch = useDispatch('core/notices');
 
-	useEffect(updateQueryURL, [category, coauthor, tag, per_page]);
+	useEffect(updateQueryURL, [category, product_cat_exclude, coauthor, tag, per_page]);
 	useEffect(fetchData, [query_url]);
 
 	/**
@@ -57,6 +58,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		const taxonomies = Object.fromEntries(
 			Object.entries({
 				category,
+				product_cat_exclude,
 				coauthor,
 				tag
 			}).filter( ( [key, value] ) => {
@@ -130,15 +132,22 @@ export default function Edit( { attributes, setAttributes } ) {
 		<InspectorControls>
 			<PanelBody title="Product Selection" icon={store} initialOpen={false}>
 				<TextControl
-					label="Product Category Id"
-					onChange={(category) => setAttributes({category})}
+					label="Include Product Category Id"
+					onChange={(nextCategory) => setAttributes({category: nextCategory})}
 					type="text"
 					value={category}
 					help="A product category id can be found in the URL of the Shop Catalog category edit page. Like this -> (...&tag_ID=XXXX...)."
 				/>
 				<TextControl
+					label="Exclude Product Category Id"
+					onChange={(nextProductCatExclude) => setAttributes({product_cat_exclude: nextProductCatExclude})}
+					type="text"
+					value={product_cat_exclude}
+					help="A product category id can be found in the URL of the Shop Catalog category edit page. Like this -> (...&tag_ID=XXXX...)."
+				/>
+				<TextControl
 					label="Product Tag Id"
-					onChange={(tag) => setAttributes({tag})}
+					onChange={(nextTag) => setAttributes({tag: nextTag})}
 					type="text"
 					value={tag}
 					help="A product tag id can be found in the URL of the Shop Catalog tag edit page. Like this -> (...&tag_ID=XXXX...)."
@@ -154,7 +163,7 @@ export default function Edit( { attributes, setAttributes } ) {
 				/>
 				<TextControl
 					label="Number of Products"
-					onChange={(per_page) => setAttributes({per_page})}
+					onChange={(nextPerPage) => setAttributes({per_page: nextPerPage})}
 					type="number"
 					value={per_page}
 				/>
