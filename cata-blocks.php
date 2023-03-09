@@ -34,6 +34,11 @@ require_once __DIR__ . '/blocks/aside/aside.php';
 require_once __DIR__ . '/blocks/kicker/kicker.php';
 
 /**
+ * Moodboard
+ */
+require_once __DIR__ . '/blocks/moodboard/moodboard.php';
+
+/**
  * Newsletter
  */
 require_once __DIR__ . '/blocks/newsletter/includes/class-renderer.php';
