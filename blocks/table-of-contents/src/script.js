@@ -56,12 +56,8 @@ function handleBlock( block ) {
 	 * Render
 	 * data -> links -> listItems -> list -> nav
 	 */
-	renderData = data
-		.map( renderLink )
-		.map( renderListItem( regexAppend ) );
-
 	const nav = renderNav([
-		renderList( renderData )
+		renderList( data.map( renderLink ).map( renderListItem( regexAppend ) ) )
 	]);
 
 	/**
