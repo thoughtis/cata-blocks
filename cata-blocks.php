@@ -12,7 +12,7 @@
  * Description: Block Editor components for use with the Cata theme.
  * Author:      Thought & Expression Co. <devjobs@thought.is>
  * Author URI:  https://thought.is
- * Version:     0.7.9
+ * Version:     0.7.10
  * License:     GPL v3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.txt
  */
@@ -32,6 +32,11 @@ require_once __DIR__ . '/blocks/aside/aside.php';
  * Kicker
  */
 require_once __DIR__ . '/blocks/kicker/kicker.php';
+
+/**
+ * Moodboard
+ */
+require_once __DIR__ . '/blocks/moodboard/moodboard.php';
 
 /**
  * Newsletter
