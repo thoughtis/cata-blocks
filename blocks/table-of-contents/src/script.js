@@ -254,7 +254,7 @@ function getAppendText( regexAppend, textContent ) {
 	if( isNonEmptyString( regexAppend ) ) {
 		return (new RegExp( regexAppend, 'mi' )).exec( textContent );
 	}
-	return textContent
+	return '';
 }
 
 /**
