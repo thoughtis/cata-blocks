@@ -172,11 +172,7 @@ function renderList( children ) {
 function renderListItem( regexAppend ) {
 	return (child) => {
 		const listItem = document.createElement( 'li' );
-		let appendText = '';
-		
-		if( isNonEmptyString( regexAppend ) ) {
-			appendText = (new RegExp( regexAppend, 'mi' )).exec( child.textContent );
-		}
+		const appendText = getAppendText( regexAppend, child.textContent );
 		
 		if( appendText ) {
 			child.textContent = child.textContent.replace(appendText, "");
@@ -245,6 +241,20 @@ function getRegexFunction( regexPattern ) {
 			textContent: result.pop()
 		};
 	}
+}
+
+/**
+ * Get Append Text
+ *
+ * @param {String} regexAppend
+ * @param {String} textContent
+ * @return {String}
+ */
+function getAppendText( regexAppend, textContent ) {		
+	if( isNonEmptyString( regexAppend ) ) {
+		return (new RegExp( regexAppend, 'mi' )).exec( textContent );
+	}
+	return textContent
 }
 
 /**
