@@ -21,6 +21,7 @@ function handleBlock( block ) {
 	}
 
 	const regexPattern = block.dataset?.regexPattern ? block.dataset.regexPattern : '';
+	const regexAppend = block.dataset?.regexAppend ? block.dataset.regexAppend : '';
 
 	/**
 	 * Data
@@ -50,14 +51,13 @@ function handleBlock( block ) {
 		}
 	});
 
+
 	/**
 	 * Render
 	 * data -> links -> listItems -> list -> nav
 	 */
 	const nav = renderNav([
-		renderList(
-			data.map( renderLink ).map( renderListItem )
-		)
+		renderList( data.map( renderLink ).map( renderListItem( regexAppend ) ) )
 	]);
 
 	/**
@@ -169,10 +169,20 @@ function renderList( children ) {
  * @param {HTMLElement} child
  * @return {HTMLElement} listItem
  */
-function renderListItem( child ) {
-	const listItem = document.createElement( 'li' );
-	listItem.appendChild( child );
-	return listItem;
+function renderListItem( regexAppend ) {
+	return (child) => {
+		const listItem = document.createElement( 'li' );
+		const appendText = getAppendText( regexAppend, child.textContent );
+		
+		if( appendText ) {
+			child.textContent = child.textContent.replace(appendText, "");
+			listItem.append(document.createTextNode( appendText ));
+		}
+		
+		listItem.prepend( child );
+
+		return listItem;
+	}
 }
 
 /**
@@ -231,6 +241,20 @@ function getRegexFunction( regexPattern ) {
 			textContent: result.pop()
 		};
 	}
+}
+
+/**
+ * Get Append Text
+ *
+ * @param {String} regexAppend
+ * @param {String} textContent
+ * @return {String}
+ */
+function getAppendText( regexAppend, textContent ) {		
+	if( isNonEmptyString( regexAppend ) ) {
+		return (new RegExp( regexAppend, 'mi' )).exec( textContent );
+	}
+	return '';
 }
 
 /**
