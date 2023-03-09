@@ -21,6 +21,7 @@ function handleBlock( block ) {
 	}
 
 	const regexPattern = block.dataset?.regexPattern ? block.dataset.regexPattern : '';
+	const regexAppend = block.dataset?.regexAppend ? block.dataset.regexAppend : '';
 
 	/**
 	 * Data
@@ -50,14 +51,17 @@ function handleBlock( block ) {
 		}
 	});
 
+
 	/**
 	 * Render
 	 * data -> links -> listItems -> list -> nav
 	 */
+	renderData = data
+		.map( renderLink )
+		.map( renderListItem( regexAppend ) );
+
 	const nav = renderNav([
-		renderList(
-			data.map( renderLink ).map( renderListItem )
-		)
+		renderList( renderData )
 	]);
 
 	/**
@@ -169,10 +173,24 @@ function renderList( children ) {
  * @param {HTMLElement} child
  * @return {HTMLElement} listItem
  */
-function renderListItem( child ) {
-	const listItem = document.createElement( 'li' );
-	listItem.appendChild( child );
-	return listItem;
+function renderListItem( regexAppend ) {
+	return (child) => {
+		const listItem = document.createElement( 'li' );
+		let appendText = '';
+		
+		if( isNonEmptyString( regexAppend ) ) {
+			appendText = (new RegExp( regexAppend, 'mi' )).exec( child.textContent );
+		}
+		
+		if( appendText ) {
+			child.textContent = child.textContent.replace(appendText, "");
+			listItem.append(document.createTextNode( appendText ));
+		}
+		
+		listItem.prepend( child );
+
+		return listItem;
+	}
 }
 
 /**
