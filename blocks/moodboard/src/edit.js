@@ -1,21 +1,10 @@
 /**
- * React hook that is used to mark the block wrapper element.
- * It provides all the necessary props like the class name.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
+ * Edit
  */
+
 import { useBlockProps, useInnerBlocksProps, __experimentalGetGapCSSValue, InspectorControls, useSetting } from '@wordpress/block-editor';
-
 import { __ } from '@wordpress/i18n';
-
 import { __experimentalUseCustomUnits as useCustomUnits, PanelBody, __experimentalUnitControl as UnitControl } from '@wordpress/components';
-
-/**
- * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
- * Those files can contain any CSS code that gets applied to the editor.
- *
- * @see https://www.npmjs.com/package/@wordpress/scripts#using-css
- */
 import './editor.scss';
 
 const allowedBlocks = [
