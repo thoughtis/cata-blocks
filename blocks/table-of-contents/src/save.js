@@ -18,8 +18,12 @@ import { useBlockProps, RichText } from '@wordpress/block-editor';
 export default function save( { attributes } ) {
 	return (
 		<div { ...useBlockProps.save() } id="toc-entry-point">
-			<details open>
-				<RichText.Content tagName="summary" value={attributes?.summary || 'Table of Contents'} />
+			<details open={ 'defaultClosed' === attributes.behavior ? null : 'true' }>
+				<RichText.Content
+					tagName="summary"
+					value={attributes?.summary || 'Table of Contents'}
+					onClick={ 'alwaysOpen' === attributes?.behavior ? 'return false;' : null}
+				/>
 			</details>
 		</div>
 	);
