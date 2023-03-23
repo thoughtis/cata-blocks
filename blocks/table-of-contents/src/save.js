@@ -19,7 +19,7 @@ export default function save( { attributes } ) {
 	const DetailsElement = 'alwaysOpen' === attributes.behavior ? 'div' : 'details';
 	return (
 		<div { ...useBlockProps.save() } id="toc-entry-point">
-			<DetailsElement open={ 'startClosed' === attributes.behavior ? null : 'true' }>
+			<DetailsElement open={ 'startOpen' === attributes.behavior ? 'true' : null }>
 				<RichText.Content
 					tagName={'alwaysOpen' === attributes.behavior ? 'p' : 'summary' }
 					value={attributes.summary || 'Table of Contents'}
