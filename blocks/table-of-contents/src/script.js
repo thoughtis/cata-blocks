@@ -101,7 +101,7 @@ function getHeadings( content ) {
  */
 function appendNav( block, nav ) {
 
-	const details = block.querySelector('details');
+	const details = block.firstElementChild;
 
 	if ( null !== details ) {
 		// After v0.7.6 <details> is server-side generated

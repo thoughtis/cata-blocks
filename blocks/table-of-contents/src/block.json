@@ -16,7 +16,7 @@
 		"summary": {
 			"type": "string",
 			"source": "html",
-			"selector": "summary",
+			"selector": "summary,.wp-block-cata-toc__summary",
 			"default": "Table of Contents"
 		},
 		"behavior": {
