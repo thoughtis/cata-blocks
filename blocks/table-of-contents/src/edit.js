@@ -66,9 +66,9 @@ export default function Edit( { attributes, setAttributes, clientId, onReplace, 
 					value={attributes.behavior}
 					isBlock
 				>
-					<ToggleGroupControlOption value="defaultClosed" label="Default Closed" />
-					<ToggleGroupControlOption value="defaultOpen" label="Default Open" />
 					<ToggleGroupControlOption value="alwaysOpen" label="Always Open" />
+					<ToggleGroupControlOption value="startOpen" label="Start Open" />
+					<ToggleGroupControlOption value="startClosed" label="Start Closed" />
 				</ToggleGroupControl>
 			</PanelBody>
 		</InspectorControls>
