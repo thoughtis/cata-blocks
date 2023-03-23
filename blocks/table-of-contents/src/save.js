@@ -16,13 +16,13 @@ import { useBlockProps, RichText } from '@wordpress/block-editor';
  * @return {WPElement} Element to render.
  */
 export default function save( { attributes } ) {
-	const DetailsElement = 'alwaysOpen' === attributes?.behavior ? 'div' : 'details';
+	const DetailsElement = 'alwaysOpen' === attributes.behavior ? 'div' : 'details';
 	return (
 		<div { ...useBlockProps.save() } id="toc-entry-point">
-			<DetailsElement open={ 'startClosed' === attributes?.behavior ? null : 'true' }>
+			<DetailsElement open={ 'startClosed' === attributes.behavior ? null : 'true' }>
 				<RichText.Content
-					tagName={'alwaysOpen' === attributes?.behavior ? 'p' : 'summary' }
-					value={attributes?.summary || 'Table of Contents'}
+					tagName={'alwaysOpen' === attributes.behavior ? 'p' : 'summary' }
+					value={attributes.summary || 'Table of Contents'}
 					className="wp-block-cata-toc__summary"
 				/>	
 			</DetailsElement>
