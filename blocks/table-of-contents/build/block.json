@@ -1,4 +1,5 @@
 {
+	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 2,
 	"name": "cata/toc",
 	"version": "0.1.0",
@@ -15,8 +16,12 @@
 		"summary": {
 			"type": "string",
 			"source": "html",
-			"selector": "summary",
+			"selector": "summary,.wp-block-cata-toc__summary",
 			"default": "Table of Contents"
+		},
+		"behavior": {
+			"type": "string",
+			"default": "alwaysOpen"
 		}
 	},
 	"example": {
