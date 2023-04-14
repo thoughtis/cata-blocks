@@ -1,10 +1,8 @@
 /**
  * Table of Contents
  */
-const tocBlocksRendered = new CustomEvent( 'tocBlocksRendered' );
-
 document.querySelectorAll( '.wp-block-cata-toc' ).forEach( handleBlock );
-document.dispatchEvent( tocBlocksRendered );
+document.dispatchEvent( new CustomEvent( 'tocBlocksRendered' ) );
 
 /**
  * Handle Block
