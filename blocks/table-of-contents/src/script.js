@@ -1,7 +1,8 @@
 /**
  * Table of Contents
  */
-document.querySelectorAll( '.wp-block-cata-toc' ).forEach(handleBlock);
+document.querySelectorAll( '.wp-block-cata-toc' ).forEach( handleBlock );
+document.dispatchEvent( new CustomEvent( 'tocBlocksRendered' ) );
 
 /**
  * Handle Block
