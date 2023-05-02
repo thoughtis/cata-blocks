@@ -61,6 +61,11 @@ require_once __DIR__ . '/blocks/products/products.php';
 require_once __DIR__ . '/blocks/table-of-contents/table-of-contents.php';
 
 /**
+ * FAQ
+ */
+require_once __DIR__ . '/blocks/faq/faq.php';
+
+/**
  * Trivia Pattern
  */
 require_once __DIR__ . '/patterns/trivia/trivia.php';

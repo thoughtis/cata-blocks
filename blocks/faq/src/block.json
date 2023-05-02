@@ -1,0 +1,25 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "cata/faq",
+	"version": "0.1.0",
+	"title": "FAQ",
+	"category": "",
+	"description": "",
+	"attributes": {
+		"question": {
+			"type": "string",
+			"source": "html",
+			"selector": "h1,h2,h3,h4,h5,h6,.wp-block-cata-toc__question"
+		}
+	},
+	"example": {
+		
+	},
+	"supports": {
+
+	},
+	"textdomain": "cata",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css"
+}
