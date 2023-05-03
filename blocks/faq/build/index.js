@@ -24,13 +24,6 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
-/**
- * Allowed Blocks
- * Gotta be defined outside of the useInnerBlocksProp function call.
- * @link https://fabian-kaegy.com/define-allowedblocks-outside-of-jsx-for-useinnerblocksprops-function/
- * @link https://github.com/WordPress/gutenberg/pull/30274
- */
-
 const ALLOWED_BLOCKS = ['core/heading', 'core/paragraph', 'core/list'];
 const TEMPLATE = [['core/heading', {
   className: 'wp-block-cata-faq__question',
