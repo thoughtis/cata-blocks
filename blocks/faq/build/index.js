@@ -25,28 +25,36 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /**
+ * Allowed Blocks
+ * Gotta be defined outside of the useInnerBlocksProp function call.
+ * @link https://fabian-kaegy.com/define-allowedblocks-outside-of-jsx-for-useinnerblocksprops-function/
+ * @link https://github.com/WordPress/gutenberg/pull/30274
+ */
+
+const ALLOWED_BLOCKS = ['core/heading', 'core/paragraph', 'core/list'];
+const TEMPLATE = [['core/heading', {
+  className: 'wp-block-cata-faq__question',
+  level: 4,
+  placeholder: 'Enter question...'
+}], ['core/group', {
+  className: 'wp-block-cata-faq__answer'
+}, [['core/paragraph', {
+  placeholder: 'Enter answer...'
+}]]]];
+/**
  * Edit
  * 
  * @export
  * @return {WPElement} Edit
  */
 
-function Edit(_ref) {
-  let {
-    attributes,
-    setAttributes
-  } = _ref;
+function Edit() {
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)();
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", blockProps, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.RichText, {
-    tagName: "h4",
-    value: (attributes === null || attributes === void 0 ? void 0 : attributes.question) || '',
-    onChange: nextQuestion => setAttributes({
-      question: nextQuestion
-    }),
-    placeholder: "Enter question here"
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    class: "wp-block-cata-faq__answer"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks, null)));
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", blockProps, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks, {
+    allowedBlocks: ALLOWED_BLOCKS,
+    template: TEMPLATE,
+    templateLock: 'false'
+  }));
 }
 
 /***/ }),
@@ -78,18 +86,9 @@ __webpack_require__.r(__webpack_exports__);
  * @return {WPElement} Save
  */
 
-function Save(_ref) {
-  let {
-    attributes
-  } = _ref;
+function Save() {
   const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save();
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", blockProps, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.RichText.Content, {
-    tagName: "h4",
-    value: (attributes === null || attributes === void 0 ? void 0 : attributes.question) || '',
-    className: "wp-block-cata-faq__question"
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    class: "wp-block-cata-faq__answer"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InnerBlocks.Content, null)));
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", blockProps, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InnerBlocks.Content, null));
 }
 
 /***/ }),

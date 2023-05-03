@@ -2,7 +2,7 @@
  * Save
  */
 
-import { useBlockProps, RichText, InnerBlocks } from '@wordpress/block-editor';
+import { useBlockProps, InnerBlocks } from '@wordpress/block-editor';
 
 /**
  * Save
@@ -10,18 +10,11 @@ import { useBlockProps, RichText, InnerBlocks } from '@wordpress/block-editor';
  * @export
  * @return {WPElement} Save
  */
-export default function Save( { attributes } ) {
+export default function Save() {
 	const blockProps = useBlockProps.save();
 	return (
 		<div { ...blockProps } >
-			<RichText.Content
-				tagName="h4"
-				value={ attributes?.question || '' }
-				className="wp-block-cata-faq__question"
-			/>
-			<div class="wp-block-cata-faq__answer">
-				<InnerBlocks.Content />
-			</div>
+			<InnerBlocks.Content />
 		</div>
 	);
 }

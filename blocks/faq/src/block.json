@@ -6,18 +6,9 @@
 	"title": "FAQ",
 	"category": "",
 	"description": "",
-	"attributes": {
-		"question": {
-			"type": "string",
-			"source": "html",
-			"selector": "h1,h2,h3,h4,h5,h6,.wp-block-cata-toc__question"
-		}
-	},
-	"example": {
-		
-	},
 	"supports": {
-
+		"html": false,
+		"customClassName": false
 	},
 	"textdomain": "cata",
 	"editorScript": "file:./index.js",
