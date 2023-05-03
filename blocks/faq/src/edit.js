@@ -16,7 +16,7 @@ export default function Edit( { attributes, setAttributes } ) {
 	return (
 		<div { ...blockProps } >
 			<RichText
-				tagName="h2"
+				tagName="h4"
 				value={ attributes?.question || '' }
 				onChange={ ( nextQuestion ) => setAttributes( { question: nextQuestion } ) }
 				placeholder="Enter question here"

@@ -15,7 +15,7 @@ export default function Save( { attributes } ) {
 	return (
 		<div { ...blockProps } >
 			<RichText.Content
-				tagName="h2"
+				tagName="h4"
 				value={ attributes?.question || '' }
 				className="wp-block-cata-faq__question"
 			/>
