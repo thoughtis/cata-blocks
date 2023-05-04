@@ -27,7 +27,7 @@ __webpack_require__.r(__webpack_exports__);
 const ALLOWED_BLOCKS = ['core/heading', 'core/paragraph', 'core/list'];
 const TEMPLATE = [['core/heading', {
   className: 'wp-block-cata-faq__question',
-  level: 4,
+  level: 3,
   placeholder: 'Enter question...'
 }], ['core/group', {
   className: 'wp-block-cata-faq__answer'
@@ -45,8 +45,7 @@ function Edit() {
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)();
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", blockProps, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks, {
     allowedBlocks: ALLOWED_BLOCKS,
-    template: TEMPLATE,
-    templateLock: 'false'
+    template: TEMPLATE
   }));
 }
 
@@ -236,19 +235,13 @@ __webpack_require__.r(__webpack_exports__);
       blocks: ['faq-block-for-gutenberg/faq'],
       transform: _ref => {
         let {
-          attributes,
-          content,
           question,
           answer
         } = _ref;
-        console.log('attributes: ' + attributes);
-        console.log('content: ' + content);
-        console.log('question: ' + question);
-        console.log('answer: ' + answer);
         const newQuestion = (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__.createBlock)('core/heading', {
           content: question,
-          className: 'wp-blocks-cata-faq',
-          level: 4
+          className: 'wp-blocks-cata-faq__question',
+          level: 3
         });
         const newAnswerText = (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__.createBlock)('core/paragraph', {
           content: answer
@@ -256,7 +249,6 @@ __webpack_require__.r(__webpack_exports__);
         const newAnswer = (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__.createBlock)('core/group', {
           className: 'wp-block-cata-faq__answer'
         }, [newAnswerText]);
-        console.log(newQuestion);
         return (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__.createBlock)('cata/faq', {}, [newQuestion, newAnswer]);
       }
     }]

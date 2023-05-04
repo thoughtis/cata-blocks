@@ -19,16 +19,11 @@ registerBlockType( 'cata/faq', {
 			{
 				type: 'block',
 				blocks: [ 'faq-block-for-gutenberg/faq' ],
-				transform: ( { attributes, content, question, answer } ) => {
-					console.log('attributes: ' + attributes);
-					console.log('content: ' + content);
-					console.log('question: ' + question);
-					console.log('answer: ' + answer);
-
+				transform: ( { question, answer } ) => {
 					const newQuestion = createBlock( 'core/heading', {
 						content: question,
-						className: 'wp-blocks-cata-faq',
-						level: 4,
+						className: 'wp-blocks-cata-faq__question',
+						level: 3,
 					} );
 
 					const newAnswerText = createBlock( 'core/paragraph', {
@@ -44,8 +39,6 @@ registerBlockType( 'cata/faq', {
 							newAnswerText,
 						] 
 					)
-
-					console.log( newQuestion );
 
 					return createBlock( 'cata/faq', {}, [
 						newQuestion,

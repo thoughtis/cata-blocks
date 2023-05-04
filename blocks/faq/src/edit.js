@@ -12,7 +12,7 @@ const ALLOWED_BLOCKS = [
 ];
 
 const TEMPLATE = [
-	['core/heading', { className: 'wp-block-cata-faq__question', level: 4, placeholder: 'Enter question...' } ],
+	['core/heading', { className: 'wp-block-cata-faq__question', level: 3, placeholder: 'Enter question...' } ],
 	['core/group', { className: 'wp-block-cata-faq__answer' }, [
 		[ 'core/paragraph', { placeholder: 'Enter answer...' } ],
 	] ],
@@ -28,7 +28,7 @@ export default function Edit() {
 	const blockProps = useBlockProps();
 	return (
 		<div { ...blockProps } >
-			<InnerBlocks allowedBlocks={ ALLOWED_BLOCKS } template={ TEMPLATE } templateLock={ 'false' } />
+			<InnerBlocks allowedBlocks={ ALLOWED_BLOCKS } template={ TEMPLATE } />
 		</div>
 	);
 }
