@@ -1,6 +1,6 @@
 <?php
 /**
- * Collect Structured Data
+ * FAQ Data Collector
  *
  * @package Cata\Blocks
  */
@@ -8,10 +8,10 @@
 namespace Cata\Blocks;
 
 /**
- * Collect Structured Data
+ * FAQ Data Collector
  */
 class FAQ_Data_Collector {
-	private $faq_structured_data_array = array();
+	private $faq_data_array = array();
 
 	/**
 	 * Construct
@@ -27,7 +27,7 @@ class FAQ_Data_Collector {
 	 * @param array $block
 	 * @return string
 	 */
-	public function collect_faq_data( string $block_content, array $block ) {
+	public function collect_faq_data( string $block_content, array $block ) : string {
 		if ( 'cata/faq' !== $block['blockName']  ) {
 			return $block_content;
 		}
@@ -49,9 +49,9 @@ class FAQ_Data_Collector {
 	/**
 	 * Get FAQ Data
 	 * 
-	 * @return string
+	 * @return array
 	 */
-	public function get_faq_data() {
+	public function get_faq_data() : array {
 		return $this->faq_data_array;
 	}
 

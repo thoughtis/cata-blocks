@@ -22,9 +22,9 @@ function register_faq_block() {
 add_action( 'init', __NAMESPACE__ . '\\register_faq_block' );
 
 /**
- * Register Block Styles
+ * Register FAQ Block Styles
  */
-function register_faq_block_styles() : void {
+function register_faq_block_styles() {
 	register_block_style(
 		'cata/faq',
 		array(
@@ -38,7 +38,7 @@ function register_faq_block_styles() : void {
 add_action( 'init', __NAMESPACE__ . '\\register_faq_block_styles' );
 
 /**
- * Start Queue
+ * FAQ Block Queue
  */
 function faq_block_queue() {
 	if ( ! has_block('cata/faq') ) {
