@@ -4,8 +4,8 @@
 	"name": "cata/faq",
 	"version": "0.1.0",
 	"title": "FAQ",
-	"category": "",
-	"description": "",
+	"category": "text",
+	"description": "A text block for content in a question and answer format.",
 	"supports": {
 		"html": false,
 		"customClassName": false
