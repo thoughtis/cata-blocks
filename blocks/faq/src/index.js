@@ -22,7 +22,7 @@ registerBlockType( 'cata/faq', {
 				transform: ( { question, answer } ) => {
 					const newQuestion = createBlock( 'core/heading', {
 						content: question,
-						className: 'wp-blocks-cata-faq__question',
+						className: 'wp-block-cata-faq__question',
 						level: 3,
 					} );
 

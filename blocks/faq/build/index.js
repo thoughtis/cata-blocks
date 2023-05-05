@@ -240,7 +240,7 @@ __webpack_require__.r(__webpack_exports__);
         } = _ref;
         const newQuestion = (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__.createBlock)('core/heading', {
           content: question,
-          className: 'wp-blocks-cata-faq__question',
+          className: 'wp-block-cata-faq__question',
           level: 3
         });
         const newAnswerText = (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__.createBlock)('core/paragraph', {
