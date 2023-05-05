@@ -40,7 +40,7 @@ class FAQ_Data_Collector {
 			$answer = trim( str_replace( array( "\r", "\n", reset( $matches ) ), '', $block_content ) );
 			$answer = $this->strip_faq_tags( $answer );
 			
-			array_push( $this->faq_structured_data_array, array( $question, $answer ) );
+			array_push( $this->faq_data_array, array( $question, $answer ) );
 		}
 
 		return $block_content;
@@ -52,7 +52,7 @@ class FAQ_Data_Collector {
 	 * @return string
 	 */
 	public function get_faq_data() {
-		return $this->faq_structured_data_array;
+		return $this->faq_data_array;
 	}
 
 	/**
