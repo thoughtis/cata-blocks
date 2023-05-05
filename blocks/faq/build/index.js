@@ -29,11 +29,9 @@ const TEMPLATE = [['core/heading', {
   className: 'wp-block-cata-faq__question',
   level: 3,
   placeholder: 'Enter question...'
-}], ['core/group', {
-  className: 'wp-block-cata-faq__answer'
-}, [['core/paragraph', {
+}], ['core/paragraph', {
   placeholder: 'Enter answer...'
-}]]]];
+}]];
 /**
  * Edit
  * 
@@ -243,12 +241,9 @@ __webpack_require__.r(__webpack_exports__);
           className: 'wp-block-cata-faq__question',
           level: 3
         });
-        const newAnswerText = (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__.createBlock)('core/paragraph', {
+        const newAnswer = (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__.createBlock)('core/paragraph', {
           content: answer
         });
-        const newAnswer = (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__.createBlock)('core/group', {
-          className: 'wp-block-cata-faq__answer'
-        }, [newAnswerText]);
         return (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__.createBlock)('cata/faq', {}, [newQuestion, newAnswer]);
       }
     }]

@@ -26,19 +26,9 @@ registerBlockType( 'cata/faq', {
 						level: 3,
 					} );
 
-					const newAnswerText = createBlock( 'core/paragraph', {
+					const newAnswer = createBlock( 'core/paragraph', {
 						content: answer,
-					} )
-
-					const newAnswer = createBlock( 
-						'core/group', 
-						{
-							className: 'wp-block-cata-faq__answer',
-						},
-						[
-							newAnswerText,
-						] 
-					)
+					} );
 
 					return createBlock( 'cata/faq', {}, [
 						newQuestion,
