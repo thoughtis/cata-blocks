@@ -37,5 +37,5 @@ registerBlockType( 'cata/faq', {
 				},
 			},
 		]
-	}
+	},
 } );
