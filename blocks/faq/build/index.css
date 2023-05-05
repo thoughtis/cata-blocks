@@ -8,8 +8,8 @@
 .editor-styles-wrapper .is-style-inline .wp-block-cata-faq__question + p {
   display: inline;
 }
-.editor-styles-wrapper .is-style-inline .wp-block-cata-faq__question {
-  margin-right: 1ch;
+.editor-styles-wrapper .is-style-inline .wp-block-cata-faq__question + p {
+  margin-left: 1ch;
 }
 
 /*# sourceMappingURL=index.css.map*/

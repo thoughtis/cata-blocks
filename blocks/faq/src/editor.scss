@@ -9,8 +9,8 @@
 			display: inline;
 		}
 
-		.wp-block-cata-faq__question {
-			margin-right: 1ch;
+		.wp-block-cata-faq__question + p {
+			margin-left: 1ch;
 		}
 	}
 }
