@@ -24,8 +24,6 @@ class Render_FAQ_Data {
 
 	/**
 	 * Render FAQ Data
-	 * 
-	 * @return string
 	 */
 	public function render_faq_data() {
 
@@ -50,6 +48,12 @@ class Render_FAQ_Data {
 		echo '</script>' . "\n";
 	}
 
+	/**
+	 * Render FAQ Data
+	 * 
+	 * @param array $faq
+	 * @return array
+	 */
 	public static function faq_data_to_schema( array $faq ) : array {
 
 		$faq_array = [
