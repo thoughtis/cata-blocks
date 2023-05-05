@@ -31,7 +31,7 @@ class FAQ_Data_Collector {
 		if ( 'cata/faq' !== $block['blockName']  ) {
 			return $block_content;
 		}
-		
+
 		$regex_question = '/<h[1-6].*wp-block-cata-faq__question.*>(.*?)<\/h[1-6]>/is';
 		
 		if( preg_match( $regex_question, $block_content, $matches ) ) {

@@ -26,7 +26,6 @@ class Render_FAQ_Data {
 	 * Render FAQ Data
 	 */
 	public function render_faq_data() {
-
 		$faqs = $this->collector->get_faq_data();
 
 		if ( empty( $faqs ) ) {
@@ -55,7 +54,6 @@ class Render_FAQ_Data {
 	 * @return array
 	 */
 	public static function faq_data_to_schema( array $faq ) : array {
-
 		$faq_array = [
 			'@type' => 'Question',
 			'name' => reset($faq),
@@ -68,5 +66,4 @@ class Render_FAQ_Data {
 
 		return $faq_array;
 	}
-
 }
