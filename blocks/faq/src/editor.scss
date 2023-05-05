@@ -2,7 +2,15 @@
  * The following styles get applied inside the editor only.
  */
 
-// .editor-styles-wrapper {
-// 	.wp-block-cata-faq {
-// 	}
-// }
+.editor-styles-wrapper {
+	.is-style-inline {
+		.wp-block-cata-faq__question,
+		.wp-block-cata-faq__question + p {
+			display: inline;
+		}
+
+		.wp-block-cata-faq__question {
+			margin-right: 1ch;
+		}
+	}
+}
