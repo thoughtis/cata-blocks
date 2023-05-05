@@ -7,8 +7,6 @@
 
 namespace Cata\Blocks;
 
-use WP_HTML_Tag_Processor;
-
 /**
  * Collect Structured Data
  */
@@ -33,14 +31,14 @@ class FAQ_Data_Collector {
 		if ( 'cata/faq' !== $block['blockName']  ) {
 			return $block_content;
 		}
-
-		$faq_html = strip_tags( $block_content, '<h1><h2><h3><h4><h5><h6><p><a><ol><ul><li><b><strong><i><em><br>' );
 		
 		$regex_question = '/<h[1-6].*wp-block-cata-faq__question.*>(.*?)<\/h[1-6]>/is';
-
-		if( preg_match( $regex_question, $faq_html, $matches ) ) {
+		
+		if( preg_match( $regex_question, $block_content, $matches ) ) {
 			$question = trim( wp_strip_all_tags( end( $matches ) ) );
-			$answer = trim( str_replace( array( "\r", "\n", reset( $matches ) ), '', $faq_html ) );
+			
+			$answer = trim( str_replace( array( "\r", "\n", reset( $matches ) ), '', $block_content ) );
+			$answer = $this->strip_faq_tags( $answer );
 			
 			array_push( $this->faq_structured_data_array, array( $question, $answer ) );
 		}
@@ -55,5 +53,36 @@ class FAQ_Data_Collector {
 	 */
 	public function get_faq_data() {
 		return $this->faq_structured_data_array;
+	}
+
+	/**
+	 * Strip FAQ Tags
+	 * 
+	 * @param string $html
+	 * @return string
+	 */
+	public static function strip_faq_tags( string $html ) : string {
+		$allowed_tags = array(
+			'h1' => true,
+			'h2' => true,
+			'h3' => true,
+			'h4' => true,
+			'h5' => true,
+			'h6' => true,
+			'p' => true,
+			'a' => array(
+				'href' => true,
+			),
+			'ol' => true,
+			'ul' => true,
+			'li' => true,
+			'b' => true,
+			'strong' => true,
+			'i' => true,
+			'em' => true,
+			'br' => true,
+		);
+
+		return wp_kses( $html, $allowed_tags );
 	}
 }
