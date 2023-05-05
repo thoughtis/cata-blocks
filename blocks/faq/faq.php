@@ -22,6 +22,22 @@ function register_faq_block() {
 add_action( 'init', __NAMESPACE__ . '\\register_faq_block' );
 
 /**
+ * Register Block Styles
+ */
+function register_faq_block_styles() : void {
+	register_block_style(
+		'cata/faq',
+		array(
+			'name'         => 'inline',
+			'label'        => __( 'Inline', 'cata' ),
+			'is_default'   => false,
+			'inline_style' => 'is-style-inline',
+		)
+	);
+}
+add_action( 'init', __NAMESPACE__ . '\\register_faq_block_styles' );
+
+/**
  * Start Queue
  */
 function faq_block_queue() {
