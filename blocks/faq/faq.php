@@ -7,9 +7,6 @@
 
 namespace Cata\Blocks;
 
-require_once  plugin_dir_path( __FILE__ ) . '/includes/structured-data/class-faq-data-collector.php';
-require_once  plugin_dir_path( __FILE__ ) . '/includes/structured-data/class-render-faq-data.php';
-
 /**
  * Register FAQ block
  */
