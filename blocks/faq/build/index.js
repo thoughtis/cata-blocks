@@ -28,7 +28,11 @@ const ALLOWED_BLOCKS = ['core/heading', 'core/paragraph', 'core/list'];
 const TEMPLATE = [['core/heading', {
   className: 'wp-block-cata-faq__question',
   level: 3,
-  placeholder: 'Enter question...'
+  placeholder: 'Enter question...',
+  lock: {
+    'move': true,
+    'remove': true
+  }
 }], ['core/paragraph', {
   placeholder: 'Enter answer...'
 }]];
