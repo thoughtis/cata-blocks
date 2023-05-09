@@ -27,8 +27,6 @@ function register_faq_block_styles() {
 		array(
 			'name'         => 'inline',
 			'label'        => __( 'Inline', 'cata' ),
-			'is_default'   => false,
-			'inline_style' => 'is-style-inline',
 		)
 	);
 }
