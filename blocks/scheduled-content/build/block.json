@@ -1,0 +1,16 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "cata/scheduled-content",
+	"version": "0.1.0",
+	"title": "Scheduled Content",
+	"category": "widgets",
+	"description": "Use this block to schedule content to only be visible to users in a certain timeframe.",
+	"supports": {
+		"html": false,
+		"__experimentalOnEnter": true
+	},
+	"textdomain": "cata",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css"
+}

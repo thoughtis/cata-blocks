@@ -69,6 +69,11 @@ require_once __DIR__ . '/blocks/faq/includes/structured-data/class-render-faq-da
 require_once __DIR__ . '/blocks/faq/faq.php';
 
 /**
+ * Scheduled Content
+ */
+require_once __DIR__ . '/blocks/scheduled-content/scheduled-content.php';
+
+/**
  * Trivia Pattern
  */
 require_once __DIR__ . '/patterns/trivia/trivia.php';
