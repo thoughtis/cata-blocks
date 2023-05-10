@@ -24,6 +24,10 @@ registerBlockType( 'cata/faq', {
 						content: question,
 						className: 'wp-block-cata-faq__question',
 						level: 3,
+						lock: {
+							move: true, 
+							remove: true
+						},
 					} );
 
 					const newAnswer = createBlock( 'core/paragraph', {
