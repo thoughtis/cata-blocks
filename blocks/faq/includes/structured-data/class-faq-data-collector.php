@@ -32,10 +32,10 @@ class FAQ_Data_Collector {
 			return $block_content;
 		}
 
-		$regex_question = '/<h[1-6].*wp-block-cata-faq__question.*>(.*?)<\/h[1-6]>/is';
+		$regex_question = '/<h[1-6].*wp-block-cata-faq__question.*>.*?<\/h[1-6]>/is';
 		
 		if( preg_match( $regex_question, $block_content, $matches ) ) {
-			$question = trim( wp_strip_all_tags( end( $matches ) ) );
+			$question = trim( wp_strip_all_tags( reset( $matches ) ) );
 			
 			$answer = trim( str_replace( array( "\r", "\n", reset( $matches ) ), '', $block_content ) );
 			$answer = $this->strip_faq_tags( $answer );
