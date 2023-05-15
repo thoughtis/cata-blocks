@@ -24,7 +24,13 @@ function register_scheduled_content_block() {
 }
 add_action( 'init', __NAMESPACE__ . '\\register_scheduled_content_block' );
 
-
+/**
+ * Render Scheduled Content Block
+ *
+ * @param array  $attributes
+ * @param string $content
+ * @return string
+ */
 function render_scheduled_content_block( array $attributes, string $content ) : string {	
 	$start_date = isset( $attributes['startDate'] ) ? strtotime( $attributes['startDate'] ) : '';
 	$end_date = isset( $attributes['endDate'] ) ? strtotime( $attributes['endDate'] ) : '' ;
