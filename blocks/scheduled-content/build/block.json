@@ -10,6 +10,14 @@
 		"html": false,
 		"__experimentalOnEnter": true
 	},
+	"attributes": {
+		"startDate": {
+			"type": "string"
+		},
+		"endDate": {
+			"type": "string"
+		}
+	},
 	"textdomain": "cata",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css"
