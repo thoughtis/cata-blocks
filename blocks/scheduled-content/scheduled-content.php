@@ -31,7 +31,11 @@ add_action( 'init', __NAMESPACE__ . '\\register_scheduled_content_block' );
  * @param string $content
  * @return string
  */
-function render_scheduled_content_block( array $attributes, string $content ) : string {	
+function render_scheduled_content_block( array $attributes, string $content ) : string {
+	do_action('qm/debug', date("Y-m-d G:i:s"));
+	do_action('qm/debug', $attributes['startDate']);
+	do_action('qm/debug', $attributes['endDate']);
+
 	$start_date = isset( $attributes['startDate'] ) ? strtotime( $attributes['startDate'] ) : '';
 	$end_date = isset( $attributes['endDate'] ) ? strtotime( $attributes['endDate'] ) : '' ;
 	$today = strtotime( date("Y-m-d G:i:s") );
