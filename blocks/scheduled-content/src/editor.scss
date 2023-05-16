@@ -3,4 +3,8 @@
 	.components-base-control:last-child {
 		margin-bottom: 0;
 	}
+
+	.date-warning {
+		color: var( --wp--preset--color--vivid-red );
+	}
 }
