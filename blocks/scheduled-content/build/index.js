@@ -61,7 +61,7 @@ function Edit(_ref) {
       hasStartDate: newHasStartDate
     })
   })), hasStartDate && hasEndDate && startDate && endDate && new Date(startDate) >= new Date(endDate) && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    class: "date-warning"
+    class: "block-inspector__cata-scheduled-content-date-warning"
   }, "Start date must be before the end date."), hasStartDate && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.DateTimePicker, {
     currentDate: startDate || null,
     onChange: newStartDate => setAttributes({
@@ -81,7 +81,7 @@ function Edit(_ref) {
       hasEndDate: newHasEndDate
     })
   })), hasEndDate && hasStartDate && endDate && startDate && new Date(endDate) <= new Date(startDate) && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    class: "date-warning"
+    class: "block-inspector__cata-scheduled-content-date-warning"
   }, "End date must be after the start date."), hasEndDate && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.DateTimePicker, {
     currentDate: endDate || null,
     onChange: newEndDate => setAttributes({

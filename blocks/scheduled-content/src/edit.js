@@ -38,7 +38,7 @@ export default function Edit( { attributes, setAttributes } ) {
 						endDate &&
 						new Date(startDate) >= new Date( endDate ) &&
 						(
-							<p class="date-warning">Start date must be before the end date.</p>
+							<p style="color: var( --wp--preset--color--vivid-red )">Start date must be before the end date.</p>
 						)
 					}
 					{
@@ -72,7 +72,7 @@ export default function Edit( { attributes, setAttributes } ) {
 						startDate &&
 						new Date( endDate ) <= new Date(startDate) &&
 						(
-							<p class="date-warning">End date must be after the start date.</p>
+							<p style="color: var( --wp--preset--color--vivid-red )">End date must be after the start date.</p>
 						)
 					}
 					{

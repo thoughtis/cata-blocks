@@ -1,10 +1,7 @@
-.block-editor-block-inspector {
+.block-editor-block-inspector .components-datetime {
 	.components-base-control,
 	.components-base-control:last-child {
 		margin-bottom: 0;
 	}
 
-	.date-warning {
-		color: var( --wp--preset--color--vivid-red );
-	}
 }
