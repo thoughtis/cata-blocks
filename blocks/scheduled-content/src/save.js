@@ -2,7 +2,7 @@
  * Save
  */
 
-import { useBlockProps, InnerBlocks } from '@wordpress/block-editor';
+import { InnerBlocks } from '@wordpress/block-editor';
 
 /**
  * Save
@@ -11,10 +11,7 @@ import { useBlockProps, InnerBlocks } from '@wordpress/block-editor';
  * @return {WPElement} Save
  */
 export default function Save() {
-	const blockProps = useBlockProps.save();
 	return (
-		<div { ...blockProps } >
-			<InnerBlocks.Content />
-		</div>
+		<InnerBlocks.Content />
 	);
 }
