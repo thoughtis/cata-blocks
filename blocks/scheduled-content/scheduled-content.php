@@ -1,6 +1,6 @@
 <?php
 /**
- * Blocks > FAQ
+ * Blocks > Scheduled Content
  * 
  * @package Cata\Blocks
  */

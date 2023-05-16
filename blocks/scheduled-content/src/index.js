@@ -1,5 +1,5 @@
 /**
- * FAQ Block
+ * Scheduled Content Block
  */
 
 import { registerBlockType } from '@wordpress/blocks';
