@@ -11,6 +11,14 @@
 		"__experimentalOnEnter": true
 	},
 	"attributes": {
+		"hasStartDate": {
+			"type": "boolean",
+			"default": false
+		},
+		"hasEndDate": {
+			"type": "boolean",
+			"default": false
+		},
 		"startDate": {
 			"type": "string"
 		},
