@@ -4,7 +4,7 @@
  *
  * @see https://developer.wordpress.org/block-editor/packages/packages-block-editor/#useBlockProps
  */
-import { useBlockProps, RichText } from '@wordpress/block-editor';
+import { useBlockProps, RichText, InnerBlocks } from '@wordpress/block-editor';
 
 /**
  * The save function defines the way in which the different attributes should
@@ -17,14 +17,13 @@ import { useBlockProps, RichText } from '@wordpress/block-editor';
  */
 export default function save( { attributes } ) {
 	const DetailsElement = 'alwaysOpen' === attributes.behavior ? 'div' : 'details';
+	const SummaryElement = 'alwaysOpen' === attributes.behavior ? 'p' : 'summary'
 	return (
 		<div { ...useBlockProps.save() } id="toc-entry-point">
 			<DetailsElement open={ 'startOpen' === attributes.behavior ? 'true' : null }>
-				<RichText.Content
-					tagName={'alwaysOpen' === attributes.behavior ? 'p' : 'summary' }
-					value={attributes.summary || 'Table of Contents'}
-					className="wp-block-cata-toc__summary"
-				/>	
+				<SummaryElement className="wp-block-cata-toc__summary">
+					<InnerBlocks.Content />
+				</SummaryElement>
 			</DetailsElement>
 		</div>
 	);
