@@ -29,14 +29,11 @@ import './editor.scss';
  * @return {WPElement} Element to render.
  */
 export default function Edit( { attributes, setAttributes } ) {
-
-	const prevSummaryText = attributes.summary;
-	console.log( prevSummaryText );
 	const SUMMARY_TEMPLATE = [
-		[ 'core/paragraph', { content: prevSummaryText } ],
+		[ 'core/paragraph', { content: attributes.summary || 'Table of Contents' } ],
 	];
 	const ALLOWED_BLOCKS = [ 'core/paragraph' ];
-	
+
 	return (
 		<>
 		<div { ...useBlockProps() } >
