@@ -4,8 +4,7 @@
  *
  * @see https://developer.wordpress.org/block-editor/packages/packages-block-editor/#useBlockProps
  */
-import { InspectorControls, useBlockProps, RichText } from '@wordpress/block-editor';
-import { createBlock, getDefaultBlockName } from '@wordpress/blocks';
+import { InspectorControls, useBlockProps, InnerBlocks } from '@wordpress/block-editor';
 import {
 	PanelBody,
 	__experimentalToggleGroupControl as ToggleGroupControl,
@@ -29,30 +28,18 @@ import './editor.scss';
  *
  * @return {WPElement} Element to render.
  */
-export default function Edit( { attributes, setAttributes, clientId, onReplace, mergeBlocks } ) {
+export default function Edit( { attributes, setAttributes } ) {
+	const SUMMARY_TEMPLATE = [
+		[ 'core/paragraph', { placeholder: 'Table of Contents' } ],
+	];
+	const ALLOWED_BLOCKS = [ 'core/paragraph' ];
 	return (
 		<>
 		<div { ...useBlockProps() } >
-			<RichText
-				placeholder="Add a label to the Table of Contents"
-				allowedFormats={ [ 'core/bold', 'core/italic' ] }
-				tagName="div"
-				value={attributes?.summary || 'Table of Contents'}
-				onChange={(nextSummary)=>{ setAttributes({summary: nextSummary})}}
-				onReplace={ onReplace }
-				onMerge={mergeBlocks}
-				onSplit={ ( value, isOriginal ) => {
-					if ( isOriginal || value ) {
-						return createBlock( 'cata/toc', {
-							...attributes,
-							summary: value,
-							clientId: isOriginal ? clientId : null
-						} );
-					}
-					return createBlock(
-						getDefaultBlockName()
-					)
-				} }
+			<InnerBlocks 
+				allowedBlocks={ ALLOWED_BLOCKS }
+				template={ SUMMARY_TEMPLATE }
+				templateLock="all"
 			/>
 			<ul>
 				<li><a>Links will be generated in the live content</a></li>
