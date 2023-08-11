@@ -17,7 +17,7 @@ import { useBlockProps, RichText, InnerBlocks } from '@wordpress/block-editor';
  */
 export default function save( { attributes } ) {
 	const DetailsElement = 'alwaysOpen' === attributes.behavior ? 'div' : 'details';
-	const SummaryElement = 'alwaysOpen' === attributes.behavior ? 'p' : 'summary'
+	const SummaryElement = 'alwaysOpen' === attributes.behavior ? 'div' : 'summary';
 	return (
 		<div { ...useBlockProps.save() } id="toc-entry-point">
 			<DetailsElement open={ 'startOpen' === attributes.behavior ? 'true' : null }>
