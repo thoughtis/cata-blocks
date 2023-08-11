@@ -33,6 +33,9 @@ export default function Edit( { attributes, setAttributes } ) {
 		[ 'core/paragraph', { placeholder: 'Table of Contents' } ],
 	];
 	const ALLOWED_BLOCKS = [ 'core/paragraph' ];
+
+	console.log( attributes );
+	
 	return (
 		<>
 		<div { ...useBlockProps() } >
