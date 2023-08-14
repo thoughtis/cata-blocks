@@ -30,7 +30,10 @@ import './editor.scss';
  */
 export default function Edit( { attributes, setAttributes } ) {
 	const SUMMARY_TEMPLATE = [
-		[ 'core/paragraph', { content: attributes.summary || 'Table of Contents' } ],
+		[ 'core/paragraph', { 
+			content: attributes.summary || 'Table of Contents',
+			placeholder: 'Enter title...'
+		} ],
 	];
 	const ALLOWED_BLOCKS = [ 'core/paragraph' ];
 
