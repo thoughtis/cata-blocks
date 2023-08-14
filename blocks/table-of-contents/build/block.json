@@ -26,9 +26,9 @@
 			}
 		},
 		"color": {
-            "text": true,
-            "background": true
-        }
+			"text": true,
+			"background": true
+		}
 	},
 	"attributes": {
 		"summary": {
