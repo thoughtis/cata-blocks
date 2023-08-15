@@ -27,7 +27,8 @@
 		},
 		"color": {
 			"text": true,
-			"background": true
+			"background": true,
+			"link": true
 		}
 	},
 	"attributes": {
