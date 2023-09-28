@@ -8,6 +8,8 @@
 
 namespace Cata\Blocks;
 
+use WP_Block;
+
 /**
  * Register Network Link block
  *
@@ -29,15 +31,13 @@ add_action( 'init', __NAMESPACE__ . '\\register_network_link_block' );
 /**
  * Renders the `cata/network-link` block on server.
  *
- * @param Array    $attributes The block attributes.
- * @param String   $content    InnerBlocks content of the Block.
+ * @param array    $attributes The block attributes.
+ * @param string   $content    InnerBlocks content of the Block.
  * @param WP_Block $block      Block object.
- *
  * @return string Rendered HTML of the referenced block.
  */
-function render_block_cata_network_link( $attributes, $content, $block ) {
 	$open_in_new_tab = isset( $block->context['openInNewTab'] ) ? $block->context['openInNewTab'] : false;
-
+function render_block_cata_network_link( array $attributes, string $content, WP_Block $block ) : string {
 	$service     = ( isset( $attributes['service'] ) ) ? $attributes['service'] : 'Icon';
 	$url         = ( isset( $attributes['url'] ) ) ? $attributes['url'] : false;
 	$label       = ( isset( $attributes['label'] ) ) ? $attributes['label'] : block_cata_network_link_get_name( $service );
@@ -80,10 +80,9 @@ function render_block_cata_network_link( $attributes, $content, $block ) {
  *
  * @param string $service The service slug to extract data from.
  * @param string $field The field ('name', 'icon', etc) to extract for a service.
- *
  * @return array|string
  */
-function block_cata_network_link_services( $service = '', $field = '' ) {
+function block_cata_network_link_services( string $service = '', string $field = '' ) : array|string {
 	$services_data = array(
 		'collectiveworld' => array(
 			'name' => 'Collective World',
@@ -128,10 +127,9 @@ function block_cata_network_link_services( $service = '', $field = '' ) {
  * Returns the SVG for social link.
  *
  * @param string $service The service icon.
- *
  * @return string SVG Element for service icon.
  */
-function block_cata_network_link_get_icon( $service ) {
+function block_cata_network_link_get_icon( string $service ) : string {
 	$services = block_cata_network_link_services();
 	if ( isset( $services[ $service ] ) && isset( $services[ $service ]['icon'] ) ) {
 		return $services[ $service ]['icon'];
@@ -144,10 +142,9 @@ function block_cata_network_link_get_icon( $service ) {
  * Returns the brand name for social link.
  *
  * @param string $service The service icon.
- *
  * @return string Brand label.
  */
-function block_cata_network_link_get_name( $service ) {
+function block_cata_network_link_get_name( string $service ) : string {
 	$services = block_cata_network_link_services();
 	if ( isset( $services[ $service ] ) && isset( $services[ $service ]['name'] ) ) {
 		return $services[ $service ]['name'];
