@@ -14,7 +14,6 @@
 		"layout": {
 			"allowSwitching": false,
 			"allowInheriting": false,
-			"allowVerticalAlignment": false,
 			"default": {
 				"type": "flex"
 			}
@@ -58,5 +57,5 @@
 	},
 	"editorScript": "file:./index.js",
 	"editorStyle": "wp-block-cata-network-links-editor",
-	"style": "wp-block-network-links"
+	"style": "wp-block-cata-network-links"
 }
