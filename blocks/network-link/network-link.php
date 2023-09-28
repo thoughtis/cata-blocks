@@ -20,7 +20,7 @@ function register_network_link_block() : void {
 	register_block_type( 
 		__DIR__ . '/build',
 		array(
-			'render_callback' => 'render_block_cata_network_link',
+			'render_callback' => __NAMESPACE__ . '\\render_block_cata_network_link',
 		)
 	);
 }
