@@ -4,9 +4,8 @@
  *
  * @see https://developer.wordpress.org/block-editor/packages/packages-block-editor/#useBlockProps
  */
-import { URLInput, URLPopover, useBlockProps } from '@wordpress/block-editor';
+import { useBlockProps } from '@wordpress/block-editor';
 import { Button } from '@wordpress/components';
-import { useState } from '@wordpress/element';
 
 /**
  * Internal Dependencies
@@ -22,59 +21,6 @@ import { getIconBySite, getNameBySite } from './network-list.js';
 
 import './editor.scss';
 
-const NetworkLinkURLPopover = ( {
-	url,
-	setAttributes,
-	setPopover,
-	popoverAnchor,
-	clientId,
-} ) => {
-	const { removeBlock } = useDispatch( blockEditorStore );
-	return (
-		<URLPopover
-			anchor={ popoverAnchor }
-			onClose={ () => setPopover( false ) }
-		>
-			<form
-				className="block-editor-url-popover__link-editor"
-				onSubmit={ ( event ) => {
-					event.preventDefault();
-					setPopover( false );
-				} }
-			>
-				<div className="block-editor-url-input">
-					<URLInput
-						__nextHasNoMarginBottom
-						value={ url }
-						onChange={ ( nextURL ) =>
-							setAttributes( { url: nextURL } )
-						}
-						placeholder={ __( 'Enter address' ) }
-						disableSuggestions={ true }
-						onKeyDown={ ( event ) => {
-							if (
-								!! url ||
-								event.defaultPrevented ||
-								! [ BACKSPACE, DELETE ].includes(
-									event.keyCode
-								)
-							) {
-								return;
-							}
-							removeBlock( clientId );
-						} }
-					/>
-				</div>
-				<Button
-					icon={ keyboardReturn }
-					label={ __( 'Apply' ) }
-					type="submit"
-				/>
-			</form>
-		</URLPopover>
-	);
-};
-
 /**
  * The edit function describes the structure of your block in the context of the
  * editor. This represents what the editor will render when the block is used.
@@ -83,9 +29,8 @@ const NetworkLinkURLPopover = ( {
  *
  * @return {WPElement} Element to render.
  */
-export default function Edit( { attributes, setAttributes, isSelected } ) {
-	const { service, url } = attributes;
-	const [ showURLPopover, setPopover ] = useState( false );
+export default function Edit( { attributes } ) {
+	const { service } = attributes;
 	const IconComponent = getIconBySite( service );
 	const socialLinkName = getNameBySite( service );
 	const blockProps = useBlockProps();
@@ -97,17 +42,6 @@ export default function Edit( { attributes, setAttributes, isSelected } ) {
 				<span className="cata-network-link-label screen-reader-text">
 					{ socialLinkName }
 				</span>
-				{
-					isSelected && showURLPopover && (
-						<NetworkLinkURLPopover
-							url={ url }
-							setAttributes={ setAttributes }
-							setPopover={ setPopover }
-							popoverAnchor={ popoverAnchor }
-							clientId={ clientId }
-						/>
-					)
-				}
 			</Button>
 		</li>
 	);
