@@ -74,6 +74,12 @@ require_once __DIR__ . '/blocks/faq/faq.php';
 require_once __DIR__ . '/blocks/scheduled-content/scheduled-content.php';
 
 /**
+ * Network Links
+ */
+require_once __DIR__ . '/blocks/network-link/network-link.php';
+require_once __DIR__ . '/blocks/network-links/network-links.php';
+
+/**
  * Trivia Pattern
  */
 require_once __DIR__ . '/patterns/trivia/trivia.php';
