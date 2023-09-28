@@ -1,12 +1,11 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 3,
+	"apiVersion": 2,
 	"name": "cata/network-links",
 	"title": "Network Links",
 	"category": "widgets",
 	"description": "Display logos linking to other sites in the Thought Catalog network.",
-	"keywords": [ "links", "network" ],
-	"textdomain": "default",
+	"keywords": [ "links", "network", "logos" ],
 	"supports": {
 		"align": [ "left", "center", "right" ],
 		"anchor": true,
@@ -56,6 +55,5 @@
 		]
 	},
 	"editorScript": "file:./index.js",
-	"editorStyle": "wp-block-cata-network-links-editor",
-	"style": "wp-block-cata-network-links"
+	"editorStyle": "file:./index.css"
 }
