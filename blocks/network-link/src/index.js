@@ -5,7 +5,6 @@
 /**
  * WordPress dependencies
 */
-import { blockMeta as icon } from '@wordpress/icons';
 import { registerBlockType } from '@wordpress/blocks';
 
 /**
