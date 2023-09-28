@@ -18,7 +18,6 @@ import { getIconBySite, getNameBySite } from './network-list.js';
  *
  * @see https://www.npmjs.com/package/@wordpress/scripts#using-css
  */
-
 import './editor.scss';
 
 /**

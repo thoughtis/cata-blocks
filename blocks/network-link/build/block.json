@@ -7,7 +7,6 @@
 	"category": "widgets",
 	"parent": [ "core/network-links" ],
 	"description": "Display a logo linking to another site in the Thought Catalog network.",
-	"keywords": [ "links", "network", "logos" ],
 	"supports": {
 		"html": false,
 		"reusable": false
@@ -18,6 +17,12 @@
 		},
 		"service": {
 			"type": "string"
+		}
+	},
+	"example": {
+		"attributes": {
+			"service": "thoughtcatalog",
+			"url": "https://thoughtcatalog.com"
 		}
 	},
 	"editorScript": "file:./index.js",
