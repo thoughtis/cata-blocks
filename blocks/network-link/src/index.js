@@ -14,7 +14,6 @@ import edit from './edit';
 import variations from './variations';
 
 registerBlockType( 'cata/network-link', {
-	icon,
-	edit,
-	variations
+	edit: edit,
+	variations: variations
 } );
