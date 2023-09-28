@@ -1,0 +1,25 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "cata/network-link",
+	"version": "0.1.0",
+	"title": "Network Link",
+	"category": "widgets",
+	"parent": [ "core/network-links" ],
+	"description": "Display a logo linking to another site in the Thought Catalog network.",
+	"keywords": [ "links", "network", "logos" ],
+	"supports": {
+		"html": false,
+		"reusable": false
+	},
+	"attributes": {
+		"url": {
+			"type": "string"
+		},
+		"service": {
+			"type": "string"
+		}
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css"
+}
