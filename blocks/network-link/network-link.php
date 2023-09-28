@@ -36,43 +36,23 @@ add_action( 'init', __NAMESPACE__ . '\\register_network_link_block' );
  * @param WP_Block $block      Block object.
  * @return string Rendered HTML of the referenced block.
  */
-	$open_in_new_tab = isset( $block->context['openInNewTab'] ) ? $block->context['openInNewTab'] : false;
 function render_block_cata_network_link( array $attributes, string $content, WP_Block $block ) : string {
 	$service     = ( isset( $attributes['service'] ) ) ? $attributes['service'] : 'Icon';
 	$url         = ( isset( $attributes['url'] ) ) ? $attributes['url'] : false;
 	$label       = ( isset( $attributes['label'] ) ) ? $attributes['label'] : block_cata_network_link_get_name( $service );
-	$rel         = ( isset( $attributes['rel'] ) ) ? $attributes['rel'] : '';
-	$show_labels = array_key_exists( 'showLabels', $block->context ) ? $block->context['showLabels'] : false;
 
-	// Don't render a link if there is no URL set.
 	if ( ! $url ) {
 		return '';
 	}
 
-	/**
-	 * Prepend URL with https:// if it doesn't appear to contain a scheme
-	 * and it's not a relative link starting with //.
-	 */
-	if ( ! parse_url( $url, PHP_URL_SCHEME ) && ! str_starts_with( $url, '//' ) ) {
-		$url = 'https://' . $url;
-	}
-
-	$link  = '<li class="cata-network-link cata-network-link-' . $service . '>';
+	$link  = '<li class="cata-network-link cata-network-link-' . $service . '">';
 	$link .= '<a href="' . esc_url( $url ) . '" class="wp-block-cata-network-link-anchor">';
 	$link .= block_cata_network_link_get_icon( $service );
-	$link .= '<span class="wp-block-cata-network-link-label' . ( $show_labels ? '' : ' screen-reader-text' ) . '">';
+	$link .= '<span class="wp-block-cata-network-link-label screen-reader-text">';
 	$link .= esc_html( $label );
 	$link .= '</span></a></li>';
 
-	$processor = new WP_HTML_Tag_Processor( $link );
-	$processor->next_tag( 'a' );
-	if ( $open_in_new_tab ) {
-		$processor->set_attribute( 'rel', esc_attr( $rel ) . ' noopener nofollow' );
-		$processor->set_attribute( 'target', '_blank' );
-	} elseif ( '' !== $rel ) {
-		$processor->set_attribute( 'rel', esc_attr( $rel ) );
-	}
-	return $processor->get_updated_html();
+	return $link;
 }
 
 /**
