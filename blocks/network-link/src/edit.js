@@ -11,6 +11,7 @@ import { Button } from '@wordpress/components';
  * Internal Dependencies
  */
 import { getIconBySite, getNameBySite } from './network-list.js';
+import DimensionControls from './dimension-controls';
 
 /**
  * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
@@ -28,20 +29,35 @@ import './editor.scss';
  *
  * @return {WPElement} Element to render.
  */
-export default function Edit( { attributes } ) {
-	const { service } = attributes;
+export default function Edit( { clientId, attributes, setAttributes } ) {
+	const { service, width, isLink } = attributes;
 	const IconComponent = getIconBySite( service );
 	const socialLinkName = getNameBySite( service );
-	const blockProps = useBlockProps();
+
+	console.log( width );
+
+	const blockProps = useBlockProps( {
+		style: { width },
+	} );
 
 	return (
-		<li { ...blockProps }>
-			<Button>
-				<IconComponent />
-				<span className="cata-network-link-label screen-reader-text">
-					{ socialLinkName }
-				</span>
-			</Button>
-		</li>
+		<>
+			<DimensionControls
+				clientId={ clientId }
+				attributes={ attributes }
+				setAttributes={ setAttributes }
+			/>
+			<li { ...blockProps } >
+				<Button
+					attributes={ attributes }
+					setAttributes={ setAttributes }
+				>
+					<IconComponent />
+					<span className="cata-network-link-label screen-reader-text">
+						{ socialLinkName }
+					</span>
+				</Button>
+			</li>
+		</>
 	);
 }
