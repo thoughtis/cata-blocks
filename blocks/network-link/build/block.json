@@ -17,6 +17,12 @@
 		},
 		"service": {
 			"type": "string"
+		},
+		"width": {
+			"type": "string"
+		},
+		"isLink": {
+			"type": "boolean"
 		}
 	},
 	"example": {
