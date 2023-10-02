@@ -30,5 +30,5 @@ export const getIconBySite = ( name ) => {
  */
 export const getNameBySite = ( name ) => {
 	const variation = variations.find( ( v ) => v.name === name );
-	return variation ? variation.title : __( 'Social Icon' );
+	return variation ? variation.title : __( 'Thought Catalog' );
 };
