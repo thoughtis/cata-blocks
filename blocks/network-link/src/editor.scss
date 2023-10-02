@@ -15,7 +15,7 @@
 		color: currentColor;
 		height: auto;
 		line-height: 0;
-		width: 12em;
+		inline-size: 100%;
 		padding: 0;
 	}
 
@@ -23,5 +23,6 @@
 		display: block;
 		inline-size: 100%;
 		block-size: auto;
+		overflow: visible;
 	}
 }
