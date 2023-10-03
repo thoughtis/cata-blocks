@@ -1,4 +1,8 @@
 /**
+ * Variations
+ */
+
+/**
  * Internal dependencies
  */
 import {

@@ -1,3 +1,7 @@
+/**
+ * Logos
+ */
+
 export * from './components/collectiveworld';
 export * from './components/creepycatalog';
 export * from './components/quotecatalog';

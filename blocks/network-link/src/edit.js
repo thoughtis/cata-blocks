@@ -34,8 +34,6 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 	const IconComponent = getIconBySite( service );
 	const socialLinkName = getNameBySite( service );
 
-	console.log( width );
-
 	const blockProps = useBlockProps( {
 		style: { width },
 	} );

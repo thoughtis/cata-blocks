@@ -1,7 +1,7 @@
 <?php
 /**
  * Network Link
- * Server-side rendering of the `cata/network-link` blocks.
+ * Server-side rendering of the `cata/network-link` block.
  *
  * @package Cata\Blocks
  */
@@ -32,6 +32,7 @@ add_action( 'init', __NAMESPACE__ . '\\register_network_link_block' );
  * @param array    $attributes The block attributes.
  * @param string   $content    InnerBlocks content of the Block.
  * @param WP_Block $block      Block object.
+ *
  * @return string Rendered HTML of the referenced block.
  */
 function render_block_cata_network_link( array $attributes, string $content, WP_Block $block ) : string {
@@ -59,6 +60,7 @@ function render_block_cata_network_link( array $attributes, string $content, WP_
  *
  * @param string $service The service slug to extract data from.
  * @param string $field The field ('name', 'icon', etc) to extract for a service.
+ * 
  * @return array|string
  */
 function block_cata_network_link_services( string $service = '', string $field = '' ) : array|string {
@@ -106,6 +108,7 @@ function block_cata_network_link_services( string $service = '', string $field =
  * Returns the SVG for social link.
  *
  * @param string $service The service icon.
+ * 
  * @return string SVG Element for service icon.
  */
 function block_cata_network_link_get_icon( string $service ) : string {
@@ -121,6 +124,7 @@ function block_cata_network_link_get_icon( string $service ) : string {
  * Returns the brand name for social link.
  *
  * @param string $service The service icon.
+ * 
  * @return string Brand label.
  */
 function block_cata_network_link_get_name( string $service ) : string {

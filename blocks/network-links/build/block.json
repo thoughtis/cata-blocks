@@ -32,21 +32,21 @@
 	"example": {
 		"innerBlocks": [
 			{
-				"name": "core/social-link",
+				"name": "cata/network-link",
 				"attributes": {
 					"service": "thoughtcatalog",
 					"url": "https://thoughtcatalog.com/"
 				}
 			},
 			{
-				"name": "core/social-link",
+				"name": "cata/network-link",
 				"attributes": {
 					"service": "collectiveworld",
 					"url": "https://collective.world/"
 				}
 			},
 			{
-				"name": "core/social-link",
+				"name": "cata/network-link",
 				"attributes": {
 					"service": "creepycatalog",
 					"url": "https://creepycatalog.com/"
