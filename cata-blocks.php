@@ -12,7 +12,7 @@
  * Description: Block Editor components for use with the Cata theme.
  * Author:      Thought & Expression Co. <devjobs@thought.is>
  * Author URI:  https://thought.is
- * Version:     0.7.19
+ * Version:     0.8.0
  * License:     GPL v3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.txt
  */
@@ -72,6 +72,12 @@ require_once __DIR__ . '/blocks/faq/faq.php';
  * Scheduled Content
  */
 require_once __DIR__ . '/blocks/scheduled-content/scheduled-content.php';
+
+/**
+ * Network Links
+ */
+require_once __DIR__ . '/blocks/network-link/network-link.php';
+require_once __DIR__ . '/blocks/network-links/network-links.php';
 
 /**
  * Trivia Pattern
