@@ -1,6 +1,6 @@
 {
 	"name": "cata-blocks",
-	"version": "0.8.0-beta4",
+	"version": "0.8.0-beta5",
 	"description": "Block Editor components for use with the Cata theme.",
 	"scripts": {},
 	"author": "Thought and Expression Co. <devjobs@thought.is>",
