@@ -4,7 +4,7 @@
 	"name": "cata/rest",
 	"version": "0.1.0",
 	"title": "WordPress REST API",
-	"category": "theme",
+	"category": "widgets",
 	"icon": "smiley",
 	"description": "Use the WordPress REST API to display posts from any WP site.",
 	"supports": {
@@ -34,7 +34,7 @@
 			"default": []
 		}
 	},
-	"textdomain": "thcatacatalog",
+	"keywords": [ "rest", "api" ],
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css"
 }
