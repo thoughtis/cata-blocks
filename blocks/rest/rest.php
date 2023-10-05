@@ -11,11 +11,9 @@ use Throwable;
 
 /**
  * Register REST block
- * 
- * @return void
  */
 function register_rest_block() : void {
-	if ( ! apply_filters( 'cata_blocks_support_network_links_block', true ) ) {
+	if ( ! apply_filters( 'cata_blocks_support_rest_block', true ) ) {
 		return;
 	}
 	register_block_type(
@@ -25,7 +23,7 @@ function register_rest_block() : void {
 		)
 	);
 }
-add_action( 'init', __NAMESPACE__ . '\\cata_rest_block_init' );
+add_action( 'init', __NAMESPACE__ . '\\register_rest_block' );
 
 /**
  * Render Callback
