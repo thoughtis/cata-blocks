@@ -1,0 +1,40 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "cata/rest",
+	"version": "0.1.0",
+	"title": "WordPress REST API",
+	"category": "theme",
+	"icon": "smiley",
+	"description": "Use the WordPress REST API to display posts from any WP site.",
+	"supports": {
+		"align": ["wide","full"],
+		"html": false,
+		"spacing": {
+			"margin": true
+		}
+	},
+	"attributes": {
+		"content" : {
+			"type": "string",
+			"source": "html",
+			"default": "",
+			"selector": ".wp-block-cata-rest"
+		},
+		"layout": {
+			"type": "string",
+			"default": ""
+		},
+		"sorting": {
+			"type": "string",
+			"default": ""
+		},
+		"urls" : {
+			"type": "array",
+			"default": []
+		}
+	},
+	"textdomain": "thcatacatalog",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css"
+}
