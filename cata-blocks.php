@@ -102,13 +102,6 @@ require_once __DIR__ . '/blocks/network-link/network-link.php';
 require_once __DIR__ . '/blocks/network-links/network-links.php';
 
 /**
- * Styles
- */
-require_once __DIR__ . '/styles/overlap/class-overlap.php';
-
-new Styles\Overlap();
-
-/**
  * Trivia Pattern
  */
 require_once __DIR__ . '/patterns/trivia/trivia.php';
