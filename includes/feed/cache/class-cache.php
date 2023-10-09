@@ -6,15 +6,15 @@
  * @since 0.8.1
  */
 
-namespace Cata\Blocks\Rest\Feed;
+namespace Cata\Blocks\Feed;
 
 /**
  * Cache
  */
 class Cache {
 
-	static $data_key_base = 'cata-rest-feed-data-';
-	static $time_key_base = 'cata-rest-feed-time-';
+	static $data_key_base = 'cata-blocks-feed-data-';
+	static $time_key_base = 'cata-blocks-feed-time-';
 	static $autoload = false;
 
 	/**

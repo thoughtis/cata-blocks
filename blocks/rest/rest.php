@@ -109,7 +109,7 @@ function convert_urls_to_posts( array $urls ) : array {
  * @return array $posts
  */
 function convert_url_to_posts( string $url ) : array {
-	return (new Rest\Feed( new Rest\Feed\Cache( $url ), $url ) )->get_posts_allow_side_effects();
+	return (new Feed( new Feed\Cache( $url ), $url ) )->get_posts_allow_side_effects();
 }
 
 /**

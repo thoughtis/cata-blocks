@@ -2,11 +2,11 @@
 /**
  * Feed
  * 
- * @package Cata\Blocks\Rest
+ * @package Cata\Blocks
  * @since 0.8.1
  */
 
-namespace Cata\Blocks\Rest;
+namespace Cata\Blocks;
 
 /**
  * Feed

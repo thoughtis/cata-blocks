@@ -55,8 +55,6 @@ require_once __DIR__ . '/blocks/products/products.php';
 /**
  * REST
  */
-require_once __DIR__ . '/blocks/rest/includes/feed/class-feed.php';
-require_once __DIR__ . '/blocks/rest/includes/feed/cache/class-cache.php';
 require_once __DIR__ . '/blocks/rest/includes/layout/class-layout.php';
 require_once __DIR__ . '/blocks/rest/includes/layout/network/class-network.php';
 require_once __DIR__ . '/blocks/rest/includes/layout/trending/class-trending.php';
@@ -66,6 +64,8 @@ require_once __DIR__ . '/blocks/rest/rest.php';
 /**
  * Feed
  */
+require_once __DIR__ . '/includes/feed/class-feed.php';
+require_once __DIR__ . '/includes/feed/cache/class-cache.php';
 require_once __DIR__ . '/includes/feed/fetch/class-fetch.php';
 require_once __DIR__ . '/includes/feed/update/class-update.php';
 
