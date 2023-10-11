@@ -16,6 +16,7 @@ import apiFetch from '@wordpress/api-fetch';
  */
 import Trending from './components/layout/trending/Trending';
 import Network from './components/layout/network/Network';
+import Compact from './components/layout/compact/Compact';
 
 import './editor.scss';
 
@@ -74,7 +75,16 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 	 * Update Content
 	 */
 	function updateContent() {
-		const LayoutComponent = 'network' === layout ? Network : Trending;
+		let LayoutComponent = Trending;
+
+		switch ( layout ) {
+			case 'network':
+				LayoutComponent = Network;
+				break;
+			case 'compact':
+				LayoutComponent = Compact;
+		}
+
 		setAttributes( {
 			...attributes,
 			content: <LayoutComponent posts={posts} sorting={sorting} />
@@ -116,7 +126,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					</PanelRow>
 					<PanelRow>
 						<TextControl
-							label={__('WP REST API URL', 'thcatacatalog')}
+							label={__('WP REST API URL', 'cata')}
 							type="url"
 							value={url}
 							onChange={setUrl}
@@ -125,7 +135,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 					<PanelRow>
 						<Button
 							variant="primary"
-							text={__('Add URL', 'thcatacatalog')}
+							text={__('Add URL', 'cata')}
 							onClick={()=>{
 								setAttributes({
 									urls: [ ...urls, url ]
@@ -149,7 +159,8 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 							options={[
 								{ 'label': 'Default', 'value': '' },
 								{ 'label': 'Trending', 'value': 'trending' },
-								{ 'label': 'Network', 'value': 'network' }
+								{ 'label': 'Network', 'value': 'network' },
+								{ 'label': 'Compact', 'value': 'compact' },
 							]}
 						/>
 					</PanelRow>
