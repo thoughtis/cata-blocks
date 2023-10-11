@@ -3,6 +3,7 @@
  * Rest
  *
  * @package Cata\Blocks
+ * @since 0.8.1
  */
 
 namespace Cata\Blocks;
@@ -13,6 +14,7 @@ use Throwable;
  * Register REST block
  */
 function register_rest_block() : void {
+	do_action('qm/debug', 'middleware script enqueued');
 	if ( ! apply_filters( 'cata_blocks_support_rest_block', true ) ) {
 		return;
 	}

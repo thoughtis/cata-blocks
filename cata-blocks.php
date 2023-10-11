@@ -24,6 +24,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Middleware
+ */
+// require_once __DIR__ . '/blocks-middleware/blocks-middleware.php';
+// require_once __DIR__ . '/blocks-middleware-2/blocks-middleware.php';
+// require_once __DIR__ . '/blocks-middleware-3/blocks-middleware.php';
+
+/**
  * Aside
  */
 require_once __DIR__ . '/blocks/aside/aside.php';

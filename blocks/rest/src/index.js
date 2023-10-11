@@ -6,7 +6,6 @@
  * External dependencies
  */
 import { registerBlockType } from '@wordpress/blocks';
-import apiFetch from '@wordpress/api-fetch';
 
 /**
  * Internal dependencies
@@ -15,10 +14,18 @@ import Edit from './edit';
 import save from './save';
 
 /**
- * API Fetch Middleware
+ * External dependencies
  */
-import { cacheMiddleware, proxyMiddleware } from './api-fetch-middleware';
+import apiFetch from '@wordpress/api-fetch';
 
+/**
+ * Internal dependencies
+ */
+import { cacheMiddleware, proxyMiddleware } from '../../../blocks-middleware-3/build/index';
+
+/**
+ * Use middleware
+ */
 apiFetch.use( proxyMiddleware );
 apiFetch.use( cacheMiddleware );
 

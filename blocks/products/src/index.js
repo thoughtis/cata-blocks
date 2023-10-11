@@ -6,12 +6,10 @@
  * External dependencies
  */
 import { registerBlockType, registerBlockStyle } from '@wordpress/blocks';
-import apiFetch from '@wordpress/api-fetch';
 
 /**
  * Internal dependencies
  */
-import { cacheMiddleware, proxyMiddleware } from './api-fetch-middleware';
 import Edit from './edit';
 import save from './save';
 
@@ -19,6 +17,16 @@ import save from './save';
  * Style shared between editor and content
  */
 import './style.scss';
+
+/**
+ * External dependencies
+ */
+import apiFetch from '@wordpress/api-fetch';
+
+/**
+ * Internal dependencies
+ */
+import { cacheMiddleware, proxyMiddleware } from '../../../blocks-middleware-3/build/index';
 
 /**
  * Use middleware
