@@ -42,4 +42,3 @@ export default function Trending( { posts, sorting } ) {
 		</div>
 	);
 }
-
