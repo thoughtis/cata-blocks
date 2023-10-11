@@ -97,3 +97,35 @@
 		margin-block-start: 0;
 	}
 }
+
+.wp-block-cata-rest__layout.is-layout-compact {
+	display: flex;
+	flex-direction: column;
+	gap: 1em;
+}
+
+.preview.is-layout-compact {
+	.preview__layout {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1em;
+
+		> div {
+			max-inline-size: 100%;
+		}
+	}
+
+	.preview__start {
+		flex-grow: 1;
+		flex-basis: 10em;
+	}
+
+	.preview__end {
+		flex-grow: 2;
+		flex-basis: 20em;
+	}
+
+	.preview__title {
+		margin: 0;
+	}
+}
