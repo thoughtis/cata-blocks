@@ -19,4 +19,4 @@ function cata_blocks_middleware_enqueue_scripts() {
 		array()
 	);
 }
-add_action( 'init', __NAMESPACE__ . '\\cata_blocks_middleware_enqueue_scripts' );
+add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\cata_blocks_middleware_enqueue_scripts' );
