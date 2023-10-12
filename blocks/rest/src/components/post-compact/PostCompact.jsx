@@ -28,7 +28,7 @@ export default function PostCompact( { post } ) {
 				{ null !== data && (
 					<figure className="preview__image-container">
 						<a rel="bookmark" href={ post.link }>
-							<Image data={ data } dimensions={ dimensions } sizes="(max-width: 40em) 92.5vw, 36em" />
+							<Image data={ data } dimensions={ dimensions } sizes="(max-width: 20em) 46.25vw, 13em" />
 						</a>
 					</figure>
 				) }
