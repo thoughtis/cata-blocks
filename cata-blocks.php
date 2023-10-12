@@ -52,8 +52,6 @@ require_once __DIR__ . '/blocks/newsletter/newsletter.php';
 /**
  * Products
  */
-require_once __DIR__ . '/blocks/products/includes/feed/class-feed.php';
-require_once __DIR__ . '/blocks/products/includes/feed/cache/class-cache.php';
 require_once __DIR__ . '/blocks/products/includes/renderer.php';
 require_once __DIR__ . '/blocks/products/products.php';
 
