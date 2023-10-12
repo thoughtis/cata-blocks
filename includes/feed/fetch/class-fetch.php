@@ -59,7 +59,16 @@ class Fetch {
 	 */
 	public function get_posts() : array|WP_Error {
 
-		$response = vip_safe_wp_remote_request( $this->url, '', 3, 3 );
+		if ( function_exists( 'vip_safe_wp_remote_request' ) ) {
+			$response = vip_safe_wp_remote_request( $this->url, '', 3, 3 );
+		} else {
+			$response = wp_remote_get(
+				$this->url,
+				array(
+					'timeout' => 3
+				)
+			);
+		}
 
 		if ( is_wp_error( $response ) ) {
 			return $response;
