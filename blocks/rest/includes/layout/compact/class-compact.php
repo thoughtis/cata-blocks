@@ -25,51 +25,22 @@ class Compact extends Layout {
 	 */
 	public static function render( string $content, array $posts ) : string {
 	
-		if ( empty( $posts ) || 3 >= count( $posts ) ) {
+		if ( empty( $posts ) ) {
 			return $content;
 		}
 
-		$open  = self::get_opening_tag( $content );
-		$one   = self::render_preview_medium( $posts[0] );
-		$two   = self::render_preview_large( $posts[1] );
-		$three = self::render_section_three( array_slice( $posts, 2, 6 ) );
+		$open = self::get_opening_tag( $content );
+
+		$previews = implode(
+			PHP_EOL,
+			array_map( array( __CLASS__, 'render_preview' ), $posts )
+		);
 
 		return "{$open}
 			<div class=\"wp-block-cata-rest__layout is-layout-compact\">
-				<div>{$one}</div>
-				<div>{$two}</div>
-				<div>{$three}</div>
+				{$previews}
 			</div>
 		</div>";
-	}
-
-	/**
-	 * Render Section Three
-	 * 
-	 * @param array $posts
-	 * @return string
-	 */
-	public static function render_section_three( array $posts ) : string {
-		$previews = implode(
-			PHP_EOL,
-			array_map(
-				array( __CLASS__, 'render_preview_small' ),
-				$posts
-			)
-		);
-		return "<div class=\"wp-block-cata-rest__list line-height-2\">{$previews}</div>";
-	}
-
-	/**
-	 * Render Preview Small
-	 * 
-	 * @param stdClass $post
-	 */
-	public static function render_preview_small( stdClass $post ) : string {
-		$title  = esc_html( $post->title->rendered );
-		$link   = esc_url( $post->link );
-		$anchor = "<a href=\"{$link}\">{$title}</a>";
-		return "<p>{$anchor}</p>";
 	}
 
 	/**
@@ -95,41 +66,5 @@ class Compact extends Layout {
 				</h3>
 			</div>
 		</article>";
-	}
-
-	/**
-	 * Render Preview Medium
-	 * 
-	 * @param stdClass $post
-	 * @return string
-	 */
-	public static function render_preview_medium( stdClass $post ) : string {
-		$image_data = self::get_image( $post );
-		$image = self::render_image(
-			$image_data,
-			array(
-				'sizes'  => '(max-width: 15em) 92.5vw, 15em',
-				'srcset' => self::get_image_dimensions( $image_data, (3 / 2), [ 2560, 1920, 1280, 960, 640, 480, 320 ] ),
-			)
-		);
-		return self::render_preview( $post, $image );
-	}
-
-	/**
-	 * Render Preview Large
-	 * 
-	 * @param stdClass $post
-	 * @return string
-	 */
-	public static function render_preview_large( stdClass $post ) : string {
-		$image_data = self::get_image( $post );
-		$image = self::render_image(
-			$image_data,
-			array(
-				'sizes'  => '(max-width: 20em) 92.5vw, 20em',
-				'srcset' => self::get_image_dimensions( $image_data, (4 / 5), [ 2560, 1920, 1280, 960, 640, 480, 320 ] ),
-			)
-		);
-		return self::render_preview( $post, $image );
 	}
 }
