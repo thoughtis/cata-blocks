@@ -50,9 +50,17 @@ class Compact extends Layout {
 	 * @param string $image
 	 * @return string
 	 */
-	public static function render_preview( stdClass $post, ?string $image = '' ) : string {
+	public static function render_preview( stdClass $post ) : string {
 		$title  = esc_html( $post->title->rendered );
 		$link   = esc_url( $post->link );
+		$image_data = self::get_image( $post );
+		$image = self::render_image(
+			$image_data,
+			array(
+				'sizes'  => '(max-width: 20em) 46.25vw, 13em',
+				'srcset' => self::get_image_dimensions( $image_data, null, [ 2560, 1920, 1280, 960, 640, 480, 320 ] ),
+			)
+		);
 
 		return "<article class=\"preview is-layout-compact\">
 			<figure class=\"preview__image-container\">
