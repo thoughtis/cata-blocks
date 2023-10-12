@@ -70,7 +70,7 @@ class Fetch {
 				'cata-blocks',
 				'Unable to fetch posts from remote.',
 				array(
-					'url' => $this->url
+					'url' => $this->url,
 				)
 			);
 		}
@@ -83,7 +83,7 @@ class Fetch {
 				'Unable to fetch posts from remote.',
 				array(
 					'status' => $status,
-					'url'    => $this->url
+					'url'    => $this->url,
 				)
 			);
 		}
@@ -97,7 +97,7 @@ class Fetch {
 					'cata-blocks',
 					'Unusable response from remove',
 					array(
-						'url' => $this->url
+						'url' => $this->url,
 					)
 				);
 			}
@@ -106,7 +106,7 @@ class Fetch {
 				'cata-blocks',
 				$e->getMessage(),
 				array(
-					'url' => $this->url
+					'url' => $this->url,
 				)
 			);
 		}
