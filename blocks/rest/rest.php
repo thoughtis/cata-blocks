@@ -122,7 +122,8 @@ function convert_url_to_posts( string $url ) : array {
 function get_layout_renderer( string $key ) : callable {
 	$render_classes = array(
 		'network'  => 'Cata\\Blocks\\Rest\\Layout\\Network::render',
-		'trending' => 'Cata\\Blocks\\Rest\\Layout\\Trending::render'
+		'trending' => 'Cata\\Blocks\\Rest\\Layout\\Trending::render',
+		'compact' => 'Cata\\Blocks\\Rest\\Layout\\Compact::render',
 	);
 	if ( '' === $key ) {
 		$key = key( $render_classes );
