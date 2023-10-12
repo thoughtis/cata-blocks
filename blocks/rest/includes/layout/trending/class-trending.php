@@ -36,9 +36,9 @@ class Trending extends Layout {
 
 		return "{$open}
 			<div class=\"wp-block-cata-rest__layout is-layout-trending\">
-				<div class=\"has-serif-font-family\">{$one}</div>
-				<div class=\"has-serif-font-family\">{$two}</div>
-				<div class=\"has-sans-serif-font-family\">{$three}</div>
+				<div>{$one}</div>
+				<div>{$two}</div>
+				<div>{$three}</div>
 			</div>
 		</div>";
 	}
@@ -57,7 +57,7 @@ class Trending extends Layout {
 				$posts
 			)
 		);
-		return "<div class=\"wp-block-cata-rest__list has-step-p-0-font-size line-height-2\">{$previews}</div>";
+		return "<div class=\"wp-block-cata-rest__list line-height-2\">{$previews}</div>";
 	}
 
 	/**
@@ -97,7 +97,7 @@ class Trending extends Layout {
 			</figure>
 			<div class=\"preview__content\">
 				{$kicker}
-				<h3 class=\"preview__title has-step-4-font-size\">
+				<h3 class=\"preview__title\">
 					<a class=\"preview__permalink\" rel=\"bookmark\" href=\"{$link}\">{$title}</a>
 				</h3>
 				{$byline}
@@ -272,7 +272,7 @@ class Trending extends Layout {
 		}
 		$link = esc_url( $category->link );
 		$name = esc_html( $category->name );
-		return "<p class=\"preview__kicker has-step-n-2-font-size\">
+		return "<p class=\"preview__kicker\">
 			<a rel=\"category\" href=\"{$link}\"><strong>{$name}</strong></a>
 		</p>";
 	}

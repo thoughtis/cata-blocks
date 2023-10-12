@@ -26,10 +26,10 @@ export default function Trending( { posts, sorting } ) {
 
 	return (
 		<div className="wp-block-cata-rest__layout is-layout-trending">
-			<div className="has-serif-font-family"><PostMedium post={clonedPosts[0]} /></div>
-			<div className="has-serif-font-family"><PostLarge post={clonedPosts[1]} /></div>
-			<div className="has-sans-serif-font-family">
-				<div className="wp-block-cata-rest__list has-step-p-0-font-size line-height-2">
+			<div><PostMedium post={clonedPosts[0]} /></div>
+			<div><PostLarge post={clonedPosts[1]} /></div>
+			<div>
+				<div className="wp-block-cata-rest__list line-height-2">
 					{
 						clonedPosts.slice(2,8).map( ( post ) => {
 							return (

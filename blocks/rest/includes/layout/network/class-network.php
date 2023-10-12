@@ -74,13 +74,13 @@ class Network extends Layout {
 					</figure>
 				</div>
 				<div class=\"preview__end\">
-					<h3 class=\"preview__title has-step-5-font-size has-sans-serif-font-family\">
+					<h3 class=\"preview__title\">
 						<a class=\"preview__permalink\" rel=\"bookmark\" href=\"{$link}\">
 							{$title}
 						</a>
 					</h3>
-					<div class=\"preview__excerpt has-sans-serif-font-family\">{$excerpt}</div>
-					<p class=\"preview__domain has-step-n-1-font-size has-serif-font-family\">{$domain}</p>
+					<div class=\"preview__excerpt\">{$excerpt}</div>
+					<p class=\"preview__domain\">{$domain}</p>
 				</div>
 			</div>
 		</article>";
