@@ -34,13 +34,13 @@ export default function PostNetwork( { post } ) {
 				) }
 				</div>
 				<div className="preview__end">
-					<h3 className="preview__title has-step-5-font-size has-sans-serif-font-family">
+					<h3 className="preview__title">
 						<a rel="bookmark" className="preview__permalink" href={ post.link }><TextContent text={ post.title.rendered } /></a>
 					</h3>
-					<div className="preview__excerpt has-sans-serif-font-family">
+					<div className="preview__excerpt">
 						<RawHTML>{ post.excerpt.rendered }</RawHTML>
 					</div>
-					<p className="preview__domain has-step-n-1-font-size has-serif-font-family">{ (new URL( post.link )).hostname }</p>
+					<p className="preview__domain">{ (new URL( post.link )).hostname }</p>
 				</div>
 			</div>
 		</article>

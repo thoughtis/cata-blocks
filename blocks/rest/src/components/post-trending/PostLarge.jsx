@@ -29,13 +29,13 @@ export default function PostLarge( { post } ) {
 			) }
 			<div className="preview__content">
 				{ null !== category && (
-					<p className="preview__kicker has-step-n-2-font-size">
+					<p className="preview__kicker">
 						<a rel="category" href={ category.link }>
 							<TextContent text={ category.name } />
 						</a>
 					</p>
 				) }
-				<h3 className="preview__title has-step-4-font-size">
+				<h3 className="preview__title">
 					<a rel="bookmark" href={ post.link }>
 						<TextContent text={ post.title.rendered } />
 					</a>

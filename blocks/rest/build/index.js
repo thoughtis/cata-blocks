@@ -521,7 +521,7 @@ function PostCompact(_ref) {
   })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "preview__end"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", {
-    className: "preview__title has-step-3-font-size has-sans-serif-font-family"
+    className: "preview__title"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
     rel: "bookmark",
     className: "preview__permalink",
@@ -593,7 +593,7 @@ function PostNetwork(_ref) {
   })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "preview__end"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", {
-    className: "preview__title has-step-5-font-size has-sans-serif-font-family"
+    className: "preview__title"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
     rel: "bookmark",
     className: "preview__permalink",
@@ -601,9 +601,9 @@ function PostNetwork(_ref) {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_text_content_TextContent__WEBPACK_IMPORTED_MODULE_2__["default"], {
     text: post.title.rendered
   }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "preview__excerpt has-sans-serif-font-family"
+    className: "preview__excerpt"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.RawHTML, null, post.excerpt.rendered)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    className: "preview__domain has-step-n-1-font-size has-serif-font-family"
+    className: "preview__domain"
   }, new URL(post.link).hostname))));
 }
 
@@ -698,14 +698,14 @@ function PostLarge(_ref) {
   }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "preview__content"
   }, null !== category && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    className: "preview__kicker has-step-n-2-font-size"
+    className: "preview__kicker"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
     rel: "category",
     href: category.link
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_text_content_TextContent__WEBPACK_IMPORTED_MODULE_1__["default"], {
     text: category.name
   }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", {
-    className: "preview__title has-step-4-font-size"
+    className: "preview__title"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
     rel: "bookmark",
     href: post.link
@@ -777,14 +777,14 @@ function PostMedium(_ref) {
   }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "preview__content"
   }, null !== category && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    className: "preview__kicker has-step-n-2-font-size"
+    className: "preview__kicker"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
     rel: "category",
     href: category.link
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_text_content_TextContent__WEBPACK_IMPORTED_MODULE_1__["default"], {
     text: category.name
   })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", {
-    className: "preview__title has-step-4-font-size"
+    className: "preview__title"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
     rel: "bookmark",
     href: post.link

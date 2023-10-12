@@ -34,7 +34,7 @@ export default function PostCompact( { post } ) {
 				) }
 				</div>
 				<div className="preview__end">
-					<h3 className="preview__title has-step-3-font-size has-sans-serif-font-family">
+					<h3 className="preview__title">
 						<a rel="bookmark" className="preview__permalink" href={ post.link }><TextContent text={ post.title.rendered } /></a>
 					</h3>
 				</div>

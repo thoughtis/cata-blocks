@@ -32,13 +32,13 @@ export default function PostMedium( { post } ) {
 			) }
 			<div className="preview__content">
 				{ null !== category && (
-					<p className="preview__kicker has-step-n-2-font-size">
+					<p className="preview__kicker">
 						<a rel="category" href={ category.link }>
 							<strong><TextContent text={ category.name } /></strong>
 						</a>
 					</p>
 				) }
-				<h3 className="preview__title has-step-4-font-size">
+				<h3 className="preview__title">
 					<a rel="bookmark" href={ post.link }>
 						<TextContent text={ post.title.rendered } />
 					</a>
