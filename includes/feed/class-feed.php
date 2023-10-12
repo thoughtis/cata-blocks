@@ -55,7 +55,7 @@ class Feed {
 	/**
 	 * Maybe Set Update Schedule
 	 */
-	public function maybe_set_update_schedule() {
+	public function maybe_set_update_schedule() : void {
 		if ( $this->should_schedule() ) {
 			$this->set_update_schedule();
 		}
@@ -73,7 +73,7 @@ class Feed {
 	/**
 	 * Set Update Schedule
 	 */
-	public function set_update_schedule() {
+	public function set_update_schedule() : void {
 		$options = array(
 			'url' => $this->url
 		);
