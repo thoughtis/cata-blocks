@@ -75,11 +75,11 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 	 * Update Content
 	 */
 	function updateContent() {
-		let LayoutComponent = Trending;
+		let LayoutComponent = Network;
 
 		switch ( layout ) {
-			case 'network':
-				LayoutComponent = Network;
+			case 'trending':
+				LayoutComponent = Trending;
 				break;
 			case 'compact':
 				LayoutComponent = Compact;
