@@ -25,6 +25,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Middleware
+ * 
+ * Products block and REST block depend on this file
  */
 require_once __DIR__ . '/blocks-middleware/blocks-middleware.php';
 
