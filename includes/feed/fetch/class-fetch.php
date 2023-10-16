@@ -2,11 +2,11 @@
 /**
  * Fetch
  * 
- * @package Cata\Blocks\Products\Feed
- * @since 0.6.0-beta1
+ * @package Cata\Blocks\Feed
+ * @since 0.8.1
  */
 
-namespace Cata\Blocks\Products\Feed;
+namespace Cata\Blocks\Feed;
 
 use Exception;
 use WP_Error;
@@ -25,7 +25,7 @@ class Fetch {
 
 	/**
 	 * Construct
-	 *
+	 * 
 	 * @param string $url
 	 */
 	public function __construct( string $url ) {
@@ -54,10 +54,10 @@ class Fetch {
 
 	/**
 	 * Get Posts
-	 *
+	 * 
 	 * @return array|WP_Error
 	 */
-	public function get_posts() {
+	public function get_posts() : array|WP_Error {
 
 		if ( function_exists( 'vip_safe_wp_remote_request' ) ) {
 			$response = vip_safe_wp_remote_request( $this->url, '', 3, 3 );
@@ -110,7 +110,7 @@ class Fetch {
 					)
 				);
 			}
-		} catch ( Exception $e ) {
+		} catch( Exception $e ) {
 			return new WP_Error(
 				'cata-blocks',
 				$e->getMessage(),

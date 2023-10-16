@@ -1,19 +1,19 @@
 <?php
 /**
  * Update
- *
- * @package Cata\Blocks\Products\Feed
- * @since 0.6.0-beta1
+ * 
+ * @package Cata\Blocks\Feed
+ * @since 0.8.1
  */
 
-namespace Cata\Blocks\Products\Feed;
+namespace Cata\Blocks\Feed;
 
 /**
  * Update
  */
 class Update {
 
-	const ACTION = 'cata_blocks_product_feed_update';
+	const ACTION = 'cata_blocks_feed_update';
 
 	/**
 	 * Construct

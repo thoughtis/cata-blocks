@@ -2,19 +2,19 @@
 /**
  * Cache
  * 
- * @package Cata\Blocks\Products\Feed
- * @since 0.6.0-beta1
+ * @package Cata\Blocks\Feed
+ * @since 0.8.1
  */
 
-namespace Cata\Blocks\Products\Feed;
+namespace Cata\Blocks\Feed;
 
 /**
  * Cache
  */
 class Cache {
 
-	static $data_key_base = 'cata-products-feed-data-';
-	static $time_key_base = 'cata-products-feed-time-';
+	static $data_key_base = 'cata-blocks-feed-data-';
+	static $time_key_base = 'cata-blocks-feed-time-';
 	static $autoload = false;
 
 	/**

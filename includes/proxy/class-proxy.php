@@ -3,13 +3,13 @@
  * Proxy
  *
  * @package Cata\Blocks
- * @since 0.4.0
+ * @since 0.8.1
  */
 
-namespace Cata\Blocks\Products;
+namespace Cata\Blocks;
 
-use Cata\Blocks\Products\Feed\Cache;
-use Cata\Blocks\Products\Feed\Fetch;
+use Cata\Blocks\Feed\Cache;
+use Cata\Blocks\Feed\Fetch;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
@@ -27,8 +27,6 @@ class Proxy {
 
 	/**
 	 * Register Route Proxy
-	 *
-	 * @return void
 	 */
 	public static function register_route_proxy() {
 		register_rest_route(
@@ -37,7 +35,7 @@ class Proxy {
 			array(
 				'methods'             => 'GET',
 				'callback'            => array( __CLASS__, 'handle_request' ),
-				'permission_callback' => array( __CLASS__, 'permissions' )
+				'permission_callback' => array( __CLASS__, 'permissions' ),
 			)
 		);
 	}
@@ -47,7 +45,7 @@ class Proxy {
 	 *
 	 * @return bool|WP_Error Error if user does not meet permissions requirement.
 	 */
-	public static function permissions() {
+	public static function permissions() : bool|WP_Error {
 		if ( is_user_logged_in() && current_user_can( 'edit_posts' ) ) {
 			return true;
 		}
@@ -66,7 +64,7 @@ class Proxy {
 	 * @param WP_REST_Request $request
 	 * @return WP_REST_Response|WP_Error either an error or a json decoded api response body
 	 */
-	public static function handle_request( WP_REST_Request $request ) {
+	public static function handle_request( WP_REST_Request $request ) : WP_REST_Response|WP_Error {
 		$url   = $request->get_param( 'url' );
 		$fetch = new Fetch( $url );
 		$cache = new Cache( $url );

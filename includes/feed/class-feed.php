@@ -2,11 +2,11 @@
 /**
  * Feed
  * 
- * @package Cata\Blocks\Products
- * @since 0.6.0-beta1
+ * @package Cata\Blocks
+ * @since 0.8.1
  */
 
-namespace Cata\Blocks\Products;
+namespace Cata\Blocks;
 
 /**
  * Feed
@@ -72,7 +72,6 @@ class Feed {
 
 	/**
 	 * Set Update Schedule
-	 * If no event is scheduled, schedule one.
 	 */
 	public function set_update_schedule() : void {
 		$options = array(
