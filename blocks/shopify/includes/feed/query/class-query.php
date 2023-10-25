@@ -15,13 +15,9 @@ class Query {
 	/**
 	 * Construct
 	 * 
-	 * @param int    $count
-	 * @param string $access_token
 	 * @param string $store
 	 */
 	public function __construct(
-		public int $count,
-		private string $access_token,
 		public string $store
 	) {}
 
@@ -42,7 +38,7 @@ class Query {
 	public function get_body() : string {
 		$body = "{
 			products(
-				first:{$this->count},
+				first: 6,
 				reverse: true,
 				query:\"available_for_sale:true\") {
 				nodes {
@@ -77,12 +73,27 @@ class Query {
 		return array(
 			'body'    => $this->get_body(),
 			'headers' => array(
-				'X-Shopify-Storefront-Access-Token' => $this->access_token,
+				'X-Shopify-Storefront-Access-Token' => $this->get_access_token(),
 				'Content-Type'                      => 'application/graphql',
 				'Accept'                            => 'application/json',
 			),
 			'method'  => 'POST',
 		);
+	}
+
+	public function get_access_token() {
+		switch ( $this->store ) {
+			case 'creepy-catalog':
+				$access_token = '4a9a65d08b2b1382d32d135173cbc868';
+				break;
+			case 'shop-catalog':
+				$access_token = '';
+				break;
+			default:
+				$access_token = '';
+		}
+
+		return $access_token;
 	}
 
 	/**

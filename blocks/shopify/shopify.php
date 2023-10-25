@@ -15,32 +15,29 @@ function register_shopify_block() : void {
 	register_block_type(
 		__DIR__ . '/build',
 		array(
-			'render_callback' => __NAMESPACE__ . '\\render_shopify_block',
+			'render_callback' => __NAMESPACE__ . '\\cata_shopify_render_block',
 		)
 	);
 }
 add_action( 'init', __NAMESPACE__ . '\\register_shopify_block' );
 
+function cata_shopify_render_callback( array $attributes, string $content ) : string {
+	try {
+		return cata_rest_render_block( $attributes, $content );
+	} catch( Throwable $e ) {
+		do_action( 'qm/debug', $e );
+		return $content;
+	}	
+}
 
-function render_shopify_block() {
-	do_action('qm/debug', 'rendering shopify block');
-	$default_attrs = array(
-		'count' => 6,
-	);
-
-	$attributes = array_merge(
-		$default_attrs,
-		array(
-			'store'        => get_option( Shopify\Options\Settings\Store::SETTING_NAME, '' ),
-			'access_token' => get_option( Shopify\Options\Settings\Access_Token::SETTING_NAME, '' ),
-		)
-	);
-
-	$query = new Shopify\Feed\Query( ...$attributes );
+function cata_shopify_render_block( array $attributes, string $content ) : string {
+	$store = isset( $attributes['store'] ) ? $attributes['store'] : '';
+	
+	$query = new Shopify\Feed\Query( $store );
 	$cache = new Shopify\Feed\Cache( $query );
 	$feed  = new Shopify\Feed( $cache, $query );
 
-	return Shopify\Shortcode\Render::render_products(
+	return Shopify\Render::render_products(
 		$feed->get_posts_allow_side_effects()
 	);
 }

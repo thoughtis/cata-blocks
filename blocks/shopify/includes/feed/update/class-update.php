@@ -30,20 +30,9 @@ class Update {
 	 *
 	 * @param int $count
 	 */
-	public static function do_scheduled_update( int $count ) : void {
+	public static function do_scheduled_update( string $store ) : void {
 
-		$access_token = get_option( Access_Token::SETTING_NAME, '' );
-		$store        = get_option( Store::SETTING_NAME, '' );
-
-		if ( '' === $access_token || '' === $store ) {
-			return;
-		}
-
-		$query = new Query(
-			count: $count,
-			store: $store,
-			access_token: $access_token
-		);
+		$query = new Query( store: $store );
 
 		$cache = new Cache( $query );
 		$fetch = new Fetch( $query );

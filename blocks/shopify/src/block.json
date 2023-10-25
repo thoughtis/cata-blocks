@@ -16,9 +16,9 @@
 		}
 	},
 	"attributes": {
-		"shopCatalogApiUrlBase": {
+		"store": {
 			"type": "string",
-			"default": "https://shopcatalog.com/wp-json/wc/v3/products/"
+			"default": ""
 		},
 		"category": {
 			"type": "string",
