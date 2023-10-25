@@ -103,18 +103,16 @@ require_once __DIR__ . '/blocks/scheduled-content/scheduled-content.php';
 /**
  * Shopify
  */
-include_once __DIR__ . '/blocks/shopify/includes/options/settings/access-token/class-access-token.php';
-include_once __DIR__ . '/blocks/shopify/includes/options/settings/store/class-store.php';
-include_once __DIR__ . '/blocks/shopify/includes/options/class-options.php';
 include_once __DIR__ . '/blocks/shopify/includes/feed/class-feed.php';
 include_once __DIR__ . '/blocks/shopify/includes/feed/cache/class-cache.php';
 include_once __DIR__ . '/blocks/shopify/includes/feed/fetch/class-fetch.php';
 include_once __DIR__ . '/blocks/shopify/includes/feed/query/class-query.php';
 include_once __DIR__ . '/blocks/shopify/includes/feed/update/class-update.php';
+include_once __DIR__ . '/blocks/shopify/includes/render/class-render.php';
+include_once __DIR__ . '/blocks/shopify/includes/proxy/class-proxy.php';
 require_once __DIR__ . '/blocks/shopify/shopify.php';
 
 new Shopify\Feed\Update();
-new Shopify\Options();
 new Shopify\Proxy();
 
 /**
