@@ -1,0 +1,29 @@
+/**
+ * Internal dependencies
+ */
+import Image from './Image';
+import Price from './Price';
+
+/**
+ * Product
+ * 
+ * @param {object} product
+ */
+export default function Product( { product } ) {
+	return(
+		<article className="wp-block-cata-shopify-product">
+			<div className="wp-block-cata-shopify-product__layout">
+				<Image image={product.featuredImage} />
+				<h3 className="wp-block-cata-shopify-product__title">
+					<a 
+						className="wp-block-cata-shopify-product__link"
+						href={product.onlineStoreUrl}
+					>
+						{product.title}
+					</a>
+				</h3>
+				<Price price={product.priceRange} />
+			</div>
+		</article>
+	);
+}
