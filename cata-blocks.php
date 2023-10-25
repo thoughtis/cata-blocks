@@ -115,6 +115,7 @@ require_once __DIR__ . '/blocks/shopify/shopify.php';
 
 new Shopify\Feed\Update();
 new Shopify\Options();
+new Shopify\Proxy();
 
 /**
  * Network Links
