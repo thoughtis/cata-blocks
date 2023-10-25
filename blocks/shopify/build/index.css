@@ -6,14 +6,14 @@
  *
  * Replace them with your own styles or remove the file completely.
  */
-.wp-block-cata-product__image {
+.wp-block-cata-shopify-product__image {
   margin: 0;
 }
-.wp-block-cata-product__image img {
+.wp-block-cata-shopify-product__image img {
   block-size: auto;
 }
 
-.wp-block-cata-product__link {
+.wp-block-cata-shopify-product__link {
   pointer-events: none;
 }
 

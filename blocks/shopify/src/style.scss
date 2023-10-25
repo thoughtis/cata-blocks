@@ -5,14 +5,14 @@
  * Replace them with your own styles or remove the file completely.
  */
 
-// .wp-block-cata-products {}
-// .wp-block-cata-products__layout {}
+// .wp-block-cata-shopify {}
+// .wp-block-cata-shopify__layout {}
 
-.wp-block-cata-product {
+.wp-block-cata-shopify {
 	text-align: center;
 }
 
-.wp-block-cata-product__layout {
+.wp-block-cata-shopify-product__layout {
 	margin-inline: auto;
 	> * + * {
 		margin-block-start: var(--wp--style--block-gap);
@@ -21,21 +21,21 @@
 
 // Hack we need for now,
 // should really be fixed in HTML and/or editor options for image size.
-.wp-block-cata-product__image img {
+.wp-block-cata-shopify-product__image img {
 	inline-size: 100%;
 }
 
-.wp-block-cata-products.is-style-default {
-	.wp-block-cata-products__layout {
+.wp-block-cata-shopify.is-style-default {
+	.wp-block-cata-shopify__layout {
 		display: grid;
 		gap: 1.5em;
 		grid-template-columns: repeat( auto-fill, minmax( 15.375em, 1fr ) );
 	}
 }
 
-.wp-block-cata-products.is-style-reel {
+.wp-block-cata-shopify.is-style-reel {
 	overflow: auto;
-	.wp-block-cata-products__layout {
+	.wp-block-cata-shopify__layout {
 		display: flex;
 		column-gap: var(--wp--style--block-gap);
 		padding-inline: var(--wp--style--block-gap);
@@ -43,7 +43,7 @@
 		inline-size: fit-content;
 		margin-inline: auto;
 	}
-	.wp-block-cata-product {
+	.wp-block-cata-shopify-product {
 		inline-size: 12em;
 	}
 }
