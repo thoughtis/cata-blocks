@@ -111,12 +111,9 @@ include_once __DIR__ . '/blocks/shopify/includes/feed/cache/class-cache.php';
 include_once __DIR__ . '/blocks/shopify/includes/feed/fetch/class-fetch.php';
 include_once __DIR__ . '/blocks/shopify/includes/feed/query/class-query.php';
 include_once __DIR__ . '/blocks/shopify/includes/feed/update/class-update.php';
-include_once __DIR__ . '/blocks/shopify/includes/shortcode/render/class-render.php';
-// include_once __DIR__ . '/blocks/shopify/includes/shortcode/class-shortcode.php';
 require_once __DIR__ . '/blocks/shopify/shopify.php';
 
 new Shopify\Feed\Update();
-// new Shopify\Shortcode();
 new Shopify\Options();
 
 /**

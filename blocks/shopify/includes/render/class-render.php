@@ -2,11 +2,11 @@
 /**
  * Render
  * 
- * @package Cata\Blocks\Shopify\Shortcode
+ * @package Cata\Blocks\Shopify
  * @since 0.1.0
  */
 
-namespace Cata\Blocks\Shopify\Shortcode;
+namespace Cata\Blocks\Shopify;
 
 use stdClass;
 
@@ -30,8 +30,8 @@ class Render {
 
 		$products_html_string = implode( "\n", $products_html );
 
-		return "<div class=\"wp-block-cata-products is-style-default alignwide\">
-			<div class=\"wp-block-cata-products__layout\">
+		return "<div class=\"wp-block-cata-shopify is-style-default alignwide\">
+			<div class=\"wp-block-cata-shopify__layout\">
 				{$products_html_string}
 			</div>
 		</div>";
@@ -54,11 +54,11 @@ class Render {
 		);
 		$price = self::wrap_price( self::render_price( $product->priceRange ) );
 
-		return "<article class=\"wp-block-cata-product\">
-			<div class=\"wp-block-cata-product__layout tappable-card\">
+		return "<article class=\"wp-block-cata-shopify-product\">
+			<div class=\"wp-block-cata-shopify-product__layout tappable-card\">
 				{$image}
-				<h3 class=\"wp-block-cata-product__title\">
-					<a class=\"wp-block-cata-product__link tappable-card-anchor\" href=\"{$href}\">
+				<h3 class=\"wp-block-cata-shopify-product__title\">
+					<a class=\"wp-block-cata-shopify-product__link tappable-card-anchor\" href=\"{$href}\">
 						{$title}
 					</a>
 				</h3>
@@ -104,7 +104,7 @@ class Render {
 		);
 		$srcset = esc_attr( implode( ', ', $srcset ) );
 
-		return "<figure class=\"wp-block-cata-product__image\">
+		return "<figure class=\"wp-block-cata-shopify-product__image\">
 			<img loading=\"lazy\" src=\"{$src}\" alt=\"{$alt}\" width=\"{$width}\" height=\"{$height}\" sizes=\"{$sizes}\" srcset=\"{$srcset}\">
 		</figure>";
 	}
@@ -170,6 +170,6 @@ class Render {
 	 * @return string
 	 */
 	public static function wrap_price( string $price_html ) : string {
-		return "<div class=\"wp-block-cata-product__price\">{$price_html}</div>";
+		return "<div class=\"wp-block-cata-shopify-product__price\">{$price_html}</div>";
 	}
 }
