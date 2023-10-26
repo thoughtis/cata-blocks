@@ -6,8 +6,8 @@
  * External dependencies
  */
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import { PanelBody, PanelRow, SelectControl } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
+import { PanelBody, PanelRow, SelectControl, TextControl, ToggleControl } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 
 
@@ -29,10 +29,15 @@ import './editor.scss';
  * @return {WPElement} Element to render.
  */
 export default function Edit( { attributes, setAttributes } ) {
-	const {store} = attributes;
-	const [products, setProducts] = useState([]);
+	const {
+		store,
+		count,
+		tag,
+	} = attributes;
 
-	useEffect(updateProducts, [store]);
+	const [products, setProducts] = useState([]);
+	
+	useEffect(updateProducts, [store, count, tag]);
 
 	/**
 	 * Update Products
@@ -42,11 +47,10 @@ export default function Edit( { attributes, setAttributes } ) {
 			path: '/cata/v1/shopify-proxy',
 			method: 'POST',
 			data: { 
-				store: store
+				...attributes
 			},
 		} )
 		.then( ( response ) => {
-			console.log( response );
 			setProducts( response.flat() );
 		} )
 		.catch( handleError );
@@ -64,7 +68,10 @@ export default function Edit( { attributes, setAttributes } ) {
 	return (
 		<>
 			<div { ...useBlockProps() }>
-				<Products products={products} />
+				<Products
+					products={products}
+					display_price={attributes.display_price}
+				/>
 			</div>
 			<InspectorControls>
 				<PanelBody title="Store" initialOpen={false}>
@@ -85,6 +92,32 @@ export default function Edit( { attributes, setAttributes } ) {
 							]}
 						/>
 					</PanelRow>
+				</PanelBody>
+				<PanelBody title="Product Selection" initialOpen={false}>
+					<TextControl
+						label="Product Tag Name"
+						onChange={(nextTag) => setAttributes({tag: nextTag})}
+						type="text"
+						value={tag}
+					/>
+					<TextControl
+						label="Number of Products"
+						onChange={(nextPerPage) => setAttributes({count: nextPerPage})}
+						type="number"
+						value={count}
+					/>
+				</PanelBody>
+				<PanelBody title="Product Block Options" initialOpen={false}>
+					<ToggleControl
+						label="Display product price"
+						help={
+							attributes.display_price
+								? 'Product price shown.'
+								: 'No product price.'
+						}
+						checked={attributes.display_price}
+						onChange={(option) => {setAttributes({ display_price: option})}}
+					/>
 				</PanelBody>
 			</InspectorControls>
 		</>
