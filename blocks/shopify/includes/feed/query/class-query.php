@@ -18,7 +18,7 @@ class Query {
 	 * @param string $store
 	 */
 	public function __construct(
-		public string $store
+		public array $options
 	) {}
 
 	/**
@@ -27,7 +27,7 @@ class Query {
 	 * @return string
 	 */
 	public function get_url() : string {
-		return "https://{$this->store}.myshopify.com/api/2023-01/graphql.json";
+		return "https://{$this->options['store']}.myshopify.com/api/2023-01/graphql.json";
 	}
 
 	/**
@@ -36,11 +36,16 @@ class Query {
 	 * @return string
 	 */
 	public function get_body() : string {
+		$tag = $this->options['tag'];
+
+		$query = 'available_for_sale:true';
+		$query .= $tag ? ' AND tag:'.$tag : '';
+
 		$body = "{
 			products(
-				first: 6,
+				first: {$this->options['count']},
 				reverse: true,
-				query:\"available_for_sale:true\") {
+				query:\"{$query}\") {
 				nodes {
 					title
 					onlineStoreUrl
@@ -82,7 +87,7 @@ class Query {
 	}
 
 	public function get_access_token() {
-		switch ( $this->store ) {
+		switch ( $this->options['store'] ) {
 			case 'creepy-catalog':
 				$access_token = '4a9a65d08b2b1382d32d135173cbc868';
 				break;

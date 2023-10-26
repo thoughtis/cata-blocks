@@ -75,9 +75,7 @@ class Feed {
 	 * If no event is scheduled, schedule one.
 	 */
 	public function set_update_schedule() : void {
-		$options = array(
-			'count' => $this->query->count,
-		);
+		$options = $this->query->options;
 		if ( false !== wp_next_scheduled( Feed\Update::ACTION, $options ) ) {
 			return;
 		}

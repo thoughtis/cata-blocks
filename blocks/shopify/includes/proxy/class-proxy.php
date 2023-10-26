@@ -67,10 +67,8 @@ class Proxy {
 	 */
 	public static function handle_request( WP_REST_Request $request ) : WP_REST_Response|WP_Error {
 		
-		$body = json_decode( $request->get_body(), true );
-	
-		$attributes = $body['store'];
-			
+		$attributes = json_decode( $request->get_body(), true );
+				
 		$query = new Query( $attributes );
 		$cache = new Cache( $query );
 		$fetch  = new Fetch( $query );
