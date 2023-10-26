@@ -8,7 +8,7 @@ import Product from "./Product";
  * 
  * @param {array} products
  */
-export default function Products( { products } ) {
+export default function Products( { products, display_price } ) {
 
 	if ( 0 === products.length ) {
 		return (
@@ -20,7 +20,10 @@ export default function Products( { products } ) {
 		<div className="wp-block-cata-shopify__layout">
 			{(products.map( ( product ) => {
 				return (
-					<Product product={product} />
+					<Product 
+						product={product}
+						display_price={display_price}
+					/>
 				)
 			}))}
 		</div>

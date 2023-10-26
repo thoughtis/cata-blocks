@@ -9,7 +9,8 @@ import Price from './Price';
  * 
  * @param {object} product
  */
-export default function Product( { product } ) {
+export default function Product( { product, display_price } ) {
+
 	return(
 		<article className="wp-block-cata-shopify-product">
 			<div className="wp-block-cata-shopify-product__layout">
@@ -22,7 +23,9 @@ export default function Product( { product } ) {
 						{product.title}
 					</a>
 				</h3>
-				<Price price={product.priceRange} />
+				{display_price &&
+					<Price price={product.priceRange} />
+				}
 			</div>
 		</article>
 	);
