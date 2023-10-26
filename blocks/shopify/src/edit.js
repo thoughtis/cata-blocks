@@ -43,6 +43,11 @@ export default function Edit( { attributes, setAttributes } ) {
 	 * Update Products
 	 */
 	function updateProducts() {
+		if ( '' === store ) {
+			setProducts( [] );
+			return;
+		}
+
 		apiFetch( {
 			path: '/cata/v1/shopify-proxy',
 			method: 'POST',
@@ -62,6 +67,7 @@ export default function Edit( { attributes, setAttributes } ) {
 	 * @param {Error} error 
 	 */
 	function handleError( error ) {
+		setProducts( [] );
 		console.error( error );
 	}
 

@@ -238,6 +238,11 @@ function Edit(_ref) {
    */
 
   function updateProducts() {
+    if ('' === store) {
+      setProducts([]);
+      return;
+    }
+
     _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
       path: '/cata/v1/shopify-proxy',
       method: 'POST',
@@ -255,6 +260,7 @@ function Edit(_ref) {
 
 
   function handleError(error) {
+    setProducts([]);
     console.error(error);
   }
 

@@ -22,7 +22,7 @@
   inline-size: 100%;
 }
 
-.wp-block-cata-shopify.is-style-default .wp-block-cata-shopify__layout {
+.wp-block-cata-shopify:not(.is-style-reel) .wp-block-cata-shopify__layout {
   display: grid;
   gap: 1.5em;
   grid-template-columns: repeat(auto-fill, minmax(15.375em, 1fr));
