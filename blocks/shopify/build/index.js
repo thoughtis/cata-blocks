@@ -103,7 +103,8 @@ __webpack_require__.r(__webpack_exports__);
 
 function Product(_ref) {
   let {
-    product
+    product,
+    display_price
   } = _ref;
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("article", {
     className: "wp-block-cata-shopify-product"
@@ -116,7 +117,7 @@ function Product(_ref) {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
     className: "wp-block-cata-shopify-product__link",
     href: product.onlineStoreUrl
-  }, product.title)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Price__WEBPACK_IMPORTED_MODULE_2__["default"], {
+  }, product.title)), display_price && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Price__WEBPACK_IMPORTED_MODULE_2__["default"], {
     price: product.priceRange
   })));
 }
@@ -150,7 +151,8 @@ __webpack_require__.r(__webpack_exports__);
 
 function Products(_ref) {
   let {
-    products
+    products,
+    display_price
   } = _ref;
 
   if (0 === products.length) {
@@ -161,7 +163,8 @@ function Products(_ref) {
     className: "wp-block-cata-shopify__layout"
   }, products.map(product => {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Product__WEBPACK_IMPORTED_MODULE_1__["default"], {
-      product: product
+      product: product,
+      display_price: display_price
     });
   }));
 }
@@ -224,10 +227,12 @@ function Edit(_ref) {
     setAttributes
   } = _ref;
   const {
-    store
+    store,
+    count,
+    tag
   } = attributes;
   const [products, setProducts] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(updateProducts, [store]);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(updateProducts, [store, count, tag]);
   /**
    * Update Products
    */
@@ -236,11 +241,9 @@ function Edit(_ref) {
     _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
       path: '/cata/v1/shopify-proxy',
       method: 'POST',
-      data: {
-        store: store
+      data: { ...attributes
       }
     }).then(response => {
-      console.log(response);
       setProducts(response.flat());
     }).catch(handleError);
   }
@@ -256,7 +259,8 @@ function Edit(_ref) {
   }
 
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)(), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_Products__WEBPACK_IMPORTED_MODULE_4__["default"], {
-    products: products
+    products: products,
+    display_price: attributes.display_price
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
     title: "Store",
     initialOpen: false
@@ -278,7 +282,36 @@ function Edit(_ref) {
       'label': 'Shop Catalog',
       'value': 'shop-catalog'
     }]
-  })))));
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+    title: "Product Selection",
+    initialOpen: false
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+    label: "Product Tag Name",
+    onChange: nextTag => setAttributes({
+      tag: nextTag
+    }),
+    type: "text",
+    value: tag
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+    label: "Number of Products",
+    onChange: nextPerPage => setAttributes({
+      count: nextPerPage
+    }),
+    type: "number",
+    value: count
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+    title: "Product Block Options",
+    initialOpen: false
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+    label: "Display product price",
+    help: attributes.display_price ? 'Product price shown.' : 'No product price.',
+    checked: attributes.display_price,
+    onChange: option => {
+      setAttributes({
+        display_price: option
+      });
+    }
+  }))));
 }
 
 /***/ }),
