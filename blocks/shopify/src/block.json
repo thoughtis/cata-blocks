@@ -20,41 +20,13 @@
 			"type": "string",
 			"default": ""
 		},
-		"category": {
+		"count": {
 			"type": "string",
-			"default": ""
-		},
-		"product_cat_exclude": {
-			"type": "string",
-			"default": ""
-		},
-		"coauthor": {
-			"type": "string",
-			"default": ""
+			"default": "6"
 		},
 		"tag": {
 			"type": "string",
 			"default": ""
-		},
-		"per_page": {
-			"type": "string",
-			"default": "6"
-		},
-		"orderby": {
-			"type": "string",
-			"default": "menu_order"
-		},
-		"order": {
-			"type": "string",
-			"default": "asc"
-		},
-		"query_url": {
-			"type": "string",
-			"default": ""
-		},
-		"display_byline": {
-			"type": "boolean",
-			"default": true
 		},
 		"display_price": {
 			"type": "boolean",
