@@ -31,13 +31,12 @@ function cata_shopify_render_callback( array $attributes, string $content ) : st
 }
 
 function cata_shopify_render_block( array $attributes, string $content ) : string {
-	$store = isset( $attributes['store'] ) ? $attributes['store'] : '';
-	
-	$query = new Shopify\Feed\Query( $store );
+	$query = new Shopify\Feed\Query( $attributes );
 	$cache = new Shopify\Feed\Cache( $query );
 	$feed  = new Shopify\Feed( $cache, $query );
 
 	return Shopify\Render::render_products(
+		$attributes,
 		$feed->get_posts_allow_side_effects()
 	);
 }
