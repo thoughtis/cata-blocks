@@ -21,30 +21,36 @@ class Render {
 	 * @param array $products
 	 * @return string 
 	 */
-	public static function render_products( array $products ) : string {
-
+	public static function render_products( array $attributes, array $products ) : string {
+		do_action('qm/debug', $products);
 		$products_html = array_map(
 			array( __CLASS__, 'render_product' ),
-			$products
+			$products,
+			array_fill( 0, count($products), $attributes['display_price'] )
 		);
+
+		$wrapper_attributes = get_block_wrapper_attributes();
 
 		$products_html_string = implode( "\n", $products_html );
 
-		return "<div class=\"wp-block-cata-shopify is-style-default alignwide\">
-			<div class=\"wp-block-cata-shopify__layout\">
-				{$products_html_string}
-			</div>
-		</div>";
+		return sprintf(
+			'<div %1$s><div class="wp-block-cata-shopify__layout">%2$s</div></div>',
+			$wrapper_attributes,
+			$products_html_string
+		);
 	}
 
 	/**
 	 * Render Products
 	 * 
 	 * @param stdClass $product
+	 * @param bool     $display_price
+	 * @return string
 	 */
-	public static function render_product( stdClass $product ) : string {
+	public static function render_product( stdClass $product, bool $display_price ) : string {
 		$title = esc_html( $product->title );
 		$href  = esc_url( $product->onlineStoreUrl );
+		$price = true === $display_price ? self::wrap_price( self::render_price( $product->priceRange ) ) : '';
 		$image = self::render_image(
 			$product,
 			array(
@@ -52,7 +58,6 @@ class Render {
 				'srcset' => array( 384, 768, 1152 ),
 			)
 		);
-		$price = self::wrap_price( self::render_price( $product->priceRange ) );
 
 		return "<article class=\"wp-block-cata-shopify-product\">
 			<div class=\"wp-block-cata-shopify-product__layout tappable-card\">
@@ -75,7 +80,6 @@ class Render {
 	 * @return string
 	 */
 	public static function render_image( stdClass $product, array $options ) : string {
-
 		if ( ! isset( $product->featuredImage ) || ! is_object( $product->featuredImage ) ) {
 			return '';
 		}
@@ -137,7 +141,6 @@ class Render {
 	 * @return string
 	 */
 	public static function render_price( stdClass $price_range ) : string {
-
 		$min = $price_range->minVariantPrice->amount;
 		$max = $price_range->maxVariantPrice->amount;
 
@@ -159,7 +162,7 @@ class Render {
 	 * @param string $amount
 	 * @return string
 	 */
-	public static function render_price_amount( string $amount ) {
+	public static function render_price_amount( string $amount ) : string {
 		return '<span><span>$</span>' . esc_html( number_format( (float) $amount, 2 ) ) . '</span>';
 	}
 
