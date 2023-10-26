@@ -22,7 +22,10 @@ class Render {
 	 * @return string 
 	 */
 	public static function render_products( array $attributes, array $products ) : string {
-		do_action('qm/debug', $products);
+		if ( empty( $products ) ) {
+			return '';
+		}
+
 		$products_html = array_map(
 			array( __CLASS__, 'render_product' ),
 			$products,
