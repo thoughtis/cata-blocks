@@ -114,12 +114,14 @@ export default function Edit( { attributes, setAttributes } ) {
 									store: newStore
 								})
 							}}
-							options={[
-								{ 'label': 'Select a store...', 'value': '' },
-								{ 'label': 'Creepy Catalog', 'value': 'creepy-catalog' },
-								{ 'label': 'Shop Catalog', 'value': 'shop-catalog' },
-							]}
-						/>
+						>
+							<option value="">Select a store...</option>
+							{(stores.map( ( storeOption ) => {
+								return (
+									<option value={storeOption}>{storeOption}</option>
+								)
+							}))}
+						</SelectControl>
 					</PanelRow>
 				</PanelBody>
 				<PanelBody title="Product Selection" initialOpen={false}>

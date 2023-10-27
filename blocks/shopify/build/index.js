@@ -231,11 +231,31 @@ function Edit(_ref) {
     count,
     tag
   } = attributes;
+  const [stores, setStores] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
   const [products, setProducts] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(updateProducts, [store, count, tag]);
+  getStores();
+  /**
+   * Get Stores
+   */
+
+  function getStores() {
+    let stores_array = [];
+    _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
+      path: '/wp/v2/settings',
+      method: 'GET'
+    }).then(response => {
+      stores_array = response['cata_blocks_shopify_stores'];
+
+      if (stores_array) {
+        setStores(stores_array.map(store => store.subdomain));
+      }
+    }).catch(handleError);
+  }
   /**
    * Update Products
    */
+
 
   function updateProducts() {
     if ('' === store) {
@@ -277,18 +297,14 @@ function Edit(_ref) {
       setAttributes({ ...attributes,
         store: newStore
       });
-    },
-    options: [{
-      'label': 'Select a store...',
-      'value': ''
-    }, {
-      'label': 'Creepy Catalog',
-      'value': 'creepy-catalog'
-    }, {
-      'label': 'Shop Catalog',
-      'value': 'shop-catalog'
-    }]
-  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+    }
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    value: ""
+  }, "Select a store..."), stores.map(storeOption => {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+      value: storeOption
+    }, storeOption);
+  })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
     title: "Product Selection",
     initialOpen: false
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
