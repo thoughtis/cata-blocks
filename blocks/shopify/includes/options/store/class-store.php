@@ -20,7 +20,7 @@ class Store {
 	 * Unique key for a single option/setting, stored in DB.
 	 */
 	const SETTING_NAME = 'cata_blocks_shopify_stores';
-	
+
 	/**
 	 * Register
 	 * 
