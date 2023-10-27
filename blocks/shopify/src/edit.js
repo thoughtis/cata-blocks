@@ -35,9 +35,32 @@ export default function Edit( { attributes, setAttributes } ) {
 		tag,
 	} = attributes;
 
+	const [stores, setStores] = useState([]);
 	const [products, setProducts] = useState([]);
-	
+
 	useEffect(updateProducts, [store, count, tag]);
+
+	getStores();
+
+	/**
+	 * Get Stores
+	 */
+	function getStores() {
+		let stores_array = [];
+
+		apiFetch( {
+			path: '/wp/v2/settings',
+			method: 'GET',
+		} )
+		.then( ( response ) => {
+			stores_array = response['cata_blocks_shopify_stores'];
+
+			if ( stores_array ) {
+				setStores( stores_array.map( store => store.subdomain ) );
+			}
+		} )
+		.catch( handleError );
+	}
 
 	/**
 	 * Update Products
