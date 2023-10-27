@@ -29,7 +29,7 @@ class Proxy {
 	/**
 	 * Register Route Proxy
 	 */
-	public static function register_route_proxy() {
+	public static function register_route_proxy() : void {
 		register_rest_route(
 			'cata/v1',
 			'/shopify-proxy/',

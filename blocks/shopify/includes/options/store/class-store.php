@@ -27,13 +27,12 @@ class Store {
 	 * @param string $option_group
 	 */
 	public static function register( string $option_group ) : void {
-
 		register_setting(
 			$option_group,
 			self::SETTING_NAME,
 			array(
 				'type'              => 'array',
-				'sanitize_callback' => array( __CLASS__, 'sanitize_setting' ),
+				'sanitize_callback' => array( __CLASS__, 'sanitize_settings' ),
 				'show_in_rest'      => false,
 				'default'           => array(),
 			)
@@ -53,7 +52,13 @@ class Store {
 		);
 	}
 
-	public static function sanitize_setting( $array ) {
+	/**
+	 * Sanitize Settings
+	 * 
+	 * @param array $array
+	 * @return array
+	 */
+	public static function sanitize_settings( $array ) : array {
 		if ( empty( $array ) ) {
 			return array();
 		}
@@ -68,7 +73,7 @@ class Store {
 	}
 
 	/**
-	 * Token Field Callback
+	 * Field Callback
 	 * 
 	 * @param array $args Everything you need for an input.
 	 */

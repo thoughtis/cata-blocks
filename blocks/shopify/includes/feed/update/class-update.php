@@ -8,9 +8,6 @@
 
 namespace Cata\Blocks\Shopify\Feed;
 
-use Cata\Blocks\Shopify\Options\Settings\Access_Token;
-use Cata\Blocks\Shopify\Options\Settings\Store;
-
 /**
  * Update
  */
@@ -28,11 +25,11 @@ class Update {
 	/**
 	 * Do Scheduled Update
 	 *
-	 * @param int $count
+	 * @param array $options
 	 */
-	public static function do_scheduled_update( string $store ) : void {
+	public static function do_scheduled_update( array $options ) : void {
 
-		$query = new Query( store: $store );
+		$query = new Query( $options );
 
 		$cache = new Cache( $query );
 		$fetch = new Fetch( $query );

@@ -16,7 +16,8 @@ class Add_Store {
 	/**
 	 * Render
 	 * 
-	 * @param string $option_group
+	 * @param string $setting_name
+	 * @param array  $args
 	 */
 	public static function render( string $setting_name, array $args ) : void {
 		?>

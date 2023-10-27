@@ -86,19 +86,15 @@ class Query {
 		);
 	}
 
-	public function get_access_token() {
-		switch ( $this->options['store'] ) {
-			case 'creepy-catalog':
-				$access_token = '4a9a65d08b2b1382d32d135173cbc868';
-				break;
-			case 'shop-catalog':
-				$access_token = '';
-				break;
-			default:
-				$access_token = '';
-		}
-
-		return $access_token;
+	/**
+	 * Get Access Token
+	 * 
+	 * @return string
+	 */
+	public function get_access_token() : string {
+		$subdomain = $this->options['store'];
+		$stores = array_column( get_option('cata_blocks_shopify_stores'), 'access_token', 'subdomain' );
+		return $stores[ $subdomain ];
 	}
 
 	/**

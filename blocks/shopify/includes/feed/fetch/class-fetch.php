@@ -46,7 +46,7 @@ class Fetch {
 	 *
 	 * @return array|WP_Error
 	 */
-	public function get_posts() {
+	public function get_posts() : array|WP_Error {
 
 		if ( function_exists( 'vip_safe_wp_remote_request' ) ) {
 			$response = vip_safe_wp_remote_request(

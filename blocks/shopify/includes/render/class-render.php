@@ -18,6 +18,7 @@ class Render {
 	/**
 	 * Render Products
 	 * 
+	 * @param array $attributes
 	 * @param array $products
 	 * @return string 
 	 */
@@ -44,7 +45,7 @@ class Render {
 	}
 
 	/**
-	 * Render Products
+	 * Render Product
 	 * 
 	 * @param stdClass $product
 	 * @param bool     $display_price
@@ -122,7 +123,7 @@ class Render {
 	 * @param string $src
 	 * @return Callable
 	 */
-	public static function get_srcset_function( string $src ) {
+	public static function get_srcset_function( string $src ) : Callable {
 		return function( $set ) use ( $src ) {
 			$resized_src = esc_url(
 				add_query_arg(
@@ -140,7 +141,7 @@ class Render {
 	/**
 	 * Render Price
 	 * 
-	 * @param stdClass $product
+	 * @param stdClass $price_range
 	 * @return string
 	 */
 	public static function render_price( stdClass $price_range ) : string {
