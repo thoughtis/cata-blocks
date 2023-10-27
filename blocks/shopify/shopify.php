@@ -3,7 +3,7 @@
  * Shopify
  *
  * @package Cata\Blocks
- * @since 0.8.1
+ * @since 0.8.2
  */
 
 namespace Cata\Blocks;
