@@ -3,7 +3,7 @@
  * Store
  *
  * @package Cata\Blocks\Shopify\Options
- * @since 0.1.0
+ * @since 0.8.2
  */
 
 namespace Cata\Blocks\Shopify\Options;
