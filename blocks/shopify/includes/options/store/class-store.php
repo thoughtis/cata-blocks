@@ -42,7 +42,7 @@ class Store {
 		add_settings_field(
 			self::SETTING_NAME,
 			'Shopify Stores',
-			array( __CLASS__, 'store_field_callback' ),
+			array( __CLASS__, 'field_callback' ),
 			$option_group,
 			$option_group . '_section',
 			array(
@@ -54,7 +54,7 @@ class Store {
 	}
 
 	public static function sanitize_setting( $array ) {
-		if ( empty( $array ) || 0 === count( $array ) ) {
+		if ( empty( $array ) ) {
 			return array();
 		}
 
@@ -72,7 +72,7 @@ class Store {
 	 * 
 	 * @param array $args Everything you need for an input.
 	 */
-	public static function store_field_callback( array $args ) : void {
+	public static function field_callback( array $args ) : void {
 		$key = 0;
 		$num_options = count( get_option( self::SETTING_NAME, array() ) );
 
