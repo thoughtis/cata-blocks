@@ -51,9 +51,9 @@ export default function Edit( { attributes, setAttributes } ) {
 			method: 'GET',
 		} )
 		.then( ( response ) => {
-			let stores_array = response['cata_blocks_shopify_stores'];
-			if ( stores_array ) {
-				setStores( stores_array.map( store => store.subdomain ) );
+			let stores_json = response['cata_blocks_shopify_stores'];
+			if ( stores_json ) {
+				setStores( JSON.parse( stores_json ).map( store => store.subdomain ) );
 			}
 		} )
 		.catch( handleError );
