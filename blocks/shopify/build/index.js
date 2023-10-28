@@ -240,12 +240,11 @@ function Edit(_ref) {
    */
 
   function getStores() {
-    let stores_array = [];
     _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
       path: '/wp/v2/settings',
       method: 'GET'
     }).then(response => {
-      stores_array = response['cata_blocks_shopify_stores'];
+      let stores_array = response['cata_blocks_shopify_stores'];
 
       if (stores_array) {
         setStores(stores_array.map(store => store.subdomain));
