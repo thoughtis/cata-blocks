@@ -28,7 +28,7 @@ import './editor.scss';
  * @param {Object} props
  * @return {WPElement} Element to render.
  */
-export default function Edit( { attributes, setAttributes } ) {
+export default function Edit( { attributes, setAttributes } ) {		
 	const {
 		store,
 		count,
@@ -46,15 +46,12 @@ export default function Edit( { attributes, setAttributes } ) {
 	 * Get Stores
 	 */
 	function getStores() {
-		let stores_array = [];
-
 		apiFetch( {
 			path: '/wp/v2/settings',
 			method: 'GET',
 		} )
 		.then( ( response ) => {
-			stores_array = response['cata_blocks_shopify_stores'];
-
+			let stores_array = response['cata_blocks_shopify_stores'];
 			if ( stores_array ) {
 				setStores( stores_array.map( store => store.subdomain ) );
 			}
