@@ -93,9 +93,9 @@ class Query {
 	 */
 	public function get_access_token() : string {
 		$subdomain = $this->options['store'];
-		$stores = get_option( 'cata_blocks_shopify_stores', array() );
+		$stores = json_decode( get_option( 'cata_blocks_shopify_stores', '' ) );
 
-		if ( empty( $stores ) ) {
+		if ( empty( $stores ) || empty( $subdomain ) ) {
 			return '';
 		}
 

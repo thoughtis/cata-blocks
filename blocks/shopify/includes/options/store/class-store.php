@@ -31,18 +31,10 @@ class Store {
 			$option_group,
 			self::SETTING_NAME,
 			array(
-				'type'              => 'array',
+				'type'              => 'string',
 				'sanitize_callback' => array( __CLASS__, 'sanitize_settings' ),
-				'show_in_rest'      => array(
-					'schema' => array(
-						'items' => array(
-							'type' => 'array',
-							'subdomain'    => 'string',
-							'access_token' => 'string',
-						),
-					),
-				),
-				'default' => array(),
+				'show_in_rest'      => true,
+				'default'           => '',
 			)
 		);
 
@@ -66,7 +58,7 @@ class Store {
 	 * @param array $array
 	 * @return array
 	 */
-	public static function sanitize_settings( $array ) : array {
+	public static function sanitize_settings( $array ) : string {
 		if ( empty( $array ) ) {
 			return array();
 		}
@@ -77,7 +69,7 @@ class Store {
 			return ! empty( $value['subdomain'] ) && ! empty( $value['access_token'] );
 		} );
 
-		return $array;
+		return wp_json_encode( $array );
 	}
 
 	/**
@@ -87,13 +79,14 @@ class Store {
 	 */
 	public static function field_callback( array $args ) : void {
 		$key = 0;
-		$num_options = count( get_option( self::SETTING_NAME, array() ) );
+		$setting = json_decode( get_option( self::SETTING_NAME, '' ), true );
+		$num_options = count( $setting );
 
 		?>
 			<div id="<?php echo esc_attr( self::SETTING_NAME ) . '_wrapper'; ?>" style="margin-bottom: 2em;">
 		<?php
 			do {
-				$option = array_key_exists( $key, get_option( self::SETTING_NAME, array() ) ) ? get_option( self::SETTING_NAME, array() )[$key] : array();
+				$option = array_key_exists( $key, $setting ) ? $setting[$key] : array();
 				$subdomain = is_array( $option ) && array_key_exists( 'subdomain', $option ) ? $option['subdomain'] : '';
 				$access_token = is_array( $option ) && array_key_exists( 'access_token', $option ) ? $option['access_token'] : '';
 				echo $key > 0 ? '<br>' : '';
