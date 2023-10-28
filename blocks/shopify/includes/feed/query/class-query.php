@@ -93,8 +93,15 @@ class Query {
 	 */
 	public function get_access_token() : string {
 		$subdomain = $this->options['store'];
-		$stores = array_column( get_option('cata_blocks_shopify_stores'), 'access_token', 'subdomain' );
-		return $stores[ $subdomain ];
+		$stores = get_option( 'cata_blocks_shopify_stores', array() );
+
+		if ( empty( $stores ) ) {
+			return '';
+		}
+
+		$access_token = array_column( $stores, 'access_token', 'subdomain' )[ $subdomain ];
+
+		return $access_token ?: '';
 	}
 
 	/**
