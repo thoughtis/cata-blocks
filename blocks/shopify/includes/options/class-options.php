@@ -52,14 +52,14 @@ class Options {
 		}
 		settings_errors( self::OPTION_GROUP );
 		?>
-		<div class="wrap">
-			<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
-			<form action="options.php" method="post">
-				<?php settings_fields( self::OPTION_GROUP ); ?>
-				<?php do_settings_sections( self::OPTION_GROUP ); ?>
-				<?php submit_button( 'Save Settings' ); ?>
-			</form>
-		</div>
+			<div class="wrap">
+				<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
+				<form action="options.php" method="post">
+					<?php settings_fields( self::OPTION_GROUP ); ?>
+					<?php do_settings_sections( self::OPTION_GROUP ); ?>
+					<?php submit_button( 'Save Settings' ); ?>
+				</form>
+			</div>
 		<?php
 	}
 

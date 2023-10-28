@@ -20,14 +20,14 @@ class Cache {
 	 * 
 	 * @var string $data_key_base
 	 */
-	private static $data_key_base = 'cata-shopify-feed-data-';
+	private static $data_key_base = 'cata-blocks-shopify-feed-data-';
 
 	/**
 	 * Time Key Base
 	 * 
 	 * @var string $time_key_base
 	 */
-	private static $time_key_base = 'cata-shopify-feed-time-';
+	private static $time_key_base = 'cata-blocks-shopify-feed-time-';
 
 	/**
 	 * Autoload

@@ -4,7 +4,6 @@
  * @param {object} image
  */
 export default function Product( { image } ) {
-
 	return(
 		<figure className="wp-block-cata-shopify-product__image">
 			<img

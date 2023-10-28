@@ -7,9 +7,9 @@ import Product from "./Product";
  * Compact Layout
  * 
  * @param {array} products
+ * @param {bool}  display_price
  */
 export default function Products( { products, display_price } ) {
-
 	if ( 0 === products.length ) {
 		return (
 			<p>No products, update the options to try again.</p>
