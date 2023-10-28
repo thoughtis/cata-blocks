@@ -30,7 +30,6 @@ class Feed {
 	 * @return array
 	 */
 	public function get_posts() : array {
-
 		$posts = $this->cache->get_data();
 
 		if ( '' === $posts ) {
@@ -46,9 +45,7 @@ class Feed {
 	 * @return array
 	 */
 	public function get_posts_allow_side_effects() : array {
-
 		$this->maybe_set_update_schedule();
-
 		return $this->get_posts();
 	}
 

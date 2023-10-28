@@ -1,6 +1,6 @@
 <?php
 /**
- * Cata Shopify Feed Query
+ * Query
  * 
  * @package Cata\Blocks\Shopify\Feed
  * @since 0.8.2

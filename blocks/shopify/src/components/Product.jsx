@@ -8,9 +8,9 @@ import Price from './Price';
  * Product
  * 
  * @param {object} product
+ * @param {bool}   display_price
  */
 export default function Product( { product, display_price } ) {
-
 	return(
 		<article className="wp-block-cata-shopify-product">
 			<div className="wp-block-cata-shopify-product__layout">

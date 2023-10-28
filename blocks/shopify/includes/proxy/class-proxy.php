@@ -66,7 +66,6 @@ class Proxy {
 	 * @return WP_REST_Response|WP_Error either an error or a json decoded api response body
 	 */
 	public static function handle_request( WP_REST_Request $request ) : WP_REST_Response|WP_Error {
-		
 		$attributes = json_decode( $request->get_body(), true );
 				
 		$query = new Query( $attributes );

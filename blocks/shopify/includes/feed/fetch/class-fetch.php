@@ -47,7 +47,6 @@ class Fetch {
 	 * @return array|WP_Error
 	 */
 	public function get_posts() : array|WP_Error {
-
 		if ( function_exists( 'vip_safe_wp_remote_request' ) ) {
 			$response = vip_safe_wp_remote_request(
 				url: $this->query->get_url(),
@@ -67,7 +66,7 @@ class Fetch {
 
 		if ( ! is_array( $response ) ) {
 			return new WP_Error(
-				'cata-shopify',
+				'cata-blocks',
 				'Unable to fetch posts from remote.',
 				array(
 					'url'  => $this->query->get_url(),
@@ -80,7 +79,7 @@ class Fetch {
 
 		if ( '2' !== substr( (string) $status, 0, 1 ) ) {
 			return new WP_Error(
-				'cata-shopify',
+				'cata-blocks',
 				'Unable to fetch posts from remote.',
 				array(
 					'status' => $status,
@@ -97,7 +96,7 @@ class Fetch {
 
 			if ( ! is_object( $decoded ) || ! isset( $decoded->data ) ) {
 				return new WP_Error(
-					'cata-shopify',
+					'cata-blocks',
 					'Unusable response from remote',
 					array(
 						'url' => $this->query->get_url(),
@@ -106,7 +105,7 @@ class Fetch {
 			}
 		} catch ( Exception $e ) {
 			return new WP_Error(
-				'cata-shopify',
+				'cata-blocks',
 				$e->getMessage(),
 				array(
 					'url' => $this->query->get_url(),

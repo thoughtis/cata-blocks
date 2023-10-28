@@ -99,6 +99,7 @@ __webpack_require__.r(__webpack_exports__);
  * Product
  * 
  * @param {object} product
+ * @param {bool}   display_price
  */
 
 function Product(_ref) {
@@ -147,6 +148,7 @@ __webpack_require__.r(__webpack_exports__);
  * Compact Layout
  * 
  * @param {array} products
+ * @param {bool}  display_price
  */
 
 function Products(_ref) {
@@ -194,7 +196,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /**
- * Products Blocks > Edit
+ * Shopify Block > Edit
  */
 
 /**
@@ -409,7 +411,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /**
- * Products Block > Save
+ * Shopify Block > Save
  */
 
 /**

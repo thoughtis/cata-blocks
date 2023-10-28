@@ -13,7 +13,7 @@ namespace Cata\Blocks\Shopify\Feed;
  */
 class Update {
 
-	const ACTION = 'cata_shopify_feed_update';
+	const ACTION = 'cata_blocks_shopify_feed_update';
 
 	/**
 	 * Construct
@@ -28,9 +28,7 @@ class Update {
 	 * @param array $options
 	 */
 	public static function do_scheduled_update( array $options ) : void {
-
 		$query = new Query( $options );
-
 		$cache = new Cache( $query );
 		$fetch = new Fetch( $query );
 

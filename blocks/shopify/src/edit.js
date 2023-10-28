@@ -1,5 +1,5 @@
 /**
- * Products Blocks > Edit
+ * Shopify Block > Edit
  */
 
 /**

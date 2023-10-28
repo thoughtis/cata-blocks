@@ -1,5 +1,5 @@
 /**
- * Products Block > Save
+ * Shopify Block > Save
  */
 
 /**
