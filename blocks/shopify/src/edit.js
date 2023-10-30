@@ -53,7 +53,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		.then( ( response ) => {
 			let stores_json = response['cata_blocks_shopify_stores'];
 			if ( stores_json ) {
-				setStores( JSON.parse( stores_json ).map( store => store.subdomain ) );
+				setStores( stores_json.map( store => store.subdomain ) );
 			}
 		} )
 		.catch( handleError );

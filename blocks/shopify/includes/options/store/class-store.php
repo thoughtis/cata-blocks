@@ -31,10 +31,10 @@ class Store {
 			$option_group,
 			self::SETTING_NAME,
 			array(
-				'type'              => 'string',
+				'type'              => 'array',
 				'sanitize_callback' => array( __CLASS__, 'sanitize_settings' ),
 				'show_in_rest'      => true,
-				'default'           => '',
+				'default'           => array(),
 			)
 		);
 
@@ -58,7 +58,7 @@ class Store {
 	 * @param array $array
 	 * @return array
 	 */
-	public static function sanitize_settings( $array ) : string {
+	public static function sanitize_settings( $array ) : array {
 		if ( empty( $array ) ) {
 			return array();
 		}
@@ -69,7 +69,7 @@ class Store {
 			return ! empty( $value['subdomain'] ) && ! empty( $value['access_token'] );
 		} );
 
-		return wp_json_encode( $array );
+		return $array;
 	}
 
 	/**
@@ -79,7 +79,7 @@ class Store {
 	 */
 	public static function field_callback( array $args ) : void {
 		$key = 0;
-		$setting = json_decode( get_option( self::SETTING_NAME, '' ), true );
+		$setting = get_option( self::SETTING_NAME, array() );
 		$num_options = count( $setting );
 
 		?>
