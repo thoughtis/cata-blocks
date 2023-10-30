@@ -32,9 +32,6 @@ class Add_Store {
 					let lastFieldset    = storesWrapper.lastElementChild;
 					let newKey          = parseInt( lastFieldset.dataset.key ) + 1;
 
-					console.log( storesWrapper );
-					console.log( lastFieldset );
-
 					let html = `
 						<br>
 						<fieldset id="${fieldName}_${newKey}" data-key="${newKey}">
@@ -60,7 +57,7 @@ class Add_Store {
 						</fieldset>
 					`;
 
-					lastFieldset.insertAdjacentHTML( 'beforeend', html );
+					storesWrapper.insertAdjacentHTML( 'beforeend', html );
 				}
 			</script>
 		<?php
