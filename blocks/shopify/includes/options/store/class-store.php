@@ -33,8 +33,14 @@ class Store {
 			array(
 				'type'              => 'array',
 				'sanitize_callback' => array( __CLASS__, 'sanitize_settings' ),
-				'show_in_rest'      => true,
-				'default'           => array(),
+				'show_in_rest'      => array(
+					'schema' => array(
+						'items' => array(
+							'type'  => 'array',
+						),
+					),
+				),
+				'default' => array(),
 			)
 		);
 
