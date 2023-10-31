@@ -8,14 +8,13 @@
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { useEffect, useState } from '@wordpress/element';
 import { PanelBody, PanelRow, SelectControl, TextControl, ToggleControl } from '@wordpress/components';
+import { useSelect } from '@wordpress/data';
 import apiFetch from '@wordpress/api-fetch';
-
 
 /**
  * Internal Dependencies
  */
 import Products from './components/Products';
-
 
 /**
  * Editor styles
@@ -35,29 +34,13 @@ export default function Edit( { attributes, setAttributes } ) {
 		tag,
 	} = attributes;
 
-	const [stores, setStores] = useState([]);
+	const stores = useSelect(
+		( select ) => select( 'cata/blocks' ).getShopifyData(),
+		[]
+	);
 	const [products, setProducts] = useState([]);
 
 	useEffect(updateProducts, [store, count, tag]);
-
-	getStores();
-
-	/**
-	 * Get Stores
-	 */
-	function getStores() {
-		apiFetch( {
-			path: '/wp/v2/settings',
-			method: 'GET',
-		} )
-		.then( ( response ) => {
-			let stores_json = response['cata_blocks_shopify_stores'];
-			if ( stores_json ) {
-				setStores( stores_json.map( store => store.subdomain ) );
-			}
-		} )
-		.catch( handleError );
-	}
 
 	/**
 	 * Update Products
@@ -114,8 +97,9 @@ export default function Edit( { attributes, setAttributes } ) {
 						>
 							<option value="">Select a store...</option>
 							{(stores.map( ( storeOption ) => {
+								let value = storeOption.subdomain;
 								return (
-									<option value={storeOption}>{storeOption}</option>
+									<option value={value}>{value}</option>
 								)
 							}))}
 						</SelectControl>

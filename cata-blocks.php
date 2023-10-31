@@ -31,6 +31,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once __DIR__ . '/blocks-middleware/blocks-middleware.php';
 
 /**
+ * Store
+ * 
+ * Shopify block depends on this file
+ */
+require_once __DIR__ . '/blocks-store/blocks-store.php';
+
+/**
  * Aside
  */
 require_once __DIR__ . '/blocks/aside/aside.php';
