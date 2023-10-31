@@ -14,7 +14,9 @@ export default function Product( { product, display_price } ) {
 	return(
 		<article className="wp-block-cata-shopify-product">
 			<div className="wp-block-cata-shopify-product__layout">
-				<Image image={product.featuredImage} />
+				{product.featuredImage &&
+					<Image image={product.featuredImage} />
+				}
 				<h3 className="wp-block-cata-shopify-product__title">
 					<a 
 						className="wp-block-cata-shopify-product__link"
