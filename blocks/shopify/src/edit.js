@@ -97,9 +97,8 @@ export default function Edit( { attributes, setAttributes } ) {
 						>
 							<option value="">Select a store...</option>
 							{(stores.map( ( storeOption ) => {
-								let value = storeOption.subdomain;
 								return (
-									<option value={value}>{value}</option>
+									<option value={storeOption}>{storeOption}</option>
 								)
 							}))}
 						</SelectControl>

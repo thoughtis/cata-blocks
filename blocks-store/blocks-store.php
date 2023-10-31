@@ -14,8 +14,10 @@ function cata_blocks_store_enqueue_scripts() : void {
 		$asset['version']
 	);
 
+	$option = get_option( 'cata_blocks_shopify_stores', array() );
+
 	$data = array(
-		'shopifyData' => get_option( 'cata_blocks_shopify_stores', array() ),
+		'shopifyData' => array_column( $option, 'subdomain' ),
 	);
 
 	wp_localize_script(

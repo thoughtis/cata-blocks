@@ -287,10 +287,9 @@ function Edit(_ref) {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
     value: ""
   }, "Select a store..."), stores.map(storeOption => {
-    let value = storeOption.subdomain;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
-      value: value
-    }, value);
+      value: storeOption
+    }, storeOption);
   })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
     title: "Product Selection",
     initialOpen: false
