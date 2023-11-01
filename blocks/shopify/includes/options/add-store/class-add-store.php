@@ -33,8 +33,7 @@ class Add_Store {
 					let newKey          = parseInt( lastFieldset.dataset.key ) + 1;
 
 					let html = `
-						<br>
-						<fieldset id="${fieldName}_${newKey}" data-key="${newKey}">
+						<fieldset id="${fieldName}_${newKey}" data-key="${newKey}" style="margin-bottom: 2em;">
 							<p><strong>Store ${newKey + 1}</strong></p>
 							<br>
 							<label for="${fieldId}_subdomain" style="min-width: 8em;">Subdomain</label>
