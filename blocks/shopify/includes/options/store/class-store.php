@@ -83,30 +83,31 @@ class Store {
 		$num_options = count( $setting );
 
 		?>
-			<div id="<?php echo esc_attr( self::SETTING_NAME ) . '_wrapper'; ?>" style="margin-bottom: 2em;">
+			<div id="<?php echo esc_attr( self::SETTING_NAME ) . '_wrapper'; ?>">
 		<?php
 			do {
 				$option = array_key_exists( $key, $setting ) ? $setting[$key] : array();
 				$subdomain = is_array( $option ) && array_key_exists( 'subdomain', $option ) ? $option['subdomain'] : '';
 				$access_token = is_array( $option ) && array_key_exists( 'access_token', $option ) ? $option['access_token'] : '';
-				echo $key > 0 ? '<br>' : '';
+				$id = $args['id'];
+				$name = $args['name'];
 				?>
-					<fieldset id="<?php echo esc_attr( self::SETTING_NAME . '_' . $key ); ?>" data-key="<?php echo esc_attr( $key ); ?>">
+					<fieldset id="<?php echo esc_attr( self::SETTING_NAME . '_' . $key ); ?>" data-key="<?php echo esc_attr( $key ); ?>" style="margin-bottom: 2em;">
 						<p><strong>Store <?php echo esc_html( $key + 1 ); ?></strong></p>
 						<br>
-						<label for="<?php echo esc_attr( $args['id'] . '_subdomain_' . $key );?>" style="min-width: 8em;">Subdomain</label>
+						<label for="<?php echo esc_attr( "{$id}_subdomain_{$key}" );?>" style="min-width: 8em;">Subdomain</label>
 						<input 
-							id="<?php echo esc_attr( $args['id'] . '_subdomain_' . $key ); ?>" 
-							name="<?php echo esc_attr( $args['name'] . '[' . $key . '][subdomain]' ); ?>" 
+							id="<?php echo esc_attr( "{$id}_subdomain_{$key}" ); ?>" 
+							name="<?php echo esc_attr( "{$name}[{$key}][subdomain]" ); ?>" 
 							type="text"
 							value="<?php echo esc_attr( $subdomain ); ?>"
 						>
 						<p class="description">My Shopify subdomain from URL, example: https://storename.myshopify.com</p>
 						<br>
-						<label for="<?php echo esc_attr( $args['id'] . '_access_token_' . $key ); ?>" style="min-width: 8em;">Access Token</label>
+						<label for="<?php echo esc_attr( "{$id}_access_token_{$key}" ); ?>" style="min-width: 8em;">Access Token</label>
 						<input 
-							id="<?php echo esc_attr( $args['id'] . '_access_token_' . $key ); ?>" 
-							name="<?php echo esc_attr( $args['name'] . '[' . $key . '][access_token]' ); ?>" 
+							id="<?php echo esc_attr( "{$id}_access_token_{$key}" ); ?>" 
+							name="<?php echo esc_attr( "{$name}[{$key}][access_token]" ); ?>" 
 							type="text" 
 							value="<?php echo esc_attr( $access_token ); ?>"
 						>
