@@ -18,9 +18,10 @@ export default function Products( { products, display_price } ) {
 
 	return (
 		<div className="wp-block-cata-shopify__layout">
-			{(products.map( ( product ) => {
+			{(products.map( ( product, index ) => {
 				return (
-					<Product 
+					<Product
+						key={`cata-blocks-shopify-product-${index}`}
 						product={product}
 						display_price={display_price}
 					/>
