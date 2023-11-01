@@ -14,6 +14,7 @@ import apiFetch from '@wordpress/api-fetch';
 /**
  * Internal Dependencies
  */
+import DebouncedTextControl from './components/DebouncedTextControl';
 import Products from './components/Products';
 
 /**
@@ -105,9 +106,10 @@ export default function Edit( { attributes, setAttributes } ) {
 					</PanelRow>
 				</PanelBody>
 				<PanelBody title="Product Selection" initialOpen={false}>
-					<TextControl
+					<DebouncedTextControl
 						label="Product Tag Name"
-						onChange={(nextTag) => setAttributes({tag: nextTag})}
+						onDebouncedChange={(nextTag) => setAttributes({tag: nextTag})}
+						timeout={300}
 						type="text"
 						value={tag}
 					/>
