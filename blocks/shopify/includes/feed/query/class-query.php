@@ -36,11 +36,19 @@ class Query {
 	 * @return string
 	 */
 	public function get_body() : string {
-		$tag = $this->options['tag'];
-
 		$query = 'available_for_sale:true';
-		$query .= $tag ? ' AND tag:'.$tag : '';
 
+		$tags = $this->options['tags'];
+
+		if( ! empty( $tags ) ) {
+			$tags_array = explode( ',', $tags );
+			$tags_array = array_map( 'trim', $tags_array );
+			
+			foreach( $tags_array as $tag ) {
+				$query .= " AND tag:$tag";
+			}
+		}
+		
 		$body = "{
 			products(
 				first: {$this->options['count']},
