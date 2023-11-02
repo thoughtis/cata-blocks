@@ -12,7 +12,7 @@
  * Description: Block Editor components for use with the Cata theme.
  * Author:      Thought & Expression Co. <devjobs@thought.is>
  * Author URI:  https://thought.is
- * Version:     0.8.1
+ * Version:     0.8.2
  * License:     GPL v3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.txt
  */
@@ -29,6 +29,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Products block and REST block depend on this file
  */
 require_once __DIR__ . '/blocks-middleware/blocks-middleware.php';
+
+/**
+ * Store
+ * 
+ * Shopify block depends on this file
+ */
+require_once __DIR__ . '/blocks-store/blocks-store.php';
 
 /**
  * Aside
@@ -99,6 +106,25 @@ require_once __DIR__ . '/blocks/faq/faq.php';
  * Scheduled Content
  */
 require_once __DIR__ . '/blocks/scheduled-content/scheduled-content.php';
+
+/**
+ * Shopify
+ */
+include_once __DIR__ . '/blocks/shopify/includes/options/class-options.php';
+include_once __DIR__ . '/blocks/shopify/includes/options/store/class-store.php';
+include_once __DIR__ . '/blocks/shopify/includes/options/add-store/class-add-store.php';
+include_once __DIR__ . '/blocks/shopify/includes/feed/class-feed.php';
+include_once __DIR__ . '/blocks/shopify/includes/feed/cache/class-cache.php';
+include_once __DIR__ . '/blocks/shopify/includes/feed/fetch/class-fetch.php';
+include_once __DIR__ . '/blocks/shopify/includes/feed/query/class-query.php';
+include_once __DIR__ . '/blocks/shopify/includes/feed/update/class-update.php';
+include_once __DIR__ . '/blocks/shopify/includes/render/class-render.php';
+include_once __DIR__ . '/blocks/shopify/includes/proxy/class-proxy.php';
+require_once __DIR__ . '/blocks/shopify/shopify.php';
+
+new Shopify\Feed\Update();
+new Shopify\Options();
+new Shopify\Proxy();
 
 /**
  * Network Links
