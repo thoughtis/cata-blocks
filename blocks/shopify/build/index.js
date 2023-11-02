@@ -304,11 +304,11 @@ function Edit(_ref) {
   const {
     store,
     count,
-    tag
+    tags
   } = attributes;
   const stores = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useSelect)(select => select('cata/blocks').getShopifyData(), []);
   const [products, setProducts] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(updateProducts, [store, count, tag]);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(updateProducts, [store, count, tags]);
   /**
    * Update Products
    */
@@ -364,13 +364,14 @@ function Edit(_ref) {
     title: "Product Selection",
     initialOpen: false
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_DebouncedTextControl__WEBPACK_IMPORTED_MODULE_5__["default"], {
-    label: "Product Tag Name",
-    onDebouncedChange: nextTag => setAttributes({
-      tag: nextTag
+    label: "Product Tag Names",
+    onDebouncedChange: nextTags => setAttributes({
+      tags: nextTags
     }),
     timeout: 300,
     type: "text",
-    value: tag
+    value: tags,
+    help: "Enter multiple tag names in a comma separated list."
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
     label: "Number of Products",
     onChange: nextPerPage => setAttributes({
