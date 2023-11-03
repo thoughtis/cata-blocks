@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Middleware
  * 
- * Products block and REST block depend on this file
+ * REST block depends on this file
  */
 require_once __DIR__ . '/blocks-middleware/blocks-middleware.php';
 
@@ -57,12 +57,6 @@ require_once __DIR__ . '/blocks/moodboard/moodboard.php';
  */
 require_once __DIR__ . '/blocks/newsletter/includes/class-renderer.php';
 require_once __DIR__ . '/blocks/newsletter/newsletter.php';
-
-/**
- * Products
- */
-require_once __DIR__ . '/blocks/products/includes/renderer.php';
-require_once __DIR__ . '/blocks/products/products.php';
 
 /**
  * REST
