@@ -32,7 +32,7 @@ export default function Edit( { attributes, setAttributes } ) {
 	const {
 		store,
 		count,
-		tag,
+		tags,
 	} = attributes;
 
 	const stores = useSelect(
@@ -41,7 +41,7 @@ export default function Edit( { attributes, setAttributes } ) {
 	);
 	const [products, setProducts] = useState([]);
 
-	useEffect(updateProducts, [store, count, tag]);
+	useEffect(updateProducts, [store, count, tags]);
 
 	/**
 	 * Update Products
@@ -107,11 +107,12 @@ export default function Edit( { attributes, setAttributes } ) {
 				</PanelBody>
 				<PanelBody title="Product Selection" initialOpen={false}>
 					<DebouncedTextControl
-						label="Product Tag Name"
-						onDebouncedChange={(nextTag) => setAttributes({tag: nextTag})}
+						label="Product Tag Names"
+						onDebouncedChange={(nextTags) => setAttributes({tags: nextTags})}
 						timeout={300}
 						type="text"
-						value={tag}
+						value={tags}
+						help="Enter multiple tag names in a comma separated list."
 					/>
 					<TextControl
 						label="Number of Products"

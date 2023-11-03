@@ -20,6 +20,9 @@
 
 .wp-block-cata-shopify-product__image img {
   inline-size: 100%;
+  aspect-ratio: 1/1;
+  -o-object-fit: cover;
+     object-fit: cover;
 }
 
 .wp-block-cata-shopify:not(.is-style-reel) .wp-block-cata-shopify__layout {

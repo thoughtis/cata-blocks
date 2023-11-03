@@ -24,7 +24,7 @@
 			"type": "string",
 			"default": "6"
 		},
-		"tag": {
+		"tags": {
 			"type": "string",
 			"default": ""
 		},
