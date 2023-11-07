@@ -8,6 +8,8 @@
 
 namespace Cata\Blocks;
 
+use Throwable;
+
 /**
  * Register Shopify Block
  */
