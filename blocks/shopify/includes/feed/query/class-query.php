@@ -13,13 +13,41 @@ namespace Cata\Blocks\Shopify\Feed;
  */
 class Query {
 	/**
+	 * Default Options
+	 * The block attributes that are used to query Shopify.
+	 *
+	 * @var array
+	 */
+	const DEFAULT_OPTIONS = array(
+		'store' => '',
+		'tags'  => '',
+		'count' => 0,
+	);
+
+	/**
+	 * Options
+	 * 
+	 * @var array $options
+	 */
+	public array $options;
+
+	/**
 	 * Construct
 	 * 
 	 * @param string $store
 	 */
-	public function __construct(
-		public array $options
-	) {}
+	public function __construct( array $options ) {
+		// Before setting options:
+		// Apply allow-list using keys from DEFAULT_OPTIONS,
+		// Merge to ensure keys are always in the same order.
+		$this->options = array_merge(
+			self::DEFAULT_OPTIONS,
+			array_intersect_key(
+				$options,
+				self::DEFAULT_OPTIONS
+			)
+		);
+	}
 
 	/**
 	 * Get URL

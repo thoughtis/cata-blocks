@@ -19,7 +19,7 @@ class Update {
 	 * Construct
 	 */
 	public function __construct() {
-		add_action( self::ACTION, array( __CLASS__, 'do_scheduled_update' ), 10, 2 );
+		add_action( self::ACTION, array( __CLASS__, 'do_scheduled_update' ), 10, 3 );
 	}
 
 	/**
@@ -27,8 +27,12 @@ class Update {
 	 *
 	 * @param array $options
 	 */
-	public static function do_scheduled_update( array $options ) : void {
-		$query = new Query( $options );
+	public static function do_scheduled_update( string $store, string $tags, int $count ) : void {
+		$query = new Query( array(
+			'store' => $store,
+			'tags'  => $tags,
+			'count' => $count
+		) );
 		$cache = new Cache( $query );
 		$fetch = new Fetch( $query );
 
