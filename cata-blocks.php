@@ -135,3 +135,8 @@ require_once __DIR__ . '/patterns/trivia/trivia.php';
  * Overhang Format
  */
 require_once __DIR__ . '/formats/overhang/overhang.php';
+
+/**
+ * Substack Social Link Variation
+ */
+require_once __DIR__ . '/variations/social-link/substack/substack.php';
