@@ -12,7 +12,7 @@
  * Description: Block Editor components for use with the Cata theme.
  * Author:      Thought & Expression Co. <devjobs@thought.is>
  * Author URI:  https://thought.is
- * Version:     0.8.5
+ * Version:     0.8.6
  * License:     GPL v3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.txt
  */
@@ -135,3 +135,8 @@ require_once __DIR__ . '/patterns/trivia/trivia.php';
  * Overhang Format
  */
 require_once __DIR__ . '/formats/overhang/overhang.php';
+
+/**
+ * Substack Social Link Variation
+ */
+require_once __DIR__ . '/variations/social-link/substack/substack.php';
