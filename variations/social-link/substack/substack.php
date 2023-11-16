@@ -3,7 +3,7 @@
  * Subtack Social Link Variation
  *
  * @package Cata\Blocks
- * @since
+ * @since 0.8.6
  */
 
 namespace Cata\Blocks\Variations;
