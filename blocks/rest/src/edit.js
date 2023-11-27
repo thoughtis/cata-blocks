@@ -7,7 +7,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import { Button, PanelBody, PanelRow, SelectControl, TextControl } from '@wordpress/components';
+import { Button, PanelBody, PanelRow, SelectControl, TextControl, ToggleControl } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 
@@ -17,6 +17,7 @@ import apiFetch from '@wordpress/api-fetch';
 import Trending from './components/layout/trending/Trending';
 import Network from './components/layout/network/Network';
 import Compact from './components/layout/compact/Compact';
+import DailyHoroscope from './components/layout/daily-horoscope/DailyHoroscope';
 
 import './editor.scss';
 
@@ -28,12 +29,12 @@ import './editor.scss';
  */
 export default function Edit( { attributes, setAttributes, clientId } ) {
 
-	const {urls, content, layout, sorting} = attributes;
+	const {urls, content, layout, sorting, display_zodiac_links} = attributes;
 	const [url, setUrl] = useState('');
 	const [posts, setPosts] = useState([]);
 
 	useEffect(updatePosts, [urls]);
-	useEffect(updateContent, [posts, layout, sorting])
+	useEffect(updateContent, [posts, layout, sorting, display_zodiac_links]);
 
 	/**
 	 * Update Posts
@@ -83,17 +84,20 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 				break;
 			case 'compact':
 				LayoutComponent = Compact;
+				break;
+			case 'daily-horoscope':
+				LayoutComponent = DailyHoroscope;
 		}
 
 		setAttributes( {
 			...attributes,
-			content: <LayoutComponent posts={posts} sorting={sorting} />
+			content: <LayoutComponent posts={posts} sorting={sorting} display_zodiac_links={display_zodiac_links} />
 		});
 	}
 
 	return (
 		<>
-			<div { ...useBlockProps() }>
+			<div { ...useBlockProps() } >
 				{ content }
 			</div>
 			<InspectorControls>
@@ -161,6 +165,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 								{ 'label': 'Trending', 'value': 'trending' },
 								{ 'label': 'Network', 'value': 'network' },
 								{ 'label': 'Compact', 'value': 'compact' },
+								{ 'label': 'Daily Horoscope', 'value': 'daily-horoscope' },
 							]}
 						/>
 					</PanelRow>
@@ -183,6 +188,22 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 						/>
 					</PanelRow>
 				</PanelBody>
+				{ 'daily-horoscope' === layout && (
+					<PanelBody title="Zodiac Links">
+						<PanelRow>
+							<ToggleControl
+								label="Display zodiac links"
+								help={
+									attributes.display_zodiac_links
+										? 'Zodiac links shown.'
+										: 'Zodiac links hidden.'
+								}
+								checked={attributes.display_zodiac_links}
+								onChange={(option) => {setAttributes({ display_zodiac_links: option})}}
+							/>
+						</PanelRow>
+					</PanelBody>
+				) }
 			</InspectorControls>
 		</>
 	);
