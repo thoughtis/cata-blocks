@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import PostCompact from "../../post-compact/PostCompact";
+import PostCompact from "../../post/post-compact/PostCompact";
 import { getSortingFunction } from '../sorting';
 
 /**

@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import PostNetwork from "../../post-network/PostNetwork";
+import PostNetwork from "../../post/post-network/PostNetwork";
 import { getSortingFunction } from '../sorting';
 
 /**

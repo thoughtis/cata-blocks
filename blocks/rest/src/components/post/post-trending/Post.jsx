@@ -1,4 +1,4 @@
-import TextContent from "../text-content/TextContent";
+import TextContent from "../../text-content/TextContent";
 
 /**
  * Post
