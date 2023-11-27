@@ -1,0 +1,50 @@
+/**
+ * The following styles get applied both on the front of your site
+ * and in the editor.
+ */
+
+.preview.is-layout-daily-horoscope {
+	.preview__layout {
+		display: flex;
+		flex-wrap: wrap;
+		column-gap: 2.25em;
+		row-gap: 1.125em;
+
+		> * {
+			flex-grow: 1;
+		}
+	}
+
+	.preview__start {
+		flex-basis: 15em;
+	}
+
+	.preview__end {
+		flex-basis: 18em;
+	}
+
+	.preview__title {
+		margin-block-start: 0;
+	}
+
+	img {
+		aspect-ratio: 1 / 1;
+		object-fit: cover;
+	}
+
+	.preview__zodiac-signs {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr;
+		gap: .5em;
+
+		a {
+			text-align: center;
+			border: 1px solid currentColor;
+			padding: .25em .5em;
+		}
+	}
+
+	.preview__excerpt {
+		margin-block: .5em 1.5em;
+	}
+}
