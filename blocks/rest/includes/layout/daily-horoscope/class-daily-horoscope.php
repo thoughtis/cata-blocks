@@ -64,9 +64,7 @@ class Daily_Horoscope extends Layout {
 		$title        = esc_html( $post->title->rendered );
 		$excerpt      = wp_kses_post( $post->excerpt->rendered );
 		$domain       = wp_parse_url( $post->link, PHP_URL_HOST );
-		$zodiac_links = $display_zodiac_links ? self::get_zodiac_links( $link ) : '';
-
-		do_action('qm/debug', $zodiac_links);
+		$zodiac_links = $display_zodiac_links ? self::get_zodiac_links( $post ) : '';
 
 		return "<article class=\"preview is-layout-daily-horoscope\">
 			<div class=\"preview__layout\">
@@ -96,37 +94,18 @@ class Daily_Horoscope extends Layout {
 	 * @param string $post_link
 	 * @return string
 	 */
-	public static function get_zodiac_links( string $post_link ): string {
-		$post_html = self::get_html_from_url( $post_link );
-		$tags = new WP_HTML_Tag_Processor( $post_html );
-		$count = 0;
+	public static function get_zodiac_links( stdClass $post ): string {
+		$tags = new WP_HTML_Tag_Processor( $post->content->rendered );
 		$links_html = '<ul class="preview__zodiac-links">';
 
-		while ( $count < 12 && $tags->next_tag() ) {
+		while ( $tags->next_tag() ) {
 			if ( 'H2' === $tags->get_tag() ) {
 				$heading_id = $tags->get_attribute( 'id' );
 				$zodiac_name = ucfirst( $heading_id );
-				$links_html .= "<li><a href=\"{$post_link}#{$heading_id}\">{$zodiac_name}</a></li>";
-				$count++;
+				$links_html .= "<li><a href=\"{$post->link}#{$heading_id}\">{$zodiac_name}</a></li>";
 			}
 		}
 
 		return $links_html . '</ul>';
-	}
-
-	/**
-	 * Get HTML From URL
-	 * 
-	 * @param string $url
-	 * @return string
-	 */
-	public static function get_html_from_url( string $url ) : string {		
-		$html = vip_safe_wp_remote_get( $url );
-		
-		if ( empty( $html ) || ! array_key_exists('body', $html) ) {
-			return '';
-		}
-
-		return $html['body'];
 	}
 }
