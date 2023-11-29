@@ -24,7 +24,6 @@ class Daily_Horoscope extends Layout {
 	 * @return string
 	 */
 	public static function render( string $content, array $posts, bool $display_zodiac_links ): string {
-	
 		if ( empty( $posts ) ) {
 			return $content;
 		}
@@ -33,7 +32,7 @@ class Daily_Horoscope extends Layout {
 
 		$previews = implode(
 			PHP_EOL,
-			array_map( array( __CLASS__, 'render_preview' ), $posts, [ $display_zodiac_links ] )
+			array_map( array( __CLASS__, 'render_preview' ), $posts, array( $display_zodiac_links ) )
 		);
 
 		return "{$open}
@@ -50,7 +49,6 @@ class Daily_Horoscope extends Layout {
 	 * @return string
 	 */
 	public static function render_preview( stdClass $post, bool $display_zodiac_links ): string {
-
 		$image_data = self::get_image( $post );
 		$image = self::render_image(
 			$image_data,
@@ -60,11 +58,13 @@ class Daily_Horoscope extends Layout {
 			)
 		);
 
+		$date_title   = self::get_post_date_and_title( $post->title->rendered );
+		$title        = esc_html( 'Your ' . $date_title[0] );
+		$date         = esc_html( $date_title[1] );
 		$link         = esc_url( $post->link );
-		$title        = esc_html( $post->title->rendered );
 		$excerpt      = wp_kses_post( $post->excerpt->rendered );
 		$domain       = wp_parse_url( $post->link, PHP_URL_HOST );
-		$zodiac_links = $display_zodiac_links ? self::get_zodiac_links( $post ) : '';
+		$zodiac_links = $display_zodiac_links ? wp_kses_post( self::get_zodiac_links( $post ) ) : '';
 
 		return "<article class=\"preview is-layout-daily-horoscope\">
 			<div class=\"preview__layout\">
@@ -81,31 +81,98 @@ class Daily_Horoscope extends Layout {
 							{$title}
 						</a>
 					</h3>
-					<div class=\"preview__excerpt\">{$excerpt}</div>
-					{$zodiac_links}
+					<p class=\"preview__date\">{$date}</p>
+					<ul class=\"preview__zodiac-signs\">
+						{$zodiac_links}
+					</ul>
 				</div>
 			</div>
 		</article>";
 	}
 
 	/**
+	 * Get Post Date And Title
+	 * 
+	 * @param string $post_title
+	 * @return array
+	 */
+	public static function get_post_date_and_title( string $post_title ): array {
+		$text_array = explode( ': ', $post_title );
+		return $text_array;
+	}
+
+	/**
 	 * Get Zodiac Links
 	 * 
-	 * @param string $post_link
+	 * @param stdClass $post
 	 * @return string
 	 */
 	public static function get_zodiac_links( stdClass $post ): string {
-		$tags = new WP_HTML_Tag_Processor( $post->content->rendered );
-		$links_html = '<ul class="preview__zodiac-links">';
+		$headings = self::get_zodiac_headings( $post->content->rendered );
 
-		while ( $tags->next_tag() ) {
-			if ( 'H2' === $tags->get_tag() ) {
-				$heading_id = $tags->get_attribute( 'id' );
-				$zodiac_name = ucfirst( $heading_id );
-				$links_html .= "<li><a href=\"{$post->link}#{$heading_id}\">{$zodiac_name}</a></li>";
-			}
+		if ( empty( $headings ) ) {
+			return '';
 		}
 
-		return $links_html . '</ul>';
+		$zodiac_links = array_map(
+			fn( $anchor, $text ) => self::get_zodiac_link( $anchor, $text, $post->link ),
+			array_keys( $headings ),
+			array_values( $headings ),
+		);
+		
+		return implode( '', $zodiac_links );
+	}
+
+	/**
+	 * Get Zodiac Link
+	 * 
+	 * @param string $anchor
+	 * @param string $text
+	 * @param string $link
+	 * @return string
+	 */
+	public static function get_zodiac_link( string $anchor, string $text, string $link ): string {
+		$symbols = self::get_zodiac_symbols();
+		$symbol  = array_key_exists( $anchor, $symbols ) ? $symbols[$anchor] : '&#10024;';
+
+		return "<li>{$symbol} <a href=\"{$link}#{$anchor}\">{$text}</a></li>";
+	}
+
+	/**
+	 * Get Zodiac Headings
+	 * 
+	 * @param string $post_content
+	 * @return array
+	 */
+	public static function get_zodiac_headings( string $post_content ): array {
+		$regex = '/<h2.*id="(.*)".*>(.*?)<\/h2>/im';
+
+		if ( preg_match_all( $regex, $post_content, $matches ) ) {
+			return array_combine( $matches[1], $matches[2] );
+		}
+
+		return array();
+	}
+
+	/**
+	 * Get Zodiac Symbols
+	 * 
+	 * @return array
+	 */
+	public static function get_zodiac_symbols(): array {
+		return array(
+			'aries'       => '&#9800;',
+			'taurus'      => '&#9801;',
+			'gemini'      => '&#9802;',
+			'cancer'      => '&#9803;',
+			'leo'         => '&#9804;',
+			'virgo'       => '&#9805;',
+			'libra'       => '&#9806;',
+			'scorpio'     => '&#9807;',
+			'sagittarius' => '&#9808;',
+			'capricorn'   => '&#9809;',
+			'aquarius'    => '&#9810;',
+			'pisces'      => '&#9811;',
+		);
 	}
 }
