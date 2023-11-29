@@ -1,9 +1,4 @@
 /**
- * External dependencies
- */
-import { RawHTML } from "@wordpress/element";
-
-/**
  * Internal dependencies
  */
 import Image from "../../image/Image";
@@ -38,9 +33,6 @@ export default function PostDailyHoroscope( { post, display_zodiac_links } ) {
 					<h3 className="preview__title">
 						<a rel="bookmark" className="preview__permalink" href={ post.link }><TextContent text={ post.title.rendered } /></a>
 					</h3>
-					<div className="preview__excerpt">
-						<RawHTML>{ post.excerpt.rendered }</RawHTML>
-					</div>
 					{ false !== display_zodiac_links && (
 						<div className="preview__zodiac-signs">
 							<a>Aries</a>
