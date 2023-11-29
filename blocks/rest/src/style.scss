@@ -27,24 +27,18 @@
 		margin-block-start: 0;
 	}
 
-	img {
-		aspect-ratio: 1 / 1;
-		object-fit: cover;
-	}
-
 	.preview__zodiac-signs {
 		display: grid;
 		grid-template-columns: 1fr 1fr 1fr;
 		gap: .5em;
+		padding: 0;
+		list-style: none;
+		margin-block-start: 1.5em;
 
-		a {
+		li {
 			text-align: center;
 			border: 1px solid currentColor;
 			padding: .25em .5em;
 		}
-	}
-
-	.preview__excerpt {
-		margin-block: .5em 1.5em;
 	}
 }
