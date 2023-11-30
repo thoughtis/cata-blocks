@@ -60,7 +60,7 @@ class Daily_Horoscope extends Layout {
 
 		$date_title   = self::get_post_date_and_title( $post->title->rendered );
 		$title        = esc_html( $date_title[0] );
-		$date         = esc_html( $date_title[1] );
+		$date         = array_key_exists( '1', $date_title ) ? '<p class="preview__date">'.esc_html( $date_title[1] ).'</p>' : '';
 		$link         = esc_url( $post->link );
 		$excerpt      = wp_kses_post( $post->excerpt->rendered );
 		$domain       = wp_parse_url( $post->link, PHP_URL_HOST );
@@ -81,7 +81,7 @@ class Daily_Horoscope extends Layout {
 							{$title}
 						</a>
 					</h3>
-					<p class=\"preview__date\">{$date}</p>
+					{$date}
 					<ul class=\"preview__zodiac-signs\">
 						{$zodiac_links}
 					</ul>
@@ -133,8 +133,6 @@ class Daily_Horoscope extends Layout {
 	 */
 	public static function get_zodiac_link( string $anchor, string $text, string $link ): string {
 		$symbol = file_get_contents( __DIR__ . "/svg/$anchor.svg" ) ?: '';
-		$symbol = wp_kses( $symbol, self::get_svg_allowed_html() );
-
 		$link   = esc_url( $link );
 		$anchor = esc_attr( $anchor );
 		$text   = esc_html( $text );
