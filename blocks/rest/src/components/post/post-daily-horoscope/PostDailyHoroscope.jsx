@@ -14,8 +14,11 @@ import getImage from "../../image/get-image";
  */
 export default function PostDailyHoroscope( { post, display_zodiac_links } ) {
 
-	const data = getImage( post );
+	const data       = getImage( post );
 	const dimensions = getDimensions( data );
+	const date_title = post.title.rendered.split( ": " );
+	const title      = date_title[0];
+	const date       = date_title[1];
 
 	return(
 		<article className="preview is-layout-daily-horoscope">
@@ -31,8 +34,13 @@ export default function PostDailyHoroscope( { post, display_zodiac_links } ) {
 				</div>
 				<div className="preview__end">
 					<h3 className="preview__title">
-						<a rel="bookmark" className="preview__permalink" href={ post.link }><TextContent text={ post.title.rendered } /></a>
+						<a rel="bookmark" className="preview__permalink" href={ post.link }><TextContent text={ title } /></a>
 					</h3>
+					{ date && (
+						<p>
+							<TextContent text={ date_title[1] } />
+						</p>
+					) }
 					{ false !== display_zodiac_links && (
 						<ul className="preview__zodiac-signs">
 							<li><Symbols.AriesIcon/><a>Aries</a></li>
