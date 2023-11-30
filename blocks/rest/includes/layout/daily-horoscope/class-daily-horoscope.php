@@ -132,10 +132,15 @@ class Daily_Horoscope extends Layout {
 	 * @return string
 	 */
 	public static function get_zodiac_link( string $anchor, string $text, string $link ): string {
-		$symbol = file_get_contents( __DIR__ . "/svg/$anchor.svg" ) ?: '';
-		$link   = esc_url( $link );
-		$anchor = esc_attr( $anchor );
-		$text   = esc_html( $text );
+		$link     = esc_url( $link );
+		$anchor   = esc_attr( $anchor );
+		$text     = esc_html( $text );
+		$svg_path = __DIR__ . "/svg/$anchor.svg";
+		$symbol   = file_exists( $svg_path ) ? file_get_contents( $svg_path ) : '';
+
+		if ( empty( $text ) || empty( $anchor ) || empty( $symbol ) ) {
+			return '';
+		}
 
 		return "<li>{$symbol}<a href=\"{$link}#{$anchor}\">{$text}</a></li>";
 	}
