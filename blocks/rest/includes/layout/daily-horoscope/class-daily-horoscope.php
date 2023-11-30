@@ -59,12 +59,12 @@ class Daily_Horoscope extends Layout {
 		);
 
 		$date_title   = self::get_post_date_and_title( $post->title->rendered );
-		$title        = esc_html( 'Your ' . $date_title[0] );
+		$title        = esc_html( $date_title[0] );
 		$date         = esc_html( $date_title[1] );
 		$link         = esc_url( $post->link );
 		$excerpt      = wp_kses_post( $post->excerpt->rendered );
 		$domain       = wp_parse_url( $post->link, PHP_URL_HOST );
-		$zodiac_links = $display_zodiac_links ? wp_kses_post( self::get_zodiac_links( $post ) ) : '';
+		$zodiac_links = $display_zodiac_links ? self::get_zodiac_links( $post ) : '';
 
 		return "<article class=\"preview is-layout-daily-horoscope\">
 			<div class=\"preview__layout\">
