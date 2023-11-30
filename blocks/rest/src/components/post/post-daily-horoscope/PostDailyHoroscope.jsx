@@ -1,6 +1,7 @@
 /**
  * Internal dependencies
  */
+import * as Symbols from '../../icons';
 import Image from "../../image/Image";
 import TextContent from "../../text-content/TextContent";
 import getDimensions from "../../image/get-dimensions";
@@ -29,25 +30,24 @@ export default function PostDailyHoroscope( { post, display_zodiac_links } ) {
 				) }
 				</div>
 				<div className="preview__end">
-					<p>Daily Horoscope</p>
 					<h3 className="preview__title">
 						<a rel="bookmark" className="preview__permalink" href={ post.link }><TextContent text={ post.title.rendered } /></a>
 					</h3>
 					{ false !== display_zodiac_links && (
-						<div className="preview__zodiac-signs">
-							<a>Aries</a>
-							<a>Taurus</a>
-							<a>Gemini</a>
-							<a>Cancer</a>
-							<a>Leo</a>
-							<a>Virgo</a>
-							<a>Libra</a>
-							<a>Scorpio</a>
-							<a>Sagittarius</a>
-							<a>Capricorn</a>
-							<a>Aquarius</a>
-							<a>Pisces</a>
-						</div>
+						<ul className="preview__zodiac-signs">
+							<li><Symbols.AriesIcon/><a>Aries</a></li>
+							<li><Symbols.TaurusIcon/><a>Taurus</a></li>
+							<li><Symbols.GeminiIcon/><a>Gemini</a></li>
+							<li><Symbols.CancerIcon/><a>Cancer</a></li>
+							<li><Symbols.LeoIcon/><a>Leo</a></li>
+							<li><Symbols.VirgoIcon/><a>Virgo</a></li>
+							<li><Symbols.LibraIcon/><a>Libra</a></li>
+							<li><Symbols.ScorpioIcon/><a>Scorpio</a></li>
+							<li><Symbols.SagittariusIcon/><a>Sagittarius</a></li>
+							<li><Symbols.CapricornIcon/><a>Capricorn</a></li>
+							<li><Symbols.AquariusIcon/><a>Aquarius</a></li>
+							<li><Symbols.PiscesIcon/><a>Pisces</a></li>
+						</ul>
 					) }
 				</div>
 			</div>
