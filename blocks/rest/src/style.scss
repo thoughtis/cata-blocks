@@ -28,17 +28,24 @@
 	}
 
 	.preview__zodiac-signs {
-		--columns: 3;
-		--gap: .5em;
-		display: grid;
-		grid-template-columns: repeat(auto-fill,minmax(max(9em,(100% - (var( --columns ) - 1) * var( --gap ))/var( --columns )),1fr));
-		gap: var( --gap );
+		display: flex;
+		flex-wrap: wrap;
+		gap: .5em;
 		padding: 0;
 		list-style: none;
 		margin-block-start: 1.5em;
 
 		li {
-			padding: .25em;
+			display: flex;
+			align-items: center;
+			gap: .5em;
+			padding: .25em .5em;
+			border: 1px solid currentColor;
+		}
+
+		svg {
+			height: 1em;
+			fill: currentColor;
 		}
 	}
 }
