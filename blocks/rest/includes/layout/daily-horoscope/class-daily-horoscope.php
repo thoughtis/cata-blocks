@@ -132,10 +132,14 @@ class Daily_Horoscope extends Layout {
 	 * @return string
 	 */
 	public static function get_zodiac_link( string $anchor, string $text, string $link ): string {
-		$symbols = self::get_zodiac_symbols();
-		$symbol  = array_key_exists( $anchor, $symbols ) ? $symbols[$anchor] : '&#10024;';
+		$symbol = file_get_contents( __DIR__ . "/svg/$anchor.svg" ) ?: '';
+		$symbol = wp_kses( $symbol, self::get_svg_allowed_html() );
 
-		return "<li>{$symbol} <a href=\"{$link}#{$anchor}\">{$text}</a></li>";
+		$link   = esc_url( $link );
+		$anchor = esc_attr( $anchor );
+		$text   = esc_html( $text );
+
+		return "<li>{$symbol}<a href=\"{$link}#{$anchor}\">{$text}</a></li>";
 	}
 
 	/**
@@ -155,24 +159,66 @@ class Daily_Horoscope extends Layout {
 	}
 
 	/**
-	 * Get Zodiac Symbols
+	 * Get SVG Allowed HTML
 	 * 
 	 * @return array
 	 */
-	public static function get_zodiac_symbols(): array {
+	public static function get_svg_allowed_html(): array {
 		return array(
-			'aries'       => '&#9800;',
-			'taurus'      => '&#9801;',
-			'gemini'      => '&#9802;',
-			'cancer'      => '&#9803;',
-			'leo'         => '&#9804;',
-			'virgo'       => '&#9805;',
-			'libra'       => '&#9806;',
-			'scorpio'     => '&#9807;',
-			'sagittarius' => '&#9808;',
-			'capricorn'   => '&#9809;',
-			'aquarius'    => '&#9810;',
-			'pisces'      => '&#9811;',
+			'svg'     => array(
+				'class'   => true,
+				'fill'    => true,
+				'height'  => true,
+				'viewbox' => true,
+				'width'   => true,
+				'xmlns'   => true,
+			),
+			'symbol'  => array(
+				'id'      => true,
+				'viewbox' => true,
+			),
+			'title'   => true,
+			'desc'    => true,
+			'defs'    => true,
+			'g'       => array(
+				'stroke'       => true,
+				'stroke-width' => true,
+				'fill'         => true,
+				'fill-rule'    => true,
+				'transform'    => true,
+				'clip-path'    => true,
+			),
+			'path'    => array(
+				'd'               => true,
+				'id'              => true,
+				'fill'            => true,
+				'stroke'          => true,
+				'stroke-width'    => true,
+				'stroke-linejoin' => true,
+			),
+			'rect'    => array(
+				'x'         => true,
+				'y'         => true,
+				'width'     => true,
+				'height'    => true,
+				'rx'        => true,
+				'class'     => true,
+				'fill'      => true,
+				'transform' => true,
+			),
+			'circle'  => array(
+				'cx'   => true,
+				'cy'   => true,
+				'r'    => true,
+				'fill' => true,
+			),
+			'polygon' => array(
+				'points' => true,
+			),
+			'use'     => array(
+				'xlink:href' => true,
+				'href'       => true,
+			),
 		);
 	}
 }
