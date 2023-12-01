@@ -133,7 +133,7 @@ class Daily_Horoscope extends Layout {
 	public static function get_zodiac_link( string $anchor, string $text, string $link ): string {
 		$link     = esc_url( $link );
 		$anchor   = esc_attr( $anchor );
-		$text     = esc_html( $text );
+		$text     = esc_html( wp_strip_all_tags( $text ) );
 		$svg_path = __DIR__ . "/svg/$anchor.svg";
 		$symbol   = file_exists( $svg_path ) ? file_get_contents( $svg_path ) : '';
 
