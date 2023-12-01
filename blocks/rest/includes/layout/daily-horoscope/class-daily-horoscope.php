@@ -10,7 +10,6 @@ namespace Cata\Blocks\Rest\Layout;
 
 use Cata\Blocks\Rest\Layout;
 use stdClass;
-use WP_HTML_Tag_Processor;
 
 /**
  * Daily Horoscope
@@ -159,69 +158,5 @@ class Daily_Horoscope extends Layout {
 		}
 
 		return array();
-	}
-
-	/**
-	 * Get SVG Allowed HTML
-	 * 
-	 * @return array
-	 */
-	public static function get_svg_allowed_html(): array {
-		return array(
-			'svg'     => array(
-				'class'   => true,
-				'fill'    => true,
-				'height'  => true,
-				'viewbox' => true,
-				'width'   => true,
-				'xmlns'   => true,
-			),
-			'symbol'  => array(
-				'id'      => true,
-				'viewbox' => true,
-			),
-			'title'   => true,
-			'desc'    => true,
-			'defs'    => true,
-			'g'       => array(
-				'stroke'       => true,
-				'stroke-width' => true,
-				'fill'         => true,
-				'fill-rule'    => true,
-				'transform'    => true,
-				'clip-path'    => true,
-			),
-			'path'    => array(
-				'd'               => true,
-				'id'              => true,
-				'fill'            => true,
-				'stroke'          => true,
-				'stroke-width'    => true,
-				'stroke-linejoin' => true,
-			),
-			'rect'    => array(
-				'x'         => true,
-				'y'         => true,
-				'width'     => true,
-				'height'    => true,
-				'rx'        => true,
-				'class'     => true,
-				'fill'      => true,
-				'transform' => true,
-			),
-			'circle'  => array(
-				'cx'   => true,
-				'cy'   => true,
-				'r'    => true,
-				'fill' => true,
-			),
-			'polygon' => array(
-				'points' => true,
-			),
-			'use'     => array(
-				'xlink:href' => true,
-				'href'       => true,
-			),
-		);
 	}
 }
