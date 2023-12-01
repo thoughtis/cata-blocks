@@ -3,7 +3,7 @@
  * Daily Horoscope
  * 
  * @package Cata\Blocks\Rest\Layout
- * @since
+ * @since 0.8.8
  */
 
 namespace Cata\Blocks\Rest\Layout;
