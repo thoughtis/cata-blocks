@@ -151,7 +151,7 @@ class Daily_Horoscope extends Layout {
 	 * @return array
 	 */
 	public static function get_zodiac_headings( string $post_content ): array {
-		$regex = '/<h2.*id="(.*)".*>(.*?)<\/h2>/im';
+		$regex = '/<h2[^>]*id="([^"]*)"[^>]*>(.*)<\/h2>/im';
 
 		if ( preg_match_all( $regex, $post_content, $matches ) ) {
 			return array_combine( $matches[1], $matches[2] );
