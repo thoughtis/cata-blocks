@@ -43,18 +43,18 @@ export default function PostDailyHoroscope( { post, display_zodiac_links } ) {
 					) }
 					{ false !== display_zodiac_links && (
 						<ul className="preview__zodiac-signs">
-							<li><Symbols.AriesIcon/><a>Aries</a></li>
-							<li><Symbols.TaurusIcon/><a>Taurus</a></li>
-							<li><Symbols.GeminiIcon/><a>Gemini</a></li>
-							<li><Symbols.CancerIcon/><a>Cancer</a></li>
-							<li><Symbols.LeoIcon/><a>Leo</a></li>
-							<li><Symbols.VirgoIcon/><a>Virgo</a></li>
-							<li><Symbols.LibraIcon/><a>Libra</a></li>
-							<li><Symbols.ScorpioIcon/><a>Scorpio</a></li>
-							<li><Symbols.SagittariusIcon/><a>Sagittarius</a></li>
-							<li><Symbols.CapricornIcon/><a>Capricorn</a></li>
-							<li><Symbols.AquariusIcon/><a>Aquarius</a></li>
-							<li><Symbols.PiscesIcon/><a>Pisces</a></li>
+							<li><a><Symbols.AriesIcon/>Aries</a></li>
+							<li><a><Symbols.TaurusIcon/>Taurus</a></li>
+							<li><a><Symbols.GeminiIcon/>Gemini</a></li>
+							<li><a><Symbols.CancerIcon/>Cancer</a></li>
+							<li><a><Symbols.LeoIcon/>Leo</a></li>
+							<li><a><Symbols.VirgoIcon/>Virgo</a></li>
+							<li><a><Symbols.LibraIcon/>Libra</a></li>
+							<li><a><Symbols.ScorpioIcon/>Scorpio</a></li>
+							<li><a><Symbols.SagittariusIcon/>Sagittarius</a></li>
+							<li><a><Symbols.CapricornIcon/>Capricorn</a></li>
+							<li><a><Symbols.AquariusIcon/>Aquarius</a></li>
+							<li><a><Symbols.PiscesIcon/>Pisces</a></li>
 						</ul>
 					) }
 				</div>

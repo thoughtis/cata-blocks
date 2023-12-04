@@ -141,7 +141,7 @@ class Daily_Horoscope extends Layout {
 			return '';
 		}
 
-		return "<li>{$symbol}<a href=\"{$link}#{$anchor}\">{$text}</a></li>";
+		return "<li><a href=\"{$link}#{$anchor}\">{$symbol}{$text}</a></li>";
 	}
 
 	/**

@@ -36,11 +36,14 @@
 		margin-block-start: 1.5em;
 
 		li {
-			display: flex;
-			align-items: center;
-			gap: .5em;
 			padding: .25em .5em;
 			border: 1px solid currentColor;
+		}
+
+		a {
+			display: inline-flex;
+			align-items: center;
+			gap: .5em;
 		}
 
 		svg {
