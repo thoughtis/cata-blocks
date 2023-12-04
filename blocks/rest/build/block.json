@@ -10,8 +10,21 @@
 	"supports": {
 		"align": ["wide","full"],
 		"html": false,
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"style": true,
+			"width": true,
+			"__experimentalDefaultControls": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true
+			}
+		},
 		"spacing": {
-			"margin": true
+			"margin": true,
+			"padding": true
 		}
 	},
 	"attributes": {
@@ -29,12 +42,17 @@
 			"type": "string",
 			"default": ""
 		},
-		"urls" : {
+		"urls": {
 			"type": "array",
 			"default": []
+		},
+		"display_zodiac_links": {
+			"type": "boolean",
+			"default": true
 		}
 	},
 	"keywords": [ "rest", "api" ],
 	"editorScript": "file:./index.js",
-	"editorStyle": "file:./index.css"
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css"
 }

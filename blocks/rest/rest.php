@@ -53,7 +53,7 @@ function cata_rest_render_callback( array $attributes, string $content ) : strin
 function cata_rest_render_block( array $attributes, string $content ) : string {
 
 	$layout  = isset( $attributes['layout'] ) ? $attributes['layout'] : '';
-	$sorting = isset( $attributes['sorting'] ) ? $attributes['sorting'] : ''; 
+	$sorting = isset( $attributes['sorting'] ) ? $attributes['sorting'] : '';
 	$urls    = $attributes['urls'];
 
 	if ( empty( $urls ) ) {
@@ -78,7 +78,13 @@ function cata_rest_render_block( array $attributes, string $content ) : string {
 		usort( $posts, get_sorting_function( $sorting ) );
 	}
 
-	$new_content = get_layout_renderer( $layout )( $content, $posts );
+	$args = [ $content, $posts ];
+
+	if ( 'daily-horoscope' === $layout ) {
+		array_push( $args, $attributes['display_zodiac_links'] );
+	}
+
+	$new_content = get_layout_renderer( $layout )( ...$args );
 
 	if ( '' === $new_content ) {
 		return $content;
@@ -121,9 +127,10 @@ function convert_url_to_posts( string $url ) : array {
  */
 function get_layout_renderer( string $key ) : callable {
 	$render_classes = array(
-		'network'  => 'Cata\\Blocks\\Rest\\Layout\\Network::render',
-		'trending' => 'Cata\\Blocks\\Rest\\Layout\\Trending::render',
-		'compact' => 'Cata\\Blocks\\Rest\\Layout\\Compact::render',
+		'network'         => 'Cata\\Blocks\\Rest\\Layout\\Network::render',
+		'trending'        => 'Cata\\Blocks\\Rest\\Layout\\Trending::render',
+		'compact'         => 'Cata\\Blocks\\Rest\\Layout\\Compact::render',
+		'daily-horoscope' => 'Cata\\Blocks\\Rest\\Layout\\Daily_Horoscope::render',
 	);
 	if ( '' === $key ) {
 		$key = key( $render_classes );

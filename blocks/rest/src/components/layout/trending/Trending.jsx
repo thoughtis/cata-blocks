@@ -1,9 +1,9 @@
 /**
  * Internal dependencies
  */
-import Post from "../../post-trending/Post";
-import PostMedium from "../../post-trending/PostMedium";
-import PostLarge from "../../post-trending/PostLarge";
+import Post from "../../post/post-trending/Post";
+import PostMedium from "../../post/post-trending/PostMedium";
+import PostLarge from "../../post/post-trending/PostLarge";
 import { getSortingFunction } from '../sorting';
 
 /**

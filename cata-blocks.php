@@ -12,7 +12,7 @@
  * Description: Block Editor components for use with the Cata theme.
  * Author:      Thought & Expression Co. <devjobs@thought.is>
  * Author URI:  https://thought.is
- * Version:     0.8.7
+ * Version:     0.8.8
  * License:     GPL v3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.txt
  */
@@ -62,6 +62,8 @@ require_once __DIR__ . '/blocks/newsletter/newsletter.php';
  * REST
  */
 require_once __DIR__ . '/blocks/rest/includes/layout/class-layout.php';
+require_once __DIR__ . '/blocks/rest/includes/layout/compact/class-compact.php';
+require_once __DIR__ . '/blocks/rest/includes/layout/daily-horoscope/class-daily-horoscope.php';
 require_once __DIR__ . '/blocks/rest/includes/layout/network/class-network.php';
 require_once __DIR__ . '/blocks/rest/includes/layout/trending/class-trending.php';
 require_once __DIR__ . '/blocks/rest/includes/sorting.php';

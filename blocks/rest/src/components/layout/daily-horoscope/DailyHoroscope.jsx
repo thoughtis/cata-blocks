@@ -1,16 +1,16 @@
 /**
  * Internal dependencies
  */
-import PostCompact from "../../post/post-compact/PostCompact";
+import PostDailyHoroscope from "../../post/post-daily-horoscope/PostDailyHoroscope";
 import { getSortingFunction } from '../sorting';
 
 /**
- * Compact Layout
+ * Daily Horoscope Layout
  * 
  * @param {array} posts
  * @param {string} sorting
  */
-export default function Compact( { posts, sorting } ) {
+export default function DailyHoroscope( { posts, sorting, display_zodiac_links } ) {
 
 	if ( 0 === posts.length ) {
 		return null;
@@ -23,11 +23,11 @@ export default function Compact( { posts, sorting } ) {
 	}
 
 	return (
-		<div className="wp-block-cata-rest__layout is-layout-compact">
+		<div className="wp-block-cata-rest__layout is-layout-daily-horoscope">
 			{
 				clonedPosts.map( ( post ) => {
 					return (
-						<PostCompact key={post.id} post={post} />
+						<PostDailyHoroscope key={post.id} post={post} display_zodiac_links={display_zodiac_links} />
 					)
 				} )
 			}
