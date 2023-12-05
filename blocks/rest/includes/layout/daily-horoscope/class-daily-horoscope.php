@@ -48,15 +48,6 @@ class Daily_Horoscope extends Layout {
 	 * @return string
 	 */
 	public static function render_preview( stdClass $post, bool $display_zodiac_links ): string {
-		$image_data = self::get_image( $post );
-		$image = self::render_image(
-			$image_data,
-			array(
-				'sizes'  => '(max-width: 40em) 92.5vw, 36em',
-				'srcset' => self::get_image_dimensions( $image_data, null, [ 2560, 1920, 1280, 960, 640, 480, 320 ] ),
-			)
-		);
-
 		$date_title   = self::get_post_date_and_title( $post->title->rendered );
 		$title        = esc_html( $date_title[0] );
 		$date         = array_key_exists( '1', $date_title ) ? '<p class="preview__date">'.esc_html( $date_title[1] ).'</p>' : '';
@@ -67,24 +58,15 @@ class Daily_Horoscope extends Layout {
 
 		return "<article class=\"preview is-layout-daily-horoscope\">
 			<div class=\"preview__layout\">
-				<div class=\"preview__start\">
-					<figure class=\"preview__image-container\">
-						<a rel=\"bookmark\" href=\"{$link}\">
-							{$image}
-						</a>
-					</figure>
-				</div>
-				<div class=\"preview__end\">
-					<h3 class=\"preview__title\">
-						<a class=\"preview__permalink\" rel=\"bookmark\" href=\"{$link}\">
-							{$title}
-						</a>
-					</h3>
-					{$date}
-					<ul class=\"preview__zodiac-signs\">
-						{$zodiac_links}
-					</ul>
-				</div>
+				<h3 class=\"preview__title\">
+					<a class=\"preview__permalink\" rel=\"bookmark\" href=\"{$link}\">
+						{$title}
+					</a>
+				</h3>
+				{$date}
+				<ul class=\"preview__zodiac-signs\">
+					{$zodiac_links}
+				</ul>
 			</div>
 		</article>";
 	}
