@@ -4,24 +4,7 @@
  */
 
 .preview.is-layout-daily-horoscope {
-	.preview__layout {
-		display: flex;
-		flex-wrap: wrap;
-		column-gap: 2.25em;
-		row-gap: 1.125em;
-
-		> * {
-			flex-grow: 1;
-		}
-	}
-
-	.preview__start {
-		flex-basis: 15em;
-	}
-
-	.preview__end {
-		flex-basis: 18em;
-	}
+	text-align: center;
 
 	.preview__title {
 		margin-block-start: 0;
@@ -29,6 +12,7 @@
 
 	.preview__zodiac-signs {
 		display: flex;
+		justify-content: center;
 		flex-wrap: wrap;
 		gap: .5em;
 		padding: 0;
