@@ -23,11 +23,9 @@ export default function PostDailyHoroscope( { post, display_zodiac_links } ) {
 	return(
 		<article className="preview is-layout-daily-horoscope">
 			<div className="preview__layout">
-				{ date && (
-					<p class="preview__date">
-						<TextContent text={ date } />
-					</p>
-				) }
+				<p class="preview__date">
+					<TextContent text={ date } />
+				</p>
 				{ false !== display_zodiac_links && (
 					<ul className="preview__zodiac-signs">
 						<li><a><Symbols.AriesIcon/>Aries</a></li>
