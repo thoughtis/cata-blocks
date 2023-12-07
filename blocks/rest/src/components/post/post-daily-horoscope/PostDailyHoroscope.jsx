@@ -10,19 +10,22 @@ import TextContent from "../../text-content/TextContent";
  * @param {object} post
  */
 export default function PostDailyHoroscope( { post, display_zodiac_links } ) {
-	const date_title = post.title.rendered.split( ": " );
-	const title      = date_title[0];
-	const date       = date_title[1];
+	let date = new Date( post.date );
+	const dateOptions = {
+		weekday: 'long',
+		year: 'numeric',
+		month: 'long',
+		day: 'numeric',
+	};
+
+	date = date.toLocaleDateString( 'en-US', dateOptions )
 
 	return(
 		<article className="preview is-layout-daily-horoscope">
 			<div className="preview__layout">
-				<h3 className="preview__title">
-					<a rel="bookmark" className="preview__permalink" href={ post.link }><TextContent text={ title } /></a>
-				</h3>
 				{ date && (
-					<p>
-						<TextContent text={ date_title[1] } />
+					<p class="preview__date">
+						<TextContent text={ date } />
 					</p>
 				) }
 				{ false !== display_zodiac_links && (
