@@ -48,9 +48,8 @@ class Daily_Horoscope extends Layout {
 	 * @return string
 	 */
 	public static function render_preview( stdClass $post, bool $display_zodiac_links ): string {
-		$date_title   = self::get_post_date_and_title( $post->title->rendered );
-		$title        = esc_html( $date_title[0] );
-		$date         = array_key_exists( '1', $date_title ) ? '<p class="preview__date">'.esc_html( $date_title[1] ).'</p>' : '';
+		$date         = date_create( $post->date );
+		$date         = esc_html( date_format( $date, 'l, F j, Y' ) );
 		$link         = esc_url( $post->link );
 		$excerpt      = wp_kses_post( $post->excerpt->rendered );
 		$domain       = wp_parse_url( $post->link, PHP_URL_HOST );
@@ -58,28 +57,12 @@ class Daily_Horoscope extends Layout {
 
 		return "<article class=\"preview is-layout-daily-horoscope\">
 			<div class=\"preview__layout\">
-				<h3 class=\"preview__title\">
-					<a class=\"preview__permalink\" rel=\"bookmark\" href=\"{$link}\">
-						{$title}
-					</a>
-				</h3>
-				{$date}
+				<p>{$date}</p>
 				<ul class=\"preview__zodiac-signs\">
 					{$zodiac_links}
 				</ul>
 			</div>
 		</article>";
-	}
-
-	/**
-	 * Get Post Date And Title
-	 * 
-	 * @param string $post_title
-	 * @return array
-	 */
-	public static function get_post_date_and_title( string $post_title ): array {
-		$text_array = explode( ': ', $post_title );
-		return $text_array;
 	}
 
 	/**

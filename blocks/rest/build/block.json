@@ -1,58 +1,64 @@
 {
-	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 2,
-	"name": "cata/rest",
-	"version": "0.1.0",
-	"title": "WordPress REST API",
-	"category": "widgets",
-	"icon": "smiley",
-	"description": "Use the WordPress REST API to display posts from any WP site.",
-	"supports": {
-		"align": ["wide","full"],
-		"html": false,
-		"__experimentalBorder": {
-			"color": true,
-			"radius": true,
-			"style": true,
-			"width": true,
-			"__experimentalDefaultControls": {
-				"color": true,
-				"radius": true,
-				"style": true,
-				"width": true
-			}
-		},
-		"spacing": {
-			"margin": true,
-			"padding": true
-		}
-	},
-	"attributes": {
-		"content" : {
-			"type": "string",
-			"source": "html",
-			"default": "",
-			"selector": ".wp-block-cata-rest"
-		},
-		"layout": {
-			"type": "string",
-			"default": ""
-		},
-		"sorting": {
-			"type": "string",
-			"default": ""
-		},
-		"urls": {
-			"type": "array",
-			"default": []
-		},
-		"display_zodiac_links": {
-			"type": "boolean",
-			"default": true
-		}
-	},
-	"keywords": [ "rest", "api" ],
-	"editorScript": "file:./index.js",
-	"editorStyle": "file:./index.css",
-	"style": "file:./style-index.css"
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "name": "cata/rest",
+  "version": "0.1.0",
+  "title": "WordPress REST API",
+  "category": "widgets",
+  "icon": "smiley",
+  "description": "Use the WordPress REST API to display posts from any WP site.",
+  "supports": {
+    "align": [
+      "wide",
+      "full"
+    ],
+    "html": false,
+    "__experimentalBorder": {
+      "color": true,
+      "radius": true,
+      "style": true,
+      "width": true,
+      "__experimentalDefaultControls": {
+        "color": true,
+        "radius": true,
+        "style": true,
+        "width": true
+      }
+    },
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  },
+  "attributes": {
+    "content": {
+      "type": "string",
+      "source": "html",
+      "default": "",
+      "selector": ".wp-block-cata-rest"
+    },
+    "layout": {
+      "type": "string",
+      "default": ""
+    },
+    "sorting": {
+      "type": "string",
+      "default": ""
+    },
+    "urls": {
+      "type": "array",
+      "default": []
+    },
+    "display_zodiac_links": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "keywords": [
+    "rest",
+    "api"
+  ],
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css"
 }
