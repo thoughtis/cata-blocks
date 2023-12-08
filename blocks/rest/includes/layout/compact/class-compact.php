@@ -63,15 +63,19 @@ class Compact extends Layout {
 		);
 
 		return "<article class=\"preview is-layout-compact\">
-			<figure class=\"preview__image-container\">
-				<a rel=\"bookmark\" href=\"{$link}\">
-					{$image}
-				</a>
-			</figure>
-			<div class=\"preview__content\">
-				<h3 class=\"preview__title\">
-					<a class=\"preview__permalink\" rel=\"bookmark\" href=\"{$link}\">{$title}</a>
-				</h3>
+			<div class=\"preview__layout\">
+				<div class=\"preview__start\">
+					<figure class=\"preview__image-container\">
+						<a rel=\"bookmark\" href=\"{$link}\">
+							{$image}
+						</a>
+					</figure>
+				</div>
+				<div class=\"preview__end\">
+					<h3 class=\"preview__title\">
+						<a class=\"preview__permalink\" rel=\"bookmark\" href=\"{$link}\">{$title}</a>
+					</h3>
+				</div>
 			</div>
 		</article>";
 	}
