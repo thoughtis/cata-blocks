@@ -54,7 +54,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 	 */
 	function mapUrlApiFetch( url ) {
 		return apiFetch({
-			path: decodeHtml( url ),
+			path: _.unescape( url ),
 			cata: {
 				useCache: true,
 				useProxy: true
@@ -148,7 +148,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 							text={__('Add URL', 'cata')}
 							onClick={()=>{
 								setAttributes({
-									urls: [ ...urls, decodeHtml( url ) ]
+									urls: [ ...urls, _.unescape( url ) ]
 								});
 								setUrl('');
 							}}
