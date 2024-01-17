@@ -52,9 +52,9 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 	 * 
 	 * @param {string} url
 	 */
-	function mapUrlApiFetch(url) {
+	function mapUrlApiFetch( url ) {
 		return apiFetch({
-			path: url,
+			path: decodeHtml( url ),
 			cata: {
 				useCache: true,
 				useProxy: true
@@ -93,6 +93,12 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 			...attributes,
 			content: <LayoutComponent posts={posts} sorting={sorting} display_zodiac_links={display_zodiac_links} />
 		});
+	}
+
+	function decodeHtml(text) {
+		var textArea = document.createElement('textarea');
+		textArea.innerHTML = text;
+		return textArea.value;
 	}
 
 	return (
@@ -142,7 +148,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 							text={__('Add URL', 'cata')}
 							onClick={()=>{
 								setAttributes({
-									urls: [ ...urls, url ]
+									urls: [ ...urls, decodeHtml( url ) ]
 								});
 								setUrl('');
 							}}
