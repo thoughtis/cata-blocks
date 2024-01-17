@@ -10,6 +10,7 @@ import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { Button, PanelBody, PanelRow, SelectControl, TextControl, ToggleControl } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
+import { _unescape } from 'lodash';
 
 /**
  * Internal dependencies
