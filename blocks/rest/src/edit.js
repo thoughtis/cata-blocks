@@ -95,12 +95,6 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 		});
 	}
 
-	function decodeHtml(text) {
-		var textArea = document.createElement('textarea');
-		textArea.innerHTML = text;
-		return textArea.value;
-	}
-
 	return (
 		<>
 			<div { ...useBlockProps() } >
