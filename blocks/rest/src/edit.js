@@ -10,6 +10,7 @@ import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { Button, PanelBody, PanelRow, SelectControl, TextControl, ToggleControl } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
+import { _unescape } from 'lodash';
 
 /**
  * Internal dependencies
@@ -52,9 +53,9 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 	 * 
 	 * @param {string} url
 	 */
-	function mapUrlApiFetch(url) {
+	function mapUrlApiFetch( url ) {
 		return apiFetch({
-			path: url,
+			path: _.unescape( url ),
 			cata: {
 				useCache: true,
 				useProxy: true
@@ -142,7 +143,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 							text={__('Add URL', 'cata')}
 							onClick={()=>{
 								setAttributes({
-									urls: [ ...urls, url ]
+									urls: [ ...urls, _.unescape( url ) ]
 								});
 								setUrl('');
 							}}
