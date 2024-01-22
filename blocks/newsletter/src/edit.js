@@ -21,9 +21,8 @@ import { useBlockProps } from '@wordpress/block-editor';
  */
 import './editor.scss';
 
-import { Button, ResponsiveWrapper, TextControl, PanelBody } from '@wordpress/components';
-import { MediaUpload, MediaUploadCheck, InspectorControls, RichText } from '@wordpress/block-editor';
-import { Fragment } from "@wordpress/element";
+import { TextControl, PanelBody } from '@wordpress/components';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -37,25 +36,7 @@ export default function Edit( props ) {
 
 	const blockProps = useBlockProps();
 
-	const { attributes, setAttributes, media } = props;
-
-	const onSelectMedia = (media) => {
-		setAttributes({
-			mediaId: media.id,
-			mediaUrl: media.url,
-			mediaWidth: media.width,
-			mediaHeight: media.height
-		});
-	}
-
-	const removeMedia = () => {
-		setAttributes({
-			mediaId: 0,
-			mediaUrl: '',
-			mediaWidth: 0,
-			mediaHeight: 0
-		});
-    }
+	const { attributes, setAttributes } = props;
 
 	return (
 		<div 
@@ -71,73 +52,6 @@ export default function Edit( props ) {
 		>
 
 			<InspectorControls>
-				<PanelBody
-					title='Select Newsletter Background Image'
-					initialOpen={ false }
-				>
-					<MediaUploadCheck>
-						<MediaUpload
-							onSelect={onSelectMedia}
-							value={attributes.mediaId}
-							allowedTypes={ [ 'image' ] }
-							render={({open}) => (
-								<Button 
-									onClick={open}
-									className={attributes.mediaId == 0 ? 'editor-post-featured-image__toggle' : 'editor-post-featured-image__preview'}
-								>
-
-									{attributes.mediaId == 0 && 'Choose an image'}
-									{props.media != undefined && 
-										<ResponsiveWrapper
-											naturalWidth={ attributes.mediaWidth }
-											naturalHeight={ attributes.mediaHeight }
-										>
-											<img 
-												src={props.media.source_url}
-												alt={props.media.alt_text ? props.media.alt_text : attributes.mediaAltText }
-												style={{
-													position: 'absolute',
-													zIndex: '-1',
-													width: '100%',
-													height: '100%',
-													objectFit: 'cover',
-													overflow: 'hidden'
-												}}
-											/>
-										</ResponsiveWrapper>
-									}
-								</Button>
-							)}
-						/>
-					</MediaUploadCheck>
-
-					<div className={ `${attributes.classNameBase}__panel-button-wrapper` }>
-						{attributes.mediaId != 0 && 
-							<MediaUploadCheck>
-								<MediaUpload
-									title='Replace image'
-									value={attributes.mediaId}
-									onSelect={onSelectMedia}
-									allowedTypes={ [ 'image' ] }
-									render={({open}) => (
-										<Button onClick={open} variant="secondary">
-											Replace image
-										</Button>
-									)}
-								/>
-							</MediaUploadCheck>
-						}
-
-						{attributes.mediaId != 0 && 
-							<MediaUploadCheck>
-								<Button onClick={removeMedia} isDestructive>
-									Remove Image
-								</Button>
-							</MediaUploadCheck>
-						}
-					</div>
-				</PanelBody>
-
 				<PanelBody
 					title='Set Mailchimp Audience ID'
 					initialOpen={ false }
@@ -176,23 +90,7 @@ export default function Edit( props ) {
 			<div className={ `${attributes.classNameBase}__wrapper` }>
 				<div className={ `${attributes.classNameBase}__inner` }>
 					<div className={ `${attributes.classNameBase}__layout` }>
-						<div className={ `${attributes.classNameBase}__start` }>
-							<RichText
-								tagName="h3"
-								value={ attributes.title }
-								onChange={ ( title ) => setAttributes({ title }) }
-								className={ `${attributes.classNameBase}__title` }
-								placeholder='apply to the newsletter'
-							/>
-						</div>
 						<div className={ `${attributes.classNameBase}__end` }>
-							<RichText
-									tagName="p"
-									value={ attributes.description }
-									onChange={ ( description ) => setAttributes({ description }) }
-									className={ `${attributes.classNameBase}__description` }
-									placeholder='Join our free newsletter for weekly updates about what TV shows and movies are streaming online.'
-								/>
 							<div className={ `${attributes.classNameBase}__form-placeholder` }>
 								<div className={ `${attributes.classNameBase}__fieldset` }>
 									<input type="email" placeholder="Enter Your Email" readOnly/>
