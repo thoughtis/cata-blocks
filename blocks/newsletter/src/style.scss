@@ -12,17 +12,13 @@
 	flex-wrap: wrap;
 	justify-content: center;
 
-	input::placeholder, .button {
-		font-size: inherit;
-	}
-
 	input {
 		flex-basis: 10em;
 		flex-grow: 2;
 		flex-shrink: 1;
 	}
 
-	.button {
+	button {
 		flex-basis: 6em;
 	}
 }
