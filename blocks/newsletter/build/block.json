@@ -10,7 +10,22 @@
     "html": false,
     "multiple": false,
     "customClassName": false,
-    "align": true
+    "__experimentalBorder": {
+      "color": true,
+      "radius": true,
+      "style": true,
+      "width": true,
+      "__experimentalDefaultControls": {
+        "color": true,
+        "radius": true,
+        "style": true,
+        "width": true
+      }
+    },
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
   },
   "attributes": {
     "classNameBase": {
@@ -31,18 +46,19 @@
     },
     "mailchimpAudienceId": {
       "type": "string",
-      "default": "829754e1b3"
+      "default": ""
     },
     "legalText": {
       "type": "string",
-      "default": "Unsubscribe at any time. By subscribing, you agree to the terms of our %%Privacy Policy%%"
+      "default": "Unsubscribe at any time. By subscribing, you agree to the terms of our %%Privacy Policy%%."
     },
     "successMessage": {
       "type": "string",
-      "default": "Thank you for subscribing!"
+      "default": "Thanks for subscribing!"
     }
   },
   "editorScript": "file:./index.js",
   "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
   "script": "file:./script.js"
 }

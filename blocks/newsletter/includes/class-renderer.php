@@ -45,12 +45,8 @@ class Renderer {
 
 		return "<div class=\"${classes}\">
 			<div class=\"wp-block-cata-newsletter__inner\">
-				<div class=\"wp-block-cata-newsletter__layout\">
-					<div class=\"wp-block-cata-newsletter__end\">
-						${form}
-						${legal_text}
-					</div>
-				</div>
+				${form}
+				${legal_text}
 			</div>
 		</div>";
 	}

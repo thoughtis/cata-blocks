@@ -41,14 +41,6 @@ export default function Edit( props ) {
 	return (
 		<div 
 			{ ...blockProps } 
-			style={{
-				border: "2px solid black",
-				backgroundColor: attributes.mediaUrl ? 'transparent' : '#7E7D83',
-				backgroundImage: attributes.mediaUrl ? 'url(' + attributes.mediaUrl + ')' : 'none',
-				backgroundSize: "cover",
-				backgroundPosition: "center",
-				backgroundRepeat: "no-repeat"
-			}}
 		>
 
 			<InspectorControls>
@@ -57,7 +49,7 @@ export default function Edit( props ) {
 					initialOpen={ false }
 				>
 					<p className={ `${attributes.classNameBase}__mailchimpId-display` }>
-						Mailchimp campaign ID<br/>defaults to: <span>"829754e1b3"</span> <br/>which is the CreepyCatalog Streaming Guide
+						Mailchimp campaign ID
 					</p>
 
 					<div>
@@ -74,7 +66,7 @@ export default function Edit( props ) {
 					initialOpen={ false }
 				>
 					<p className={ `${attributes.classNameBase}__success-msg-display` }>
-						Successful Signup response Message<br/>defaults to: <span>"Thanks and stay spooky!"</span>
+						Successful Signup response Message<br/>defaults to: <span>"Thanks for subscribing!"</span>
 					</p>
 
 					<div>
@@ -87,28 +79,22 @@ export default function Edit( props ) {
 				</PanelBody>
 			</InspectorControls>
 
-			<div className={ `${attributes.classNameBase}__wrapper` }>
-				<div className={ `${attributes.classNameBase}__inner` }>
-					<div className={ `${attributes.classNameBase}__layout` }>
-						<div className={ `${attributes.classNameBase}__end` }>
-							<div className={ `${attributes.classNameBase}__form-placeholder` }>
-								<div className={ `${attributes.classNameBase}__fieldset` }>
-									<input type="email" placeholder="Enter Your Email" readOnly/>
-									<button className="button is-primary is-filled" type="button" disabled>
-										Subscribe
-									</button>
-								</div>
-							</div>
-							<RichText
-								tagName="p"
-								value={ attributes.legalText }
-								onChange={ ( legalText ) => setAttributes({ legalText }) }
-								className={ `${attributes.classNameBase}__details` }
-								placeholder='Unsubscribe at any time. By subscribing, you agree to the terms of our %%Privacy Policy%%'
-							/>
-						</div>
+			<div className={ `${attributes.classNameBase}__inner` }>
+				<div className={ `${attributes.classNameBase}__form-placeholder` }>
+					<div className={ `${attributes.classNameBase}__fieldset` }>
+						<input type="email" placeholder="Enter Your Email" readOnly/>
+						<button className="button is-primary is-filled" type="button" disabled>
+							Subscribe
+						</button>
 					</div>
 				</div>
+				<RichText
+					tagName="p"
+					value={ attributes.legalText }
+					onChange={ ( legalText ) => setAttributes({ legalText }) }
+					className={ `${attributes.classNameBase}__details` }
+					placeholder='Unsubscribe at any time. By subscribing, you agree to the terms of our %%Privacy Policy%%'
+				/>
 			</div>
 		</div>
 	);
