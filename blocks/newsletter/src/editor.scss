@@ -33,23 +33,6 @@ $base: 'wp-block-cata-newsletter';
 	align-items: center;
 }
 
-.#{$base}__start {
-	flex-grow: 1;
-	flex-basis: 12em;
-}
-
-.#{$base}__title {
-	margin: 0;
-	text-align: justify;
-	text-align-last: justify;
-	text-justify: inter-character;
-	font-size: calc( 2.25 * ( 14px + 0.625vw ) );
-	text-transform: uppercase;
-	font-weight: 700;
-	line-height: 1.125;
-	color: #0C0E0B;
-}
-
 .#{$base}__end {
 	flex-grow: 2;
 	flex-basis: 20em;
@@ -57,12 +40,6 @@ $base: 'wp-block-cata-newsletter';
 	> * + * {
 		margin-block-start: 1.5em / 2;
 	}
-}
-
-// .#{$base}__form-placeholder {}
-
-.#{$base}__description {
-	font-size: 0.375em + 0.75em;
 }
 
 .#{$base}__fieldset {

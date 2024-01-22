@@ -39,7 +39,7 @@
     },
     "successMessage": {
       "type": "string",
-      "default": "Thanks and stay spooky!"
+      "default": "Thank you for subscribing!"
     }
   },
   "editorScript": "file:./index.js",
