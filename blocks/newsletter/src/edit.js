@@ -93,7 +93,7 @@ export default function Edit( props ) {
 					value={ attributes.legalText }
 					onChange={ ( legalText ) => setAttributes({ legalText }) }
 					className={ `${attributes.classNameBase}__details` }
-					placeholder='Unsubscribe at any time. By subscribing, you agree to the terms of our %%Privacy Policy%%'
+					placeholder='Unsubscribe at any time. By subscribing, you agree to the terms of our %%Privacy Policy%%.'
 				/>
 			</div>
 		</div>
