@@ -1,0 +1,36 @@
+/**
+ * The following styles get applied both on the front of your site
+ * and in the editor.
+ */
+
+ .wp-block-cata-newsletter__inner fieldset,
+ .wp-block-cata-newsletter__fieldset {
+	display: flex;
+	gap: 0.75em;
+	padding: 0;
+	border: none;
+	flex-wrap: wrap;
+	justify-content: center;
+
+	input::placeholder, .button {
+		font-size: inherit;
+	}
+
+	input {
+		flex-basis: 10em;
+		flex-grow: 2;
+		flex-shrink: 1;
+	}
+
+	.button {
+		flex-basis: 6em;
+	}
+}
+
+.wp-block-cata-newsletter__details {
+	font-size: 0.75em;
+
+	a {
+		color: currentColor;
+	}
+}

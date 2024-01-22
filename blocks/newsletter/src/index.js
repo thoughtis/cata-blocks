@@ -21,6 +21,11 @@ import { withSelect } from '@wordpress/data';
 import Edit from './edit';
 
 /**
+ * Style shared between editor and content
+ */
+import './style.scss';
+
+/**
  * Every block starts by registering a new block type definition.
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
