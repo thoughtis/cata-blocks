@@ -35,11 +35,11 @@ class Renderer {
 	 * @return string
 	 */
 	public function get_content() : string {
-		$form        = $this->get_form();
-		$legal_text  = $this->get_legal_text();
-		$classes     = $this->get_classes(
+		$form         = $this->get_form();
+		$legal_text   = $this->get_legal_text();
+		$wrapper_attr = get_block_wrapper_attributes(
 			array(
-				'wp-block-cata-newsletter',
+				'class' => 'wp-block-cata-newsletter',
 			)
 		);
 
@@ -111,18 +111,5 @@ class Renderer {
 			),
 			self::MAILCHIMP_POST_URL
 		);
-	}
-
-	/**
-	 * Get Classes
-	 * 
-	 * @param array $classes
-	 * @return string
-	 */
-	private function get_classes( array $classes ) : string {
-		if ( isset( $this->attributes['align'] ) ) {
-			$classes[] = 'align' . sanitize_html_class( $this->attributes['align'], '' ); 
-		}
-		return implode( ' ', $classes );
 	}
 }
