@@ -43,11 +43,9 @@ class Renderer {
 			)
 		);
 
-		return "<div class=\"${classes}\">
-			<div class=\"wp-block-cata-newsletter__inner\">
-				${form}
-				${legal_text}
-			</div>
+		return "<div ${wrapper_attr}>
+			${form}
+			${legal_text}
 		</div>";
 	}
 

@@ -79,23 +79,21 @@ export default function Edit( props ) {
 				</PanelBody>
 			</InspectorControls>
 
-			<div className={ `${attributes.classNameBase}__inner` }>
-				<div className={ `${attributes.classNameBase}__form-placeholder` }>
-					<div className={ `${attributes.classNameBase}__fieldset` }>
-						<input type="email" placeholder="Enter Your Email" readOnly/>
-						<button className="button is-primary is-filled" type="button" disabled>
-							Subscribe
-						</button>
-					</div>
+			<div className={ `${attributes.classNameBase}__form-placeholder` }>
+				<div className={ `${attributes.classNameBase}__fieldset` }>
+					<input type="email" placeholder="Enter Your Email" readOnly/>
+					<button className="button is-primary is-filled" type="button" disabled>
+						Subscribe
+					</button>
 				</div>
-				<RichText
-					tagName="p"
-					value={ attributes.legalText }
-					onChange={ ( legalText ) => setAttributes({ legalText }) }
-					className={ `${attributes.classNameBase}__details` }
-					placeholder='Unsubscribe at any time. By subscribing, you agree to the terms of our %%Privacy Policy%%.'
-				/>
 			</div>
+			<RichText
+				tagName="p"
+				value={ attributes.legalText }
+				onChange={ ( legalText ) => setAttributes({ legalText }) }
+				className={ `${attributes.classNameBase}__details` }
+				placeholder='Unsubscribe at any time. By subscribing, you agree to the terms of our %%Privacy Policy%%.'
+			/>
 		</div>
 	);
 }
