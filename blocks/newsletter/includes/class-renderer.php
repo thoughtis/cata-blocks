@@ -18,7 +18,7 @@ class Renderer {
 	 * 
 	 * @var array $attributes
 	 */
-	private $atttributes;
+	private $attributes;
 
 	/**
 	 * Construct
