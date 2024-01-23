@@ -37,11 +37,7 @@ class Renderer {
 	public function get_content() : string {
 		$form         = $this->get_form();
 		$legal_text   = $this->get_legal_text();
-		$wrapper_attr = get_block_wrapper_attributes(
-			array(
-				'class' => 'wp-block-cata-newsletter',
-			)
-		);
+		$wrapper_attr = get_block_wrapper_attributes();
 
 		return "<div ${wrapper_attr}>
 			${form}
