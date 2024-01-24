@@ -10,7 +10,22 @@
 		"html": false,
 		"multiple": false,
 		"customClassName": false,
-		"align": true
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"style": true,
+			"width": true,
+			"__experimentalDefaultControls": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true
+			}
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true
+		}
 	},
 	"attributes": {
 		"classNameBase": {
@@ -31,46 +46,19 @@
 		},
 		"mailchimpAudienceId": {
 			"type": "string",
-			"default": "829754e1b3"
-		},
-		"mediaId": {
-			"type": "number",
-			"default": 0
-		},
-		"mediaUrl": {
-			"type": "string",
 			"default": ""
-		},
-		"mediaAltText": {
-			"type": "string",
-			"default": "newsletter sign up form background image"
-		},
-		"mediaHeight": {
-			"type": "number",
-			"default": 0
-		},
-		"mediaWidth": {
-			"type": "number",
-			"default": 0
-		},
-		"description": {
-			"type": "string",
-			"default" : "Join our free newsletter for weekly updates about what TV shows and movies are streaming online."
-		},
-		"title": {
-			"type": "string",
-			"default": "apply to the newsletter"
 		},
 		"legalText": {
 			"type": "string",
-			"default": "Unsubscribe at any time. By subscribing, you agree to the terms of our %%Privacy Policy%%"
+			"default": "Unsubscribe at any time. By subscribing, you agree to the terms of our %%Privacy Policy%%."
 		},
 		"successMessage": {
 			"type": "string",
-			"default": "Thanks and stay spooky!"
+			"default": "Thanks for subscribing!"
 		}
 	},
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
 	"script": "file:./script.js"
 }
