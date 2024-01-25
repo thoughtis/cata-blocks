@@ -1,40 +1,48 @@
 {
-	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 2,
-	"name": "cata/shopify",
-	"version": "0.1.0",
-	"title": "Shopify Products",
-	"category": "widgets",
-	"icon": "store",
-	"description": "Display Shopify products as obtained from the Shopify Storefront API",
-	"supports": {
-		"align": ["wide","full"],
-		"html": false,
-		"spacing": {
-			"margin": true,
-			"padding": true
-		}
-	},
-	"attributes": {
-		"store": {
-			"type": "string",
-			"default": ""
-		},
-		"count": {
-			"type": "string",
-			"default": "6"
-		},
-		"tags": {
-			"type": "string",
-			"default": ""
-		},
-		"display_price": {
-			"type": "boolean",
-			"default": true
-		}
-	},
-	"keywords": [ "shop", "shopify", "store", "product" ],
-	"editorScript": "file:./index.js",
-	"editorStyle": "file:./index.css",
-	"style": "file:./style-index.css"
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "name": "cata/shopify",
+  "version": "0.1.0",
+  "title": "Shopify Products",
+  "category": "widgets",
+  "icon": "store",
+  "description": "Display Shopify products as obtained from the Shopify Storefront API",
+  "supports": {
+    "align": [
+      "wide",
+      "full"
+    ],
+    "html": false,
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  },
+  "attributes": {
+    "store": {
+      "type": "string",
+      "default": ""
+    },
+    "count": {
+      "type": "string",
+      "default": "6"
+    },
+    "tags": {
+      "type": "string",
+      "default": ""
+    },
+    "display_price": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "keywords": [
+    "shop",
+    "shopify",
+    "store",
+    "product"
+  ],
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css"
 }
