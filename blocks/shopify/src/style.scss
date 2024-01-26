@@ -24,6 +24,10 @@
 	object-fit: cover;
 }
 
+.wp-block-cata-shopify-product__title {
+	text-wrap: pretty;
+}
+
 .wp-block-cata-shopify:not( .is-style-reel ) {
 	.wp-block-cata-shopify__layout {
 		display: grid;
