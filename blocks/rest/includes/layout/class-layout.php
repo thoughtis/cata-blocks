@@ -53,7 +53,7 @@ abstract class Layout {
 	 * @param stdClass|null $image
 	 * @param float|null $aspect_ratio 
 	 */
-	public static function get_image_dimensions( ?stdClass $image = null, ?float $aspect_ratio = null, array $target_widths ) : array {
+	public static function get_image_dimensions( stdClass|null $image, float|null $aspect_ratio, array $target_widths ) : array {
 		if ( null === $image ) {
 			return [[0,0]];
 		}
@@ -91,7 +91,7 @@ abstract class Layout {
 	 * @param array $options
 	 * @return string
 	 */
-	public static function render_image( ?stdClass $image = null, array $options ) : string {
+	public static function render_image( stdClass|null $image, array $options ) : string {
 		if ( null === $image ) {
 			return '';
 		}
