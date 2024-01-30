@@ -66,6 +66,28 @@ wp.hooks.addFilter(
 	flexGrowControl
 );
 
+function flexGrowEditorStyle( BlockListBlock ) {
+
+	return ( props ) => {
+		const { block, attributes } = props;
+	
+		if ( 'core/group' !== block.name || 0 === attributes.cataBlocksFlexGrow ) {
+			return <BlockListBlock {...props} />;
+		}
+	
+		return (
+			<BlockListBlock {...props} wrapperProps={ { style: { flexGrow: attributes.cataBlocksFlexGrow } } } />
+		);
+	}
+
+}
+  
+wp.hooks.addFilter(
+	'editor.BlockListBlock',
+	'cata/flex-grow-editor-style',
+	flexGrowEditorStyle
+);
+
 function applyFlexGrowAttribute( props, blockType, attributes ) {
 	if ( blockType.name !== 'core/group' ) {
 		return props;
