@@ -142,3 +142,8 @@ require_once __DIR__ . '/formats/overhang/overhang.php';
  * Substack Social Link Variation
  */
 require_once __DIR__ . '/variations/social-link/substack/substack.php';
+
+/**
+ * Block Editor 
+ */
+require_once __DIR__ . '/block-editor/block-editor.php';
