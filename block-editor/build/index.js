@@ -94,6 +94,9 @@ __webpack_require__.r(__webpack_exports__);
  * Flex Grow Control
  */
 
+/**
+ * Add Flex Grow Attribute
+ */
 function addFlexGrowAttribute(settings, name) {
   if ('undefined' === typeof settings.attributes) {
     return settings;
@@ -110,6 +113,10 @@ function addFlexGrowAttribute(settings, name) {
   return settings;
 }
 wp.hooks.addFilter('blocks.registerBlockType', 'cata/add-flex-grow-attribute', addFlexGrowAttribute);
+
+/**
+ * Flex Grow Control
+ */
 const flexGrowControl = wp.compose.createHigherOrderComponent(BlockEdit => {
   return props => {
     const {
@@ -151,6 +158,36 @@ const flexGrowControl = wp.compose.createHigherOrderComponent(BlockEdit => {
   };
 }, 'flexGrowControl');
 wp.hooks.addFilter('editor.BlockEdit', 'cata/flex-grow-control', flexGrowControl);
+
+/**
+ * Flex Grow Editor Style
+ */
+function flexGrowEditorStyle(BlockListBlock) {
+  return props => {
+    const {
+      block,
+      attributes
+    } = props;
+    if ('core/group' !== block.name || 0 === attributes.cataBlocksFlexGrow) {
+      return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(BlockListBlock, {
+        ...props
+      });
+    }
+    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(BlockListBlock, {
+      ...props,
+      wrapperProps: {
+        style: {
+          flexGrow: attributes.cataBlocksFlexGrow
+        }
+      }
+    });
+  };
+}
+wp.hooks.addFilter('editor.BlockListBlock', 'cata/flex-grow-editor-style', flexGrowEditorStyle);
+
+/**
+ * Apply Flex Grow Attribute
+ */
 function applyFlexGrowAttribute(props, blockType, attributes) {
   if (blockType.name !== 'core/group') {
     return props;

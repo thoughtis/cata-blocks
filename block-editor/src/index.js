@@ -2,6 +2,10 @@
  * Flex Grow Control
  */
 
+
+/**
+ * Add Flex Grow Attribute
+ */
 function addFlexGrowAttribute( settings, name ) {
 	if ( 'undefined' === typeof settings.attributes ) {
 		return settings;
@@ -27,7 +31,10 @@ wp.hooks.addFilter(
 	addFlexGrowAttribute
 );
 
-const flexGrowControl = wp.compose.createHigherOrderComponent( ( BlockEdit) => {
+/**
+ * Flex Grow Control
+ */
+const flexGrowControl = wp.compose.createHigherOrderComponent( ( BlockEdit ) => {
 	return ( props ) => {
 		const { __ } = wp.i18n;
 		const { Fragment } = wp.element;
@@ -66,6 +73,9 @@ wp.hooks.addFilter(
 	flexGrowControl
 );
 
+/**
+ * Flex Grow Editor Style
+ */
 function flexGrowEditorStyle( BlockListBlock ) {
 
 	return ( props ) => {
@@ -88,6 +98,9 @@ wp.hooks.addFilter(
 	flexGrowEditorStyle
 );
 
+/**
+ * Apply Flex Grow Attribute
+ */
 function applyFlexGrowAttribute( props, blockType, attributes ) {
 	if ( blockType.name !== 'core/group' ) {
 		return props;
