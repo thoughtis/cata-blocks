@@ -154,6 +154,7 @@ const withFlexGrowControl = wp.compose.createHigherOrderComponent(BlockEdit => {
     }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(NumberControl, {
       label: __('Flex Grow', 'cata'),
       value: attributes.cataBlocksFlexGrow,
+      min: 0,
       onChange: newFlexGrow => {
         setAttributes({
           cataBlocksFlexGrow: newFlexGrow
