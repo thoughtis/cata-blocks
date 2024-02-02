@@ -11,7 +11,7 @@ namespace Cata\Blocks;
 /**
  * Enqueue Scripts
  */
-function cata_block_editor_enqueue_scripts() : void {
+function cata_block_editor_enqueue_scripts(): void {
 	$asset = require __DIR__ . '/build/index.asset.php';
 	wp_enqueue_script( 
 		'cata-block-editor-module-app', 
