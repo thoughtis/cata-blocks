@@ -106,8 +106,7 @@ function addFlexGrowAttribute(settings, name) {
   }
   settings.attributes = Object.assign(settings.attributes, {
     cataBlocksFlexGrow: {
-      type: 'int',
-      default: 0
+      type: 'int'
     }
   });
   return settings;
@@ -134,8 +133,7 @@ const flexGrowControl = wp.compose.createHigherOrderComponent(BlockEdit => {
     const {
       attributes,
       setAttributes,
-      isSelected,
-      __unstableParentLayout
+      isSelected
     } = props;
     const layoutStyle = attributes.style;
     let isFixed = false;
@@ -144,7 +142,7 @@ const flexGrowControl = wp.compose.createHigherOrderComponent(BlockEdit => {
     }
     return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(BlockEdit, {
       ...props
-    }), isSelected && props.name == 'core/group' && __unstableParentLayout.type == 'flex' && isFixed && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(InspectorControls, {
+    }), isSelected && props.name == 'core/group' && isFixed && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(InspectorControls, {
       group: "dimensions"
     }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(__experimentalNumberControl, {
       label: __('Flex Grow', 'cata'),

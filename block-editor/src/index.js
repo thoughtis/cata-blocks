@@ -18,7 +18,6 @@ function addFlexGrowAttribute( settings, name ) {
 	settings.attributes = Object.assign( settings.attributes, {
 		cataBlocksFlexGrow: {
 			type: 'int',
-			default: 0,
 		}
 	} );
 
