@@ -2,28 +2,34 @@
  * Flex Grow Control
  */
 
-
 /**
  * Add Flex Grow Attribute
+ * 
+ * @param {Object} settings
+ * @param {string} name
+ * 
+ * @return {Object} updated settings
  */
 function addFlexGrowAttribute( settings, name ) {
-	if ( 'undefined' === typeof settings.attributes ) {
+
+	if ( 'core/group' !== name ) {
 		return settings;
 	}
 
-	if ( name !== 'core/group' ) {
+	if ( undefined === settings.attributes ) {
 		return settings;
 	}
-	
-	settings.attributes = Object.assign( settings.attributes, {
+
+	Object.assign( settings.attributes, {
 		cataBlocksFlexGrow: {
 			type: 'int',
 		}
 	} );
 
 	return settings;
+
 }
- 
+
 wp.hooks.addFilter(
 	'blocks.registerBlockType',
 	'cata/add-flex-grow-attribute',
@@ -32,27 +38,30 @@ wp.hooks.addFilter(
 
 /**
  * Flex Grow Control
+ * 
+ * @param {Object} BlockEdit
+ * 
+ * @return {function} updated block in editor with flex grow control
  */
-const flexGrowControl = wp.compose.createHigherOrderComponent( ( BlockEdit ) => {
+const withFlexGrowControl = wp.compose.createHigherOrderComponent( ( BlockEdit ) => {
+
 	return ( props ) => {
 		const { __ } = wp.i18n;
-		const { Fragment } = wp.element;
-		const { __experimentalNumberControl } = wp.components;
+		const { __experimentalNumberControl: NumberControl } = wp.components;
 		const { InspectorControls } = wp.blockEditor;
 		const { attributes, setAttributes, isSelected } = props;
 		const layoutStyle = attributes.style;
-		let isFixed = false;
 
-		if ( undefined !== layoutStyle && undefined !== layoutStyle.layout ) {
-			isFixed = 'fixed' === layoutStyle.layout.selfStretch;
+		if ( undefined === layoutStyle || undefined === layoutStyle.layout ) {
+			return <BlockEdit { ...props }/>
 		}
 
 		return (
-			<Fragment>
+			<>
 				<BlockEdit { ...props }/>
-				{ isSelected && ( props.name == 'core/group' ) && isFixed &&
+				{ isSelected && ( 'core/group' === props.name ) && ( 'fixed' === layoutStyle.layout.selfStretch ) &&
 					<InspectorControls group="dimensions">
-						<__experimentalNumberControl
+						<NumberControl
 							label={ __( 'Flex Grow', 'cata' ) }
 							value={ attributes.cataBlocksFlexGrow }
 							onChange={ ( newFlexGrow ) => {
@@ -61,26 +70,31 @@ const flexGrowControl = wp.compose.createHigherOrderComponent( ( BlockEdit ) => 
 						/>
 					</InspectorControls>
 				}
-			</Fragment>
+			</>
 		);
 	};
-}, 'flexGrowControl' );
- 
+
+}, 'withFlexGrowControl' );
+
 wp.hooks.addFilter(
 	'editor.BlockEdit',
 	'cata/flex-grow-control',
-	flexGrowControl
+	withFlexGrowControl
 );
 
 /**
- * Flex Grow Editor Style
+ * With Flex Grow Style
+ * 
+ * @param {function} BlockListBlock
+ * 
+ * @return {function} updated wrapper component in editor
  */
-function flexGrowEditorStyle( BlockListBlock ) {
+const withFlexGrowStyle = wp.compose.createHigherOrderComponent( ( BlockListBlock ) => {
 
 	return ( props ) => {
 		const { block, attributes } = props;
 	
-		if ( 'core/group' !== block.name || 0 === attributes.cataBlocksFlexGrow ) {
+		if ( 'core/group' !== block.name || null === attributes.cataBlocksFlexGrow || undefined === attributes.cataBlocksFlexGrow ) {
 			return <BlockListBlock {...props} />;
 		}
 	
@@ -89,33 +103,46 @@ function flexGrowEditorStyle( BlockListBlock ) {
 		);
 	}
 
-}
-  
+}, 'withFlexGrowStyle' );
+
 wp.hooks.addFilter(
 	'editor.BlockListBlock',
 	'cata/flex-grow-editor-style',
-	flexGrowEditorStyle
+	withFlexGrowStyle
 );
 
 /**
  * Apply Flex Grow Attribute
+ * 
+ * @param {Object} props
+ * @param {Object} blockType
+ * @param {Object} attributes
+ * 
+ * @return {Object} updated props
  */
 function applyFlexGrowAttribute( props, blockType, attributes ) {
-	if ( blockType.name !== 'core/group' ) {
+
+	if ( 'core/group' !== blockType.name ) {
 		return props;
 	}
 
 	const { cataBlocksFlexGrow } = attributes;
 
-	if ( cataBlocksFlexGrow === undefined ) {
+	if ( undefined === cataBlocksFlexGrow || null === cataBlocksFlexGrow ) {
 		return props;
 	}
 
-	Object.assign( props, { style: { ...props.style, flexGrow: cataBlocksFlexGrow } } );
+	Object.assign( props, { 
+		style: { 
+			...props.style, 
+			flexGrow: cataBlocksFlexGrow,
+		} 
+	} );
 
 	return props;
+
 }
- 
+
 wp.hooks.addFilter(
 	'blocks.getSaveContent.extraProps',
 	'cata/apply-flex-grow-attribute',
