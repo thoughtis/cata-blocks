@@ -40,7 +40,7 @@ const flexGrowControl = wp.compose.createHigherOrderComponent( ( BlockEdit ) => 
 		const { Fragment } = wp.element;
 		const { __experimentalNumberControl } = wp.components;
 		const { InspectorControls } = wp.blockEditor;
-		const { attributes, setAttributes, isSelected, __unstableParentLayout } = props;
+		const { attributes, setAttributes, isSelected } = props;
 		const layoutStyle = attributes.style;
 		let isFixed = false;
 
@@ -51,7 +51,7 @@ const flexGrowControl = wp.compose.createHigherOrderComponent( ( BlockEdit ) => 
 		return (
 			<Fragment>
 				<BlockEdit { ...props }/>
-				{ isSelected && ( props.name == 'core/group' ) && ( __unstableParentLayout.type == 'flex' ) && isFixed &&
+				{ isSelected && ( props.name == 'core/group' ) && isFixed &&
 					<InspectorControls group="dimensions">
 						<__experimentalNumberControl
 							label={ __( 'Flex Grow', 'cata' ) }
