@@ -36,7 +36,7 @@ addFilter(
 );
 
 /**
- * Flex Grow Control
+ * With Flex Grow Control
  * 
  * @param {Object} BlockEdit
  * 
