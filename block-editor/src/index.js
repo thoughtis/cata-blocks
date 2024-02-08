@@ -51,14 +51,15 @@ const withFlexGrowControl = createHigherOrderComponent( ( BlockEdit ) => {
 		const { attributes, setAttributes, isSelected } = props;
 		const layoutStyle = attributes.style;
 
-		if ( undefined === layoutStyle || undefined === layoutStyle.layout ) {
+		if ( undefined === layoutStyle || undefined === layoutStyle.layout || 'fixed' !== layoutStyle.layout.selfStretch ) {
+			setAttributes( { cataBlocksFlexGrow: null } );
 			return <BlockEdit { ...props }/>
 		}
 
 		return (
 			<>
 				<BlockEdit { ...props }/>
-				{ isSelected && ( 'fixed' === layoutStyle.layout.selfStretch ) &&
+				{ isSelected &&
 					<InspectorControls group="dimensions">
 						<NumberControl
 							label={ __( 'Flex Grow', 'cata' ) }
