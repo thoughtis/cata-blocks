@@ -2,8 +2,8 @@
  * Flex Grow Control
  */
 
-const { addFilter } = wp.hooks;
-const { createHigherOrderComponent } = wp.compose;
+import { createHigherOrderComponent } from '@wordpress/compose';
+import { addFilter } from '@wordpress/hooks';
 
 /**
  * Add Flex Grow Attribute
