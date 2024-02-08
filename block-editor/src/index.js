@@ -49,10 +49,8 @@ const withFlexGrowControl = createHigherOrderComponent( ( BlockEdit ) => {
 		const { __experimentalNumberControl: NumberControl } = wp.components;
 		const { InspectorControls } = wp.blockEditor;
 		const { attributes, setAttributes, isSelected } = props;
-		const layoutStyle = attributes.style;
 
-		if ( undefined === layoutStyle || undefined === layoutStyle.layout || 'fixed' !== layoutStyle.layout.selfStretch ) {
-			setAttributes( { cataBlocksFlexGrow: null } );
+		if ( ! isFixedBlock( attributes ) ) {
 			return <BlockEdit { ...props }/>
 		}
 
@@ -94,6 +92,10 @@ const withFlexGrowStyle = createHigherOrderComponent( ( BlockListBlock ) => {
 
 	return ( props ) => {
 		const { attributes } = props;
+
+		if ( ! isFixedBlock( attributes ) ) {
+			attributes.cataBlocksFlexGrow = null;
+		}
 	
 		if ( null === attributes.cataBlocksFlexGrow || undefined === attributes.cataBlocksFlexGrow ) {
 			return <BlockListBlock {...props} />;
@@ -125,7 +127,7 @@ function applyFlexGrowAttribute( props, blockType, attributes ) {
 
 	const { cataBlocksFlexGrow } = attributes;
 
-	if ( undefined === cataBlocksFlexGrow || null === cataBlocksFlexGrow ) {
+	if ( ! isFixedBlock( attributes ) || undefined === cataBlocksFlexGrow || null === cataBlocksFlexGrow ) {
 		return props;
 	}
 
@@ -145,3 +147,11 @@ addFilter(
 	'cata/apply-flex-grow-attribute',
 	applyFlexGrowAttribute
 );
+
+function isFixedBlock( attributes ) {
+	const layoutStyle = attributes.style;
+
+	if ( undefined !== layoutStyle && undefined !== layoutStyle.layout && 'fixed' === layoutStyle.layout.selfStretch ) {
+		return true;
+	}
+}
