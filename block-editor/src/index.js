@@ -2,6 +2,9 @@
  * Flex Grow Control
  */
 
+const { addFilter } = wp.hooks;
+const { createHigherOrderComponent } = wp.compose;
+
 /**
  * Add Flex Grow Attribute
  * 
@@ -30,7 +33,7 @@ function addFlexGrowAttribute( settings, name ) {
 
 }
 
-wp.hooks.addFilter(
+addFilter(
 	'blocks.registerBlockType',
 	'cata/add-flex-grow-attribute',
 	addFlexGrowAttribute
@@ -43,7 +46,7 @@ wp.hooks.addFilter(
  * 
  * @return {function} updated block in editor with flex grow control
  */
-const withFlexGrowControl = wp.compose.createHigherOrderComponent( ( BlockEdit ) => {
+const withFlexGrowControl = createHigherOrderComponent( ( BlockEdit ) => {
 
 	return ( props ) => {
 		const { __ } = wp.i18n;
@@ -77,7 +80,7 @@ const withFlexGrowControl = wp.compose.createHigherOrderComponent( ( BlockEdit )
 
 }, 'withFlexGrowControl' );
 
-wp.hooks.addFilter(
+addFilter(
 	'editor.BlockEdit',
 	'cata/flex-grow-control',
 	withFlexGrowControl
@@ -90,7 +93,7 @@ wp.hooks.addFilter(
  * 
  * @return {function} updated wrapper component in editor
  */
-const withFlexGrowStyle = wp.compose.createHigherOrderComponent( ( BlockListBlock ) => {
+const withFlexGrowStyle = createHigherOrderComponent( ( BlockListBlock ) => {
 
 	return ( props ) => {
 		const { block, attributes } = props;
@@ -106,7 +109,7 @@ const withFlexGrowStyle = wp.compose.createHigherOrderComponent( ( BlockListBloc
 
 }, 'withFlexGrowStyle' );
 
-wp.hooks.addFilter(
+addFilter(
 	'editor.BlockListBlock',
 	'cata/flex-grow-editor-style',
 	withFlexGrowStyle
@@ -144,7 +147,7 @@ function applyFlexGrowAttribute( props, blockType, attributes ) {
 
 }
 
-wp.hooks.addFilter(
+addFilter(
 	'blocks.getSaveContent.extraProps',
 	'cata/apply-flex-grow-attribute',
 	applyFlexGrowAttribute
