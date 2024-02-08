@@ -15,10 +15,6 @@ const { createHigherOrderComponent } = wp.compose;
  */
 function addFlexGrowAttribute( settings, name ) {
 
-	if ( 'core/group' !== name ) {
-		return settings;
-	}
-
 	if ( undefined === settings.attributes ) {
 		return settings;
 	}
@@ -62,7 +58,7 @@ const withFlexGrowControl = createHigherOrderComponent( ( BlockEdit ) => {
 		return (
 			<>
 				<BlockEdit { ...props }/>
-				{ isSelected && ( 'core/group' === props.name ) && ( 'fixed' === layoutStyle.layout.selfStretch ) &&
+				{ isSelected && ( 'fixed' === layoutStyle.layout.selfStretch ) &&
 					<InspectorControls group="dimensions">
 						<NumberControl
 							label={ __( 'Flex Grow', 'cata' ) }
@@ -96,9 +92,9 @@ addFilter(
 const withFlexGrowStyle = createHigherOrderComponent( ( BlockListBlock ) => {
 
 	return ( props ) => {
-		const { block, attributes } = props;
+		const { attributes } = props;
 	
-		if ( 'core/group' !== block.name || null === attributes.cataBlocksFlexGrow || undefined === attributes.cataBlocksFlexGrow ) {
+		if ( null === attributes.cataBlocksFlexGrow || undefined === attributes.cataBlocksFlexGrow ) {
 			return <BlockListBlock {...props} />;
 		}
 	
@@ -125,10 +121,6 @@ addFilter(
  * @return {Object} updated props
  */
 function applyFlexGrowAttribute( props, blockType, attributes ) {
-
-	if ( 'core/group' !== blockType.name ) {
-		return props;
-	}
 
 	const { cataBlocksFlexGrow } = attributes;
 
