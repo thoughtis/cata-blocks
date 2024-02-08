@@ -148,10 +148,19 @@ addFilter(
 	applyFlexGrowAttribute
 );
 
+/**
+ * Is Fixed Block
+ * 
+ * @param {Object} attributes
+ * 
+ * @return {boolean} if block is fixed or not
+ */
 function isFixedBlock( attributes ) {
+
 	const layoutStyle = attributes.style;
 
 	if ( undefined !== layoutStyle && undefined !== layoutStyle.layout && 'fixed' === layoutStyle.layout.selfStretch ) {
 		return true;
 	}
+
 }
