@@ -4,6 +4,9 @@
 
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { addFilter } from '@wordpress/hooks';
+import { __ } from '@wordpress/i18n';
+import { __experimentalNumberControl as NumberControl } from '@wordpress/components';
+import { InspectorControls } from '@wordpress/block-editor';
 
 /**
  * Add Flex Grow Attribute
@@ -45,9 +48,6 @@ addFilter(
 const withFlexGrowControl = createHigherOrderComponent( ( BlockEdit ) => {
 
 	return ( props ) => {
-		const { __ } = wp.i18n;
-		const { __experimentalNumberControl: NumberControl } = wp.components;
-		const { InspectorControls } = wp.blockEditor;
 		const { attributes, setAttributes, isSelected } = props;
 
 		if ( ! isFixedBlock( attributes ) ) {
