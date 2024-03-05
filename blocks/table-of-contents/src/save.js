@@ -19,7 +19,7 @@ export default function save( { attributes } ) {
 	const DetailsElement = 'alwaysOpen' === attributes.behavior ? 'div' : 'details';
 	const SummaryElement = 'alwaysOpen' === attributes.behavior ? 'div' : 'summary';
 	return (
-		<div { ...useBlockProps.save() } id="toc-entry-point">
+		<div { ...useBlockProps.save({className: attributes.className}) } id="toc-entry-point">
 			<DetailsElement open={ 'startOpen' === attributes.behavior ? 'true' : null }>
 				<SummaryElement className="wp-block-cata-toc__summary">
 					<InnerBlocks.Content />

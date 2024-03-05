@@ -39,7 +39,7 @@ export default function Edit( { attributes, setAttributes } ) {
 
 	return (
 		<>
-		<div { ...useBlockProps() } >
+		<div { ...useBlockProps({className: attributes.className}) } >
 			<InnerBlocks 
 				allowedBlocks={ ALLOWED_BLOCKS }
 				template={ SUMMARY_TEMPLATE }
