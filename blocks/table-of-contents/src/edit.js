@@ -28,7 +28,7 @@ import './editor.scss';
  *
  * @return {WPElement} Element to render.
  */
-export default function Edit( { attributes, setAttributes } ) {
+export default function Edit( { attributes, setAttributes, className } ) {
 	const SUMMARY_TEMPLATE = [
 		[ 'core/paragraph', { 
 			content: attributes.summary || 'Table of Contents',
@@ -39,7 +39,7 @@ export default function Edit( { attributes, setAttributes } ) {
 
 	return (
 		<>
-		<div { ...useBlockProps({className: attributes.className}) } >
+		<div { ...useBlockProps({className}) } >
 			<InnerBlocks 
 				allowedBlocks={ ALLOWED_BLOCKS }
 				template={ SUMMARY_TEMPLATE }
