@@ -10,7 +10,6 @@
 	"supports": {
 		"html": false,
 		"reusable": false,
-		"customClassName": false,
 		"typography": {
 			"fontSize": true,
 			"lineHeight": true,
