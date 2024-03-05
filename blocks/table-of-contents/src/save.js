@@ -15,11 +15,11 @@ import { useBlockProps, InnerBlocks } from '@wordpress/block-editor';
  *
  * @return {WPElement} Element to render.
  */
-export default function save( { attributes, className } ) {
+export default function save( { attributes } ) {
 	const DetailsElement = 'alwaysOpen' === attributes.behavior ? 'div' : 'details';
 	const SummaryElement = 'alwaysOpen' === attributes.behavior ? 'div' : 'summary';
 	return (
-		<div { ...useBlockProps.save({className}) } id="toc-entry-point">
+		<div { ...useBlockProps.save() } id="toc-entry-point">
 			<DetailsElement open={ 'startOpen' === attributes.behavior ? 'true' : null }>
 				<SummaryElement className="wp-block-cata-toc__summary">
 					<InnerBlocks.Content />
