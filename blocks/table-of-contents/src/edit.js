@@ -40,14 +40,16 @@ export default function Edit( { attributes, setAttributes } ) {
 	return (
 		<>
 		<div { ...useBlockProps() } >
-			<InnerBlocks 
-				allowedBlocks={ ALLOWED_BLOCKS }
-				template={ SUMMARY_TEMPLATE }
-				templateLock="all"
-			/>
-			<ul>
-				<li><a>Links will be generated in the live content</a></li>
-			</ul>
+			<div>
+				<InnerBlocks 
+					allowedBlocks={ ALLOWED_BLOCKS }
+					template={ SUMMARY_TEMPLATE }
+					templateLock="all"
+				/>
+				<ul>
+					<li><a>Links will be generated in the live content</a></li>
+				</ul>
+			</div>
 		</div>
 		<InspectorControls>
 			<PanelBody title="Table of Contents Settings" initialOpen={false}>
