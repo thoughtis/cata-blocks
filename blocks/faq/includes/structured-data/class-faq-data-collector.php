@@ -40,7 +40,9 @@ class FAQ_Data_Collector {
 			$answer = trim( str_replace( array( "\r", "\n", reset( $matches ) ), '', $block_content ) );
 			$answer = $this->strip_faq_tags( $answer );
 			
-			array_push( $this->faq_data_array, array( $question, $answer ) );
+			if ( ! empty( $question ) && ! empty( $answer ) ) {
+				array_push( $this->faq_data_array, array( $question, $answer ) );
+			}
 		}
 
 		return $block_content;
