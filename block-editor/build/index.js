@@ -231,7 +231,7 @@ const withFlexGrowStyle = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_1__.cre
       attributes
     } = props;
     if (!isFixedBlock(attributes)) {
-      attributes.cataBlocksFlexGrow = undefined;
+      attributes.cataBlocksFlexGrow = null;
     }
     if (null === attributes.cataBlocksFlexGrow || undefined === attributes.cataBlocksFlexGrow) {
       delete attributes.cataBlocksFlexGrow;
