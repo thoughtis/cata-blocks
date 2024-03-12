@@ -98,6 +98,7 @@ const withFlexGrowStyle = createHigherOrderComponent( ( BlockListBlock ) => {
 		}
 	
 		if ( null === attributes.cataBlocksFlexGrow || undefined === attributes.cataBlocksFlexGrow ) {
+			delete attributes.cataBlocksFlexGrow;
 			return <BlockListBlock {...props} />;
 		}
 	
