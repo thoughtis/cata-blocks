@@ -5,30 +5,12 @@
  * Replace them with your own styles or remove the file completely.
  */
 
-.wp-block-cata-shopify {
-	text-align: center;
-}
-
-.wp-block-cata-shopify-product__layout {
-	margin-inline: auto;
-	> * + * {
-		margin-block-start: var(--wp--style--block-gap);
-	}
-}
-
-// Hack we need for now,
-// should really be fixed in HTML and/or editor options for image size.
-.wp-block-cata-shopify-product__image img {
-	inline-size: 100%;
-	aspect-ratio: 1/1;
-	object-fit: cover;
-}
-
 .wp-block-cata-shopify-product__title {
 	text-wrap: pretty;
 }
 
-.wp-block-cata-shopify:not( .is-style-reel ) {
+.wp-block-cata-shopify:not( [class*=is-style-] ),
+.wp-block-cata-shopify.is-style-default {
 	.wp-block-cata-shopify__layout {
 		display: grid;
 		gap: 1.5em;
@@ -36,8 +18,29 @@
 	}
 }
 
+.wp-block-cata-shopify:not( .is-style-list ) {
+	text-align: center;
+
+	.wp-block-cata-shopify-product__layout {
+		margin-inline: auto;
+	}
+
+	.wp-block-cata-shopify-product__end > * {
+		margin-block-start: var(--wp--style--block-gap);
+	}
+
+	// Hack we need for now,
+	// should really be fixed in HTML and/or editor options for image size.
+	.wp-block-cata-shopify-product__image img {
+		inline-size: 100%;
+		aspect-ratio: 1/1;
+		object-fit: cover;
+	}
+}
+
 .wp-block-cata-shopify.is-style-reel {
 	overflow: auto;
+
 	.wp-block-cata-shopify__layout {
 		display: flex;
 		column-gap: var(--wp--style--block-gap);
@@ -46,6 +49,7 @@
 		inline-size: fit-content;
 		margin-inline: auto;
 	}
+
 	.wp-block-cata-shopify-product {
 		inline-size: 12em;
 	}
