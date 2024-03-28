@@ -38,3 +38,8 @@ registerBlockStyle( 'cata/shopify', {
 	name: 'reel',
 	label: 'Reel'
 } );
+
+registerBlockStyle( 'cata/shopify', {
+	name: 'list',
+	label: 'List'
+} );
