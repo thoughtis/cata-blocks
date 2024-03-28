@@ -70,12 +70,12 @@
 
 	.wp-block-cata-shopify-product__start {
 		flex-grow: 1;
-    	flex-basis: 5em;
+		flex-basis: 5em;
 	}
 
 	.wp-block-cata-shopify-product__end {
 		flex-grow: 2;
-    	flex-basis: 10em;
+		flex-basis: 10em;
 
 		> * + * {
 			margin-block-start: calc( var(--wp--style--block-gap) / 3 );
