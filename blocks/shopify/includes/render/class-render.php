@@ -65,13 +65,17 @@ class Render {
 
 		return "<article class=\"wp-block-cata-shopify-product\">
 			<div class=\"wp-block-cata-shopify-product__layout tappable-card\">
-				{$image}
-				<h3 class=\"wp-block-cata-shopify-product__title\">
-					<a class=\"wp-block-cata-shopify-product__link tappable-card-anchor\" href=\"{$href}\">
-						{$title}
-					</a>
-				</h3>
-				{$price}
+				<div class=\"wp-block-cata-shopify-product__start\">
+					{$image}
+				</div>
+				<div class=\"wp-block-cata-shopify-product__end\">
+					<h3 class=\"wp-block-cata-shopify-product__title\">
+						<a class=\"wp-block-cata-shopify-product__link tappable-card-anchor\" href=\"{$href}\">
+							{$title}
+						</a>
+					</h3>
+					{$price}
+				</div>
 			</div>
 		</article>";
 	}
