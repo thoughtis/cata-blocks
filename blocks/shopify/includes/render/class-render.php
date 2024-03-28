@@ -66,7 +66,7 @@ class Render {
 		return "<article class=\"wp-block-cata-shopify-product\">
 			<div class=\"wp-block-cata-shopify-product__layout tappable-card\">
 				<div class=\"wp-block-cata-shopify-product__start\">
-				{$image}
+					{$image}
 				</div>
 				<div class=\"wp-block-cata-shopify-product__end\">
 					<h3 class=\"wp-block-cata-shopify-product__title\">
