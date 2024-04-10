@@ -10,6 +10,11 @@ import { registerBlockType, createBlock } from '@wordpress/blocks';
 import Edit from './edit';
 import Save from './save';
 
+/**
+ * Style shared between editor and content
+ */
+import './style.scss';
+
 registerBlockType( 'cata/kicker', {
 	edit: Edit,
 	save: Save,
