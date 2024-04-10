@@ -2,7 +2,6 @@
  * Edit
  */
 
-import './editor.scss';
 import classnames from 'classnames';
 import { Fragment } from '@wordpress/element';
 import {
