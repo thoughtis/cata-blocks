@@ -10,6 +10,11 @@ import { registerBlockType } from '@wordpress/blocks';
 import Edit from './edit';
 import Save from './save';
 
+/**
+ * Style shared between editor and content
+ */
+import './style.scss';
+
 registerBlockType( 'cata/aside', {
 	edit: Edit,
 	save: Save,

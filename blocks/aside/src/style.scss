@@ -1,0 +1,18 @@
+/**
+ * The following styles get applied both on the front of your site
+ * and in the editor.
+ */
+
+// Padding is split up so .has-background doesn't change layout.
+.wp-block-cata-aside {
+	border: dashed 0.125em currentColor;
+	padding: var(--wp--preset--spacing--30, 0.75em);
+}
+
+.wp-block-cata-aside__inner-container {
+	padding: var(--wp--preset--spacing--30, 0.75em);
+
+	> * + * {
+		margin-block-start: var(--wp--preset--spacing--50, 1.5em);
+	}
+}

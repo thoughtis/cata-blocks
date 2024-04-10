@@ -1,31 +1,32 @@
 {
-	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 2,
-	"name": "cata/aside",
-	"version": "0.3.9",
-	"title": "Aside",
-	"category": "design",
-	"description": "Grouping element for tangentially related content.",
-	"example": {
-		"innerBlocks": [
-			{
-				"name" : "core/paragraph",
-				"attributes" : {
-					"content" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent et eros eu felis."
-				}
-			}
-		]
-	},
-	"supports": {
-		"html": false,
-		"customClassName": false,
-		"color" : {
-			"background": true,
-			"gradients": true,
-			"text": true
-		}
-	},
-	"textdomain": "cata",
-	"editorScript": "file:./index.js",
-	"editorStyle": "file:./index.css"
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "name": "cata/aside",
+  "version": "0.3.9",
+  "title": "Aside",
+  "category": "design",
+  "description": "Grouping element for tangentially related content.",
+  "example": {
+    "innerBlocks": [
+      {
+        "name": "core/paragraph",
+        "attributes": {
+          "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent et eros eu felis."
+        }
+      }
+    ]
+  },
+  "supports": {
+    "html": false,
+    "customClassName": false,
+    "color": {
+      "background": true,
+      "gradients": true,
+      "text": true
+    }
+  },
+  "textdomain": "cata",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css"
 }
