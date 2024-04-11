@@ -13,6 +13,11 @@ import { registerBlockType } from '@wordpress/blocks';
 import edit from './edit';
 import variations from './variations';
 
+/**
+ * Style shared between editor and content
+ */
+import './style.scss';
+
 registerBlockType( 'cata/network-link', {
 	edit: edit,
 	variations: variations
