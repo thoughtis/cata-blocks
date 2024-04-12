@@ -45,7 +45,7 @@ function render_block_cata_network_link( array $attributes, string $content, WP_
 		return '';
 	}
 
-	$link  = '<li class="cata-network-link cata-network-link-' . $service . '" style="inline-size:' . esc_attr( $width ) . ';">';
+	$link  = '<li class="wp-block-cata-network-link wp-block-cata-network-link-' . $service . '" style="inline-size:' . esc_attr( $width ) . ';">';
 	$link .= '<a href="' . esc_url( $url ) . '" class="wp-block-cata-network-link-anchor" aria-label="' . esc_html( $label ) . '">';
 	$link .= block_cata_network_link_get_icon( $service );
 	$link .= '</a></li>';
