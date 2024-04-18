@@ -31,10 +31,6 @@
     }
   },
   "editorScript": "file:./index.js",
-<<<<<<< HEAD
-  "editorStyle": "file:./index.css"
-=======
   "editorStyle": "file:./index.css",
   "style": "file:./style-index.css"
->>>>>>> 7a3d6e4 (add & adjust styles for the network links blocks)
 }
