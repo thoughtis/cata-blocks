@@ -1,69 +1,74 @@
 {
-	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 2,
-	"name": "cata/toc",
-	"version": "0.1.0",
-	"title": "Table Of Contents",
-	"category": "widgets",
-	"description": "This block produces a table of contents based on H2 headings. Preview or Publish to view the table of contents in the live post.",
-	"keywords": [ "contents", "table of contents", "table of" ],
-	"supports": {
-		"html": false,
-		"reusable": false,
-		"typography": {
-			"fontSize": true,
-			"lineHeight": true,
-			"__experimentalFontFamily": true,
-			"__experimentalFontWeight": true,
-			"__experimentalFontStyle": true,
-			"__experimentalTextTransform": true,
-			"__experimentalTextDecoration": true,
-			"__experimentalLetterSpacing": true,
-			"__experimentalDefaultControls": {
-				"fontSize": true,
-				"fontAppearance": true
-			}
-		},
-		"color": {
-			"text": true,
-			"background": true,
-			"link": true
-		},
-		"__experimentalBorder": {
-			"color": true,
-			"radius": true,
-			"style": true,
-			"width": true,
-			"__experimentalDefaultControls": {
-				"color": true,
-				"radius": true,
-				"style": true,
-				"width": true
-			}
-		},
-		"spacing": {
-			"margin": true,
-			"padding": true
-		}
-	},
-	"attributes": {
-		"summary": {
-			"type": "string",
-			"source": "html",
-			"selector": "summary,.wp-block-cata-toc__summary",
-			"default": "Table of Contents"
-		},
-		"behavior": {
-			"type": "string",
-			"default": "alwaysOpen"
-		}
-	},
-	"example": {
-		"attributes": {
-			"content": "Table Of Contents"
-		}
-	},
-	"script": "file:./script.js",
-	"editorScript": "file:./index.js",
-	"editorStyle": "file:./index.css"
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "name": "cata/toc",
+  "version": "0.1.0",
+  "title": "Table Of Contents",
+  "category": "widgets",
+  "description": "This block produces a table of contents based on H2 headings. Preview or Publish to view the table of contents in the live post.",
+  "keywords": [
+    "contents",
+    "table of contents",
+    "table of"
+  ],
+  "supports": {
+    "html": false,
+    "reusable": false,
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "__experimentalFontFamily": true,
+      "__experimentalFontWeight": true,
+      "__experimentalFontStyle": true,
+      "__experimentalTextTransform": true,
+      "__experimentalTextDecoration": true,
+      "__experimentalLetterSpacing": true,
+      "__experimentalDefaultControls": {
+        "fontSize": true,
+        "fontAppearance": true
+      }
+    },
+    "color": {
+      "text": true,
+      "background": true,
+      "link": true
+    },
+    "__experimentalBorder": {
+      "color": true,
+      "radius": true,
+      "style": true,
+      "width": true,
+      "__experimentalDefaultControls": {
+        "color": true,
+        "radius": true,
+        "style": true,
+        "width": true
+      }
+    },
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  },
+  "attributes": {
+    "summary": {
+      "type": "string",
+      "source": "html",
+      "selector": "summary,.wp-block-cata-toc__summary",
+      "default": "Table of Contents"
+    },
+    "behavior": {
+      "type": "string",
+      "default": "alwaysOpen"
+    }
+  },
+  "example": {
+    "attributes": {
+      "content": "Table Of Contents"
+    }
+  },
+  "script": "file:./script.js",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css"
 }

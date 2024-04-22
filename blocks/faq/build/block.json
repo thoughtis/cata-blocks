@@ -1,16 +1,16 @@
 {
-	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 2,
-	"name": "cata/faq",
-	"version": "0.1.0",
-	"title": "FAQ",
-	"category": "text",
-	"description": "A text block for content in a question and answer format.",
-	"supports": {
-		"html": false,
-		"__experimentalOnEnter": true
-	},
-	"textdomain": "cata",
-	"editorScript": "file:./index.js",
-	"editorStyle": "file:./index.css"
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "name": "cata/faq",
+  "version": "0.1.0",
+  "title": "FAQ",
+  "category": "text",
+  "description": "A text block for content in a question and answer format.",
+  "supports": {
+    "html": false,
+    "__experimentalOnEnter": true
+  },
+  "textdomain": "cata",
+  "editorScript": "file:./index.js",
+  "style": "file:./style-index.css"
 }

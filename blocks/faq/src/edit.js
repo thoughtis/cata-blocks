@@ -2,7 +2,6 @@
  * Edit
  */
 
-import './editor.scss';
 import { useBlockProps, InnerBlocks } from '@wordpress/block-editor';
 
 const ALLOWED_BLOCKS = [

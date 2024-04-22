@@ -1,35 +1,42 @@
 {
-	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 2,
-	"name": "cata/moodboard",
-	"version": "0.1.0",
-	"title": "Moodboard",
-	"category": "layout",
-	"icon": "smiley",
-	"description": "A gallery where all items have a uniform height.",
-	"supports": {
-		"color":{
-			"link": true,
-			"text": true,
-			"background": true
-		},
-		"html": false,
-		"align": ["wide","full"],
-		"spacing": {
-			"blockGap": [ "horizontal", "vertical" ]
-		},
-		"typography": {
-			"fontFamilies": true,
-			"fontSize": false
-		}
-	},
-	"attributes": {
-		"blockSize": {
-			"type": "string",
-			"default": "16em"
-		}
-	},
-	"textdomain": "cata",
-	"editorScript": "file:./index.js",
-	"editorStyle": "file:./index.css"
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "name": "cata/moodboard",
+  "version": "0.1.0",
+  "title": "Moodboard",
+  "category": "layout",
+  "icon": "smiley",
+  "description": "A gallery where all items have a uniform height.",
+  "supports": {
+    "color": {
+      "link": true,
+      "text": true,
+      "background": true
+    },
+    "html": false,
+    "align": [
+      "wide",
+      "full"
+    ],
+    "spacing": {
+      "blockGap": [
+        "horizontal",
+        "vertical"
+      ]
+    },
+    "typography": {
+      "fontFamilies": true,
+      "fontSize": false
+    }
+  },
+  "attributes": {
+    "blockSize": {
+      "type": "string",
+      "default": "16em"
+    }
+  },
+  "textdomain": "cata",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css"
 }

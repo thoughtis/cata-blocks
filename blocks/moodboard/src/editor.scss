@@ -1,38 +1,10 @@
 /**
- * Editor
+ * The following styles get applied inside the editor only.
  */
 
 .wp-block-cata-moodboard {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-evenly;
-
-	:is( .wp-block-image, .wp-block-video ) {
-		margin: 0;
-		display: table;
-		caption-side: bottom;
-	}
-
-	:is( img, video ) {
-		display: block;
-		inline-size: auto;
-		max-inline-size: 100%;
-		margin-inline: auto;
-		object-fit: contain;
-		object-position: center bottom;
-		block-size: var(--wp-block-cata-moodboard-block-size, 16em );
-	}
-
 	.wp-block-image .components-resizable-box__container img {
 		block-size: var(--wp-block-cata-moodboard-block-size, 16em );
 		inline-size: auto;
-	}
-
-	.wp-element-caption {
-		display: table-caption;
-		margin: 0;
-		text-align: center;
-		font-size: 0.875em;
-		position: relative;
 	}
 }

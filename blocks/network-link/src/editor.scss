@@ -1,14 +1,11 @@
 /**
  * The following styles get applied inside the editor only.
- *
- * Replace them with your own styles or remove the file completely.
  */
 
 // The editor uses the button component, the frontend uses a link.
 // Therefore we unstyle the button component to make it more like the frontend.
 .wp-block-cata-network-link {
 	line-height: 0;
-	list-style: none;
 
 	.components-button {
 		font-size: inherit;
@@ -17,12 +14,5 @@
 		line-height: 0;
 		inline-size: 100%;
 		padding: 0;
-	}
-
-	svg {
-		display: block;
-		max-inline-size: 100%;
-		block-size: auto;
-		overflow: visible;
 	}
 }

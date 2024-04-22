@@ -9,6 +9,11 @@ import { registerBlockType } from '@wordpress/blocks';
 import Edit from './edit';
 import save from './save';
 
+/**
+ * Style shared between editor and content
+ */
+import './style.scss';
+
 registerBlockType( 'cata/network-links', {
 	edit: Edit,
 	save: save,
