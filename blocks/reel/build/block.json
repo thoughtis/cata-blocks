@@ -38,7 +38,11 @@
         "vh",
         "vw"
       ],
-      "__experimentalDefaultControls": {}
+      "__experimentalDefaultControls": {
+        "blockGap": true,
+        "margin": true,
+        "padding": false
+      }
     }
   },
   "example": {
