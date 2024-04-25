@@ -1,0 +1,66 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "cata/reel",
+	"title": "Reel",
+	"version": "0.1.0",
+	"category": "design",
+	"icon": "slides",
+	"description": "A container that allows the user to scroll horizontally to view additional content.",
+	"supports": {
+		"align": ["wide","full"],
+		"html": false,
+		"layout": {
+			"allowSwitching": false,
+			"allowInheriting": false,
+			"allowJustification": false,
+			"allowOrientation": false,
+			"allowSizingOnChildren": true,
+			"default": {
+				"type": "flex",
+				"flexWrap": "nowrap",
+				"verticalAlignment": "top"
+			}
+		},
+		"spacing": {
+			"blockGap": [ "vertical" ],
+			"margin": true,
+			"padding": true,
+			"units": [ "px", "em", "rem", "vh", "vw" ],
+			"__experimentalDefaultControls": {
+
+			}
+		}
+	},
+	"example": {
+		"innerBlocks": [
+			{
+				"name": "core/group",
+				"innerBlocks": [
+					{
+						"name": "core/image"
+					},
+					{
+						"name": "core/heading"
+					}
+				]
+			},
+			{
+				"name": "core/image"
+			},
+			{
+				"name": "core/group",
+				"innerBlocks": [
+					{
+						"name": "core/image"
+					},
+					{
+						"name": "core/paragraph"
+					}
+				]
+			}
+		]
+	},
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css"
+}
