@@ -16,19 +16,26 @@ import { __ } from '@wordpress/i18n';
  * @return {WPElement} Element to render.
  */
 export default function Edit() {
-	const ReelPlaceholder = (
-		<div className="wp-block-cata-reel__prompt">
-			{ __( 'Click plus to add' ) }
-		</div>
-	);
-
+	const TEMPLATE = [
+		[ 
+			'core/group', 
+			{ 
+				className: "wp-block-cata-reel__inner-container",
+				orientation: "horizontal",
+				layout: {
+					type: 'flex',
+					flexWrap: 'nowrap',
+					verticalAlignment: 'top'
+				}
+			} 
+		],
+	];
 	const blockProps = useBlockProps();
-
-	const innerBlockProps = useInnerBlocksProps( blockProps, {
-		placeholder: ReelPlaceholder,
-	} );
+	const innerBlocksProps = useInnerBlocksProps( blockProps, {
+		template: TEMPLATE 
+	} )
 
 	return (
-		<div { ...innerBlockProps } />
+		<div { ...innerBlocksProps }/>
 	);
 }

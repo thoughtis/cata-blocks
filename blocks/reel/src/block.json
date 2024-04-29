@@ -10,18 +10,6 @@
 	"supports": {
 		"align": ["wide","full"],
 		"html": false,
-		"layout": {
-			"allowSwitching": false,
-			"allowInheriting": false,
-			"allowJustification": false,
-			"allowOrientation": false,
-			"allowSizingOnChildren": true,
-			"default": {
-				"type": "flex",
-				"flexWrap": "nowrap",
-				"verticalAlignment": "top"
-			}
-		},
 		"spacing": {
 			"blockGap": [ "vertical" ],
 			"margin": true,
