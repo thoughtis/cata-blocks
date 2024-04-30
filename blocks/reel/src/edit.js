@@ -5,7 +5,15 @@
  * @see https://developer.wordpress.org/block-editor/packages/packages-block-editor/#useBlockProps
  */
 import { useInnerBlocksProps, useBlockProps } from '@wordpress/block-editor';
-import { __ } from '@wordpress/i18n';
+
+
+/**
+ * Allowed Blocks
+ * Gotta be defined outside of the useInnerBlocksProp function call.
+ * @link https://fabian-kaegy.com/define-allowedblocks-outside-of-jsx-for-useinnerblocksprops-function/
+ * @link https://github.com/WordPress/gutenberg/pull/30274
+ */
+const ALLOWED_BLOCKS = [ 'cata/reel-clip' ];
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -16,26 +24,19 @@ import { __ } from '@wordpress/i18n';
  * @return {WPElement} Element to render.
  */
 export default function Edit() {
-	const TEMPLATE = [
-		[ 
-			'core/group', 
-			{ 
-				className: "wp-block-cata-reel__inner-container",
-				orientation: "horizontal",
-				layout: {
-					type: 'flex',
-					flexWrap: 'nowrap',
-					verticalAlignment: 'top'
-				}
-			} 
-		],
-	];
-	const blockProps = useBlockProps();
-	const innerBlocksProps = useInnerBlocksProps( blockProps, {
-		template: TEMPLATE 
-	} )
-
 	return (
-		<div { ...innerBlocksProps }/>
+		<div { ...useBlockProps() }>
+			<div {
+				...useInnerBlocksProps(
+					{
+						className: 'wp-block-cata-reel__inner-container',
+						orientation: 'horizontal'
+					},
+					{
+						allowedBlocks: ALLOWED_BLOCKS
+					}
+				)
+			} />
+		</div>
 	);
 }

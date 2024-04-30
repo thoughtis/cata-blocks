@@ -132,6 +132,7 @@ require_once __DIR__ . '/blocks/network-links/network-links.php';
  * Reel
  */
 require_once __DIR__ . '/blocks/reel/reel.php';
+require_once __DIR__ . '/blocks/reel-clip/reel-clip.php';
 
 /**
  * Trivia Pattern

@@ -8,7 +8,7 @@
 namespace Cata\Blocks;
 
 /**
- * Register Reel block
+ * Register Reel Block
  * 
  * @return void
  */
