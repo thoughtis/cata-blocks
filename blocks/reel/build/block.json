@@ -1,0 +1,26 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "name": "cata/reel",
+  "title": "Reel",
+  "category": "design",
+  "description": "A container that allows the user to scroll horizontally to view additional content.",
+  "keywords": [
+    "slider",
+    "scroll"
+  ],
+  "icon": "slides",
+  "supports": {
+    "align": [
+      "wide",
+      "full"
+    ],
+    "html": false,
+    "spacing": {
+      "margin": true
+    }
+  },
+  "textdomain": "cata",
+  "editorScript": "file:./index.js",
+  "style": "file:./style-index.css"
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "name": "cata/reel-clip",
+  "title": "Reel Clip",
+  "category": "design",
+  "parent": [
+    "cata/reel"
+  ],
+  "keywords": [
+    "clip",
+    "slide",
+    "scroll"
+  ],
+  "icon": "slides",
+  "description": "Item within a reel.",
+  "textdomain": "reel-clip",
+  "supports": {
+    "html": false
+  },
+  "attributes": {
+    "inlineSize": {
+      "type": "string"
+    }
+  },
+  "editorScript": "file:./index.js"
+}
