@@ -53,7 +53,7 @@ class Render {
 	 */
 	public static function render_product( stdClass $product, bool $display_price ) : string {
 		$title = esc_html( $product->title );
-		$href  = esc_url( $product->onlineStoreUrl );
+		$href  = esc_url( apply_filters( 'cata_product_block_link', $product->onlineStoreUrl ) );
 		$price = true === $display_price ? self::wrap_price( self::render_price( $product->priceRange ) ) : '';
 		$image = self::render_image(
 			$product,
