@@ -135,6 +135,11 @@ require_once __DIR__ . '/blocks/reel/reel.php';
 require_once __DIR__ . '/blocks/reel-clip/reel-clip.php';
 
 /**
+ * Marquee
+ */
+require_once __DIR__ . '/blocks/marquee/marquee.php';
+
+/**
  * Trivia Pattern
  */
 require_once __DIR__ . '/patterns/trivia/trivia.php';
