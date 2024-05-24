@@ -12,13 +12,16 @@
 	animation: marquee 10s infinite linear;
 	min-width: 100%;
 	width: fit-content;
-	padding-inline: 0 !important;
+	position: relative;
+	padding-left: 0 !important;
+	padding-right: 3ch;
 
 	&::after {
 		content: attr(data-text);
 		display: inline-block;
 		inline-size: 100%;
 		text-align: end;
+		position: absolute;
 	}
 }
 
