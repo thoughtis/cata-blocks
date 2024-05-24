@@ -1,0 +1,31 @@
+/**
+ * The following styles get applied both on the front of your site
+ * and in the editor.
+ */
+
+.wp-block-cata-marquee {
+	overflow: hidden;
+}
+
+.wp-block-cata-marquee__inner {
+	text-wrap: nowrap;
+	// animation: marquee 5s infinite linear;
+	min-width: 100%;
+	width: fit-content;
+
+	&::after {
+		content: attr(data-text);
+		display: inline-block;
+		inline-size: 100%;
+		text-align: end;
+	}
+}
+
+@keyframes marquee {
+	from {
+		transform: translate3d(0,0,0);
+	}
+	to {
+		transform: translate3d(-100%,0,0);
+	}
+}
