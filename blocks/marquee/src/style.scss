@@ -25,6 +25,16 @@
 	}
 }
 
+@media ( prefers-reduced-motion ) {
+	.wp-block-cata-marquee__inner {
+		animation: none;
+
+		&::after {
+			display: none;
+		}
+	}	
+}
+
 @keyframes marquee {
 	from {
 		transform: translate3d(0,0,0);
