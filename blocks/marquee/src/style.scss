@@ -9,9 +9,10 @@
 
 .wp-block-cata-marquee__inner {
 	text-wrap: nowrap;
-	// animation: marquee 5s infinite linear;
+	animation: marquee 10s infinite linear;
 	min-width: 100%;
 	width: fit-content;
+	padding-inline: 0 !important;
 
 	&::after {
 		content: attr(data-text);

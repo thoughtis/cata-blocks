@@ -3,6 +3,7 @@
  */
 
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
+import './editor.scss';
 
 const ALLOWED_BLOCKS = [
 	'core/post-title',
@@ -20,6 +21,7 @@ const TEMPLATE = [
  */
 export default function Edit() {
 	const blockProps = useBlockProps();
+
 	return (
 		<div { ...blockProps }>
 			<InnerBlocks allowedBlocks={ ALLOWED_BLOCKS } template={ TEMPLATE } templateLock="all" />
