@@ -1,0 +1,11 @@
+/**
+ * The following styles get applied inside the editor only.
+ */
+
+.wp-block-cata-marquee__inner {
+	animation: unset;
+
+	&::after {
+		content: unset;
+	}
+}

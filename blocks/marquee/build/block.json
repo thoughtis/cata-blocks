@@ -1,0 +1,35 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "name": "cata/marquee",
+  "version": "0.3.9",
+  "title": "Marquee",
+  "category": "design",
+  "description": "Infinite horizontal scrolling text.",
+  "keywords": [
+    "slider",
+    "title",
+    "scroll"
+  ],
+  "supports": {
+    "html": false,
+    "customClassName": false,
+    "align": [
+      "wide",
+      "full"
+    ],
+    "color": {
+      "background": true,
+      "gradients": true,
+      "text": true
+    },
+    "spacing": {
+      "padding": true,
+      "margin": true
+    }
+  },
+  "textdomain": "cata",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css"
+}
