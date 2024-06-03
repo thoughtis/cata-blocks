@@ -13,7 +13,7 @@ const ALLOWED_BLOCKS = [
 ];
 
 const TEMPLATE = [
-	[ 'core/post-title', { className: 'wp-block-cata-marquee__inner', level: 2, lock: { 'move': true, 'remove': true }  } ],
+	[ 'core/post-title', { level: 2 } ],
 ];
 
 /**
@@ -27,7 +27,7 @@ export default function Edit() {
 
 	return (
 		<div { ...blockProps }>
-			<InnerBlocks allowedBlocks={ ALLOWED_BLOCKS } template={ TEMPLATE } templateLock="all" />
+			<InnerBlocks allowedBlocks={ ALLOWED_BLOCKS } template={ TEMPLATE } />
 		</div>
 	);
 }
