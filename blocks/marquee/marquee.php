@@ -52,7 +52,7 @@ function cata_marquee_render_callback( array $attributes, string $content ): str
  */
 function cata_marquee_render_block( array $attributes, string $content ): string {
 	$title_text = '';
-	$regex_title = '/<h[1-6].*>(.*?)<\/h[1-6]>/is';
+	$regex_title = '/<[hp][1-6]?.*>(.*?)<\/[hp][1-6]?>/i';
 
 	if( preg_match( $regex_title, $content, $matches ) ) {
 		$title_text = trim( wp_strip_all_tags( end( $matches ) ) );
