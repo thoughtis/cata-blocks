@@ -63,7 +63,13 @@ function cata_marquee_render_block( array $attributes, string $content ): string
 	}
 
 	$content = new WP_HTML_Tag_Processor( $content );
-	if ( $content->next_tag( array( 'class_name' => 'wp-block-cata-marquee__inner' ) ) ) {
+
+	if ( ! $content->next_tag( array( 'class_name' => 'wp-block-cata-marquee' ) ) ) {
+		return $content;
+	}
+
+	if ( $content->next_tag() ) {
+		$content->add_class( 'wp-block-cata-marquee__inner' );
 		$content->set_attribute( 'data-text', $title_text );
 		$content->get_updated_html();
 	}
