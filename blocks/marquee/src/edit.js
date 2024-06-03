@@ -7,6 +7,9 @@ import './editor.scss';
 
 const ALLOWED_BLOCKS = [
 	'core/post-title',
+	'core/query-title',
+	'core/heading',
+	'core/paragraph',
 ];
 
 const TEMPLATE = [
