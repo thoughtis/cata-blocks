@@ -140,6 +140,15 @@ require_once __DIR__ . '/blocks/reel-clip/reel-clip.php';
 require_once __DIR__ . '/blocks/marquee/marquee.php';
 
 /**
+ * JustWatch
+ */
+require_once __DIR__ . '/blocks/just-watch/just-watch.php';
+require_once __DIR__ . '/blocks/just-watch/includes/options/class-options.php';
+require_once __DIR__ . '/blocks/just-watch/includes/options/token/class-token.php';
+
+new Just_Watch\Options();
+
+/**
  * Trivia Pattern
  */
 require_once __DIR__ . '/patterns/trivia/trivia.php';
