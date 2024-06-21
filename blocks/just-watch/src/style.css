@@ -1,0 +1,15 @@
+/**
+ * The following styles get applied both on the front of your site
+ * and in the editor.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+
+.wp-block-cata-just-watch iframe {
+	/* padding and margin inside the iframe totals 1.4em where 1em == 11px */
+	margin-inline: -15.4px;
+}
+
+.wp-block-cata-just-watch :is(iframe, [data-jw-widget]) {
+	min-block-size: 86px;
+}
