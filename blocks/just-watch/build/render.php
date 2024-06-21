@@ -9,7 +9,7 @@ if ( '' === $url || ! wp_http_validate_url( $url ) ) {
 	return;
 }
 
-$token = cata_just_watch_get_api_token();
+$token = Cata\Blocks\just_watch_get_api_token();
 
 if ( '' === $token ) {
 	return;
@@ -32,7 +32,7 @@ wp_enqueue_script( 'cata-blocks-just-watch' );
 	</div>
 	<figcaption>
 		<a rel="nofollow" href="<?php echo esc_url( $url ); ?>">
-			 <img width="79" height="12" src="<?php echo esc_url( cata_just_watch_get_asset_url( 'just-watch-logo.svg' ) ); ?>" alt="JustWatch">
+			 <img width="79" height="12" src="<?php echo esc_url( Cata\Blocks\just_watch_get_asset_url( 'just-watch-logo.svg' ) ); ?>" alt="JustWatch">
 		</a>
 	</figcaption>
 </figure>

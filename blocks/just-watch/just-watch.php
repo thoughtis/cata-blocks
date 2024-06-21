@@ -13,6 +13,8 @@
  * @package Cata
  */
 
+namespace Cata\Blocks;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -24,15 +26,15 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @see https://developer.wordpress.org/reference/functions/register_block_type/
  */
-function cata_just_watch_block_init() {
+function just_watch_block_init() {
 	register_block_type( __DIR__ . '/build' );
 }
-add_action( 'init', 'cata_just_watch_block_init' );
+add_action( 'init', __NAMESPACE__ . '\\just_watch_block_init' );
 
 /**
  * Register Script
  */
-function cata_just_watch_register_script(): void {
+function just_watch_register_script(): void {
 	wp_register_script(
 		'cata-blocks-just-watch',
 		'https://widget.justwatch.com/justwatch_widget.js',
@@ -42,7 +44,7 @@ function cata_just_watch_register_script(): void {
 		)
 	);
 }
-add_action( 'wp_enqueue_scripts', 'cata_just_watch_register_script' );
+add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\\just_watch_register_script' );
 
 /**
  * Get Asset URL
@@ -50,13 +52,13 @@ add_action( 'wp_enqueue_scripts', 'cata_just_watch_register_script' );
  * @param string $filename
  * @return string URL for asset in plugin directory.
  */
-function cata_just_watch_get_asset_url( string $filename ): string {
+function just_watch_get_asset_url( string $filename ): string {
 	return plugins_url( "/assets/{$filename}", __FILE__ );
 }
 
 /**
  * Get API Token
  */
-function cata_just_watch_get_api_token(): string {
-	return get_option( Cata\Blocks\Just_Watch\Options\Token::SETTING_NAME, '' );
+function just_watch_get_api_token(): string {
+	return get_option( Just_Watch\Options\Token::SETTING_NAME, '' );
 }
