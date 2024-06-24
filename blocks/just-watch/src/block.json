@@ -1,0 +1,32 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cata/just-watch",
+	"version": "0.1.0",
+	"title": "JustWatch",
+	"category": "widgets",
+	"icon": "smiley",
+	"description": "Display streaming options for a movie or series based on the URL from justwatch.com",
+	"example": {},
+	"supports": {
+		"html": false
+	},
+	"attributes": {
+		"url": {
+			"type": "string"
+		},
+		"theme": {
+			"type":"string",
+			"enum": ["dark","light"],
+			"default": "dark"
+		},
+		"max_offers": {
+			"type":"string",
+			"default": "5"
+		}
+	},
+	"textdomain": "just-watch",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

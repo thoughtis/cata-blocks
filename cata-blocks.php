@@ -12,7 +12,7 @@
  * Description: Block Editor components for use with the Cata theme.
  * Author:      Thought & Expression Co. <devjobs@thought.is>
  * Author URI:  https://thought.is
- * Version:     0.9.4
+ * Version:     0.9.5
  * License:     GPL v3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.txt
  */
@@ -138,6 +138,15 @@ require_once __DIR__ . '/blocks/reel-clip/reel-clip.php';
  * Marquee
  */
 require_once __DIR__ . '/blocks/marquee/marquee.php';
+
+/**
+ * JustWatch
+ */
+require_once __DIR__ . '/blocks/just-watch/just-watch.php';
+require_once __DIR__ . '/blocks/just-watch/includes/options/class-options.php';
+require_once __DIR__ . '/blocks/just-watch/includes/options/token/class-token.php';
+
+new Just_Watch\Options();
 
 /**
  * Trivia Pattern
