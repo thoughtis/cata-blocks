@@ -91,18 +91,20 @@ export default function Edit( { attributes, setAttributes } ) {
 							value={ store }
 							onChange={(newStore)=>{
 								setAttributes( {
-									...attributes,
 									store: newStore
 								})
 							}}
-						>
-							<option value="">Select a store...</option>
-							{(stores.map( ( storeOption ) => {
-								return (
-									<option value={storeOption}>{storeOption}</option>
-								)
-							}))}
-						</SelectControl>
+							options={[
+								{
+									value: '',
+									label: 'Select a store...'
+								},
+								...stores.map(s => ({
+									value: s,
+									label: s
+								}))
+							]}
+						/>
 					</PanelRow>
 				</PanelBody>
 				<PanelBody title="Product Selection" initialOpen={false}>
