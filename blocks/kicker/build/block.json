@@ -1,5 +1,5 @@
 {
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "cata/kicker",
   "title": "Kicker",
   "category": "text",
@@ -15,7 +15,8 @@
     "typography": {
       "fontSize": true,
       "__experimentalTextTransform": true
-    }
+    },
+    "splitting": true
   },
   "attributes": {
     "content": {
