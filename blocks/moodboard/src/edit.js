@@ -2,7 +2,7 @@
  * Edit
  */
 
-import { useBlockProps, useInnerBlocksProps, __experimentalGetGapCSSValue, InspectorControls, useSetting } from '@wordpress/block-editor';
+import { useBlockProps, useInnerBlocksProps, __experimentalGetGapCSSValue, InspectorControls, useSettings } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
 import { __experimentalUseCustomUnits as useCustomUnits, PanelBody, __experimentalUnitControl as UnitControl } from '@wordpress/components';
 import './editor.scss';
@@ -26,7 +26,7 @@ export default function Edit( { attributes, setAttributes } ) {
 	const gap = __experimentalGetGapCSSValue( attributes.style?.spacing?.blockGap );
 
 	const units = useCustomUnits( {
-		availableUnits: useSetting( 'spacing.units' ) || [
+		availableUnits: useSettings( 'spacing.units' )[0] ?? [
 			'px',
 			'em',
 			'rem'
