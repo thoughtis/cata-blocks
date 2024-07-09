@@ -11,7 +11,7 @@ import { __ } from '@wordpress/i18n';
  *
  * @see https://developer.wordpress.org/block-editor/packages/packages-block-editor/#useBlockProps
  */
-import { InspectorControls, useInnerBlocksProps, useBlockProps, useSetting } from '@wordpress/block-editor';
+import { InspectorControls, useInnerBlocksProps, useBlockProps, useSettings } from '@wordpress/block-editor';
 
 import { __experimentalUseCustomUnits as useCustomUnits, PanelBody, __experimentalUnitControl as UnitControl } from '@wordpress/components';
 
@@ -24,9 +24,9 @@ import { __experimentalUseCustomUnits as useCustomUnits, PanelBody, __experiment
  * @return {WPElement} Element to render.
  */
 export default function Edit( { attributes: { inlineSize }, setAttributes } ) {
-	
+
 	const units = useCustomUnits( {
-		availableUnits: useSetting( 'spacing.units' ) || [
+		availableUnits: useSettings( 'spacing.units' )[0] ?? [
 			'%',
 			'px',
 			'em',
