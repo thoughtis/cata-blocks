@@ -10,7 +10,6 @@ import {
 	RichText,
 	useBlockProps
 } from '@wordpress/block-editor';
-import { createBlock, getDefaultBlockName } from '@wordpress/blocks';
 
 /**
  * Edit
@@ -53,26 +52,6 @@ import { createBlock, getDefaultBlockName } from '@wordpress/blocks';
 					onMerge={ mergeBlocks }
 					onReplace={ onReplace }
 					onRemove={ onRemove }
-					onSplit={ ( value, isOriginal ) => {
-						let block;
-	
-						if ( isOriginal || value ) {
-							block = createBlock( 'cata/kicker', {
-								...attributes,
-								content: value,
-							} );
-						} else {
-							block = createBlock(
-								getDefaultBlockName() ?? 'cata/kicker'
-							);
-						}
-	
-						if ( isOriginal ) {
-							block.clientId = clientId;
-						}
-	
-						return block;
-					} }
 			/>
 		</Fragment>
 	);
