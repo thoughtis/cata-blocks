@@ -140,6 +140,11 @@ require_once __DIR__ . '/blocks/reel-clip/reel-clip.php';
 require_once __DIR__ . '/blocks/marquee/marquee.php';
 
 /**
+ * Globe Background
+ */
+require_once __DIR__ . '/blocks/globe-background/globe-background.php';
+
+/**
  * JustWatch
  */
 require_once __DIR__ . '/blocks/just-watch/just-watch.php';

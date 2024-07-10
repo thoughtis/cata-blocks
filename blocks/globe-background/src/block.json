@@ -1,0 +1,39 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "cata/globe-background",
+	"version": "0.3.9",
+	"title": "Globe Background",
+	"category": "design",
+	"description": "Grouping element with an animated globe background",
+	"keywords": [
+		"globe",
+		"animate",
+		"network",
+		"background"
+	],
+	"supports": {
+		"html": false,
+		"customClassName": false,
+		"align": ["wide", "full"],
+		"color" : {
+			"background": true,
+			"gradients": true,
+			"text": true
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true
+		}
+	},
+	"attributes" : {
+		"globeColor": {
+			"type": "string",
+			"default": "#000"
+		}
+	},
+	"textdomain": "cata",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css"
+}
