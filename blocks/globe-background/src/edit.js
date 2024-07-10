@@ -37,7 +37,6 @@ export default function Edit( { attributes, setAttributes } ) {
                     },
                 } ) }
 			>
-				<InnerBlocks />
 				<div className="wp-block-cata-globe-background__globe-svg">
 					<SVG viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" width="300" height="300">
 						<Circle cx="50%" cy="50%" r="50%"/>
@@ -51,6 +50,7 @@ export default function Edit( { attributes, setAttributes } ) {
 						<Path d="M150,300A150,150,0,0,1,150,0"/>
 					</SVG>
 				</div>
+				<InnerBlocks />
 			</div>
 		</>
 	);
