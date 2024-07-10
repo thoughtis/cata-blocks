@@ -1,13 +1,13 @@
 /**
  * WordPress dependencies.
  */
- import { __ } from '@wordpress/i18n';
- import { registerFormatType, toggleFormat } from '@wordpress/rich-text';
- import { RichTextToolbarButton } from '@wordpress/block-editor';
- import { lineSolid } from '@wordpress/icons';
- import { useSelect } from '@wordpress/data';
+import { __ } from '@wordpress/i18n';
+import { registerFormatType, toggleFormat } from '@wordpress/rich-text';
+import { RichTextToolbarButton } from '@wordpress/block-editor';
+import { lineSolid } from '@wordpress/icons';
+import { useSelect } from '@wordpress/data';
  
- const CataOverhangButton = ( { isActive, onChange, value } ) => {
+const CataOverhangButton = ( { isActive, onChange, value } ) => {
     const selectedBlock = useSelect( ( select ) => {
         return select( 'core/block-editor' ).getSelectedBlock();
     }, [] );
@@ -30,11 +30,11 @@
             isActive={ isActive }
         />
     );
- };
+};
  
- registerFormatType( 'cata-format/overhang', {
+registerFormatType( 'cata-format/overhang', {
     title: __( 'Overhang' ),
     tagName: 'span',
     className: 'cata-overhang',
     edit: CataOverhangButton,
- } );
+} );
