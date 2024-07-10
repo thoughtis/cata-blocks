@@ -33,7 +33,7 @@ export default function Edit( { attributes, setAttributes } ) {
 			<div
 				{ ...useBlockProps( {
                     style: {
-                        stroke: globeColor,
+                        "--cata-globe-color": globeColor,
                     },
                 } ) }
 			>
