@@ -20,8 +20,6 @@
       "full"
     ],
     "color": {
-      "background": true,
-      "gradients": true,
       "text": true
     },
     "spacing": {
