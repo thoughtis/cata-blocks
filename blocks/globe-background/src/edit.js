@@ -8,8 +8,6 @@ import { ColorPalette, PanelBody } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import './editor.scss';
 
-
-
 /**
  * Edit
  *
