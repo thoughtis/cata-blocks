@@ -1,0 +1,44 @@
+/**
+ * The following styles get applied inside the editor only.
+ */
+
+.wp-block-cata-globe-background__globe-svg {
+	z-index: 0;
+	stroke: var( --cata-globe-color, #000 );
+
+	path {
+		animation: none;
+
+		&:first-of-type {
+			transform: rotateY(20deg);
+		}
+
+		&:nth-of-type( 2 ) {
+			transform: rotateY(40deg);
+		}
+
+		&:nth-of-type( 3 ) {
+			transform: rotateY(60deg);
+		}
+
+		&:nth-of-type( 4 ) {
+			transform: rotateY(80deg);
+		}
+
+		&:nth-of-type( 5 ) {
+			transform: rotateY(100deg);
+		}
+
+		&:nth-of-type( 6 ) {
+			transform: rotateY(120deg);
+		}
+
+		&:nth-of-type( 7 ) {
+			transform: rotateY(140deg);
+		}
+
+		&:last-of-type {
+			transform: rotateY(160deg);
+		}
+	}
+}
