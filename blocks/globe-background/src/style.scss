@@ -42,7 +42,8 @@
 @media ( prefers-reduced-motion ) {
 	.wp-block-cata-globe-background__globe-svg path {
 		animation: none;
-	}	
+		transform: rotateY( calc( var( --globe-animation-order, 0 ) * 20deg + 20deg ) );
+	}
 }
 
 @keyframes globe {
