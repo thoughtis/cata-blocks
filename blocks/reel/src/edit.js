@@ -5,6 +5,7 @@
  * @see https://developer.wordpress.org/block-editor/packages/packages-block-editor/#useBlockProps
  */
 import { useInnerBlocksProps, useBlockProps } from '@wordpress/block-editor';
+import './editor.scss';
 
 
 /**
