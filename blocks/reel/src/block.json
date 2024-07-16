@@ -21,7 +21,8 @@
 			"title": "Auto Slider",
 			"attributes": {
 				"className": "is-style-auto-slider"
-			}
+			},
+      		"isActive": ["className"]
 		}
 	],
 	"textdomain": "cata",
