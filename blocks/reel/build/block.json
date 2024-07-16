@@ -15,12 +15,26 @@
       "wide",
       "full"
     ],
+    "className": true,
     "html": false,
     "spacing": {
       "margin": true
     }
   },
+  "variations": [
+    {
+      "name": "auto-slider",
+      "title": "Auto Slider",
+      "attributes": {
+        "className": "is-style-auto-slider"
+      },
+      "isActive": [
+        "className"
+      ]
+    }
+  ],
   "textdomain": "cata",
   "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
   "style": "file:./style-index.css"
 }

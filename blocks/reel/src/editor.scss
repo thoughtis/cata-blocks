@@ -1,0 +1,11 @@
+/**
+ * The following styles get applied inside the editor only.
+ */
+
+.wp-block-cata-reel.is-style-auto-slider {
+	overflow: auto;
+
+	.wp-block-cata-reel__inner-container {
+		animation: none;
+	}
+}

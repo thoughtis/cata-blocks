@@ -21,3 +21,34 @@
 		flex: none;
 	}
 }
+
+.wp-block-cata-reel.is-style-auto-slider {
+	overflow: hidden;
+	--max-reel-container-width: var( --wp--style--global--content-size, 32em );
+	--min-reel-container-width: calc( 100vw - var( --wp--style--root--padding-right, 3.75vw ) - var( --wp--style--root--padding-left, 3.75vw ) );
+
+	&.alignwide {
+		--max-reel-container-width: var( --wp--style--global--wide-size, 64em )
+	}
+
+	&.alignfull {
+		--max-reel-container-width: 100vw;
+		--min-reel-container-width: 100vw;
+	}
+
+	.wp-block-cata-reel__inner-container {
+		animation: slide 15s infinite linear alternate;
+		min-width: 100%;
+		width: max-content;
+	}
+	
+	@keyframes slide {
+		from {
+			transform: translate3d( 0, 0, 0 );
+		}
+		to {
+			// min() function adjusts the translate distance for different screen/container sizes
+			transform: translate3d( calc( -100% + min( var(--max-reel-container-width, 100vw), 100%, var( --min-reel-container-width, 100vw ) ) ), 0, 0 );
+		}
+	}
+}
