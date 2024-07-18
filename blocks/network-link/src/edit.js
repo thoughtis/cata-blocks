@@ -46,15 +46,10 @@ export default function Edit( { clientId, attributes, setAttributes } ) {
 				setAttributes={ setAttributes }
 			/>
 			<li { ...blockProps } >
-				<Button
-					attributes={ attributes }
-					setAttributes={ setAttributes }
-				>
-					<IconComponent />
-					<span className="cata-network-link-label screen-reader-text">
-						{ socialLinkName }
-					</span>
-				</Button>
+				<IconComponent />
+				<span className="cata-network-link-label screen-reader-text">
+					{ socialLinkName }
+				</span>
 			</li>
 		</>
 	);
