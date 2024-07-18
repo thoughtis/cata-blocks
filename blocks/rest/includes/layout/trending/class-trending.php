@@ -176,7 +176,7 @@ class Trending extends Layout {
 			$image_data,
 			array(
 				'sizes'  => '(max-width: 15em) 92.5vw, 15em',
-				'srcset' => self::get_image_dimensions( $image_data, (3 / 2), [ 2560, 1920, 1280, 960, 640, 480, 320 ] ),
+				'srcset' => self::get_image_dimensions( $image_data, null, [ 2560, 1920, 1280, 960, 640, 480, 320 ] ),
 			)
 		);
 		return self::render_preview( $post, $image );
@@ -194,7 +194,7 @@ class Trending extends Layout {
 			$image_data,
 			array(
 				'sizes'  => '(max-width: 20em) 92.5vw, 20em',
-				'srcset' => self::get_image_dimensions( $image_data, (4 / 5), [ 2560, 1920, 1280, 960, 640, 480, 320 ] ),
+				'srcset' => self::get_image_dimensions( $image_data, null, [ 2560, 1920, 1280, 960, 640, 480, 320 ] ),
 			)
 		);
 		return self::render_preview( $post, $image );

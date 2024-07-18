@@ -14,7 +14,7 @@ import Author from "../../author/Author";
 export default function PostLarge( { post } ) {
 
 	const data = getImage( post );
-	const dimensions = getDimensions( data, (4/5), [ 2560, 1920, 1280, 960, 640, 480, 320 ]);
+	const dimensions = getDimensions( data, null, [ 2560, 1920, 1280, 960, 640, 480, 320 ]);
 	const category = getCategory( post );
 	const author = getAuthor( post );
 
