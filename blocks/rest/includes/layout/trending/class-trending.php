@@ -66,10 +66,10 @@ class Trending extends Layout {
 	 * @param stdClass $post
 	 */
 	public static function render_preview_small( stdClass $post ) : string {
-		$title  = esc_html( $post->title->rendered );
-		$link   = esc_url( $post->link );
-		$anchor = "<a href=\"{$link}\">{$title}</a>";
-		return "<p>{$anchor}</p>";
+		$title = esc_html( $post->title->rendered );
+		$href  = esc_url( $post->link );
+		$link  = self::render_link( $href, $title );
+		return "<p>{$link}</p>";
 	}
 
 	/**
@@ -81,7 +81,7 @@ class Trending extends Layout {
 	 */
 	public static function render_preview( stdClass $post, ?string $image = '' ) : string {
 		$title  = esc_html( $post->title->rendered );
-		$link   = esc_url( $post->link );
+		$href   = esc_url( $post->link );
 		$kicker = self::render_kicker(
 			self::get_category( $post )
 		);
@@ -89,16 +89,17 @@ class Trending extends Layout {
 			self::get_author( $post )
 		);
 
+		$link_one = self::render_link( $href, $image, ['rel' => 'bookmark'] );
+		$link_two = self::render_link( $href, $title, ['rel' =>  'bookmark', 'class' => 'preview__permalink'] );
+
 		return "<article class=\"preview is-layout-trending\">
 			<figure class=\"preview__image-container\">
-				<a rel=\"bookmark\" href=\"{$link}\">
-					{$image}
-				</a>
+				{$link_one}
 			</figure>
 			<div class=\"preview__content\">
 				{$kicker}
 				<h3 class=\"preview__title\">
-					<a class=\"preview__permalink\" rel=\"bookmark\" href=\"{$link}\">{$title}</a>
+					{$link_two}
 				</h3>
 				{$byline}
 			</div>
@@ -158,9 +159,11 @@ class Trending extends Layout {
 			)
 		);
 
+		$link = self::render_link( $href, "<em>{$name}</em>", ['rel' => 'author'] );
+
 		return "<p class=\"preview__byline\">
 			{$image}
-			<a rel=\"author\" href=\"{$href}\"><em>{$name}</em></a>
+			{$link}
 		</p>";
 	}
 
@@ -270,11 +273,10 @@ class Trending extends Layout {
 		if ( null === $category ) {
 			return '';
 		}
-		$link = esc_url( $category->link );
+		$href = esc_url( $category->link );
 		$name = esc_html( $category->name );
-		return "<p class=\"preview__kicker\">
-			<a rel=\"category\" href=\"{$link}\"><strong>{$name}</strong></a>
-		</p>";
+		$link = self::render_link( $href, "<strong>{$name}</strong>", ['rel' => 'category'] );
+		return "<p class=\"preview__kicker\">{$link}</p>";
 	}
 
 }
