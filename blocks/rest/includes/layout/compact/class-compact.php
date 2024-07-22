@@ -52,7 +52,7 @@ class Compact extends Layout {
 	 */
 	public static function render_preview( stdClass $post ) : string {
 		$title  = esc_html( $post->title->rendered );
-		$link   = esc_url( $post->link );
+		$href   = esc_url( $post->link );
 		$image_data = self::get_image( $post );
 		$image = self::render_image(
 			$image_data,
@@ -62,18 +62,19 @@ class Compact extends Layout {
 			)
 		);
 
+		$image_link = self::render_link( $href, $image );
+		$title_link = self::render_link( $href, $title, ['rel' => 'bookmark', 'class' => 'preview_permalink'] );
+
 		return "<article class=\"preview is-layout-compact\">
 			<div class=\"preview__layout\">
 				<div class=\"preview__start\">
 					<figure class=\"preview__image-container\">
-						<a rel=\"bookmark\" href=\"{$link}\">
-							{$image}
-						</a>
+						{$image_link}
 					</figure>
 				</div>
 				<div class=\"preview__end\">
 					<h3 class=\"preview__title\">
-						<a class=\"preview__permalink\" rel=\"bookmark\" href=\"{$link}\">{$title}</a>
+						{$title_link}
 					</h3>
 				</div>
 			</div>
