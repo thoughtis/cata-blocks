@@ -124,13 +124,7 @@ abstract class Layout {
 			$attributes['class'] = esc_attr( $options['class'] );
 		}
 
-		$attributes_string = implode( ' ', array_map(
-			function( $key, $value ) {
-				return "{$key}=\"{$value}\"";
-			},
-			array_keys($attributes), 
-			array_values($attributes)
-		) );
+		$attributes_string = self::render_attribute_string( $attributes );
 
 		return "<img {$attributes_string}>";
 	}
@@ -173,7 +167,46 @@ abstract class Layout {
 					$src
 				)
 			);
-			return "${resized_src} {$set[0]}w";
+			return "{$resized_src} {$set[0]}w";
 		};
+	}
+
+	/**
+	 * Render Link
+	 * 
+	 * @param string $href
+	 * @param string $content
+	 * @param null|array $other_attributes
+	 */
+	public static function render_link( string $href, string $content, ?array $other_attributes = array() ): string {
+
+		$attributes = array(
+			...$other_attributes,
+			'href' => $href,
+		);
+
+		if ( ! str_starts_with( $href, home_url() ) ) {
+			$attributes['target'] = '_blank';
+		}
+
+		$attributes_string = self::render_attribute_string( $attributes );
+
+		return "<a {$attributes_string}>{$content}</a>";
+	}
+
+	/**
+	 * Render Attribute String
+	 *
+	 * @param array $attributes
+	 */
+	public static function render_attribute_string( array $attributes ): string {
+		return implode(
+			' ',
+			array_map(
+				fn( $key, $value ) => "{$key}=\"{$value}\"",
+				array_keys($attributes),
+				array_values($attributes)
+			)
+		);
 	}
 }

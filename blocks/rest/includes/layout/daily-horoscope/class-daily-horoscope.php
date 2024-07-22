@@ -50,9 +50,6 @@ class Daily_Horoscope extends Layout {
 	public static function render_preview( stdClass $post, bool $display_zodiac_links ): string {
 		$date         = date_create( $post->date );
 		$date         = esc_html( date_format( $date, 'l, F j, Y' ) );
-		$link         = esc_url( $post->link );
-		$excerpt      = wp_kses_post( $post->excerpt->rendered );
-		$domain       = wp_parse_url( $post->link, PHP_URL_HOST );
 		$zodiac_links = $display_zodiac_links ? self::get_zodiac_links( $post ) : '';
 
 		return "<article class=\"preview is-layout-daily-horoscope\">
@@ -92,11 +89,11 @@ class Daily_Horoscope extends Layout {
 	 * 
 	 * @param string $anchor
 	 * @param string $text
-	 * @param string $link
+	 * @param string $href
 	 * @return string
 	 */
-	public static function get_zodiac_link( string $anchor, string $text, string $link ): string {
-		$link     = esc_url( $link );
+	public static function get_zodiac_link( string $anchor, string $text, string $href ): string {
+		$href     = esc_url( $href );
 		$anchor   = esc_attr( $anchor );
 		$text     = esc_html( wp_strip_all_tags( $text ) );
 		$svg_path = __DIR__ . "/svg/$anchor.svg";
@@ -106,7 +103,9 @@ class Daily_Horoscope extends Layout {
 			return '';
 		}
 
-		return "<li><a href=\"{$link}#{$anchor}\">{$symbol}{$text}</a></li>";
+		$link = self::render_link( "{$href}#{$anchor}", "{$symbol}{$text}" );
+
+		return "<li>{$link}</li>";
 	}
 
 	/**

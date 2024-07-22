@@ -59,25 +59,24 @@ class Network extends Layout {
 			)
 		);
 
-		$link    = esc_url( $post->link );
+		$href   = esc_url( $post->link );
 		$title   = esc_html( $post->title->rendered );
 		$excerpt = wp_kses_post( $post->excerpt->rendered );
 		$domain  = wp_parse_url( $post->link, PHP_URL_HOST );
+
+		$image_link = self::render_link( $href, $image );
+		$title_link = self::render_link( $href, $title, ['rel' => 'bookmark', 'class' => 'preview__permalink' ] );
 
 		return "<article class=\"preview is-layout-network\">
 			<div class=\"preview__layout\">
 				<div class=\"preview__start\">
 					<figure class=\"preview__image-container\">
-						<a rel=\"bookmark\" href=\"{$link}\">
-							{$image}
-						</a>
+						{$image_link}
 					</figure>
 				</div>
 				<div class=\"preview__end\">
 					<h3 class=\"preview__title\">
-						<a class=\"preview__permalink\" rel=\"bookmark\" href=\"{$link}\">
-							{$title}
-						</a>
+						{$title_link}
 					</h3>
 					<div class=\"preview__excerpt\">{$excerpt}</div>
 					<p class=\"preview__domain\">{$domain}</p>
