@@ -132,28 +132,27 @@
 	}
 
 	.preview__zodiac-signs {
-		display: flex;
 		justify-content: center;
-		flex-wrap: wrap;
-		gap: .5em;
-		padding: 0;
-		list-style: none;
-		margin-block-start: 1.5em;
+	}
+}
 
-		li {
-			padding: .25em .5em;
-			border: 1px solid currentColor;
-		}
+.preview__zodiac-signs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: .5em;
+	padding: 0;
+	list-style: none;
+	margin-block-start: 1.5em;
 
-		a {
-			display: inline-flex;
-			align-items: center;
-			gap: .5em;
-		}
+	li {
+		padding: .25em .5em;
+		border: 1px solid currentColor;
+	}
 
-		svg {
-			height: 1em;
-			fill: currentColor;
-		}
+	svg {
+		height: 1em;
+		fill: currentColor;
+		margin-inline-end: 0.5em;
+		vertical-align: middle;
 	}
 }

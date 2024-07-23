@@ -189,7 +189,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 						/>
 					</PanelRow>
 				</PanelBody>
-				{ 'daily-horoscope' === layout && (
+				{ ['daily-horoscope','network'].includes(layout) && (
 					<PanelBody title="Zodiac Links">
 						<PanelRow>
 							<ToggleControl

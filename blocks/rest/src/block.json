@@ -48,7 +48,7 @@
 		},
 		"display_zodiac_links": {
 			"type": "boolean",
-			"default": true
+			"default": false
 		}
 	},
 	"keywords": [ "rest", "api" ],

@@ -80,7 +80,7 @@ function cata_rest_render_block( array $attributes, string $content ) : string {
 
 	$args = [ $content, $posts ];
 
-	if ( 'daily-horoscope' === $layout ) {
+	if ( '' === $layout || in_array( $layout, ['network', 'daily-horoscope'] ) ) {
 		array_push( $args, $attributes['display_zodiac_links'] );
 	}
 
