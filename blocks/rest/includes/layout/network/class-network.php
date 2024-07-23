@@ -22,7 +22,7 @@ class Network extends Layout {
 	 * @param array $posts
 	 * @return string
 	 */
-	public static function render( string $content, array $posts ) : string {
+	public static function render( string $content, array $posts, bool $display_zodiac_links ) : string {
 	
 		if ( empty( $posts ) ) {
 			return $content;
@@ -32,7 +32,10 @@ class Network extends Layout {
 
 		$previews = implode(
 			PHP_EOL,
-			array_map( array( __CLASS__, 'render_preview' ), $posts )
+			array_map(
+				fn( $post ) => self::render_preview( $post, $display_zodiac_links ),
+				$posts
+			)
 		);
 
 		return "{$open}
@@ -48,7 +51,7 @@ class Network extends Layout {
 	 * @param stdClass $post
 	 * @return string
 	 */
-	public static function render_preview( stdClass $post ) : string {
+	public static function render_preview( stdClass $post, bool $display_zodiac_links ): string {
 
 		$image_data = self::get_image( $post );
 		$image = self::render_image(
@@ -59,13 +62,19 @@ class Network extends Layout {
 			)
 		);
 
-		$href   = esc_url( $post->link );
-		$title   = esc_html( $post->title->rendered );
-		$excerpt = wp_kses_post( $post->excerpt->rendered );
-		$domain  = wp_parse_url( $post->link, PHP_URL_HOST );
-
+		$href       = esc_url( $post->link );
+		$title      = esc_html( $post->title->rendered );
+		$excerpt    = wp_kses_post( $post->excerpt->rendered );
+		$domain     = wp_parse_url( $post->link, PHP_URL_HOST );
 		$image_link = self::render_link( $href, $image );
 		$title_link = self::render_link( $href, $title, ['rel' => 'bookmark', 'class' => 'preview__permalink' ] );
+
+		if ( $display_zodiac_links ) {
+			$links = self::get_zodiac_links( $post );
+			$extra = "<ul class=\"preview__zodiac-signs\">{$links}</ul>";
+		} else {
+			$extra = "<p class=\"preview__domain\">{$domain}</p>";
+		}
 
 		return "<article class=\"preview is-layout-network\">
 			<div class=\"preview__layout\">
@@ -79,10 +88,9 @@ class Network extends Layout {
 						{$title_link}
 					</h3>
 					<div class=\"preview__excerpt\">{$excerpt}</div>
-					<p class=\"preview__domain\">{$domain}</p>
+					{$extra}
 				</div>
 			</div>
 		</article>";
 	}
-
 }
