@@ -51,7 +51,6 @@ function cata_rest_render_callback( array $attributes, string $content ) : strin
  * @return string
  */
 function cata_rest_render_block( array $attributes, string $content ) : string {
-
 	$layout  = isset( $attributes['layout'] ) ? $attributes['layout'] : '';
 	$sorting = isset( $attributes['sorting'] ) ? $attributes['sorting'] : '';
 	$urls    = $attributes['urls'];
@@ -116,7 +115,8 @@ function convert_urls_to_posts( array $urls ) : array {
  * @return array $posts
  */
 function convert_url_to_posts( string $url ) : array {
-	return (new Feed( new Feed\Cache( $url ), $url ) )->get_posts_allow_side_effects();
+	$decoded_url = html_entity_decode( $url );
+	return (new Feed( new Feed\Cache( $decoded_url ), $decoded_url ) )->get_posts_allow_side_effects();
 }
 
 /**
