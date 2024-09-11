@@ -143,7 +143,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 							text={__('Add URL', 'cata')}
 							onClick={()=>{
 								setAttributes({
-									urls: [ ...urls, _.unescape( url ) ]
+									urls: [ ...urls, url ]
 								});
 								setUrl('');
 							}}

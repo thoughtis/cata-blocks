@@ -58,7 +58,7 @@ class Cache {
 	 * @param string $url
 	 */
 	public function __construct( string $url ) {
-		$this->url  = html_entity_decode( $url );
+		$this->url  = $url;
 		$this->hash = wp_hash( $this->url );
 		$this->data_key = self::$data_key_base . $this->hash;
 		$this->time_key = self::$time_key_base . $this->hash;
