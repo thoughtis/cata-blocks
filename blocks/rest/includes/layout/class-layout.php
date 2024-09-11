@@ -239,8 +239,6 @@ abstract class Layout {
 			array_keys( $headings ),
 			array_values( $headings ),
 		);
-
-		error_log( print_r($zodiac_links, true) );
 		
 		return implode( '', $zodiac_links );
 	}
