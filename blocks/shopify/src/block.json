@@ -31,6 +31,9 @@
 		"display_price": {
 			"type": "boolean",
 			"default": true
+		},
+		"aspectRatio": {
+			"type": "string"
 		}
 	},
 	"keywords": [ "shop", "shopify", "store", "product" ],

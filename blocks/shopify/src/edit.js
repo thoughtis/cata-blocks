@@ -33,6 +33,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		store,
 		count,
 		tags,
+		aspectRatio,
 	} = attributes;
 
 	const stores = useSelect(
@@ -123,7 +124,21 @@ export default function Edit( { attributes, setAttributes } ) {
 						value={count}
 					/>
 				</PanelBody>
-				<PanelBody title="Product Block Options" initialOpen={false}>
+				<PanelBody title="Product Block Options" initialOpen={true}>
+					<SelectControl
+						label="Image Aspect Ratio"
+						value={ aspectRatio }
+						onChange={(newAspectRatio)=>{
+							setAttributes( {
+								aspectRatio: newAspectRatio
+							})
+						}}
+						options={[
+							{ label: 'Square - 1:1', value: '1' },
+							{ label: 'Portrait - 3:4', value: '3/4' },
+							{ label: 'Landscape - 3:2', value: '3/2' },
+						]}
+					/>
 					<ToggleControl
 						label="Display product price"
 						help={
