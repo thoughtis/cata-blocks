@@ -33,7 +33,8 @@ export default function Edit( { attributes, setAttributes } ) {
 		store,
 		count,
 		tags,
-		aspectRatio,
+		display_price,
+		aspect_ratio,
 	} = attributes;
 
 	const stores = useSelect(
@@ -81,7 +82,8 @@ export default function Edit( { attributes, setAttributes } ) {
 			<div { ...useBlockProps() }>
 				<Products
 					products={products}
-					display_price={attributes.display_price}
+					display_price={display_price}
+					aspect_ratio={aspect_ratio}
 				/>
 			</div>
 			<InspectorControls>
@@ -127,14 +129,14 @@ export default function Edit( { attributes, setAttributes } ) {
 				<PanelBody title="Product Block Options" initialOpen={true}>
 					<SelectControl
 						label="Image Aspect Ratio"
-						value={ aspectRatio }
+						value={ aspect_ratio }
 						onChange={(newAspectRatio)=>{
-							setAttributes( {
-								aspectRatio: newAspectRatio
+							setAttributes({
+								aspect_ratio: newAspectRatio
 							})
 						}}
 						options={[
-							{ label: 'Square - 1:1', value: '1' },
+							{ label: 'Square - 1:1', value: '1/1' },
 							{ label: 'Portrait - 3:4', value: '3/4' },
 							{ label: 'Landscape - 3:2', value: '3/2' },
 						]}
@@ -142,12 +144,16 @@ export default function Edit( { attributes, setAttributes } ) {
 					<ToggleControl
 						label="Display product price"
 						help={
-							attributes.display_price
+							display_price
 								? 'Product price shown.'
 								: 'No product price.'
 						}
-						checked={attributes.display_price}
-						onChange={(option) => {setAttributes({ display_price: option})}}
+						checked={display_price}
+						onChange={(option)=>{
+							setAttributes({
+								display_price: option
+							})
+						}}
 					/>
 				</PanelBody>
 			</InspectorControls>
