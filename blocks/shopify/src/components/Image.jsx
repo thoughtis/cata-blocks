@@ -59,9 +59,16 @@ function filterTargetByWidth( width, targetWidth ) {
  * @return {array}
  */
 function mapTargetToDimensions( aspectRatio, targetWidth ) {
+	let targetHeight = targetWidth;
+	aspectRatio = aspectRatio.split( '/' );
+
+	if ( 2 === aspectRatio.length && 0 !== aspectRatio[0] && 0 !== aspectRatio[1] ) {
+		targetHeight = Math.round(targetWidth / ( aspectRatio[0] / aspectRatio[1] ));
+	}
+
 	return [
 		targetWidth,
-		Math.round(targetWidth / aspectRatio)
+		targetHeight
 	];
 }
 
