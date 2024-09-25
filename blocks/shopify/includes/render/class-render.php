@@ -193,6 +193,15 @@ class Render {
 			$valid_widths
 		);
 
+		$dimensions = array_values(
+			array_filter(
+				$dimensions,
+				function( $dimension ) use ( $height ) {
+					return $dimension[1] <= $height;
+				}
+			)
+		);
+
 		return $dimensions;
 	}
 

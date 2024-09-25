@@ -5,11 +5,11 @@
  * @param {string} aspect_ratio
  */
 export default function Image( { image, aspect_ratio } ) {
-	const dimensions = getDimensions( image.width, aspect_ratio, [ 2560, 1920, 1280, 960, 640, 480, 320 ] );
+	const targetWidths = [ 2560, 1920, 1280, 960, 640, 480, 320 ];
+	const dimensions = getDimensions( image.width, aspect_ratio, targetWidths ).filter(
+		filterTargetByHeight.bind( null, image.height )
+	);
 	const srcset = dimensions.map( getSrcSetString.bind( null, image.url ) );
-	const style = {
-		aspectRatio: aspect_ratio
-	}
 
 	return(
 		<figure className="wp-block-cata-shopify-product__image">
@@ -21,25 +21,27 @@ export default function Image( { image, aspect_ratio } ) {
 				srcSet={srcset}
 				width={image.width}
 				height={image.height}
-				style={style}
+				style={{aspectRatio: aspect_ratio}}
 			/>
 		</figure>
 	);
 }
 
 /**
- * Get SrcSet String
- * 
- * @param {string} source_url 
- * @param {array} dimension 
- * @return {string}
+ * Get Dimensions
+ *
+ * @param {float|null} aspectRatio
+ * @param {array|null}
+ * @return {array}
  */
-function getSrcSetString( source_url, dimension ) {
-	const src = new URL( source_url );
-	src.searchParams.set( 'width', dimension[0] );
-	src.searchParams.set( 'height', dimension[1] );
-	src.searchParams.set( 'crop', 'center' );
-	return `${src.href.toString()} ${dimension[0]}w`
+function getDimensions( width, aspectRatio, widths = [] ) {
+	const targetWidths = (0 === widths.length ? [width] : widths).filter(
+		filterTargetByWidth.bind( null, width )
+	);
+	
+	return targetWidths.map(
+		mapTargetToDimensions.bind( null, aspectRatio )
+	);
 }
 
 /**
@@ -49,6 +51,15 @@ function getSrcSetString( source_url, dimension ) {
  */
 function filterTargetByWidth( width, targetWidth ) {
 	return targetWidth <= width;
+}
+
+/**
+ * Filter Target by Height
+ *
+ * @return {bool} Based on the real image height, can we support this target image height?
+ */
+function filterTargetByHeight( height, dimension ) {
+	return dimension[1] <= height;
 }
 
 /**
@@ -73,17 +84,16 @@ function mapTargetToDimensions( aspectRatio, targetWidth ) {
 }
 
 /**
- * Get Dimensions
- *
- * @param {float|null} aspectRatio
- * @param {array|null}
- * @return {array}
+ * Get SrcSet String
+ * 
+ * @param {string} source_url 
+ * @param {array} dimension 
+ * @return {string}
  */
-function getDimensions( width, aspectRatio, widths = [] ) {
-	const targetWidths = (0 === widths.length ? [width] : widths).filter(
-		filterTargetByWidth.bind( null, width )
-	);
-	return targetWidths.map(
-		mapTargetToDimensions.bind( null, aspectRatio )
-	);
+function getSrcSetString( source_url, dimension ) {
+	const src = new URL( source_url );
+	src.searchParams.set( 'width', dimension[0] );
+	src.searchParams.set( 'height', dimension[1] );
+	src.searchParams.set( 'crop', 'center' );
+	return `${src.href.toString()} ${dimension[0]}w`
 }
