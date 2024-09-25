@@ -161,7 +161,29 @@ class Render {
 		$max_price = self::render_price_amount( $max );
 
 		return "{$min_price} - {$max_price}";
+	}
 
+	/**
+	 * Aspect Ratio To Float
+	 * 
+	 * @param string $aspect_ratio
+	 * @return float
+	 */
+	public static function aspect_ratio_to_float( string $aspect_ratio ) {
+		$ratio_values = explode( '/', $aspect_ratio );
+
+		if ( 2 !== count( $ratio_values ) ) {
+			return 1;
+		}
+
+		$numerator = (int)$ratio_values[0];
+		$denominator = (int)$ratio_values[1];
+
+		if ( 0 === $numerator || 0 === $denominator ) {
+			return 1;
+		}
+
+		return $ratio_values[0] / $ratio_values[1];
 	}
 
 	/**
