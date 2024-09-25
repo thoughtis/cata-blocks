@@ -32,8 +32,9 @@
 			"type": "boolean",
 			"default": true
 		},
-		"aspectRatio": {
-			"type": "string"
+		"aspect_ratio": {
+			"type": "string",
+			"default": "1/1"
 		}
 	},
 	"keywords": [ "shop", "shopify", "store", "product" ],
