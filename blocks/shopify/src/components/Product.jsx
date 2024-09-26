@@ -9,14 +9,15 @@ import Price from './Price';
  * 
  * @param {object} product
  * @param {bool}   display_price
+ * @param {string} aspect_ratio
  */
-export default function Product( { product, display_price } ) {
+export default function Product( { product, display_price, aspect_ratio } ) {
 	return(
 		<article className="wp-block-cata-shopify-product">
 			<div className="wp-block-cata-shopify-product__layout">
 				<div className="wp-block-cata-shopify-product__start">
 					{product.featuredImage &&
-						<Image image={product.featuredImage} />
+						<Image image={product.featuredImage} aspect_ratio={aspect_ratio} />
 					}
 				</div>
 				<div className="wp-block-cata-shopify-product__end">

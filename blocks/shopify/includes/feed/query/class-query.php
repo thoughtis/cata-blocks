@@ -88,6 +88,8 @@ class Query {
 					featuredImage {
 						url
 						altText
+						width
+						height
 					}
 					priceRange {
 						minVariantPrice {

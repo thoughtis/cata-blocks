@@ -34,6 +34,10 @@
     "display_price": {
       "type": "boolean",
       "default": true
+    },
+    "aspect_ratio": {
+      "type": "string",
+      "default": "1/1"
     }
   },
   "keywords": [
