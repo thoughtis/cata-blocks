@@ -13,8 +13,8 @@
 .wp-block-cata-shopify.is-style-default {
 	.wp-block-cata-shopify__layout {
 		display: grid;
-		gap: 1.5em;
-		grid-template-columns: repeat( auto-fill, minmax( 15.375em, 1fr ) );
+		gap: max( var(--wp--style--block-gap, 1.5em), 1.5em );
+		grid-template-columns: repeat( auto-fill, minmax( 14em, 1fr ) );
 	}
 }
 
