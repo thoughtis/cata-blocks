@@ -115,7 +115,7 @@ function convert_urls_to_posts( array $urls ) : array {
  * @return array $posts
  */
 function convert_url_to_posts( string $url ) : array {
-	$decoded_url = html_entity_decode( $url );
+	$decoded_url = URLs::get_standardized_rest_api_url( $url );
 	return (new Feed( new Feed\Cache( $decoded_url ), $decoded_url ) )->get_posts_allow_side_effects();
 }
 
