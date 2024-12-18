@@ -65,7 +65,11 @@ class Proxy {
 	 * @return WP_REST_Response|WP_Error either an error or a json decoded api response body
 	 */
 	public static function handle_request( WP_REST_Request $request ) : WP_REST_Response|WP_Error {
-		$url   = $request->get_param( 'url' );
+
+		$url = URLs::get_standardized_rest_api_url(
+			$request->get_param( 'url' )
+		);
+
 		$fetch = new Fetch( $url );
 		$cache = new Cache( $url );
 

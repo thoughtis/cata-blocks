@@ -12,7 +12,7 @@
  * Description: Block Editor components for use with the Cata theme.
  * Author:      Thought & Expression Co. <devjobs@thought.is>
  * Author URI:  https://thought.is
- * Version:     0.10.7
+ * Version:     0.10.8
  * License:     GPL v3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.txt
  */
@@ -85,6 +85,13 @@ new Feed\Update();
 require_once __DIR__ . '/includes/proxy/class-proxy.php';
 
 new Proxy();
+
+/**
+ * URLs
+ */
+require_once __DIR__ . '/includes/urls/class-urls.php';
+
+new URLs();
 
 /**
  * Table of Contents
