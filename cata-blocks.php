@@ -87,6 +87,13 @@ require_once __DIR__ . '/includes/proxy/class-proxy.php';
 new Proxy();
 
 /**
+ * URLs
+ */
+require_once __DIR__ . '/includes/urls/class-urls.php';
+
+new URLs();
+
+/**
  * Table of Contents
  */
 require_once __DIR__ . '/blocks/table-of-contents/table-of-contents.php';
