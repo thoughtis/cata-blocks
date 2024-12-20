@@ -52,7 +52,7 @@ export default function Edit( { attributes: { inlineSize }, setAttributes } ) {
 				/>
 			</PanelBody>
 		</InspectorControls>
-		<div { ...useInnerBlocksProps( useBlockProps( { style: { inlineSize } } ) ) } />
+		<div { ...useInnerBlocksProps( useBlockProps( { style: { width: inlineSize } } ) ) } />
 		</>
 	);
 }

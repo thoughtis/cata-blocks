@@ -18,6 +18,6 @@ import { useInnerBlocksProps, useBlockProps } from '@wordpress/block-editor';
 export default function save( { attributes } ) {
 	const { inlineSize } = attributes;
 	return (
-		<div { ...useInnerBlocksProps.save( useBlockProps.save( { style: { inlineSize } } ) ) } />
+		<div { ...useInnerBlocksProps.save( useBlockProps.save( { style: { width: inlineSize } } ) ) } />
 	);
 }
