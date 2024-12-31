@@ -26,7 +26,7 @@
 	}
 
 	.wp-block-cata-shopify-product__end > * {
-		margin-block-start: var(--wp--style--block-gap);
+		margin-block-start: calc( var(--wp--style--block-gap) / 2 );
 	}
 
 	// Hack we need for now,
