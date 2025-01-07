@@ -24,6 +24,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Filters
+ * 
+ * Change block output with the render_block filter
+ */
+require_once __DIR__ . '/includes/filters/class-filters.php';
+
+new Filters();
+
+/**
  * Middleware
  * 
  * REST block depends on this file
