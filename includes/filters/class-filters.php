@@ -3,7 +3,7 @@
  * Filters
  *
  * @package Cata\Blocks
- * @since 0.8.22
+ * @since 0.10.12
  */
 
 namespace Cata\Blocks;
