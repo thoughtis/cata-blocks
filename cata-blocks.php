@@ -19,6 +19,8 @@
 
 namespace Cata\Blocks;
 
+use WP_Block;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -183,6 +185,14 @@ require_once __DIR__ . '/formats/overhang/overhang.php';
  * Substack Social Link Variation
  */
 require_once __DIR__ . '/variations/social-link/substack/substack.php';
+
+/**
+ * Core Block Filters
+ */
+
+require_once __DIR__ . '/core-block-filters/post-excerpt/class-post-excerpt.php';
+
+new Core_Block_Filters\Post_Excerpt();
 
 /**
  * Block Editor 
