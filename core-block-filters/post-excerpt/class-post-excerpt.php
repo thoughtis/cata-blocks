@@ -29,7 +29,6 @@ class Post_Excerpt {
 	 * @return string
 	 */
 	public static function hide_empty_excerpt_on_single_post_template( string $block_content, array $block, WP_Block $instance ): string {
-
 		if ( ! self::instance_has_post_context( $instance ) ) {
 			return $block_content;
 		}
@@ -45,7 +44,6 @@ class Post_Excerpt {
 		}
 
 		return $block_content;
-
 	}
 
 	/**
@@ -57,8 +55,6 @@ class Post_Excerpt {
 	private static function instance_has_post_context( WP_Block $instance ): bool {
 		$context = $instance->context ?? [];
 
-		error_log( print_r( $context, true ) );
-
 		return array_key_exists( 'postId', $context ) && array_key_exists( 'postType', $context );
 	}
 
@@ -69,7 +65,6 @@ class Post_Excerpt {
 	 * @return bool
 	 */
 	private static function post_context_matches_request( array $context ): bool {
-
 		if ( ! is_singular( $context['postType'] ) ) {
 			return false;
 		}
