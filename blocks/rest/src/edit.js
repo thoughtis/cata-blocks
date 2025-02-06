@@ -197,7 +197,6 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 						</PanelRow>
 					) }
 				</PanelBody>
-
 				<PanelBody title="REST Sorting" initialOpen={false}>
 					<PanelRow>
 						<SelectControl
