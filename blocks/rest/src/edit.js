@@ -29,13 +29,20 @@ import './editor.scss';
  * @return {WPElement} Element to render.
  */
 export default function Edit( { attributes, setAttributes, clientId } ) {
+	const {
+		urls, 
+		content, 
+		layout, 
+		sorting, 
+		display_zodiac_links, 
+		aspect_ratio,
+	} = attributes;
 
-	const {urls, content, layout, sorting, display_zodiac_links} = attributes;
 	const [url, setUrl] = useState('');
 	const [posts, setPosts] = useState([]);
 
 	useEffect(updatePosts, [urls]);
-	useEffect(updateContent, [posts, layout, sorting, display_zodiac_links]);
+	useEffect(updateContent, [posts, layout, sorting, display_zodiac_links, aspect_ratio]);
 
 	/**
 	 * Update Posts
@@ -92,7 +99,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 
 		setAttributes( {
 			...attributes,
-			content: <LayoutComponent posts={posts} sorting={sorting} display_zodiac_links={display_zodiac_links} />
+			content: <LayoutComponent posts={posts} sorting={sorting} display_zodiac_links={display_zodiac_links} aspect_ratio={aspect_ratio} />
 		});
 	}
 
@@ -170,6 +177,25 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 							]}
 						/>
 					</PanelRow>
+					{ ['network', ''].includes(layout) && (
+						<PanelRow>
+							<SelectControl
+								label="Image Aspect Ratio"
+								value={ aspect_ratio }
+								onChange={(newAspectRatio)=>{
+									setAttributes({
+										aspect_ratio: newAspectRatio
+									})
+								}}
+								options={[
+									{ label: 'Original', value: '' },
+									{ label: 'Square - 1:1', value: '1/1' },
+									{ label: 'Portrait - 3:4', value: '3/4' },
+									{ label: 'Landscape - 3:2', value: '3/2' },
+								]}
+							/>
+						</PanelRow>
+					) }
 				</PanelBody>
 				<PanelBody title="REST Sorting" initialOpen={false}>
 					<PanelRow>

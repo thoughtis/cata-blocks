@@ -117,8 +117,13 @@ abstract class Layout {
 			'srcset' => implode( ', ', array_map(
 				self::get_srcset_function( $image->source_url ),
 				$options['srcset']
-			) )
+			) ),
 		);
+
+		$aspect_ratio = $options['aspectRatio'] ?? '';
+		if ( '' !== $aspect_ratio ) {
+			$attributes['style'] = esc_attr( "aspect-ratio: $aspect_ratio; object-fit: cover;" );
+		}
 
 		if ( isset( $options['class'] ) ) {
 			$attributes['class'] = esc_attr( $options['class'] );

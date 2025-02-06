@@ -5,10 +5,14 @@ function getSrcSetString( source_url, dimension ) {
 	return `${src.href.toString()} ${dimension[0]}w`
 }
 
-export default function Image( { data, sizes, dimensions, className }) {
-	
+export default function Image( { data, sizes, dimensions, className, aspect_ratio }) {
 	if ( ! ('source_url' in data) ) {
 		return null;
+	}
+
+	let style = {};
+	if ( '' !== aspect_ratio ) {
+		style = {aspectRatio: aspect_ratio, objectFit: 'cover'}
 	}
 
 	const src = new URL( data.source_url );
@@ -25,6 +29,7 @@ export default function Image( { data, sizes, dimensions, className }) {
 			srcSet={ srcset.join( ',' ) }
 			className={className}
 			loading="lazy"
+			style={style}
 		/>
 	);
 }

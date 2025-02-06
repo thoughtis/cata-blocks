@@ -22,7 +22,7 @@ class Network extends Layout {
 	 * @param array $posts
 	 * @return string
 	 */
-	public static function render( string $content, array $posts, bool $display_zodiac_links ) : string {
+	public static function render( string $content, array $posts, bool $display_zodiac_links, string $aspect_ratio ) : string {
 	
 		if ( empty( $posts ) ) {
 			return $content;
@@ -33,7 +33,7 @@ class Network extends Layout {
 		$previews = implode(
 			PHP_EOL,
 			array_map(
-				fn( $post ) => self::render_preview( $post, $display_zodiac_links ),
+				fn( $post ) => self::render_preview( $post, $display_zodiac_links, $aspect_ratio ),
 				$posts
 			)
 		);
@@ -51,14 +51,14 @@ class Network extends Layout {
 	 * @param stdClass $post
 	 * @return string
 	 */
-	public static function render_preview( stdClass $post, bool $display_zodiac_links ): string {
-
+	public static function render_preview( stdClass $post, bool $display_zodiac_links, string $aspect_ratio ): string {
 		$image_data = self::get_image( $post );
 		$image = self::render_image(
 			$image_data,
 			array(
-				'sizes'  => '(max-width: 40em) 92.5vw, 36em',
-				'srcset' => self::get_image_dimensions( $image_data, null, [ 2560, 1920, 1280, 960, 640, 480, 320 ] ),
+				'sizes'       => '(max-width: 40em) 92.5vw, 36em',
+				'srcset'      => self::get_image_dimensions( $image_data, null, [ 2560, 1920, 1280, 960, 640, 480, 320 ] ),
+				'aspectRatio' => $aspect_ratio,
 			)
 		);
 

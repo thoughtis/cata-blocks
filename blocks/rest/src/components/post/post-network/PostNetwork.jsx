@@ -17,8 +17,7 @@ import * as Symbols from '../../icons';
  * 
  * @param {object} post
  */
-export default function PostNetwork( { post, display_zodiac_links } ) {
-
+export default function PostNetwork( { post, display_zodiac_links, aspect_ratio } ) {
 	const data = getImage( post );
 	const dimensions = getDimensions( data );
 
@@ -29,7 +28,7 @@ export default function PostNetwork( { post, display_zodiac_links } ) {
 				{ null !== data && (
 					<figure className="preview__image-container">
 						<a rel="bookmark" href={ post.link }>
-							<Image data={ data } dimensions={ dimensions } sizes="(max-width: 40em) 92.5vw, 36em" />
+							<Image data={ data } dimensions={ dimensions } sizes="(max-width: 40em) 92.5vw, 36em" aspect_ratio={aspect_ratio} />
 						</a>
 					</figure>
 				) }

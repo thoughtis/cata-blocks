@@ -10,7 +10,7 @@ import { getSortingFunction } from '../sorting';
  * @param {array} posts
  * @param {string} sorting
  */
-export default function Network( { posts, sorting, display_zodiac_links } ) {
+export default function Network( { posts, sorting, display_zodiac_links, aspect_ratio } ) {
 
 	if ( 0 === posts.length ) {
 		return null;
@@ -27,7 +27,7 @@ export default function Network( { posts, sorting, display_zodiac_links } ) {
 			{
 				clonedPosts.map( ( post ) => {
 					return (
-						<PostNetwork key={post.id} post={post} display_zodiac_links={display_zodiac_links} />
+						<PostNetwork key={post.id} post={post} display_zodiac_links={display_zodiac_links} aspect_ratio={aspect_ratio} />
 					)
 				} )
 			}
