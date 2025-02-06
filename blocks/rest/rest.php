@@ -83,6 +83,10 @@ function cata_rest_render_block( array $attributes, string $content ) : string {
 		array_push( $args, $attributes['display_zodiac_links'] );
 	}
 
+	if ( '' === $layout || in_array( $layout, ['network'] ) ) {
+		array_push( $args, $attributes['aspect_ratio'] );
+	}
+
 	$new_content = get_layout_renderer( $layout )( ...$args );
 
 	if ( '' === $new_content ) {
