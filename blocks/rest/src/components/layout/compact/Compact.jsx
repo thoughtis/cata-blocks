@@ -10,7 +10,7 @@ import { getSortingFunction } from '../sorting';
  * @param {array} posts
  * @param {string} sorting
  */
-export default function Compact( { posts, sorting } ) {
+export default function Compact( { posts, sorting, aspect_ratio } ) {
 
 	if ( 0 === posts.length ) {
 		return null;
@@ -27,7 +27,7 @@ export default function Compact( { posts, sorting } ) {
 			{
 				clonedPosts.map( ( post ) => {
 					return (
-						<PostCompact key={post.id} post={post} />
+						<PostCompact key={post.id} post={post} aspect_ratio={aspect_ratio} />
 					)
 				} )
 			}

@@ -16,7 +16,7 @@ import getImage from "../../image/get-image";
  * 
  * @param {object} post
  */
-export default function PostCompact( { post } ) {
+export default function PostCompact( { post, aspect_ratio } ) {
 
 	const data = getImage( post );
 	const dimensions = getDimensions( data );
@@ -28,7 +28,7 @@ export default function PostCompact( { post } ) {
 				{ null !== data && (
 					<figure className="preview__image-container">
 						<a rel="bookmark" href={ post.link }>
-							<Image data={ data } dimensions={ dimensions } sizes="(max-width: 20em) 46.25vw, 13em" />
+							<Image data={ data } dimensions={ dimensions } sizes="(max-width: 20em) 46.25vw, 13em" aspect_ratio={aspect_ratio} />
 						</a>
 					</figure>
 				) }

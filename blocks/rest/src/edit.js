@@ -177,7 +177,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 							]}
 						/>
 					</PanelRow>
-					{ ['network', ''].includes(layout) && (
+					{ ['network', 'compact', ''].includes(layout) && (
 						<PanelRow>
 							<SelectControl
 								label="Image Aspect Ratio"
