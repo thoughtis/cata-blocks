@@ -1,0 +1,75 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "name": "cata/network-links",
+  "title": "Network Links",
+  "category": "widgets",
+  "description": "Display logos linking to other sites in the Thought Catalog network.",
+  "keywords": [
+    "links",
+    "network",
+    "logos"
+  ],
+  "supports": {
+    "align": [
+      "left",
+      "center",
+      "right"
+    ],
+    "anchor": true,
+    "__experimentalExposeControlsToChildren": true,
+    "layout": {
+      "allowSwitching": false,
+      "allowInheriting": false,
+      "default": {
+        "type": "flex"
+      }
+    },
+    "spacing": {
+      "blockGap": [
+        "vertical"
+      ],
+      "margin": true,
+      "padding": true,
+      "units": [
+        "px",
+        "em",
+        "rem",
+        "vh",
+        "vw"
+      ],
+      "__experimentalDefaultControls": {
+        "blockGap": true,
+        "margin": true,
+        "padding": false
+      }
+    }
+  },
+  "example": {
+    "innerBlocks": [
+      {
+        "name": "cata/network-link",
+        "attributes": {
+          "service": "thoughtcatalog",
+          "url": "https://thoughtcatalog.com/"
+        }
+      },
+      {
+        "name": "cata/network-link",
+        "attributes": {
+          "service": "collectiveworld",
+          "url": "https://collective.world/"
+        }
+      },
+      {
+        "name": "cata/network-link",
+        "attributes": {
+          "service": "creepycatalog",
+          "url": "https://creepycatalog.com/"
+        }
+      }
+    ]
+  },
+  "editorScript": "file:./index.js",
+  "style": "file:./style-index.css"
+}
