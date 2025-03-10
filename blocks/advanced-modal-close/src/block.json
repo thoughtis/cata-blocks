@@ -5,7 +5,7 @@
 	"version": "0.1.0",
 	"title": "Close Modal",
 	"category": "widgets",
-	"parent": [ "core/advanced-modal" ],
+	"parent": [ "cata/advanced-modal" ],
 	"description": "Display a close button for the Advanced Modal block.",
 	"supports": {
 		"html": false,
