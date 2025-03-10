@@ -1,75 +1,56 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 2,
-  "name": "cata/network-links",
-  "title": "Network Links",
+  "apiVersion": 3,
+  "name": "cata/advanced-modal",
+  "title": "Advanced Modal",
   "category": "widgets",
-  "description": "Display logos linking to other sites in the Thought Catalog network.",
+  "description": "Modal that includes a hamburger icon button and dialog element.",
   "keywords": [
-    "links",
-    "network",
-    "logos"
+    "navigation",
+    "popup",
+    "menu"
   ],
-  "supports": {
-    "align": [
-      "left",
-      "center",
-      "right"
-    ],
-    "anchor": true,
-    "__experimentalExposeControlsToChildren": true,
-    "layout": {
-      "allowSwitching": false,
-      "allowInheriting": false,
-      "default": {
-        "type": "flex"
-      }
+  "attributes": {
+    "backdropColor": {
+      "type": "string"
     },
-    "spacing": {
-      "blockGap": [
-        "vertical"
-      ],
-      "margin": true,
-      "padding": true,
-      "units": [
-        "px",
-        "em",
-        "rem",
-        "vh",
-        "vw"
-      ],
-      "__experimentalDefaultControls": {
-        "blockGap": true,
-        "margin": true,
-        "padding": false
-      }
+    "customBackdropColor": {
+      "type": "string",
+      "default": "#000000"
+    },
+    "backdropOpacity": {
+      "type": "number",
+      "default": 70
     }
   },
-  "example": {
-    "innerBlocks": [
-      {
-        "name": "cata/network-link",
-        "attributes": {
-          "service": "thoughtcatalog",
-          "url": "https://thoughtcatalog.com/"
-        }
-      },
-      {
-        "name": "cata/network-link",
-        "attributes": {
-          "service": "collectiveworld",
-          "url": "https://collective.world/"
-        }
-      },
-      {
-        "name": "cata/network-link",
-        "attributes": {
-          "service": "creepycatalog",
-          "url": "https://creepycatalog.com/"
-        }
+  "supports": {
+    "multiple": false,
+    "html": false,
+    "color": {
+      "link": true,
+      "text": true,
+      "background": true
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "__experimentalFontStyle": true,
+      "__experimentalFontWeight": true,
+      "__experimentalTextTransform": true,
+      "__experimentalFontFamily": true,
+      "__experimentalLetterSpacing": true,
+      "__experimentalTextDecoration": true,
+      "__experimentalSkipSerialization": [
+        "textDecoration"
+      ],
+      "__experimentalDefaultControls": {
+        "fontSize": true
       }
-    ]
+    },
+    "interactivity": true
   },
   "editorScript": "file:./index.js",
-  "style": "file:./style-index.css"
+  "style": "file:./style-index.css",
+  "editorStyle": "file:./index.css",
+  "viewScriptModule": "file:./view.js"
 }
