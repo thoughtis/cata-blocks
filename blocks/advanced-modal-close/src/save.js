@@ -14,8 +14,6 @@ export default function Save() {
 	const blockProps = useBlockProps.save();
 
 	return (
-		<div { ...blockProps }>
-			<p>Close</p>
-		</div>
+		<div { ...blockProps }></div>
 	);
 }

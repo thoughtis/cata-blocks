@@ -27,8 +27,13 @@ export default function Edit() {
 	const blockProps = useBlockProps();
 
 	return (
-		<div { ...blockProps } >
-			<p>Close</p>
-		</div>
+		<Button
+			{ ...blockProps } 
+			onClick={ (e) => {
+				e.currentTarget.closest('dialog').close();
+			} }
+		>
+			Close
+		</Button>
 	);
 }
