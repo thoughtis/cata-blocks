@@ -23,7 +23,7 @@ class Compact extends Layout {
 	 * @param array $posts
 	 * @return string
 	 */
-	public static function render( string $content, array $posts,  bool $display_zodiac_links, string $aspect_ratio ) : string {
+	public static function render( string $content, array $posts, ?bool $display_zodiac_links = false, ?string $aspect_ratio = '' ): string {
 	
 		if ( empty( $posts ) ) {
 			return $content;
