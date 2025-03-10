@@ -172,6 +172,13 @@ require_once __DIR__ . '/blocks/just-watch/includes/options/token/class-token.ph
 new Just_Watch\Options();
 
 /**
+ * Advanced Modal
+ */
+require_once __DIR__ . '/blocks/advanced-modal/advanced-modal.php';
+require_once __DIR__ . '/blocks/advanced-modal-close/advanced-modal-close.php';
+
+
+/**
  * Trivia Pattern
  */
 require_once __DIR__ . '/patterns/trivia/trivia.php';
