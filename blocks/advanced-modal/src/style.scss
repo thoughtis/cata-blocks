@@ -43,7 +43,9 @@
 		cursor: pointer;
 
 		svg {
+			color: inherit;
 			display: block;
+			fill: currentColor;
 		}
 	}
 }
