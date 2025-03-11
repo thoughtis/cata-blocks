@@ -36,8 +36,14 @@ add_action( 'init', __NAMESPACE__ . '\\register_advanced_modal_block' );
 function render_advanced_modal_block( array $attributes, string $content ): string {
 	$unique_id = wp_unique_id( 'cata-blocks-advanced-modal-' );
 
+	$backdrop_opacity = $attributes['backdropOpacity'] ?? 70;
+	$backdrop_color_slug = $attributes['backdropColor'] ?? '';
+	$backdrop_color_custom = $attributes['customBackdropColor'] ?? '';
+	$backdrop_color = $backdrop_color_slug ? "var( --wp--preset--color--$backdrop_color_slug, #000000 )" : $backdrop_color_custom;
+
 	$additional_attr = array(
 		'data-wp-interactive' => 'cata-blocks-advanced-modal',
+		'style' => "--cata-advanced-modal-backdrop-color: $backdrop_color; --cata-advanced-modal-backdrop-opacity: $backdrop_opacity;",
 	);
 
 	ob_start();

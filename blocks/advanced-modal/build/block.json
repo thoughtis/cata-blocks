@@ -24,7 +24,6 @@
     }
   },
   "supports": {
-    "multiple": false,
     "html": false,
     "color": {
       "link": true,
