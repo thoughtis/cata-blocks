@@ -12,45 +12,46 @@ $admin-sidebar-width-collapsed: 36px;
 $admin-sidebar-width: 160px;
 
 // When not fullscreen.
-.wp-block-cata-advanced-modal dialog {
-	top: $admin-bar-height-big + $header-height + $block-toolbar-height + $border-width;
+// .wp-block-cata-advanced-modal dialog {
+// 	top: $admin-bar-height-big + $header-height + $block-toolbar-height + $border-width;
 
-	@media (min-width: 782px) {
-		top: $admin-bar-height + $header-height + $border-width;
-	}
+// 	@media (min-width: 782px) {
+// 		top: $admin-bar-height + $header-height + $border-width;
+// 	}
 
-	// Navigation sidebar rules.
-	@media (min-width: 782px) {
-		left: $admin-sidebar-width-collapsed;
-	}
+// 	// Navigation sidebar rules.
+// 	@media (min-width: 782px) {
+// 		left: $admin-sidebar-width-collapsed;
+// 	}
 
-	@media (min-width: 960px) {
-		left: $admin-sidebar-width;
-	}
-}
+// 	@media (min-width: 960px) {
+// 		left: $admin-sidebar-width;
+// 	}
+// }
 
-.is-mobile-preview .wp-block-cata-advanced-modal dialog,
-.is-tablet-preview .wp-block-cata-advanced-modal dialog {
-	top: $admin-bar-height + $header-height + $block-toolbar-height + $border-width;
-}
+// .is-mobile-preview .wp-block-cata-advanced-modal dialog,
+// .is-tablet-preview .wp-block-cata-advanced-modal dialog {
+// 	top: $admin-bar-height + $header-height + $block-toolbar-height + $border-width;
+// }
 
-// When fullscreen.
-.is-fullscreen-mode {
-	.wp-block-cata-advanced-modal dialog {
-		left: 0; // Unset the value from non fullscreen mode.
-		top: $admin-bar-height-big + $header-height + $block-toolbar-height + $border-width;
+// // When fullscreen.
+// .is-fullscreen-mode {
+// 	.wp-block-cata-advanced-modal dialog {
+// 		left: 0; // Unset the value from non fullscreen mode.
+// 		top: $admin-bar-height-big + $header-height + $block-toolbar-height + $border-width;
 
-		@media (min-width: 782px) {
-			top: $header-height + $border-width;
-		}
-	}
+// 		@media (min-width: 782px) {
+// 			top: $header-height + $border-width;
+// 		}
+// 	}
 
-	.is-mobile-preview .wp-block-cata-advanced-modal dialog,
-	.is-tablet-preview .wp-block-cata-advanced-modal dialog {
-		top: $header-height + $block-toolbar-height + $border-width;
-	}
-}
+// 	.is-mobile-preview .wp-block-cata-advanced-modal dialog,
+// 	.is-tablet-preview .wp-block-cata-advanced-modal dialog {
+// 		top: $header-height + $block-toolbar-height + $border-width;
+// 	}
+// }
 
 .wp-block-cata-advanced-modal button.components-button {
+	color: inherit;
 	padding: 0;
 }
