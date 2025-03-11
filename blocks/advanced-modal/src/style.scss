@@ -6,6 +6,7 @@
 .wp-block-cata-advanced-modal {
 	> button {
 		color: inherit;
+		padding: 0;
 	}
 	
 	dialog {
@@ -39,7 +40,6 @@
 	button {
 		color: inherit;
 		background-color: transparent;
-		padding: 0;
 		border: none;
 		cursor: pointer;
 
