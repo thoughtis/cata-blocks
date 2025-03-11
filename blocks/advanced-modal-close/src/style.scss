@@ -4,5 +4,15 @@
  */
 
 .wp-block-cata-advanced-modal-close > button {
+	color: inherit;
 	padding: 0;
+	background-color: transparent;
+	border: none;
+	cursor: pointer;
+
+	svg {
+		color: inherit;
+		display: block;
+		fill: currentColor;
+	}
 }

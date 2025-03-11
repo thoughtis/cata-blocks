@@ -7,6 +7,15 @@
 	> button {
 		color: inherit;
 		padding: 0;
+		background-color: transparent;
+		border: none;
+		cursor: pointer;
+
+		svg {
+			color: inherit;
+			display: block;
+			fill: currentColor;
+		}
 	}
 	
 	dialog {
@@ -35,19 +44,6 @@
 			height: 100%;
 			background-color: var( --cata-advanced-modal-backdrop-color, #000000 );
 			opacity: calc( var( --cata-advanced-modal-backdrop-opacity, 70 ) / 100 );
-		}
-	}
-
-	button {
-		color: inherit;
-		background-color: transparent;
-		border: none;
-		cursor: pointer;
-
-		svg {
-			color: inherit;
-			display: block;
-			fill: currentColor;
 		}
 	}
 }
