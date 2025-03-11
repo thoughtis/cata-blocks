@@ -15,9 +15,19 @@ import {
 import { 
 	Button,
 	RangeControl,
+	SVG,
+	Rect,
 	__experimentalToolsPanelItem as ToolsPanelItem,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
+
+/**
+ * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
+ * Those files can contain any CSS code that gets applied to the editor.
+ *
+ * @see https://www.npmjs.com/package/@wordpress/scripts#using-css
+ */
+import './editor.scss';
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -118,7 +128,10 @@ const Edit = ( {
 						e.currentTarget.nextSibling.show();
 					} } 
 				>
-					Open
+					<SVG xmlns="http://www.w3.org/2000/svg" width="35" height="14" viewBox="0 0 35 14">
+						<Rect width="35" height="2.80001"/>
+						<Rect y="11.2001" width="35" height="2.80001"/>
+					</SVG>
 				</Button>
 				<dialog>
 					<InnerBlocks
