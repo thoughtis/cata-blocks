@@ -8,10 +8,8 @@
 	"parent": [ "cata/advanced-modal" ],
 	"description": "Display a close button for the Advanced Modal block.",
 	"supports": {
-		"html": false,
-		"reusable": false
+		"html": false
 	},
 	"editorScript": "file:./index.js",
-	"editorStyle": "file:./index.css",
 	"style": "file:./style-index.css"
 }
