@@ -1,0 +1,49 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cata/advanced-modal",
+	"title": "Advanced Modal",
+	"category": "widgets",
+	"description": "Modal that includes a hamburger icon button and dialog element.",
+	"keywords": [ "navigation", "popup", "menu" ],
+	"attributes": {
+		"backdropColor": {
+			"type": "string"
+		},
+		"customBackdropColor": {
+			"type": "string",
+			"default": "#000000"
+		},
+		"backdropOpacity": {
+			"type": "number",
+			"default": 70
+		}
+	},
+	"supports": {
+		"html": false,
+		"color":{
+			"link": true,
+			"text": true,
+			"background": true
+		},
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true,
+			"__experimentalFontStyle": true,
+			"__experimentalFontWeight": true,
+			"__experimentalTextTransform": true,
+			"__experimentalFontFamily": true,
+			"__experimentalLetterSpacing": true,
+			"__experimentalTextDecoration": true,
+			"__experimentalSkipSerialization": [ "textDecoration" ],
+			"__experimentalDefaultControls": {
+				"fontSize": true
+			}
+		},
+		"interactivity": true
+	},
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"editorStyle": "file:./index.css",
+	"viewScriptModule": "file:./view.js"
+}
