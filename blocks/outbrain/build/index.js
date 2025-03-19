@@ -1,0 +1,1 @@
+(()=>{"use strict";const i=window.wp.blocks,o=window.wp.i18n,t=window.wp.blockEditor,e=window.ReactJSXRuntime,n=JSON.parse('{"UU":"cata/outbrain"}');(0,i.registerBlockType)(n.UU,{edit:function(){return(0,e.jsx)("div",{...(0,t.useBlockProps)(),children:(0,o.__)("Placeholder for an Outbrain Widget","cata")})}})})();
