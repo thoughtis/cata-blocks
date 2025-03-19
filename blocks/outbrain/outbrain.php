@@ -26,7 +26,8 @@ function register_outbrain_block() {
 		'cata-outbrain',
 		'https://widgets.outbrain.com/outbrain.js',
 		args: [
-			'strategy' => 'async'
+			'strategy'  => 'async',
+			'in_footer' => true,
 		]
 	);
 }
