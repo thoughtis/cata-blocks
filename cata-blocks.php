@@ -12,7 +12,7 @@
  * Description: Block Editor components for use with the Cata theme.
  * Author:      Thought & Expression Co. <devjobs@thought.is>
  * Author URI:  https://thought.is
- * Version:     0.10.17
+ * Version:     0.10.18-beta1
  * License:     GPL v3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.txt
  */
@@ -156,6 +156,11 @@ require_once __DIR__ . '/blocks/reel-clip/reel-clip.php';
  * Marquee
  */
 require_once __DIR__ . '/blocks/marquee/marquee.php';
+
+/**
+ * Outbrain
+ */
+require_once __DIR__ . '/blocks/outbrain/outbrain.php';
 
 /**
  * Globe Background
