@@ -11,7 +11,8 @@ import { __ } from '@wordpress/i18n';
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
  */
-import { useBlockProps } from '@wordpress/block-editor';
+import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import { TextControl, PanelBody, PanelRow, } from '@wordpress/components';
 
 /**
  * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
@@ -29,10 +30,25 @@ import './editor.css';
  *
  * @return {Element} Element to render.
  */
-export default function Edit() {
+export default function Edit( { attributes, setAttributes } ) {
+	const {widgetId} = attributes;
 	return (
-		<div { ...useBlockProps() }>
-			{ __( 'Placeholder for an Outbrain Widget', 'cata' ) }
-		</div>
+		<>
+			<InspectorControls>
+				<PanelBody title="Outbrain Widget ID" initialOpen={true}>
+					<PanelRow>
+						<TextControl
+							label={__('Outbrain Widget ID', 'cata')}
+							type="text"
+							value={widgetId}
+							onChange={( nextWidgetId ) => setAttributes({widgetId: nextWidgetId})}
+						/>	
+					</PanelRow>
+				</PanelBody>
+			</InspectorControls>
+			<div { ...useBlockProps() }>
+				{ __( 'Placeholder for an Outbrain Widget', 'cata' ) }
+			</div>
+		</>
 	);
 }
