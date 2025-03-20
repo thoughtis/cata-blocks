@@ -6,10 +6,16 @@
 	"title": "Outbrain",
 	"category": "widgets",
 	"icon": "smiley",
-	"description": "Example block scaffolded with Create Block tool.",
+	"description": "Output an Outbrain Widget.",
 	"example": {},
 	"supports": {
 		"html": false
+	},
+	"attributes": {
+		"widgetId": {
+			"type": "string",
+			"default": "GS_1"
+		}
 	},
 	"textdomain": "cata",
 	"editorScript": "file:./index.js",

@@ -49,9 +49,20 @@ function cata_outbrain_render_callback( array $attributes, string $content, WP_B
 
 	wp_enqueue_script('cata-outbrain');
 
-	$class          = 'OUTBRAIN'; 
-	$data_src       = esc_url( wp_get_canonical_url() );
-	$data_widget_id = 'GS_1';
+	$attributes = array_merge(
+		[
+			'widgetId' => 'GS_1'
+		],
+		$attributes
+	);
 
-	return "<div class=\"{$class}\" data-src=\"{$data_src}\" data-widget-id=\"{$data_widget_id}\"></div>";
+	$wrapper_attributes = get_block_wrapper_attributes(
+		[
+			'class'          => 'OUTBRAIN',
+			'data-src'       => esc_url( wp_get_canonical_url() ),
+			'data-widget-id' => esc_attr( $attributes['widgetId'] ),
+		]
+	);
+
+	return "<div {$wrapper_attributes}></div>";
 }
