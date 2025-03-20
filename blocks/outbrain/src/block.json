@@ -11,6 +11,12 @@
 	"supports": {
 		"html": false
 	},
+	"attributes": {
+		"widgetId": {
+			"type": "string",
+			"default": "GS_1"
+		}
+	},
 	"textdomain": "cata",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",
