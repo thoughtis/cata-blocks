@@ -7,6 +7,9 @@
 	"description": "Modal that includes a hamburger icon button and dialog element.",
 	"keywords": [ "navigation", "popup", "menu" ],
 	"attributes": {
+		"icon": {
+			"type": "string"
+		},
 		"backdropColor": {
 			"type": "string"
 		},
