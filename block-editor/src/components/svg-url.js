@@ -70,8 +70,6 @@ function addSvgLinkColorSupport( settings, name ) {
 		link: true,
 	} );
 
-	console.log( settings );
-
 	return settings;}
 
 /**
