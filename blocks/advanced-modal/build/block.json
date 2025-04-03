@@ -11,6 +11,9 @@
     "menu"
   ],
   "attributes": {
+    "icon": {
+      "type": "string"
+    },
     "backdropColor": {
       "type": "string"
     },
