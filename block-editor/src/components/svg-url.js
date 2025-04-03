@@ -31,6 +31,12 @@ import { prependHTTP } from '@wordpress/url';
 export default function main() {
 	addFilter(
 		'blocks.registerBlockType',
+		'cata/add-svg-link-color-support',
+		addSvgLinkColorSupport
+	);
+
+	addFilter(
+		'blocks.registerBlockType',
 		'cata/add-svg-url-attribute',
 		addSvgUrlAttribute
 	);
@@ -41,6 +47,32 @@ export default function main() {
 		withSvgUrlControl
 	);
 }
+
+/**
+ * Add SVG Link Color Support
+ * 
+ * @param {Object} settings
+ * @param {string} name
+ * 
+ * @return {Object} updated settings
+ */
+function addSvgLinkColorSupport( settings, name ) {
+	if ( 'safe-svg/svg-icon' !== name ) {
+		return settings;
+	}
+
+	if ( undefined === settings.attributes ) {
+		return settings;
+	}
+
+	Object.assign( settings.supports.color, {
+		...settings.supports.color,
+		link: true,
+	} );
+
+	console.log( settings );
+
+	return settings;}
 
 /**
  * Add Flex Grow Attribute
