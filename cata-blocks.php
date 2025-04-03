@@ -199,12 +199,14 @@ require_once __DIR__ . '/formats/overhang/overhang.php';
 require_once __DIR__ . '/variations/social-link/substack/substack.php';
 
 /**
- * Core Block Filters
+ * Block Filters
  */
 
-require_once __DIR__ . '/core-block-filters/post-excerpt/class-post-excerpt.php';
+require_once __DIR__ . '/block-filters/post-excerpt/class-post-excerpt.php';
+require_once __DIR__ . '/block-filters/svg-icon/class-svg-icon.php';
 
-new Core_Block_Filters\Post_Excerpt();
+new Block_Filters\Post_Excerpt();
+new Block_Filters\SVG_Icon();
 
 /**
  * Block Editor 
