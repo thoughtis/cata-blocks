@@ -2,10 +2,10 @@
 /**
  * Post Excerpt
  * 
- * @package Cata_Blocks\Core_Block_Filters
+ * @package Cata_Blocks\Block_Filters
  */
 
-namespace Cata\Blocks\Core_Block_Filters;
+namespace Cata\Blocks\Block_Filters;
 
 use WP_Block;
 
