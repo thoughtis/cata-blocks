@@ -63,7 +63,7 @@
 			"content": "Table Of Contents"
 		}
 	},
-	"script": "file:./script.js",
+	"viewScriptModule": "file:./script.js",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",
 	"style": "file:./style-index.css"
