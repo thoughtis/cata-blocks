@@ -5,7 +5,7 @@
 	"version": "0.1.0",
 	"title": "Network Link",
 	"category": "widgets",
-	"parent": [ "core/network-links" ],
+	"parent": [ "cata/network-links" ],
 	"description": "Display a logo linking to another site in the Thought Catalog network.",
 	"supports": {
 		"html": false,
