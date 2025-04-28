@@ -2,7 +2,7 @@
  * Edit
  */
 
-import { InnerBlocks, useBlockProps, InspectorControls, useSetting } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps, InspectorControls, useSettings } from '@wordpress/block-editor';
 import { Path, SVG, Circle } from '@wordpress/primitives';
 import { ColorPalette, PanelBody } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
@@ -23,7 +23,7 @@ export default function Edit( { attributes, setAttributes } ) {
 				<PanelBody title={ __( 'Globe Line Color' ) }>
 					<ColorPalette
 						value={ globeColor }
-						colors={ [ ...useSetting( 'color.palette' ) ] }
+						colors={ [ ...useSettings( 'color.palette' ) ] }
 						onChange={ ( nextGlobeColor ) => setAttributes( { globeColor: nextGlobeColor } ) }
 					/>
 				</PanelBody>

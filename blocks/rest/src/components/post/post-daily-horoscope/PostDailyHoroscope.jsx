@@ -23,7 +23,7 @@ export default function PostDailyHoroscope( { post, display_zodiac_links } ) {
 	return(
 		<article className="preview is-layout-daily-horoscope">
 			<div className="preview__layout">
-				<p class="preview__date">
+				<p className="preview__date">
 					<TextContent text={ date } />
 				</p>
 				{ false !== display_zodiac_links && (

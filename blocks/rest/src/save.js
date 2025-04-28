@@ -7,7 +7,6 @@
  */
 import { useBlockProps } from '@wordpress/block-editor';
 import { RawHTML } from "@wordpress/element";
-import { children } from '@wordpress/blocks';
 
 /**
  * Save
@@ -18,7 +17,7 @@ import { children } from '@wordpress/blocks';
 export default function save( { attributes : { content } } ) {
 	return (
 		<div { ...useBlockProps.save() }>
-			<RawHTML>{ 'string' === typeof content ? content : children.toHTML( [content] ) }</RawHTML>
+			{ content && <RawHTML>{ content }</RawHTML> }
 		</div>
 	);
 }

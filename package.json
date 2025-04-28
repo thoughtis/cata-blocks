@@ -1,20 +1,20 @@
 {
 	"name": "cata-blocks",
-	"version": "0.10.23",
+	"version": "0.11.0",
 	"description": "Block Editor components for use with the Cata theme.",
 	"scripts": {},
 	"author": "Thought and Expression Co. <devjobs@thought.is>",
 	"license": "GPL-3.0-or-later",
 	"dependencies": {
-		"@wordpress/block-editor": "wp-6.6",
-		"@wordpress/blocks": "wp-6.6",
-		"@wordpress/element": "wp-6.6",
-		"@wordpress/i18n": "wp-6.6",
+		"@wordpress/block-editor": "wp-6.8",
+		"@wordpress/blocks": "wp-6.8",
+		"@wordpress/element": "wp-6.8",
+		"@wordpress/i18n": "wp-6.8",
 		"@wordpress/icons": "^10.21.0",
 		"@wordpress/url": "^4.21.0",
 		"classnames": "^2.3.1"
 	},
 	"devDependencies": {
-		"@wordpress/scripts": "wp-6.6"
+		"@wordpress/scripts": "wp-6.8"
 	}
 }

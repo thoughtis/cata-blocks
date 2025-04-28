@@ -14,7 +14,7 @@ import {
 	MenuGroup
 } from '@wordpress/components';
 import { 
-	__experimentalLinkControl as LinkControl,
+	LinkControl,
 	BlockControls
 } from '@wordpress/block-editor';
 import { link as linkIcon } from '@wordpress/icons';
