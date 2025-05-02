@@ -10,7 +10,7 @@ import { getSortingFunction } from '../sorting';
  * @param {array} posts
  * @param {string} sorting
  */
-export default function Network( { posts, sorting, display_zodiac_links, aspect_ratio } ) {
+export default function Network( { posts, sorting, aspect_ratio } ) {
 
 	if ( 0 === posts.length ) {
 		return null;
@@ -27,7 +27,14 @@ export default function Network( { posts, sorting, display_zodiac_links, aspect_
 			{
 				clonedPosts.map( ( post ) => {
 					return (
-						<PostNetwork key={post.id} post={post} display_zodiac_links={display_zodiac_links} aspect_ratio={aspect_ratio} />
+						<PostNetwork
+							key={post.id}
+							post={post}
+							display={display}
+							aspect_ratio={aspect_ratio}
+							slug="network"
+							image_sizes="(max-width: 40em) 92.5vw, 36em"
+						/>
 					)
 				} )
 			}

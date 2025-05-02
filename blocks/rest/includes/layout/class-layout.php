@@ -287,4 +287,81 @@ abstract class Layout {
 
 		return array();
 	}
+
+	/**
+	 * Get Category
+	 * 
+	 * @param stdClass $post
+	 * @return null|stdClass
+	 */
+	public static function get_category( stdClass $post ) : ?stdClass {
+		if ( ! isset( $post->_embedded ) || ! isset( $post->_embedded->{'wp:term'} ) ) {
+			return null;
+		}
+
+		if ( ! is_array( $post->_embedded->{'wp:term'} ) || empty( $post->_embedded->{'wp:term'} ) ) {
+			return null;
+		}
+
+		$taxonomies = array_values(
+			array_filter(
+				$post->_embedded->{'wp:term'},
+				self::get_taxonomy_filter_function( 'category' )
+			)
+		);
+
+		if ( empty( $taxonomies ) ) {
+			return null;
+		}
+
+		$block_list = [
+			'uncategorized',
+			'collective-world',
+			'project-oasis'
+		];
+
+		$categories = array_values(
+			array_filter(
+				current( $taxonomies ),
+				function($cat) use ( $block_list ) {
+					return ! in_array( $cat->slug, $block_list, true );
+				}
+			)
+		);
+
+		if ( empty( $categories ) ) {
+			return null;
+		}
+
+		return current( $categories );
+	}
+
+
+	/**
+	 * Get Taxonomy Filter Function
+	 * 
+	 * @param string $tax_slug
+	 * @return callable
+	 */
+	public static function get_taxonomy_filter_function( string $tax_slug ) : callable {
+		return function( $terms ) use ( $tax_slug ) : bool {
+			return is_array( $terms ) && ! empty( $terms ) && isset( $terms[0]->taxonomy ) && $tax_slug === $terms[0]->taxonomy;
+		};
+	}
+
+	/**
+	 * Render Kicker
+	 * 
+	 * @param stdClass|null $category
+	 * @return string
+	 */
+	public static function render_kicker( ?stdClass $category = null ) : string {
+		if ( null === $category ) {
+			return '';
+		}
+		$href = esc_url( $category->link );
+		$name = esc_html( $category->name );
+		$link = self::render_link( $href, "<strong>{$name}</strong>", ['rel' => 'category'] );
+		return "<p class=\"preview__kicker\">{$link}</p>";
+	}
 }

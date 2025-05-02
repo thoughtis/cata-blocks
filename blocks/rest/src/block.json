@@ -53,6 +53,17 @@
 		"aspect_ratio": {
 			"type": "string",
 			"default": ""
+		},
+		"display": {
+			"type": "object",
+			"default": {
+				"image": true,
+				"category": true,
+				"title": true,
+				"excerpt": true,
+				"zodiac": true,
+				"domain": true
+			}
 		}
 	},
 	"keywords": [ "rest", "api" ],

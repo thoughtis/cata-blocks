@@ -74,6 +74,7 @@ require_once __DIR__ . '/blocks/newsletter/newsletter.php';
  */
 require_once __DIR__ . '/blocks/rest/includes/layout/class-layout.php';
 require_once __DIR__ . '/blocks/rest/includes/layout/compact/class-compact.php';
+require_once __DIR__ . '/blocks/rest/includes/layout/compact-grid/class-compact-grid.php';
 require_once __DIR__ . '/blocks/rest/includes/layout/daily-horoscope/class-daily-horoscope.php';
 require_once __DIR__ . '/blocks/rest/includes/layout/network/class-network.php';
 require_once __DIR__ . '/blocks/rest/includes/layout/trending/class-trending.php';

@@ -12,35 +12,49 @@ import getDimensions from "../../image/get-dimensions";
 import getImage from "../../image/get-image";
 import * as Symbols from '../../icons';
 
+import getCategory from "../get-category";
+
 /**
- * Post Network
+ * Post Stack
  * 
  * @param {object} post
  */
-export default function PostNetwork( { post, display_zodiac_links, aspect_ratio } ) {
+export default function PostNetwork( { post, aspect_ratio, display, image_sizes, slug } ) {
 	const data = getImage( post );
 	const dimensions = getDimensions( data );
+	const category = getCategory( post );
 
 	return(
-		<article className="preview is-layout-network">
+		<article className={`preview is-layout-${slug}`}>
 			<div className="preview__layout">
-				<div className="preview__start">
-				{ null !== data && (
-					<figure className="preview__image-container">
-						<a rel="bookmark" href={ post.link }>
-							<Image data={ data } dimensions={ dimensions } sizes="(max-width: 40em) 92.5vw, 36em" aspect_ratio={aspect_ratio} />
-						</a>
-					</figure>
-				) }
-				</div>
-				<div className="preview__end">
-					<h3 className="preview__title">
-						<a rel="bookmark" className="preview__permalink" href={ post.link }><TextContent text={ post.title.rendered } /></a>
-					</h3>
-					<div className="preview__excerpt">
-						<RawHTML>{ post.excerpt.rendered }</RawHTML>
+				{ ( display.image && null !== data ) && (
+					<div className="preview__start">
+						<figure className="preview__image-container">
+							<a rel="bookmark" href={ post.link }>
+								<Image data={ data } dimensions={ dimensions } sizes={image_sizes} aspect_ratio={aspect_ratio} />
+							</a>
+						</figure>
 					</div>
-					{ false !== display_zodiac_links ? (
+				) }
+				<div className="preview__end">
+					{ ( display.category && null !== category ) && (
+						<p className="preview__kicker">
+							<a rel="category" href={ category.link }>
+								<TextContent text={ category.name } />
+							</a>
+						</p>
+					) }
+					{ display.title && (
+						<h3 className="preview__title">
+							<a rel="bookmark" className="preview__permalink" href={ post.link }><TextContent text={ post.title.rendered } /></a>
+						</h3>
+					)}
+					{ display.excerpt && (
+						<div className="preview__excerpt">
+							<RawHTML>{ post.excerpt.rendered }</RawHTML>
+						</div>
+					) }
+					{ display.zodiac && (
 						<ul className="preview__zodiac-signs">
 							<li><a><Symbols.AriesIcon/>Aries</a></li>
 							<li><a><Symbols.TaurusIcon/>Taurus</a></li>
@@ -55,7 +69,10 @@ export default function PostNetwork( { post, display_zodiac_links, aspect_ratio 
 							<li><a><Symbols.AquariusIcon/>Aquarius</a></li>
 							<li><a><Symbols.PiscesIcon/>Pisces</a></li>
 						</ul>
-					) : (<p className="preview__domain">{ (new URL( post.link )).hostname }</p>) }
+					) }
+					{ display.domain && (
+						<p className="preview__domain">{ (new URL( post.link )).hostname }</p>
+					) }
 				</div>
 			</div>
 		</article>

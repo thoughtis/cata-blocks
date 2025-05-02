@@ -4,14 +4,7 @@
 import PostNetwork from "../../post/post-network/PostNetwork";
 import { getSortingFunction } from '../sorting';
 
-/**
- * Compact Layout
- * 
- * @param {array} posts
- * @param {string} sorting
- */
-export default function Compact( { posts, sorting, aspect_ratio, display_domain_names, display } ) {
-
+export default function CompactGrid( {posts, sorting, aspect_ratio, display } ) {
 	if ( 0 === posts.length ) {
 		return null;
 	}
@@ -21,9 +14,9 @@ export default function Compact( { posts, sorting, aspect_ratio, display_domain_
 	if ( '' !== sorting ) {
 		clonedPosts.sort( getSortingFunction(sorting) );
 	}
-
+	
 	return (
-		<div className="wp-block-cata-rest__layout is-layout-compact">
+		<div className="wp-block-cata-rest__layout is-layout-compact-grid">
 			{
 				clonedPosts.map( ( post ) => {
 					return (
@@ -32,7 +25,7 @@ export default function Compact( { posts, sorting, aspect_ratio, display_domain_
 							post={post}
 							aspect_ratio={aspect_ratio}
 							display={display}
-							slug="compact"
+							slug="compact-grid"
 							image_sizes="(max-width: 20em) 46.25vw, 13em"
 						/>
 					)

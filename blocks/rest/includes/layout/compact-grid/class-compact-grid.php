@@ -12,9 +12,9 @@ use Cata\Blocks\Rest\Layout;
 use stdClass;
 
 /**
- * Compact
+ * Compact Grid
  */
-class Compact extends Layout {
+class Compact_Grid extends Layout {
 
 	/**
 	 * Render
@@ -39,7 +39,7 @@ class Compact extends Layout {
 		);
 
 		return "{$open}
-			<div class=\"wp-block-cata-rest__layout is-layout-compact\">
+			<div class=\"wp-block-cata-rest__layout is-layout-compact-grid\">
 				{$previews}
 			</div>
 		</div>";
@@ -88,4 +88,5 @@ class Compact extends Layout {
 			</div>
 		</article>";
 	}
+
 }

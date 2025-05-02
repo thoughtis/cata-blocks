@@ -10,7 +10,7 @@ import { getSortingFunction } from '../sorting';
  * @param {array} posts
  * @param {string} sorting
  */
-export default function Compact( { posts, sorting, aspect_ratio, display_domain_names, display } ) {
+export default function StackGrid( { posts, sorting, aspect_ratio, display } ) {
 
 	if ( 0 === posts.length ) {
 		return null;
@@ -23,17 +23,17 @@ export default function Compact( { posts, sorting, aspect_ratio, display_domain_
 	}
 
 	return (
-		<div className="wp-block-cata-rest__layout is-layout-compact">
+		<div className="wp-block-cata-rest__layout is-layout-stack-grid">
 			{
 				clonedPosts.map( ( post ) => {
 					return (
 						<PostNetwork
 							key={post.id}
 							post={post}
-							aspect_ratio={aspect_ratio}
 							display={display}
-							slug="compact"
-							image_sizes="(max-width: 20em) 46.25vw, 13em"
+							aspect_ratio={aspect_ratio}
+							slug="stack-grid"
+							image_sizes="(max-width: 40em) 92.5vw, 36em"
 						/>
 					)
 				} )

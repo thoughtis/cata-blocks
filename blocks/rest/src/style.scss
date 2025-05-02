@@ -156,3 +156,47 @@
 		vertical-align: middle;
 	}
 }
+
+
+.wp-block-cata-rest__layout.is-layout-compact-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: var(--wp--style--block-gap);
+}
+
+/* Do this for non-grid compact layout too? */
+.wp-block-cata-rest__layout.is-layout-compact-grid .preview.is-layout-compact .preview__end {
+	> * {
+		margin-block: 0;
+	}
+	> * + * {
+		margin-block-start: calc( var(--wp--style--block-gap ) / 2 );
+	}
+}
+
+.wp-block-cata-rest {
+	--grid-fill-column-count: 3;
+	--grid-fill-container-size: var(--wp--style--global--content-size);
+	&.alignwide {
+		--grid-fill-container-size: var(--wp--style--global--wide-size);
+	}
+	&.alignfull {
+		--grid-fill-container-size: calc( var(--wp--style--global--wide-size) + ( var(--wp--style--root--padding-left) * 2 ) );
+	}
+}
+
+.wp-block-cata-rest__layout.is-layout-stack {}
+
+.preview.is-layout-stack {}
+
+.wp-block-cata-rest__layout.is-layout-stack-grid {
+
+	--grid-fill-column-size: calc(
+		( ( var(--grid-fill-container-size ) - ( (var(--grid-fill-column-count, 3) - 1) * var( --wp--style--block-gap ) ) ) / var(--grid-fill-column-count, 3) ) * ( (var(--grid-fill-column-count, 3) - 0.49) / var(--grid-fill-column-count, 3) )
+	);
+
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax( min( var(--grid-fill-column-size, auto), 100% ), 1fr ));
+	column-gap: var( --wp--style--block-gap );
+	row-gap: calc( var( --wp--style--block-gap ) * 1.5 );
+}

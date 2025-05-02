@@ -135,6 +135,7 @@ function get_layout_renderer( string $key ) : callable {
 		'trending'        => 'Cata\\Blocks\\Rest\\Layout\\Trending::render',
 		'compact'         => 'Cata\\Blocks\\Rest\\Layout\\Compact::render',
 		'daily-horoscope' => 'Cata\\Blocks\\Rest\\Layout\\Daily_Horoscope::render',
+		'compact-grid'    => 'Cata\\Blocks\\Rest\\Layout\\Compact_Grid::render',
 	);
 	if ( '' === $key ) {
 		$key = key( $render_classes );
