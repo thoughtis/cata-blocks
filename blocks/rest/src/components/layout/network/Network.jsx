@@ -10,7 +10,7 @@ import { getSortingFunction } from '../sorting';
  * @param {array} posts
  * @param {string} sorting
  */
-export default function Network( { posts, sorting, aspect_ratio } ) {
+export default function Network( { posts, sorting, aspect_ratio, display } ) {
 
 	if ( 0 === posts.length ) {
 		return null;
