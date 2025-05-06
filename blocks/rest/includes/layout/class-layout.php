@@ -261,7 +261,7 @@ abstract class Layout {
 		$href     = esc_url( $href );
 		$anchor   = esc_attr( $anchor );
 		$text     = esc_html( wp_strip_all_tags( $text ) );
-		$svg_path = __DIR__ . "/daily-horoscope/svg/$anchor.svg";
+		$svg_path = __DIR__ . "/daily-horoscope/svg/{$anchor}.svg";
 		$symbol   = file_exists( $svg_path ) ? file_get_contents( $svg_path ) : '';
 
 		if ( empty( $text ) || empty( $anchor ) || empty( $symbol ) ) {

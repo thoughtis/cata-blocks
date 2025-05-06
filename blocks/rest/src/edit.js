@@ -197,31 +197,32 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 							]}
 						/>
 					</PanelRow>
-					<PanelRow>
-						<Flex direction="column" gap="4px">
-						{
-							Array.from(Object.entries(display)).map(
-								([key, value]) => (
-									<FlexBlock key={`cata-rest-display-${key}`}>
-									<CheckboxControl
-										label={key}
-										checked={value}
-										onChange={(checked => {
-											setAttributes({
-												display: {
-													...display,
-													[key]: checked
-												}
-											})
-										})}
-									/>
-									</FlexBlock>
+					{ ! ['trending'].includes( layout ) && (
+						<>
+						<PanelRow>
+							<Flex direction="column" gap="4px">
+							{
+								Array.from(Object.entries(display)).map(
+									([key, value]) => (
+										<FlexBlock key={`cata-rest-display-${key}`}>
+										<CheckboxControl
+											label={key}
+											checked={value}
+											onChange={(checked => {
+												setAttributes({
+													display: {
+														...display,
+														[key]: checked
+													}
+												})
+											})}
+										/>
+										</FlexBlock>
+									)
 								)
-							)
-						}
-						</Flex>
-					</PanelRow>
-					{ ['network', 'compact', '', 'compact-grid'].includes(layout) && (
+							}
+							</Flex>
+						</PanelRow>
 						<PanelRow>
 							<SelectControl
 								label="Image Aspect Ratio"
@@ -239,7 +240,8 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 								]}
 							/>
 						</PanelRow>
-					) }
+						</>
+					)}
 				</PanelBody>
 				<PanelBody title="REST Sorting" initialOpen={false}>
 					<PanelRow>
