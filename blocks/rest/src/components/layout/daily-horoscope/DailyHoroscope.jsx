@@ -10,7 +10,7 @@ import { getSortingFunction } from '../sorting';
  * @param {array} posts
  * @param {string} sorting
  */
-export default function DailyHoroscope( { posts, sorting, display_zodiac_links } ) {
+export default function DailyHoroscope( { posts, sorting, display } ) {
 
 	if ( 0 === posts.length ) {
 		return null;
@@ -27,7 +27,7 @@ export default function DailyHoroscope( { posts, sorting, display_zodiac_links }
 			{
 				clonedPosts.map( ( post ) => {
 					return (
-						<PostDailyHoroscope key={post.id} post={post} display_zodiac_links={display_zodiac_links} />
+						<PostDailyHoroscope key={post.id} post={post} display={display} />
 					)
 				} )
 			}

@@ -9,7 +9,7 @@ import TextContent from "../../text-content/TextContent";
  * 
  * @param {object} post
  */
-export default function PostDailyHoroscope( { post, display_zodiac_links } ) {
+export default function PostDailyHoroscope( { post, display } ) {
 	let date = new Date( post.date );
 	const dateOptions = {
 		weekday: 'long',
@@ -26,7 +26,7 @@ export default function PostDailyHoroscope( { post, display_zodiac_links } ) {
 				<p className="preview__date">
 					<TextContent text={ date } />
 				</p>
-				{ display_zodiac_links && (
+				{ display.zodiac && (
 					<ul className="preview__zodiac-signs">
 						<li><a><Symbols.AriesIcon/>Aries</a></li>
 						<li><a><Symbols.TaurusIcon/>Taurus</a></li>
