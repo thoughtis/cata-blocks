@@ -77,15 +77,13 @@ function cata_rest_render_block( array $attributes, string $content ) : string {
 		usort( $posts, get_sorting_function( $sorting ) );
 	}
 
-	$args = [ $content, $posts ];
-
-	if ( '' === $layout || in_array( $layout, ['network', 'daily-horoscope'] ) ) {
-		array_push( $args, $attributes['display_zodiac_links'] );
-	}
-
-	if ( '' === $layout || in_array( $layout, ['network'] ) ) {
-		array_push( $args, $attributes['aspect_ratio'] );
-	}
+	$args = [
+		$content,
+		$posts,
+		$attributes['display'],
+		$layout,
+		$attributes['aspect_ratio']
+	];
 
 	$new_content = get_layout_renderer( $layout )( ...$args );
 
@@ -131,14 +129,12 @@ function convert_url_to_posts( string $url ) : array {
  */
 function get_layout_renderer( string $key ) : callable {
 	$render_classes = array(
-		'network'         => 'Cata\\Blocks\\Rest\\Layout\\Network::render',
+		'standard'        => 'Cata\\Blocks\\Rest\\Layout\\Standard::render',
 		'trending'        => 'Cata\\Blocks\\Rest\\Layout\\Trending::render',
-		'compact'         => 'Cata\\Blocks\\Rest\\Layout\\Compact::render',
 		'daily-horoscope' => 'Cata\\Blocks\\Rest\\Layout\\Daily_Horoscope::render',
-		'compact-grid'    => 'Cata\\Blocks\\Rest\\Layout\\Compact_Grid::render',
 	);
-	if ( '' === $key ) {
-		$key = key( $render_classes );
+	if ( ! array_key_exists( $key, $render_classes ) ) {
+		$key = 'standard';
 	}
 	if ( is_callable( $render_classes[$key] ) ) {
 		return $render_classes[$key];

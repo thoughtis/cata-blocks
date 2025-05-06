@@ -121,6 +121,7 @@ abstract class Layout {
 		);
 
 		$aspect_ratio = $options['aspectRatio'] ?? '';
+
 		if ( '' !== $aspect_ratio ) {
 			$attributes['style'] = esc_attr( "aspect-ratio: $aspect_ratio; object-fit: cover;" );
 		}
@@ -363,5 +364,23 @@ abstract class Layout {
 		$name = esc_html( $category->name );
 		$link = self::render_link( $href, "<strong>{$name}</strong>", ['rel' => 'category'] );
 		return "<p class=\"preview__kicker\">{$link}</p>";
+	}
+
+	/**
+	 * Get Image Sizes Attribute
+	 * 
+	 * @param string $layout
+	 * @return string
+	 */
+	public static function get_image_sizes_attribute( string $layout ): string {
+		return [
+			'compact'         => '(max-width: 20em) 46.25vw, 13em',
+			'compact-grid'    => '(max-width: 20em) 46.25vw, 13em',
+			'daily-horoscope' => '',
+			'network'         => '(max-width: 40em) 92.5vw, 36em',
+			'stack'           => '',
+			'stack-grid'      => '',
+			'trending'        => ''
+		][$layout] ?? '';
 	}
 }

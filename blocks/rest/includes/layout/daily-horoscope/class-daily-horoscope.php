@@ -22,7 +22,7 @@ class Daily_Horoscope extends Layout {
 	 * @param array $posts
 	 * @return string
 	 */
-	public static function render( string $content, array $posts, ?bool $display_zodiac_links = false ): string {
+	public static function render( string $content, array $posts, array $display ): string {
 		if ( empty( $posts ) ) {
 			return $content;
 		}
@@ -31,7 +31,10 @@ class Daily_Horoscope extends Layout {
 
 		$previews = implode(
 			PHP_EOL,
-			array_map( array( __CLASS__, 'render_preview' ), $posts, array( $display_zodiac_links ) )
+			array_map(
+				fn( $post ) => self::render_preview( $post, $display['zodiac'] ),
+				$posts
+			)
 		);
 
 		return "{$open}
