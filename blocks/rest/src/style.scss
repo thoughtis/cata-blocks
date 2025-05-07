@@ -98,7 +98,8 @@
 	}
 }
 
-.preview.is-layout-compact {
+.preview.is-layout-compact,
+.preview.is-layout-compact-grid {
 	.preview__layout {
 		display: flex;
 		flex-wrap: wrap;
