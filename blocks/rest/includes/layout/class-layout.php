@@ -121,7 +121,6 @@ abstract class Layout {
 		);
 
 		$aspect_ratio = $options['aspectRatio'] ?? '';
-
 		if ( '' !== $aspect_ratio ) {
 			$attributes['style'] = esc_attr( "aspect-ratio: $aspect_ratio; object-fit: cover;" );
 		}
