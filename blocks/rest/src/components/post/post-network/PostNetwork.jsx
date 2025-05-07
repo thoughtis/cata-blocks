@@ -14,6 +14,13 @@ import * as Symbols from '../../icons';
 
 import getCategory from "../get-category";
 
+const dateOptions = {
+	weekday: 'long',
+	year: 'numeric',
+	month: 'long',
+	day: 'numeric',
+};
+
 /**
  * Post Stack
  * 
@@ -23,6 +30,7 @@ export default function PostNetwork( { post, aspect_ratio, display, image_sizes,
 	const data = getImage( post );
 	const dimensions = getDimensions( data );
 	const category = getCategory( post );
+	const date = (new Date( post.date )).toLocaleDateString( 'en-US', dateOptions );
 
 	return(
 		<article className={`preview is-layout-${slug}`}>
@@ -44,11 +52,16 @@ export default function PostNetwork( { post, aspect_ratio, display, image_sizes,
 							</a>
 						</p>
 					) }
+					{ display.date && (
+						<p className="preview__date">
+							<TextContent text={ date } />
+						</p>
+					) }
 					{ display.title && (
 						<h3 className="preview__title">
 							<a rel="bookmark" className="preview__permalink" href={ post.link }><TextContent text={ post.title.rendered } /></a>
 						</h3>
-					)}
+					) }
 					{ display.excerpt && (
 						<div className="preview__excerpt">
 							<RawHTML>{ post.excerpt.rendered }</RawHTML>

@@ -124,18 +124,6 @@
 	}
 }
 
-.preview.is-layout-daily-horoscope {
-	text-align: center;
-	
-	.preview__title {
-		margin-block-start: 0;
-	}
-
-	.preview__zodiac-signs {
-		justify-content: center;
-	}
-}
-
 .preview__zodiac-signs {
 	display: flex;
 	flex-wrap: wrap;
@@ -157,6 +145,23 @@
 	}
 }
 
+.has-text-align-center {
+	.preview__zodiac-signs {
+		justify-content: center;
+	}
+}
+
+.has-text-align-left {
+	.preview__zodiac-signs {
+		justify-content: start;
+	}
+}
+
+.has-text-align-right {
+	.preview__zodiac-signs {
+		justify-content: end;
+	}
+}
 
 .wp-block-cata-rest__layout.is-layout-compact-grid {
 	display: grid;
@@ -185,9 +190,8 @@
 	}
 }
 
-.wp-block-cata-rest__layout.is-layout-stack {}
-
-.preview.is-layout-stack {}
+// .wp-block-cata-rest__layout.is-layout-stack {}
+// .preview.is-layout-stack {}
 
 .wp-block-cata-rest__layout.is-layout-stack-grid {
 

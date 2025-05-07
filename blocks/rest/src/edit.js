@@ -26,6 +26,16 @@ import Stack from './components/layout/stack/Stack';
 import StackGrid from './components/layout/stack-grid/StackGrid';
 import { CheckboxControl } from '@wordpress/components';
 
+const defaultDisplay = { 
+	image: false,
+	category: false,
+	date: false,
+	title: false,
+	excerpt: false,
+	zodiac: false,
+	domain: false
+};
+
 /**
  * Edit
  *
@@ -37,8 +47,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 		urls, 
 		content, 
 		layout, 
-		sorting, 
-		display_zodiac_links,
+		sorting,
 		aspect_ratio,
 		display
 	} = attributes;
@@ -47,7 +56,9 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 	const [posts, setPosts] = useState([]);
 
 	useEffect(updatePosts, [urls]);
-	useEffect(updateContent, [posts, layout, sorting, display_zodiac_links, aspect_ratio, display]);
+	useEffect(updateContent, [posts, layout, sorting, aspect_ratio, display]);
+
+	const displayOptions = { ...defaultDisplay, ...display };	
 
 	/**
 	 * Update Posts
@@ -114,11 +125,9 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 
 		setAttributes( {
 			...attributes,
-			content: <LayoutComponent posts={posts} sorting={sorting} display_zodiac_links={display_zodiac_links} display={display} aspect_ratio={aspect_ratio} />
+			content: <LayoutComponent posts={posts} sorting={sorting} display={display} aspect_ratio={aspect_ratio} />
 		});
 	}
-
-	console.log( display );
 
 	return (
 		<>
@@ -202,7 +211,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 						<PanelRow>
 							<Flex direction="column" gap="4px">
 							{
-								Array.from(Object.entries(display)).map(
+								Array.from(Object.entries(displayOptions)).map(
 									([key, value]) => (
 										<FlexBlock key={`cata-rest-display-${key}`}>
 										<CheckboxControl

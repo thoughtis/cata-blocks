@@ -131,7 +131,6 @@ function get_layout_renderer( string $key ) : callable {
 	$render_classes = array(
 		'standard'        => 'Cata\\Blocks\\Rest\\Layout\\Standard::render',
 		'trending'        => 'Cata\\Blocks\\Rest\\Layout\\Trending::render',
-		'daily-horoscope' => 'Cata\\Blocks\\Rest\\Layout\\Daily_Horoscope::render',
 	);
 	if ( ! array_key_exists( $key, $render_classes ) ) {
 		$key = 'standard';

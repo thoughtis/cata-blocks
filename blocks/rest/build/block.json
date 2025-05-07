@@ -13,6 +13,9 @@
       "full"
     ],
     "html": false,
+    "typography": {
+      "textAlign": true
+    },
     "__experimentalBorder": {
       "color": true,
       "radius": true,
@@ -62,6 +65,7 @@
       "default": {
         "image": true,
         "category": true,
+        "date": true,
         "title": true,
         "excerpt": true,
         "zodiac": true,

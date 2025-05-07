@@ -67,6 +67,9 @@ class Standard extends Layout {
 		$image_link = self::render_link( $href, $image );
 		$title_link = self::render_link( $href, $title, ['rel' => 'bookmark', 'class' => 'preview_permalink'] );
 
+		$date = esc_html( self::get_date_string( $post->date ) );
+		$date = ! $display['date'] ? '' : "<p class=\"preview__date\">{$date}</p>";
+
 		$kicker = ! $display['category'] ? '' : self::render_kicker(
 			self::get_category( $post )
 		);
@@ -88,6 +91,7 @@ class Standard extends Layout {
 				{$start}
 				<div class=\"preview__end\">
 					{$kicker}
+					{$date}
 					{$title}
 					{$excerpt}
 					{$zodiac}

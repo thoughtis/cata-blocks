@@ -73,7 +73,6 @@ require_once __DIR__ . '/blocks/newsletter/newsletter.php';
  * REST
  */
 require_once __DIR__ . '/blocks/rest/includes/layout/class-layout.php';
-require_once __DIR__ . '/blocks/rest/includes/layout/daily-horoscope/class-daily-horoscope.php';
 require_once __DIR__ . '/blocks/rest/includes/layout/standard/class-standard.php';
 require_once __DIR__ . '/blocks/rest/includes/layout/trending/class-trending.php';
 require_once __DIR__ . '/blocks/rest/includes/sorting.php';

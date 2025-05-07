@@ -10,7 +10,6 @@ import TextContent from "../../text-content/TextContent";
  * @param {object} post
  */
 export default function PostDailyHoroscope( { post, display } ) {
-	let date = new Date( post.date );
 	const dateOptions = {
 		weekday: 'long',
 		year: 'numeric',
@@ -18,7 +17,7 @@ export default function PostDailyHoroscope( { post, display } ) {
 		day: 'numeric',
 	};
 
-	date = date.toLocaleDateString( 'en-US', dateOptions )
+	const date = (new Date( post.date )).toLocaleDateString( 'en-US', dateOptions );
 
 	return(
 		<article className="preview is-layout-daily-horoscope">
