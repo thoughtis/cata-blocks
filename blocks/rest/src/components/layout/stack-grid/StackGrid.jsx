@@ -5,12 +5,12 @@ import PostNetwork from "../../post/post-network/PostNetwork";
 import { getSortingFunction } from '../sorting';
 
 /**
- * Network Layout
+ * Compact Layout
  * 
  * @param {array} posts
  * @param {string} sorting
  */
-export default function Network( { posts, sorting, aspect_ratio, display } ) {
+export default function StackGrid( { posts, sorting, aspect_ratio, display } ) {
 
 	if ( 0 === posts.length ) {
 		return null;
@@ -23,7 +23,7 @@ export default function Network( { posts, sorting, aspect_ratio, display } ) {
 	}
 
 	return (
-		<div className="wp-block-cata-rest__layout is-layout-network">
+		<div className="wp-block-cata-rest__layout is-layout-stack-grid">
 			{
 				clonedPosts.map( ( post ) => {
 					return (
@@ -32,7 +32,7 @@ export default function Network( { posts, sorting, aspect_ratio, display } ) {
 							post={post}
 							display={display}
 							aspect_ratio={aspect_ratio}
-							slug="network"
+							slug="stack-grid"
 							image_sizes="(max-width: 40em) 92.5vw, 36em"
 						/>
 					)

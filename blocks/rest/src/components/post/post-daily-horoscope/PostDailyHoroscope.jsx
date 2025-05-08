@@ -9,8 +9,7 @@ import TextContent from "../../text-content/TextContent";
  * 
  * @param {object} post
  */
-export default function PostDailyHoroscope( { post, display_zodiac_links } ) {
-	let date = new Date( post.date );
+export default function PostDailyHoroscope( { post, display } ) {
 	const dateOptions = {
 		weekday: 'long',
 		year: 'numeric',
@@ -18,7 +17,7 @@ export default function PostDailyHoroscope( { post, display_zodiac_links } ) {
 		day: 'numeric',
 	};
 
-	date = date.toLocaleDateString( 'en-US', dateOptions )
+	const date = (new Date( post.date )).toLocaleDateString( 'en-US', dateOptions );
 
 	return(
 		<article className="preview is-layout-daily-horoscope">
@@ -26,7 +25,7 @@ export default function PostDailyHoroscope( { post, display_zodiac_links } ) {
 				<p className="preview__date">
 					<TextContent text={ date } />
 				</p>
-				{ false !== display_zodiac_links && (
+				{ display.zodiac && (
 					<ul className="preview__zodiac-signs">
 						<li><a><Symbols.AriesIcon/>Aries</a></li>
 						<li><a><Symbols.TaurusIcon/>Taurus</a></li>

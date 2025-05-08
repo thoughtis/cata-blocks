@@ -5,7 +5,7 @@ import TextContent from "../../text-content/TextContent";
 import Image from "../../image/Image";
 import getDimensions from "../../image/get-dimensions";
 import getImage from "../../image/get-image";
-import getCategory from "./get-category";
+import getCategory from "../get-category";
 import getAuthor from "../../author/get-author";
 import Author from "../../author/Author";
 

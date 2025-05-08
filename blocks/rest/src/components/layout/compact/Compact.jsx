@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import PostCompact from "../../post/post-compact/PostCompact";
+import PostNetwork from "../../post/post-network/PostNetwork";
 import { getSortingFunction } from '../sorting';
 
 /**
@@ -10,7 +10,7 @@ import { getSortingFunction } from '../sorting';
  * @param {array} posts
  * @param {string} sorting
  */
-export default function Compact( { posts, sorting, aspect_ratio } ) {
+export default function Compact( { posts, sorting, aspect_ratio, display_domain_names, display } ) {
 
 	if ( 0 === posts.length ) {
 		return null;
@@ -27,7 +27,14 @@ export default function Compact( { posts, sorting, aspect_ratio } ) {
 			{
 				clonedPosts.map( ( post ) => {
 					return (
-						<PostCompact key={post.id} post={post} aspect_ratio={aspect_ratio} />
+						<PostNetwork
+							key={post.id}
+							post={post}
+							aspect_ratio={aspect_ratio}
+							display={display}
+							slug="compact"
+							image_sizes="(max-width: 20em) 46.25vw, 13em"
+						/>
 					)
 				} )
 			}

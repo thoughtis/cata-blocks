@@ -13,6 +13,9 @@
       "full"
     ],
     "html": false,
+    "typography": {
+      "textAlign": true
+    },
     "__experimentalBorder": {
       "color": true,
       "radius": true,
@@ -56,6 +59,18 @@
     "aspect_ratio": {
       "type": "string",
       "default": ""
+    },
+    "display": {
+      "type": "object",
+      "default": {
+        "image": true,
+        "category": true,
+        "date": true,
+        "title": true,
+        "excerpt": true,
+        "zodiac": true,
+        "domain": true
+      }
     }
   },
   "keywords": [

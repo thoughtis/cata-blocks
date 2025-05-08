@@ -7,7 +7,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import { Button, PanelBody, PanelRow, SelectControl, TextControl, ToggleControl } from '@wordpress/components';
+import { Button, PanelBody, PanelRow, SelectControl, TextControl, Flex, FlexBlock } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { _unescape } from 'lodash';
@@ -19,8 +19,22 @@ import Trending from './components/layout/trending/Trending';
 import Network from './components/layout/network/Network';
 import Compact from './components/layout/compact/Compact';
 import DailyHoroscope from './components/layout/daily-horoscope/DailyHoroscope';
+import CompactGrid from './components/layout/compact-grid/CompactGrid';
 
 import './editor.scss';
+import Stack from './components/layout/stack/Stack';
+import StackGrid from './components/layout/stack-grid/StackGrid';
+import { CheckboxControl } from '@wordpress/components';
+
+const defaultDisplay = { 
+	image: false,
+	category: false,
+	date: false,
+	title: false,
+	excerpt: false,
+	zodiac: false,
+	domain: false
+};
 
 /**
  * Edit
@@ -33,16 +47,18 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 		urls, 
 		content, 
 		layout, 
-		sorting, 
-		display_zodiac_links, 
+		sorting,
 		aspect_ratio,
+		display
 	} = attributes;
 
 	const [url, setUrl] = useState('');
 	const [posts, setPosts] = useState([]);
 
 	useEffect(updatePosts, [urls]);
-	useEffect(updateContent, [posts, layout, sorting, display_zodiac_links, aspect_ratio]);
+	useEffect(updateContent, [posts, layout, sorting, aspect_ratio, display]);
+
+	const displayOptions = { ...defaultDisplay, ...display };	
 
 	/**
 	 * Update Posts
@@ -95,11 +111,21 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 				break;
 			case 'daily-horoscope':
 				LayoutComponent = DailyHoroscope;
+				break;
+			case 'compact-grid':
+				LayoutComponent = CompactGrid;
+				break;
+			case 'stack':
+				LayoutComponent = Stack;
+				break;
+			case 'stack-grid':
+				LayoutComponent = StackGrid;
+				break;
 		}
 
 		setAttributes( {
 			...attributes,
-			content: <LayoutComponent posts={posts} sorting={sorting} display_zodiac_links={display_zodiac_links} aspect_ratio={aspect_ratio} />
+			content: <LayoutComponent posts={posts} sorting={sorting} display={display} aspect_ratio={aspect_ratio} />
 		});
 	}
 
@@ -173,11 +199,39 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 								{ 'label': 'Trending', 'value': 'trending' },
 								{ 'label': 'Network', 'value': 'network' },
 								{ 'label': 'Compact', 'value': 'compact' },
-								{ 'label': 'Daily Horoscope', 'value': 'daily-horoscope' },
+								{ 'label': 'Compact Grid', 'value': 'compact-grid' },
+								{ 'label': 'Stack', 'value': 'stack' },
+								{ 'label': 'Stack Grid', 'value': 'stack-grid' },
+								{ 'label': 'Daily Horoscope', 'value': 'daily-horoscope' }
 							]}
 						/>
 					</PanelRow>
-					{ ['network', 'compact', ''].includes(layout) && (
+					{ ! ['trending'].includes( layout ) && (
+						<>
+						<PanelRow>
+							<Flex direction="column" gap="4px">
+							{
+								Array.from(Object.entries(displayOptions)).map(
+									([key, value]) => (
+										<FlexBlock key={`cata-rest-display-${key}`}>
+										<CheckboxControl
+											label={key}
+											checked={value}
+											onChange={(checked => {
+												setAttributes({
+													display: {
+														...display,
+														[key]: checked
+													}
+												})
+											})}
+										/>
+										</FlexBlock>
+									)
+								)
+							}
+							</Flex>
+						</PanelRow>
 						<PanelRow>
 							<SelectControl
 								label="Image Aspect Ratio"
@@ -195,7 +249,8 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 								]}
 							/>
 						</PanelRow>
-					) }
+						</>
+					)}
 				</PanelBody>
 				<PanelBody title="REST Sorting" initialOpen={false}>
 					<PanelRow>
@@ -215,22 +270,6 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 						/>
 					</PanelRow>
 				</PanelBody>
-				{ ['daily-horoscope','network'].includes(layout) && (
-					<PanelBody title="Zodiac Links">
-						<PanelRow>
-							<ToggleControl
-								label="Display zodiac links"
-								help={
-									attributes.display_zodiac_links
-										? 'Zodiac links shown.'
-										: 'Zodiac links hidden.'
-								}
-								checked={attributes.display_zodiac_links}
-								onChange={(option) => {setAttributes({ display_zodiac_links: option})}}
-							/>
-						</PanelRow>
-					</PanelBody>
-				) }
 			</InspectorControls>
 		</>
 	);

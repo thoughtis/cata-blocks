@@ -4,13 +4,15 @@
 import PostDailyHoroscope from "../../post/post-daily-horoscope/PostDailyHoroscope";
 import { getSortingFunction } from '../sorting';
 
+import PostNetwork from "../../post/post-network/PostNetwork";
+
 /**
  * Daily Horoscope Layout
  * 
  * @param {array} posts
  * @param {string} sorting
  */
-export default function DailyHoroscope( { posts, sorting, display_zodiac_links } ) {
+export default function DailyHoroscope( { posts, sorting, display, aspect_ratio } ) {
 
 	if ( 0 === posts.length ) {
 		return null;
@@ -27,7 +29,14 @@ export default function DailyHoroscope( { posts, sorting, display_zodiac_links }
 			{
 				clonedPosts.map( ( post ) => {
 					return (
-						<PostDailyHoroscope key={post.id} post={post} display_zodiac_links={display_zodiac_links} />
+						<PostNetwork
+							key={post.id}
+							post={post}
+							display={display}
+							aspect_ratio={aspect_ratio}
+							slug="daily-horoscope"
+							image_sizes="(max-width: 20em) 46.25vw, 13em"
+						/>
 					)
 				} )
 			}
