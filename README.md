@@ -39,6 +39,23 @@ An aside block containing a kicker as the title, paragraph for the question and 
 
 > The answer is wrapped in the Tap To Reveal format. This format needs to be moved into Cata Blocks from Creepy Catalog.
 
+### Text Decoration Color
+
+A theme has to opt-in to using Text Decoration Color selection. It must also support link colors and have at least one color available in its palette.
+
+It would declare support like these: `add_filter( 'cata_blocks_theme_supports_text_decoration_color', '__return_true' );`
+
+Its CSS for both the editor and the rendered content should also be updated to include at least this:
+
+```
+:root {
+	--cata-text-decoration-color: color-mix( in srgb, currentColor 60%, transparent );
+}
+a:where(:not(.wp-element-button)) {
+	text-decoration-color: var( --cata-text-decoration-color );
+}
+```
+
 # Separation of Concerns
 
 - **This plugin** contains scripts and styles sufficient to use these components in the editor and save them in post content.

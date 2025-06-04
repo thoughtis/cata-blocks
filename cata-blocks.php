@@ -209,4 +209,5 @@ new Block_Filters\SVG_Icon();
 /**
  * Block Editor 
  */
-require_once __DIR__ . '/block-editor/block-editor.php';
+require_once __DIR__ . '/block-editor/app/block-editor.php';
+require_once __DIR__ . '/block-editor/text-decoration-color/text-decoration-color.php';
