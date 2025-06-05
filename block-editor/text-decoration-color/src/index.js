@@ -1,5 +1,5 @@
 /**
- * Flex Grow Control
+ * Text Decoration Control
  */
 
 import { createHigherOrderComponent } from '@wordpress/compose';
@@ -46,7 +46,7 @@ function addTextDecorationColorAttribute( settings ) {
  * 
  * @param {Object} BlockEdit
  * 
- * @return {function} updated block in editor with flex grow control
+ * @return {function} updated block in editor with text decoration control
  */
 const withTextDecorationColorControl = createHigherOrderComponent( ( BlockEdit ) => {
 

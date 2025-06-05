@@ -43,7 +43,7 @@ An aside block containing a kicker as the title, paragraph for the question and 
 
 A theme has to opt-in to using Text Decoration Color selection. It must also support link colors and have at least one color available in its palette.
 
-It would declare support like these: `add_filter( 'cata_blocks_theme_supports_text_decoration_color', '__return_true' );`
+It would declare support like this: `add_filter( 'cata_blocks_theme_supports_text_decoration_color', '__return_true' );`
 
 Its CSS for both the editor and the rendered content should also be updated to include at least this:
 
