@@ -26,7 +26,7 @@ function addTextDecorationColorAttribute( settings ) {
 		return settings;
 	}
 
-	if ( true !== hasBlockSupport( settings, 'color.link', false ) ) {
+	if ( true !== isBlockAllowed( settings.name ) || true !== hasBlockSupport( settings, 'color.link', false ) ) {
 		return settings;
 	}
 
@@ -56,7 +56,7 @@ const withTextDecorationColorControl = createHigherOrderComponent( ( BlockEdit )
 		const { attributes, setAttributes, clientId, isSelected } = props;
 		const { cataBlocksTextDecorationColor } = attributes;
 
-		if ( true !== hasBlockSupport( props.name, 'color.link', false ) ) {
+		if ( true !== isBlockAllowed( props.name ) || true !== hasBlockSupport( props.name, 'color.link', false ) ) {
 			return <BlockEdit { ...props }/>
 		}
 
@@ -102,7 +102,7 @@ const withTextDecorationColorStyle = createHigherOrderComponent( ( BlockListBloc
 	return ( props ) => {
 		const { attributes } = props;
 
-		if ( true !== hasBlockSupport( props.name, 'color.link', false ) ) {
+		if ( true !== isBlockAllowed( props.name ) || true !== hasBlockSupport( props.name, 'color.link', false ) ) {
 			delete attributes.cataBlocksTextDecorationColor;
 			return <BlockListBlock {...props} />;
 		}
@@ -132,7 +132,7 @@ function applyTextDecorationColorAttribute( props, blockType, attributes ) {
 
 	const { cataBlocksTextDecorationColor } = attributes;
 
-	if ( true !== hasBlockSupport( blockType, 'color.link', false ) ) {
+	if ( true !== isBlockAllowed( blockType.name ) || true !== hasBlockSupport( blockType, 'color.link', false ) ) {
 		return props;
 	}
 
@@ -147,6 +147,23 @@ function applyTextDecorationColorAttribute( props, blockType, attributes ) {
 			'--cata-text-decoration-color': cataBlocksTextDecorationColor,
 		}
 	};
+}
+
+
+/**
+ * Is Block Allowed?
+ *
+ * @param {string} blockName 
+ * @return {boolean}
+ */
+function isBlockAllowed( blockName ) {
+	return [
+		'core/group',
+		'core/heading',
+		'core/paragraph',
+		'core/pullquote',
+		'core/quote'
+	].includes(blockName);
 }
 
 addFilter(
