@@ -12,7 +12,7 @@
  * Description: Block Editor components for use with the Cata theme.
  * Author:      Thought & Expression Co. <devjobs@thought.is>
  * Author URI:  https://thought.is
- * Version:     0.11.1
+ * Version:     0.11.2
  * License:     GPL v3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.txt
  */
@@ -209,4 +209,5 @@ new Block_Filters\SVG_Icon();
 /**
  * Block Editor 
  */
-require_once __DIR__ . '/block-editor/block-editor.php';
+require_once __DIR__ . '/block-editor/app/block-editor.php';
+require_once __DIR__ . '/block-editor/text-decoration-color/text-decoration-color.php';

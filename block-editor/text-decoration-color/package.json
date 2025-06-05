@@ -1,0 +1,6 @@
+{
+	"scripts": {
+		"build": "../../node_modules/.bin/wp-scripts build",
+		"start": "../../node_modules/.bin/wp-scripts start"
+	}
+}
