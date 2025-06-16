@@ -47,4 +47,4 @@ function cata_inherit_query_render_block_data( array $parsed_block ): array {
 
 	return $parsed_block;
 }
-add_filter( 'render_block_data', __NAMESPACE__ . '\\cata_inherit_query_render_block_data' );
+add_filter( 'render_block_data', __NAMESPACE__ . '\\cata_inherit_query_render_block_data', PHP_INT_MAX );
