@@ -54,7 +54,10 @@ add_filter( 'render_block_data', __NAMESPACE__ . '\\cata_inherit_query_render_bl
 
 /**
  * Render Block Context
- * 
+ *
+ * Doing this in addition to the filter on render_block_data above.
+ * On some systems ( WP VIP ) the render_block_data filter is ineffective.
+ *
  * @param array $context
  * @param array $parsed_block
  * @param WP_Block|null $parent_block
