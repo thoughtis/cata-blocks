@@ -11,6 +11,8 @@
 
 namespace Cata\Blocks;
 
+use WP_Block;
+
 /**
  * Enqueue Scripts
  */
@@ -39,7 +41,7 @@ function cata_inherit_query_render_block_data( array $parsed_block ): array {
 		return $parsed_block;
 	}
 
-	if ( ! ( $parsed_block['attrs']['cataInheritQuery'] ?? false ) ) {
+	if ( true !== ( $parsed_block['attrs']['cataInheritQuery'] ?? false ) ) {
 		return $parsed_block;
 	}
 
@@ -48,3 +50,31 @@ function cata_inherit_query_render_block_data( array $parsed_block ): array {
 	return $parsed_block;
 }
 add_filter( 'render_block_data', __NAMESPACE__ . '\\cata_inherit_query_render_block_data', PHP_INT_MAX );
+
+
+/**
+ * Render Block Context
+ * 
+ * @param array $context
+ * @param array $parsed_block
+ * @param WP_Block|null $parent_block
+ * @return array $context
+ */
+function cata_inherit_query_render_block_context( array $context, array $parsed_block, WP_Block|null $parent_block ): array {
+
+	if ( ! in_array( $parsed_block['blockName'], ['core/query-pagination', 'core/post-template'] ) ) {
+		return $context;
+	}
+
+	if ( null === $parent_block || 'core/query' !== $parent_block->parsed_block['blockName'] ) {
+		return $context;
+	}
+
+	if ( true === ( $parent_block->parsed_block['attrs']['cataInheritQuery'] ?? false ) ) {
+		$context['query']['inherit'] = true;
+	}
+
+	return $context;
+
+}
+add_filter( 'render_block_context', __NAMESPACE__ . '\\cata_inherit_query_render_block_context', 10, 3 );
