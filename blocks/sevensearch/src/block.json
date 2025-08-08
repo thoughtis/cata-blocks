@@ -1,0 +1,32 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cata/sevensearch",
+	"version": "0.1.0",
+	"title": "7Search",
+	"category": "widgets",
+	"icon": "smiley",
+	"description": "Output a 7Search Widget.",
+	"example": {},
+	"supports": {
+		"html": false,
+		"anchor": true
+	},
+	"attributes": {
+		"adId": {
+			"type": "string",
+			"default": ""
+		},
+		"adType": {
+			"type": "string",
+			"default": ""
+		},
+		"layout": {
+			"type": "integer",
+			"default": "1"
+		}
+	},
+	"textdomain": "cata",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css"
+}

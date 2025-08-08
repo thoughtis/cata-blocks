@@ -161,6 +161,11 @@ require_once __DIR__ . '/blocks/marquee/marquee.php';
 require_once __DIR__ . '/blocks/outbrain/outbrain.php';
 
 /**
+ * 7Search
+ */
+require_once __DIR__ . '/blocks/sevensearch/sevensearch.php';
+
+/**
  * Globe Background
  */
 require_once __DIR__ . '/blocks/globe-background/globe-background.php';
