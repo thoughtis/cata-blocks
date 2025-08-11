@@ -74,7 +74,7 @@ export default function Edit( { attributes, setAttributes } ) {
 				</PanelBody>
 			</InspectorControls>
 			<div { ...useBlockProps() }>
-				{ __( 'Placeholder for a 7Search Widget', 'cata' ) }
+				{ __( 'Placeholder for a 7Search Ad', 'cata' ) }
 			</div>
 		</>
 	);
