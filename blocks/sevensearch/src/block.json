@@ -3,10 +3,10 @@
 	"apiVersion": 3,
 	"name": "cata/sevensearch",
 	"version": "0.1.0",
-	"title": "7Search",
+	"title": "7Search Ad",
 	"category": "widgets",
 	"icon": "smiley",
-	"description": "Output a 7Search Widget.",
+	"description": "Output a 7Search Ad.",
 	"example": {},
 	"supports": {
 		"html": false,
