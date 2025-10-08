@@ -55,10 +55,12 @@ const Edit = ( {
 } ) => {
 
 	const MODAL_TEMPLATE = [
-		[ 'core/group', { "style": { "border": { "bottom": { "color": "#f1f1f1", "width":"2px" } },"color":{"background":"#ffffff"} } }, [
-			[ 'cata/advanced-modal-close', {} ],
-			[ 'core/paragraph', { placeholder: 'Enter modal content here...' } ],
-		] ]
+		['core/cover', {}, [
+			[ 'core/group', {}, [
+				[ 'cata/advanced-modal-close', {} ],
+				[ 'core/paragraph', { placeholder: 'Enter modal content here...' } ],
+			] ]
+		]]	
 	];
 
 	const colorGradientSettings = useMultipleOriginColorsAndGradients();
