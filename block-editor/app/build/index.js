@@ -59,7 +59,7 @@ const CustomPreviewMenuItem = () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_I
     }
     if (postEditor) {
       const editorStylesWrapper = document.querySelector('.editor-styles-wrapper');
-      editorStylesWrapper.body.style.colorScheme = 'dark only';
+      editorStylesWrapper.style.colorScheme = 'dark only';
     }
   },
   children: "Preview in Dark Mode"
