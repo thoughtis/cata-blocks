@@ -23,6 +23,6 @@ const CustomPreviewMenuItem = () => (
   </PluginPreviewMenuItem>
 );
 
-registerPlugin( 'cata-blocks/color-scheme-preview', {
+registerPlugin( 'cata-blocks-color-scheme-preview', {
     render: CustomPreviewMenuItem,
 } );
