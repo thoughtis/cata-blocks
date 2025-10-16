@@ -15,7 +15,7 @@ const CustomPreviewMenuItem = () => (
 
 		if ( postEditor ) {
 			const editorStylesWrapper = document.querySelector('.editor-styles-wrapper');
-			editorStylesWrapper.body.style.colorScheme = 'dark only';
+			editorStylesWrapper.style.colorScheme = 'dark only';
 		}
     } }
   >
