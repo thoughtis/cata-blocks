@@ -64,7 +64,7 @@ const CustomPreviewMenuItem = () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_I
   },
   children: "Preview in Dark Mode"
 });
-(0,_wordpress_plugins__WEBPACK_IMPORTED_MODULE_1__.registerPlugin)('cata-blocks/color-scheme-preview', {
+(0,_wordpress_plugins__WEBPACK_IMPORTED_MODULE_1__.registerPlugin)('cata-blocks-color-scheme-preview', {
   render: CustomPreviewMenuItem
 });
 
