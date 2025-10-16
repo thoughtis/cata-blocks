@@ -75,6 +75,7 @@ const withColorSchemeControl = createHigherOrderComponent( ( BlockEdit ) => {
 				{ isSelected &&
 					<InspectorControls group="color">
 						<SelectControl
+							value={attributes.cataBlocksColorScheme}
 							options={
 								[
 									{
