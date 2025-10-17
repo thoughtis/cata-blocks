@@ -49,20 +49,38 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+/**
+ * Element Is Dark Mode
+ *
+ * @param {HTMLElement} element 
+ * @return {boolean}
+ */
+
+function elementIsDarkMode(element) {
+  return 'dark only' === element?.style?.colorScheme;
+}
 const CustomPreviewMenuItem = () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_editor__WEBPACK_IMPORTED_MODULE_0__.PluginPreviewMenuItem, {
   onClick: () => {
     const siteEditor = document.querySelector('#site-editor');
     const postEditor = document.querySelector('#editor');
     if (siteEditor) {
       const editorBodyEl = document.querySelector('.edit-site-visual-editor__editor-canvas');
-      editorBodyEl.contentDocument.body.style.colorScheme = 'dark only';
+      if (elementIsDarkMode(editorBodyEl.contentDocument.body)) {
+        editorBodyEl.contentDocument.body.style.colorScheme = '';
+      } else {
+        editorBodyEl.contentDocument.body.style.colorScheme = 'dark only';
+      }
     }
     if (postEditor) {
       const editorStylesWrapper = document.querySelector('.editor-styles-wrapper');
-      editorStylesWrapper.style.colorScheme = 'dark only';
+      if (elementIsDarkMode(editorStylesWrapper)) {
+        editorStylesWrapper.style.colorScheme = '';
+      } else {
+        editorStylesWrapper.style.colorScheme = 'dark only';
+      }
     }
   },
-  children: "Preview in Dark Mode"
+  children: "Preview Dark Mode"
 });
 (0,_wordpress_plugins__WEBPACK_IMPORTED_MODULE_1__.registerPlugin)('cata-blocks-color-scheme-preview', {
   render: CustomPreviewMenuItem
