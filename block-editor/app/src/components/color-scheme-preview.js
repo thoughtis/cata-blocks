@@ -1,6 +1,17 @@
 import { PluginPreviewMenuItem } from '@wordpress/editor';
 import { registerPlugin } from '@wordpress/plugins';
 
+
+/**
+ * Element Is Dark Mode
+ *
+ * @param {HTMLElement} element 
+ * @return {boolean}
+ */
+function elementIsDarkMode( element ) {
+	return 'dark only' === element?.style?.colorScheme;
+}
+
 const CustomPreviewMenuItem = () => (
   <PluginPreviewMenuItem
     onClick={ () => {
@@ -10,16 +21,25 @@ const CustomPreviewMenuItem = () => (
 
 		if ( siteEditor ) {
 			const editorBodyEl = document.querySelector('.edit-site-visual-editor__editor-canvas');
-			editorBodyEl.contentDocument.body.style.colorScheme = 'dark only';
+			if ( elementIsDarkMode( editorBodyEl.contentDocument.body ) ) {
+				editorBodyEl.contentDocument.body.style.colorScheme = '';
+			} else {
+				editorBodyEl.contentDocument.body.style.colorScheme = 'dark only';
+			}
 		}
 
 		if ( postEditor ) {
 			const editorStylesWrapper = document.querySelector('.editor-styles-wrapper');
-			editorStylesWrapper.style.colorScheme = 'dark only';
+
+			if ( elementIsDarkMode( editorStylesWrapper ) ) {
+				editorStylesWrapper.style.colorScheme = '';
+			} else {
+				editorStylesWrapper.style.colorScheme = 'dark only';
+			}
 		}
     } }
   >
-    Preview in Dark Mode
+    Preview Dark Mode
   </PluginPreviewMenuItem>
 );
 
