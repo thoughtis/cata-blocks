@@ -44,44 +44,33 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_editor__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_editor__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_plugins__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/plugins */ "@wordpress/plugins");
 /* harmony import */ var _wordpress_plugins__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_plugins__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__);
 
 
 
-/**
- * Element Is Dark Mode
- *
- * @param {HTMLElement} element 
- * @return {boolean}
- */
 
-function elementIsDarkMode(element) {
-  return 'dark only' === element?.style?.colorScheme;
-}
-const CustomPreviewMenuItem = () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_editor__WEBPACK_IMPORTED_MODULE_0__.PluginPreviewMenuItem, {
-  onClick: () => {
-    const siteEditor = document.querySelector('#site-editor');
-    const postEditor = document.querySelector('#editor');
-    if (siteEditor) {
-      const editorBodyEl = document.querySelector('.edit-site-visual-editor__editor-canvas');
-      if (elementIsDarkMode(editorBodyEl.contentDocument.body)) {
-        editorBodyEl.contentDocument.body.style.colorScheme = '';
-      } else {
-        editorBodyEl.contentDocument.body.style.colorScheme = 'dark only';
+const CustomPreviewMenuItem = () => {
+  const [isDarkMode, setIsDarkMode] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(false);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_editor__WEBPACK_IMPORTED_MODULE_0__.PluginPreviewMenuItem, {
+    onClick: () => {
+      const siteEditor = document.querySelector('#site-editor');
+      const postEditor = document.querySelector('#editor');
+      if (siteEditor) {
+        const editorBodyEl = document.querySelector('.edit-site-visual-editor__editor-canvas');
+        editorBodyEl.contentDocument.body.style.colorScheme = isDarkMode ? '' : 'dark only';
       }
-    }
-    if (postEditor) {
-      const editorStylesWrapper = document.querySelector('.editor-styles-wrapper');
-      if (elementIsDarkMode(editorStylesWrapper)) {
-        editorStylesWrapper.style.colorScheme = '';
-      } else {
-        editorStylesWrapper.style.colorScheme = 'dark only';
+      if (postEditor) {
+        const editorStylesWrapper = document.querySelector('.editor-styles-wrapper');
+        editorStylesWrapper.style.colorScheme = isDarkMode ? '' : 'dark only';
       }
-    }
-  },
-  children: "Preview Dark Mode"
-});
+      setIsDarkMode(!isDarkMode);
+    },
+    children: isDarkMode ? 'Preview Light Mode' : 'Preview Dark Mode'
+  });
+};
 (0,_wordpress_plugins__WEBPACK_IMPORTED_MODULE_1__.registerPlugin)('cata-blocks-color-scheme-preview', {
   render: CustomPreviewMenuItem
 });
