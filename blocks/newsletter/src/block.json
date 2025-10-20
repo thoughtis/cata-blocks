@@ -1,5 +1,5 @@
 {
-	"apiVersion": 2,
+	"apiVersion": 3,
 	"name": "cata/newsletter",
 	"version": "0.1.0",
 	"title": "Newsletter Signup Form",
