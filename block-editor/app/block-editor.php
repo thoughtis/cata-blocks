@@ -19,5 +19,8 @@ function cata_block_editor_enqueue_scripts(): void {
 		$asset['dependencies'],
 		$asset['version']
 	);
+
+	wp_add_inline_style( 'wp-block-editor', 'body.has-active-dark-mode-element .block-editor-panel-color-gradient-settings__dropdown-content, body.has-active-dark-mode-element .block-editor-tools-panel-color-gradient-settings__dropdown { color-scheme: dark only; }');
+
 }
 add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\cata_block_editor_enqueue_scripts' );

@@ -7,6 +7,8 @@ import { addFilter } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import { SelectControl } from '@wordpress/components';
 import { InspectorControls } from '@wordpress/block-editor';
+import { useEffect, useMemo } from '@wordpress/element';
+import useEditorCanvas from '../hooks/use-editor-canvas';
 
 export default function main() {
 	addFilter(
@@ -64,14 +66,33 @@ function addColorSchemeAttribute( settings, name ) {
  * 
  * @return {function} updated block in editor with flex grow control
  */
-const withColorSchemeControl = createHigherOrderComponent( ( BlockEdit ) => {
-
+const withColorSchemeControl = ( BlockEdit ) => {
 	return ( props ) => {
+
 		const { attributes, setAttributes, isSelected } = props;
+
+		const { getBlockByClientId } = useEditorCanvas();
+
+		useEffect(
+			() => {
+				if ( ! isSelected ) {
+					return;
+				}
+				const blockInDOM = getBlockByClientId(props.clientId);
+
+				if ( blockInDOM ) {
+					window.document.body.classList.toggle(
+						'has-active-dark-mode-element',
+						'dark only' === getComputedStyle( blockInDOM ).colorScheme
+					);
+				}
+			},
+			[isSelected, attributes.cataBlocksColorScheme]
+		);
 
 		return (
 			<>
-				<BlockEdit { ...props }/>
+				<BlockEdit { ...props } />
 				{ isSelected &&
 					<InspectorControls group="color">
 						<SelectControl
@@ -102,8 +123,7 @@ const withColorSchemeControl = createHigherOrderComponent( ( BlockEdit ) => {
 			</>
 		);
 	};
-
-}, 'withColorSchemeControl' );
+};
 
 /**
  * With Color Scheme Style
