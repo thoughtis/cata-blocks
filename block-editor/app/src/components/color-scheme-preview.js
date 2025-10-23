@@ -9,10 +9,7 @@ const CustomPreviewMenuItem = () => {
 	const [ isDarkMode, setIsDarkMode ] = useState(false);
 	const { canvas } = useEditorCanvas();
 
-	console.log( 'initialize', canvas );
-
 	useEffect( () => {
-		console.log( 'useffect', canvas );
 		if ( canvas ) {
 			canvas.style.colorScheme = isDarkMode ? 'dark only' : '' ;
 		}
@@ -21,7 +18,6 @@ const CustomPreviewMenuItem = () => {
 	return (
 		<PluginPreviewMenuItem
 			onClick={ () => {
-				console.log( 'event', canvas );
 				setIsDarkMode( !isDarkMode );			
 			} }
 		>
