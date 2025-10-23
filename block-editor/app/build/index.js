@@ -46,26 +46,29 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_plugins__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_plugins__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _hooks_use_editor_canvas__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../hooks/use-editor-canvas */ "./src/hooks/use-editor-canvas.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
+
+
 
 
 
 
 const CustomPreviewMenuItem = () => {
   const [isDarkMode, setIsDarkMode] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(false);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_editor__WEBPACK_IMPORTED_MODULE_0__.PluginPreviewMenuItem, {
+  const {
+    canvas
+  } = (0,_hooks_use_editor_canvas__WEBPACK_IMPORTED_MODULE_3__["default"])();
+  (0,react__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
+    if (canvas) {
+      canvas.style.colorScheme = isDarkMode ? 'dark only' : '';
+    }
+  }, [canvas, isDarkMode]);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_editor__WEBPACK_IMPORTED_MODULE_0__.PluginPreviewMenuItem, {
     onClick: () => {
-      const siteEditor = document.querySelector('#site-editor');
-      const postEditor = document.querySelector('#editor');
-      if (siteEditor) {
-        const editorBodyEl = document.querySelector('.edit-site-visual-editor__editor-canvas');
-        editorBodyEl.contentDocument.body.style.colorScheme = isDarkMode ? '' : 'dark only';
-      }
-      if (postEditor) {
-        const editorStylesWrapper = document.querySelector('.editor-styles-wrapper');
-        editorStylesWrapper.style.colorScheme = isDarkMode ? '' : 'dark only';
-      }
       setIsDarkMode(!isDarkMode);
     },
     children: isDarkMode ? 'Preview Light Mode' : 'Preview Dark Mode'
@@ -97,11 +100,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _hooks_use_editor_canvas__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../hooks/use-editor-canvas */ "./src/hooks/use-editor-canvas.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__);
 /**
  * Color Scheme Control
  */
+
+
 
 
 
@@ -143,19 +151,31 @@ function addColorSchemeAttribute(settings, name) {
  * 
  * @return {function} updated block in editor with flex grow control
  */
-const withColorSchemeControl = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_0__.createHigherOrderComponent)(BlockEdit => {
+const withColorSchemeControl = BlockEdit => {
   return props => {
     const {
       attributes,
       setAttributes,
       isSelected
     } = props;
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(BlockEdit, {
+    const {
+      getBlockByClientId
+    } = (0,_hooks_use_editor_canvas__WEBPACK_IMPORTED_MODULE_6__["default"])();
+    (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useEffect)(() => {
+      if (!isSelected) {
+        return;
+      }
+      const blockInDOM = getBlockByClientId(props.clientId);
+      if (blockInDOM) {
+        window.document.body.classList.toggle('has-active-dark-mode-element', 'dark only' === getComputedStyle(blockInDOM).colorScheme);
+      }
+    }, [isSelected, attributes.cataBlocksColorScheme]);
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(BlockEdit, {
         ...props
-      }), isSelected && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.InspectorControls, {
+      }), isSelected && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.InspectorControls, {
         group: "color",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
           value: attributes.cataBlocksColorScheme,
           options: [{
             label: 'Original',
@@ -177,7 +197,7 @@ const withColorSchemeControl = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_0_
       })]
     });
   };
-}, 'withColorSchemeControl');
+};
 
 /**
  * With Color Scheme Style
@@ -193,11 +213,11 @@ const withColorSchemeStyle = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_0__.
     } = props;
     if (null === attributes.cataBlocksColorScheme || undefined === attributes.cataBlocksColorScheme || '' === attributes.cataBlocksColorScheme) {
       delete attributes.cataBlocksColorScheme;
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(BlockListBlock, {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(BlockListBlock, {
         ...props
       });
     }
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(BlockListBlock, {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(BlockListBlock, {
       ...props,
       wrapperProps: {
         style: {
@@ -613,6 +633,90 @@ function getUpdatedLinkAttributes({
     linkTarget: newLinkTarget
   };
 }
+
+/***/ }),
+
+/***/ "./src/hooks/use-editor-canvas.js":
+/*!****************************************!*\
+  !*** ./src/hooks/use-editor-canvas.js ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ useEditorCanvas)
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+
+/**
+ * Use Editor Canvas
+ */
+function useEditorCanvas() {
+  const [state, setState] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)({
+    canvas: null
+  });
+  if (null === state.canvas) {
+    const siteEditor = document.querySelector('#site-editor');
+    const postEditor = document.querySelector('#editor');
+    if (siteEditor) {
+      var _document$querySelect;
+      const maybeSiteEditorCanvas = (_document$querySelect = document.querySelector('.edit-site-visual-editor__editor-canvas')?.contentDocument?.querySelector('.editor-styles-wrapper')) !== null && _document$querySelect !== void 0 ? _document$querySelect : null;
+      if (maybeSiteEditorCanvas) {
+        setState({
+          canvas: maybeSiteEditorCanvas
+        });
+      }
+    }
+    if (postEditor) {
+      const iframe = postEditor.querySelector('iframe[name=editor-canvas]');
+      if (iframe) {
+        var _iframe$contentDocume;
+        const maybeiFrameCanvas = (_iframe$contentDocume = iframe?.contentDocument?.querySelector('.editor-styles-wrapper')) !== null && _iframe$contentDocume !== void 0 ? _iframe$contentDocume : null;
+        if (maybeiFrameCanvas) {
+          setState({
+            canvas: maybeiFrameCanvas
+          });
+        }
+      } else {
+        const maybeNonIFrameCanvas = document.querySelector('.editor-styles-wrapper');
+        if (maybeNonIFrameCanvas) {
+          setState({
+            canvas: maybeNonIFrameCanvas
+          });
+        }
+      }
+    }
+  }
+
+  /**
+   * Get Block By Client Id
+   *
+   * @param {string} clientId 
+   * @return {null|HTMLElement}
+   */
+  function getBlockByClientId(clientId) {
+    if (null === state.canvas) {
+      return null;
+    }
+    return state.canvas.querySelector(`#block-${clientId}`);
+  }
+  return {
+    canvas: state.canvas,
+    getBlockByClientId
+  };
+}
+
+/***/ }),
+
+/***/ "react":
+/*!************************!*\
+  !*** external "React" ***!
+  \************************/
+/***/ ((module) => {
+
+module.exports = window["React"];
 
 /***/ }),
 
