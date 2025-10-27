@@ -4,6 +4,15 @@ import { useState } from '@wordpress/element';
 import { getEditorCanvas } from '../hooks/use-editor-canvas';
 import { useEffect } from 'react';
 
+/**
+ * Main
+ */
+export default function main() {
+	registerPlugin( 'cata-blocks-color-scheme-preview', {
+		render: CustomPreviewMenuItem,
+	} );
+}
+
 const CustomPreviewMenuItem = () => {
 	
 	const [ isDarkMode, setIsDarkMode ] = useState(false);
@@ -25,7 +34,3 @@ const CustomPreviewMenuItem = () => {
 		</PluginPreviewMenuItem>
 	)
 };
-
-registerPlugin( 'cata-blocks-color-scheme-preview', {
-    render: CustomPreviewMenuItem,
-} );
