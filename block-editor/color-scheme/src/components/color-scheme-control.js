@@ -6,10 +6,17 @@ import { createHigherOrderComponent } from '@wordpress/compose';
 import { addFilter } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import { SelectControl } from '@wordpress/components';
-import { InspectorControls } from '@wordpress/block-editor';
-import { useEffect, useMemo } from '@wordpress/element';
+import {
+	InspectorControls,
+	__experimentalUseMultipleOriginColorsAndGradients as useMultipleOriginColorsAndGradients
+} from '@wordpress/block-editor';
+import { useEffect } from '@wordpress/element';
 import useEditorCanvas from '../hooks/use-editor-canvas';
+import { hasBlockSupport } from '@wordpress/blocks';
 
+/**
+ * Main
+ */
 export default function main() {
 	addFilter(
 		'blocks.registerBlockType',
@@ -50,6 +57,10 @@ function addColorSchemeAttribute( settings, name ) {
 		return settings;
 	}
 
+	if ( true !== hasBlockSupport( settings, 'color', false ) ) {
+		return settings;
+	}
+
 	Object.assign( settings.attributes, {
 		cataBlocksColorScheme: {
 			type: 'string',
@@ -73,6 +84,8 @@ const withColorSchemeControl = ( BlockEdit ) => {
 
 		const { getBlockByClientId } = useEditorCanvas();
 
+		const colorGradientSettings = useMultipleOriginColorsAndGradients();
+
 		useEffect(
 			() => {
 				if ( ! isSelected ) {
@@ -90,10 +103,14 @@ const withColorSchemeControl = ( BlockEdit ) => {
 			[isSelected, attributes.cataBlocksColorScheme]
 		);
 
+		if ( true !== hasBlockSupport( props.name, 'color', false ) ) {
+			return <BlockEdit { ...props }/>
+		}
+
 		return (
 			<>
 				<BlockEdit { ...props } />
-				{ isSelected &&
+				{ isSelected && colorGradientSettings.hasColorsOrGradients &&
 					<InspectorControls group="color">
 						<SelectControl
 							value={attributes.cataBlocksColorScheme}
