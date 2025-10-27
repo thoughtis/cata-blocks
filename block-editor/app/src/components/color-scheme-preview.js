@@ -1,19 +1,19 @@
 import { PluginPreviewMenuItem } from '@wordpress/editor';
 import { registerPlugin } from '@wordpress/plugins';
 import { useState } from '@wordpress/element';
-import useEditorCanvas from '../hooks/use-editor-canvas';
+import { getEditorCanvas } from '../hooks/use-editor-canvas';
 import { useEffect } from 'react';
 
 const CustomPreviewMenuItem = () => {
 	
 	const [ isDarkMode, setIsDarkMode ] = useState(false);
-	const { canvas } = useEditorCanvas();
-
+	
 	useEffect( () => {
+		const canvas = getEditorCanvas();
 		if ( canvas ) {
 			canvas.style.colorScheme = isDarkMode ? 'dark only' : '' ;
 		}
-	}, [canvas, isDarkMode] );
+	}, [isDarkMode] );
 
 	return (
 		<PluginPreviewMenuItem

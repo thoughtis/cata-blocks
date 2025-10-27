@@ -1,6 +1,43 @@
 import { useState } from "@wordpress/element";
 
 /**
+ * Get Editor Canvas
+ * 
+ * @return {null|HTMLElement}
+ */
+export function getEditorCanvas() {
+
+	const siteEditor = document.querySelector('#site-editor');
+	const postEditor = document.querySelector('#editor');
+
+	let canvas = null;
+
+	if ( siteEditor ) {
+		const maybeSiteEditorCanvas = document.querySelector('.edit-site-visual-editor__editor-canvas')?.contentDocument?.querySelector('.editor-styles-wrapper') ?? null;
+		if ( maybeSiteEditorCanvas ) {
+			canvas = maybeSiteEditorCanvas;
+		}
+	}
+	
+	if ( postEditor ) {
+		const iframe = postEditor.querySelector('iframe[name=editor-canvas]');
+		if ( iframe ) {
+			const maybeiFrameCanvas = iframe?.contentDocument?.querySelector('.editor-styles-wrapper') ?? null;
+			if ( maybeiFrameCanvas ) {
+				canvas = maybeiFrameCanvas;
+			}
+		} else {
+			const maybeNonIFrameCanvas = document.querySelector('.editor-styles-wrapper')
+			if ( maybeNonIFrameCanvas ) {
+				canvas = maybeNonIFrameCanvas;
+			}
+		}
+	}
+
+	return canvas;
+}
+
+/**
  * Use Editor Canvas
  */
 export default function useEditorCanvas() {
@@ -9,29 +46,10 @@ export default function useEditorCanvas() {
 
 	if ( null === state.canvas ) {
 
-		const siteEditor = document.querySelector('#site-editor');
-		const postEditor = document.querySelector('#editor');
+		const canvas = getEditorCanvas()
 
-		if ( siteEditor ) {
-			const maybeSiteEditorCanvas = document.querySelector('.edit-site-visual-editor__editor-canvas')?.contentDocument?.querySelector('.editor-styles-wrapper') ?? null;
-			if ( maybeSiteEditorCanvas ) {
-				setState( { canvas: maybeSiteEditorCanvas } );
-			}
-		}
-		
-		if ( postEditor ) {
-			const iframe = postEditor.querySelector('iframe[name=editor-canvas]');
-			if ( iframe ) {
-				const maybeiFrameCanvas = iframe?.contentDocument?.querySelector('.editor-styles-wrapper') ?? null;
-				if ( maybeiFrameCanvas ) {
-					setState( { canvas: maybeiFrameCanvas }  );
-				}
-			} else {
-				const maybeNonIFrameCanvas = document.querySelector('.editor-styles-wrapper')
-				if ( maybeNonIFrameCanvas ) {
-					setState( { canvas: maybeNonIFrameCanvas } );
-				}
-			}
+		if ( null !== canvas ) {
+			setState( { canvas } );
 		}
 	}
 
