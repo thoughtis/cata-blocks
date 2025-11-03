@@ -185,6 +185,10 @@ new Just_Watch\Options();
 require_once __DIR__ . '/blocks/advanced-modal/advanced-modal.php';
 require_once __DIR__ . '/blocks/advanced-modal-close/advanced-modal-close.php';
 
+/**
+ * First Page Content
+ */
+require_once __DIR__ . '/blocks/first-page-content/first-page-content.php';
 
 /**
  * Trivia Pattern
@@ -204,7 +208,6 @@ require_once __DIR__ . '/variations/social-link/substack/substack.php';
 /**
  * Block Filters
  */
-
 require_once __DIR__ . '/block-filters/post-excerpt/class-post-excerpt.php';
 require_once __DIR__ . '/block-filters/svg-icon/class-svg-icon.php';
 
