@@ -5,7 +5,7 @@
 	"version": "0.1.0",
 	"title": "First Page Content",
 	"category": "widgets",
-	"icon": "smiley",
+	"icon": "index-card",
 	"description": "Group block that only displays content on the first page of an archive.",
 	"supports": {
 		"html": false

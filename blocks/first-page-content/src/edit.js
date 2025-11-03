@@ -11,7 +11,7 @@ import { __ } from '@wordpress/i18n';
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
  */
-import { useBlockProps } from '@wordpress/block-editor';
+import { useBlockProps, InnerBlocks } from '@wordpress/block-editor';
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -22,9 +22,10 @@ import { useBlockProps } from '@wordpress/block-editor';
  * @return {Element} Element to render.
  */
 export default function Edit() {
+	const blockProps = useBlockProps();
 	return (
-		<p { ...useBlockProps() }>
-			{ 'First Page Content - editor content' }
-		</p>
+		<div { ...blockProps } >
+			<InnerBlocks />
+		</div>
 	);
 }
