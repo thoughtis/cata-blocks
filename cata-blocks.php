@@ -12,7 +12,7 @@
  * Description: Block Editor components for use with the Cata theme.
  * Author:      Thought & Expression Co. <devjobs@thought.is>
  * Author URI:  https://thought.is
- * Version:     0.11.5
+ * Version:     0.11.6
  * License:     GPL v3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.txt
  */
@@ -185,6 +185,10 @@ new Just_Watch\Options();
 require_once __DIR__ . '/blocks/advanced-modal/advanced-modal.php';
 require_once __DIR__ . '/blocks/advanced-modal-close/advanced-modal-close.php';
 
+/**
+ * First Page Content
+ */
+require_once __DIR__ . '/blocks/first-page-content/first-page-content.php';
 
 /**
  * Trivia Pattern
@@ -204,7 +208,6 @@ require_once __DIR__ . '/variations/social-link/substack/substack.php';
 /**
  * Block Filters
  */
-
 require_once __DIR__ . '/block-filters/post-excerpt/class-post-excerpt.php';
 require_once __DIR__ . '/block-filters/svg-icon/class-svg-icon.php';
 

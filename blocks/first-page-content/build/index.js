@@ -1,0 +1,1 @@
+(()=>{"use strict";const n=window.wp.blocks,t=(window.wp.i18n,window.wp.blockEditor),e=window.ReactJSXRuntime,o=JSON.parse('{"UU":"cata/first-page-content"}');(0,n.registerBlockType)(o.UU,{edit:function(){const n=(0,t.useBlockProps)();return(0,e.jsx)("div",{...n,children:(0,e.jsx)(t.InnerBlocks,{})})},save:function(){return(0,e.jsx)(t.InnerBlocks.Content,{})}})})();

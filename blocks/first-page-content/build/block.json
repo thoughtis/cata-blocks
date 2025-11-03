@@ -1,0 +1,15 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "cata/first-page-content",
+  "version": "0.1.0",
+  "title": "First Page Content",
+  "category": "widgets",
+  "icon": "index-card",
+  "description": "Group block that only displays content on the first page of an archive.",
+  "supports": {
+    "html": false
+  },
+  "textdomain": "cata",
+  "editorScript": "file:./index.js"
+}
