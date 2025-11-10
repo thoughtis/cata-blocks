@@ -59,5 +59,7 @@ function cata_first_page_content_render_block( array $attributes, string $conten
 		return '';
 	}
 
-	return $content;
+	$wrapper_attributes = get_block_wrapper_attributes( apply_filters( "{$block->name}_block_wrapper_attributes", [], $attributes ) );
+
+	return "<div $wrapper_attributes>$content</div>";
 }

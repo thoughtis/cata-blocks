@@ -8,7 +8,84 @@
   "icon": "index-card",
   "description": "Group block that only displays content on the first page of an archive.",
   "supports": {
-    "html": false
+    "__experimentalOnEnter": true,
+    "__experimentalOnMerge": true,
+    "__experimentalSettings": true,
+    "align": [
+      "wide",
+      "full"
+    ],
+    "anchor": true,
+    "ariaLabel": true,
+    "html": false,
+    "background": {
+      "backgroundImage": true,
+      "backgroundSize": true,
+      "__experimentalDefaultControls": {
+        "backgroundImage": true
+      }
+    },
+    "color": {
+      "gradients": true,
+      "heading": true,
+      "button": true,
+      "link": true,
+      "__experimentalDefaultControls": {
+        "background": true,
+        "text": true
+      }
+    },
+    "shadow": true,
+    "spacing": {
+      "margin": [
+        "top",
+        "bottom"
+      ],
+      "padding": true,
+      "blockGap": true,
+      "__experimentalDefaultControls": {
+        "padding": true,
+        "blockGap": true
+      }
+    },
+    "dimensions": {
+      "minHeight": true
+    },
+    "__experimentalBorder": {
+      "color": true,
+      "radius": true,
+      "style": true,
+      "width": true,
+      "__experimentalDefaultControls": {
+        "color": true,
+        "radius": true,
+        "style": true,
+        "width": true
+      }
+    },
+    "position": {
+      "sticky": true
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "__experimentalFontFamily": true,
+      "__experimentalFontWeight": true,
+      "__experimentalFontStyle": true,
+      "__experimentalTextTransform": true,
+      "__experimentalTextDecoration": true,
+      "__experimentalLetterSpacing": true,
+      "__experimentalDefaultControls": {
+        "fontSize": true
+      }
+    },
+    "layout": {
+      "allowSizingOnChildren": true
+    },
+    "interactivity": {
+      "clientNavigation": true
+    },
+    "allowedBlocks": true
   },
   "textdomain": "cata",
   "editorScript": "file:./index.js"
