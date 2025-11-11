@@ -1,8 +1,7 @@
 /**
  * Color Scheme Control
  */
-
-import { createHigherOrderComponent } from '@wordpress/compose';
+import {  } from '@wordpress/components';
 import { addFilter } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import { SelectControl } from '@wordpress/components';
@@ -114,10 +113,11 @@ const withColorSchemeControl = ( BlockEdit ) => {
 					<InspectorControls group="color">
 						<SelectControl
 							value={attributes.cataBlocksColorScheme}
+							style={{width: '100%'}}
 							options={
 								[
 									{
-										label: 'Original',
+										label: 'Default',
 										value: ''
 									},
 									{
@@ -149,8 +149,7 @@ const withColorSchemeControl = ( BlockEdit ) => {
  * 
  * @return {function} updated wrapper component in editor
  */
-const withColorSchemeStyle = createHigherOrderComponent( ( BlockListBlock ) => {
-
+function withColorSchemeStyle( BlockListBlock ) {
 	return ( props ) => {
 		const { attributes } = props;
 	
@@ -163,8 +162,7 @@ const withColorSchemeStyle = createHigherOrderComponent( ( BlockListBlock ) => {
 			<BlockListBlock {...props} wrapperProps={ { style: { colorScheme: attributes.cataBlocksColorScheme } } } />
 		);
 	}
-
-}, 'withColorSchemeStyle' );
+}
 
 /**
  * Apply Color Scheme Attribute
