@@ -13,7 +13,13 @@ export default function main() {
 	} );
 }
 
-const CustomPreviewMenuItem = () => {
+/**
+ * Custom Preview Menu Item
+ *
+ * Allow toggling color schemes in the preview menu.
+ * Set the colorScheme CSS property in the real editor canvas in the DOM.
+ */
+function CustomPreviewMenuItem() {
 	
 	const [ isDarkMode, setIsDarkMode ] = useState(false);
 	
