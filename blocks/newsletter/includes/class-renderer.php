@@ -39,9 +39,9 @@ class Renderer {
 		$legal_text   = $this->get_legal_text();
 		$wrapper_attr = get_block_wrapper_attributes();
 
-		return "<div ${wrapper_attr}>
-			${form}
-			${legal_text}
+		return "<div {$wrapper_attr}>
+			{$form}
+			{$legal_text}
 		</div>";
 	}
 
@@ -63,7 +63,7 @@ class Renderer {
 			str_replace( '%%Privacy Policy%%', $privacy_policy, $legal_text )
 		);
 
-		return "<p><small>${legal_text}</small></p>";
+		return "<p><small>{$legal_text}</small></p>";
 	}
 
 	/**
@@ -77,7 +77,7 @@ class Renderer {
 		$action      = esc_url( $this->get_form_action( $user_id, $audience_id ) );
 		$success     = esc_attr( $this->attributes['successMessage'] );
 		
-		return "<form method=\"post\" action=\"${action}\" data-mailchimp-success-message=\"${success}\" name=\"mc-embedded-subscribe-form\" target=\"_blank\" data-mailchimp validate>
+		return "<form method=\"post\" action=\"{$action}\" data-mailchimp-success-message=\"{$success}\" name=\"mc-embedded-subscribe-form\" target=\"_blank\" data-mailchimp validate>
 			<div role=\"alert\"></div>
 			<fieldset>
 				<label class=\"screen-reader-text\" for=\"mce-EMAIL\">Enter your email</label>
@@ -86,7 +86,7 @@ class Renderer {
 			</fieldset>
 			<div class=\"position: relative; overflow:hidden\">
 				<div style=\"position: absolute; left: -5000px;\" aria-hidden=\"true\">
-					<input type=\"text\" name=\"b_${user_id}_${audience_id}\" tabindex=\"-1\" value=\"\">
+					<input type=\"text\" name=\"b_{$user_id}_{$audience_id}\" tabindex=\"-1\" value=\"\">
 				</div>
 			</div>
 		</form>";
