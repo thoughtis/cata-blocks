@@ -1,7 +1,7 @@
 /**
  * Color Scheme Control
  */
-import {  } from '@wordpress/components';
+
 import { addFilter } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import { SelectControl } from '@wordpress/components';
