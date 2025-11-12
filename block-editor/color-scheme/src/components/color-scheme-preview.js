@@ -1,0 +1,42 @@
+import { PluginPreviewMenuItem } from '@wordpress/editor';
+import { registerPlugin } from '@wordpress/plugins';
+import { useState } from '@wordpress/element';
+import { getEditorCanvas } from '../hooks/use-editor-canvas';
+import { useEffect } from 'react';
+
+/**
+ * Main
+ */
+export default function main() {
+	registerPlugin( 'cata-blocks-color-scheme-preview', {
+		render: CustomPreviewMenuItem,
+	} );
+}
+
+/**
+ * Custom Preview Menu Item
+ *
+ * Allow toggling color schemes in the preview menu.
+ * Set the colorScheme CSS property in the real editor canvas in the DOM.
+ */
+function CustomPreviewMenuItem() {
+	
+	const [ isDarkMode, setIsDarkMode ] = useState(false);
+	
+	useEffect( () => {
+		const canvas = getEditorCanvas();
+		if ( canvas ) {
+			canvas.style.colorScheme = isDarkMode ? 'dark only' : '' ;
+		}
+	}, [isDarkMode] );
+
+	return (
+		<PluginPreviewMenuItem
+			onClick={ () => {
+				setIsDarkMode( !isDarkMode );			
+			} }
+		>
+			{ isDarkMode ? 'Preview Light Mode' : 'Preview Dark Mode' }  
+		</PluginPreviewMenuItem>
+	)
+};
