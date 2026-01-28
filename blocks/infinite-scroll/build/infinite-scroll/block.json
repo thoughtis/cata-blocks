@@ -1,0 +1,27 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "cata/infinite-scroll",
+  "version": "0.1.0",
+  "title": "Infinite Scroll",
+  "category": "widgets",
+  "icon": "smiley",
+  "description": "Infinite Scroll container, must be paired with beacon to work.",
+  "example": {},
+  "supports": {
+    "html": false,
+    "interactivity": true,
+    "align": [
+      "wide",
+      "full"
+    ],
+    "layout": {
+      "allowSizingOnChildren": true
+    },
+    "allowedBlocks": true
+  },
+  "textdomain": "cata-blocks",
+  "editorScript": "file:./index.js",
+  "viewScriptModule": "file:./view.js",
+  "render": "file:./render.php"
+}

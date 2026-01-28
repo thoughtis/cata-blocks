@@ -64,6 +64,11 @@ require_once __DIR__ . '/blocks/kicker/kicker.php';
 require_once __DIR__ . '/blocks/moodboard/moodboard.php';
 
 /**
+ * Infinite Scroll
+ */
+require_once __DIR__ . '/blocks/infinite-scroll/infinite-scroll.php';
+
+/**
  * Newsletter
  */
 require_once __DIR__ . '/blocks/newsletter/includes/class-renderer.php';

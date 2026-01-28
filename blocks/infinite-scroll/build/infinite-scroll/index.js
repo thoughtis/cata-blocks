@@ -1,0 +1,1 @@
+(()=>{"use strict";const n=window.wp.blocks,e=(window.wp.i18n,window.wp.blockEditor),i=window.ReactJSXRuntime,o=JSON.parse('{"UU":"cata/infinite-scroll"}');(0,n.registerBlockType)(o.UU,{edit:function(){return(0,i.jsx)("div",{...(0,e.useBlockProps)(),children:(0,i.jsx)(e.InnerBlocks,{})})},save:function(){return(0,i.jsx)(e.InnerBlocks.Content,{})}})})();
