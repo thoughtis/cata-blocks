@@ -20,7 +20,7 @@
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-metadata/#view-script
  */
  
-import {  getElement, store, useState, useEffect, getContext, withScope } from '@wordpress/interactivity';
+import {  getElement, store, useState, useEffect } from '@wordpress/interactivity';
 
 /**
  * UID
