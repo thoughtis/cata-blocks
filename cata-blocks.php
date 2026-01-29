@@ -26,6 +26,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Admin
+ */
+require_once __DIR__ . '/admin/admin.php';
+
+/**
  * Filters
  * 
  * Change block output with the render_block filter
