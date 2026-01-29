@@ -123,7 +123,7 @@ const SettingsPage = () => {
 			return;
 		}
 
-		if ( '' === searchQuery ) {
+		if ( '' === searchQuery ?? '' ) {
 			return;
 		}
 
