@@ -35,3 +35,19 @@ function cata_infinite_scroll_beacon_block_init() {
 	register_block_type( __DIR__ . '/build/infinite-scroll-beacon' );
 }
 add_action( 'init', 'cata_infinite_scroll_beacon_block_init' );
+
+/**
+ * Get Infinite Scroll Config
+ * 
+ * @return array
+ */
+function cata_blocks_get_infinite_scroll_config(): array {
+
+	$options   = get_option( 'cata_blocks' );
+	$next_post = get_post( absint( $options['post_id']) );
+	$post_urls = is_a( $next_post, 'WP_Post' ) ? [get_permalink( $next_post )] : []; 
+
+	return [
+		'postUrls' => $post_urls
+	];
+}

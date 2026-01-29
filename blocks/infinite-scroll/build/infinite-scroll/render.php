@@ -1,8 +1,8 @@
 <?php
 function cata_blocks_get_load_more_config(): array {
 
-	$adjacent_post = get_adjacent_post();
-
+	$options = get_option( 'cata_blocks' );
+	$adjacent_post = get_post( absint(  $options['post_id']) );
 	$post_urls = is_a( $adjacent_post, 'WP_Post' ) ? [get_permalink( $adjacent_post )] : []; 
 
 	return [
