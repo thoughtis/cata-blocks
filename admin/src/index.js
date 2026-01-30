@@ -1,19 +1,12 @@
-import domReady from '@wordpress/dom-ready';
-import { createRoot } from '@wordpress/element';
-
 import { __ } from '@wordpress/i18n';
-import { Panel, PanelBody, PanelRow } from '@wordpress/components';
-
 import apiFetch from '@wordpress/api-fetch';
-import { useEffect, useState } from '@wordpress/element';
-
+import domReady from '@wordpress/dom-ready';
+import { createRoot, useEffect, useState } from '@wordpress/element';
+import { Panel, PanelBody, PanelRow, Button, NoticeList, ToggleControl } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { store as noticesStore } from '@wordpress/notices';
 
-import { Button, NoticeList, ToggleControl } from '@wordpress/components';
-
 import DebouncedTextControl from './components/debounced-text-control';
-
 import './admin-styles.css';
 
 const SaveButton = ( { onClick } ) => {
