@@ -24,14 +24,21 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @see https://developer.wordpress.org/reference/functions/register_block_type/
  */
 function cata_infinite_scroll_block_init() {
+	if ( ! apply_filters( 'cata_blocks_support_infinite_scroll_block', false ) ) {
+		return;
+	}
+
 	register_block_type( __DIR__ . '/build/infinite-scroll' );
 
 	add_filter( 'should_load_block_assets_on_demand', '__return_false' );
-
 }
 add_action( 'init', 'cata_infinite_scroll_block_init' );
 
 function cata_infinite_scroll_beacon_block_init() {
+	if ( ! apply_filters( 'cata_blocks_support_infinite_scroll_block', false ) ) {
+		return;
+	}
+
 	register_block_type( __DIR__ . '/build/infinite-scroll-beacon' );
 }
 add_action( 'init', 'cata_infinite_scroll_beacon_block_init' );
@@ -50,4 +57,9 @@ function cata_blocks_get_infinite_scroll_config(): array {
 	return [
 		'postUrls' => $post_urls
 	];
+}
+
+function cata_blocks_get_infinite_scroll_active(): bool {
+	$options = get_option( 'cata_blocks' );
+	return true === ($options['active'] ?? false);
 }

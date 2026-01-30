@@ -7,6 +7,7 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { store as noticesStore } from '@wordpress/notices';
 
 import DebouncedTextControl from './components/debounced-text-control';
+
 import './admin-styles.css';
 
 const SaveButton = ( { onClick } ) => {
@@ -103,8 +104,7 @@ const SettingsPage = () => {
 		postId,
 		setPostId,
         saveSettings,
-		postTitle,
-		setPostTitle
+		postTitle
     } = useSettings();
 
 	const [ postsList, setPostsList ] = useState([]);
@@ -147,29 +147,33 @@ const SettingsPage = () => {
 						/>
 					</div>
                 </PanelRow>
+			</PanelBody>
+			 <PanelBody>
                 <PanelRow>
                     <div>
-
+						<p><strong>Current Infinite Scroll Post</strong></p>
 						<p>{postTitle}</p>
-
-						<DebouncedTextControl
-							label="Infinite Scroll Featured Post"
-							onDebouncedChange={(nextPostTitle) => searchPostTitle( nextPostTitle )}
-							timeout={300}
-							type="text"
-						/>
-
-						<PostsList
-							className="cata-blocks-post-list"
-							posts={postsList}
-							handleChange={ ( selectedPostId ) => {
-								setPostId( selectedPostId )
-								setPostsList([])
-							}}
-						/>
-						
 					</div>
                 </PanelRow>
+				<PanelRow>
+					<div>
+						<p><strong>Select New Post</strong></p>
+					<DebouncedTextControl
+						label="Search Posts"
+						onDebouncedChange={(nextPostTitle) => searchPostTitle( nextPostTitle )}
+						timeout={300}
+						type="text"
+					/>
+					<PostsList
+						className="cata-blocks-post-list"
+						posts={postsList}
+						handleChange={ ( selectedPostId ) => {
+							setPostId( selectedPostId )
+							setPostsList([])
+						}}
+					/>
+				</div>
+				</PanelRow>
             </PanelBody>
         </Panel>
 		<SaveButton onClick={ saveSettings } />

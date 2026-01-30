@@ -1,25 +1,3 @@
-/**
- * Use this file for JavaScript code that you want to run in the front-end 
- * on posts/pages that contain this block.
- *
- * When this file is defined as the value of the `viewScript` property
- * in `block.json` it will be enqueued on the front end of the site.
- *
- * Example:
- *
- * ```js
- * {
- *   "viewScript": "file:./view.js"
- * }
- * ```
- *
- * If you're not making any changes to this file because your project doesn't need any 
- * JavaScript running in the front-end, then you should delete this file and remove 
- * the `viewScript` property from `block.json`. 
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-metadata/#view-script
- */
- 
 import {  getElement, store, useState, useEffect } from '@wordpress/interactivity';
 
 /**
@@ -59,8 +37,6 @@ window.addEventListener("popstate", (event) => {
 	}
 });
 
-// Unlike `data-wp-init` and `data-wp-watch`, you can use any hooks inside
-// `data-wp-run` callbacks.
 const useInView = () => {
     const [ inView, setInView ] = useState( false );
 
@@ -98,54 +74,62 @@ const { state } = store('cata-blocks-infinite-scroll', {
 		},
 	},
 	callbacks: {
-		logInView: () => {
+		onInView: () => {
 			const isInView = useInView();
 			const { ref } = getElement();
 			useEffect( async () => {
-				if ( isInView ) {
-					console.log( 'In view' );
-
-					const response = await fetch( state.postUrls[0] );
-					const data     = await response.text();
-					const doc      = (new DOMParser()).parseFromString( data, 'text/html' );
-
-					const { title } = setTitle( doc );
-
-					const element = doc.querySelector( '[data-wp-interactive="cata-blocks-infinite-scroll"]');
-
-					const styles = doc.querySelector( '#core-block-supports-inline-css' );
-
-					if ( null !== styles && ( 'CSSScopeRule' in window ) ) {
-
-						const scopedStyle = document.createElement( 'style' );
-
-						scopedStyle.textContent = `@scope { ${styles.textContent} }`;
-
-						element.insertBefore( scopedStyle, element.firstElementChild );
-
-						styles.remove();
-					}
-
-					ref.parentElement.insertBefore( element, ref );
-
-					element.dataset.cataInfiniteScroll = createPageIndex();
-
-					window.history.pushState( { title, index: element.dataset.cataInfiniteScroll }, '', state.postUrls[0] );
-					
-				} else {
-					console.log( 'Not in view' );
+				if ( ! isInView ) {
+					return;
 				}
+
+				const response = await fetch( state.postUrls[0] );
+				const data     = await response.text();
+				const doc      = (new DOMParser()).parseFromString( data, 'text/html' );
+
+				const element = doc.querySelector( '[data-wp-interactive="cata-blocks-infinite-scroll"]');
+
+				const styles = doc.querySelector( '#core-block-supports-inline-css' );
+
+				if ( null !== styles && ( 'CSSScopeRule' in window ) ) {
+
+					const scopedStyle = document.createElement( 'style' );
+
+					scopedStyle.textContent = `@scope { ${styles.textContent} }`;
+
+					element.insertBefore( scopedStyle, element.firstElementChild );
+
+					styles.remove();
+				}
+
+				ref.parentElement.insertBefore( element, ref );
+
+				element.dataset.cataInfiniteScroll = createPageIndex();
+
+				const title = getTitle( doc );
+
+				// Change title early, before pushstate in hopes Google Analytics sees correct title.
+				window.document.title = title;
+
+				window.history.pushState(
+					{
+						title,
+						index: element.dataset.cataInfiniteScroll
+					},
+					'',
+					state.postUrls[0]
+				);
+				
 			}, [isInView] );
 		},
 	},
 })
 
-
-function setTitle( doc ) {
-
-	const title = doc.head.querySelector('title').textContent
-
-	window.document.title = title;
-
-	return { title };
+/**
+ * Get Title
+ * 
+ * @param {HTMLDocument} doc HTMLDocument about to be inserted with Infinite Scroll
+ * @return {string} title
+ */
+function getTitle( doc ) {
+	return doc.head.querySelector('title').textContent;
 }

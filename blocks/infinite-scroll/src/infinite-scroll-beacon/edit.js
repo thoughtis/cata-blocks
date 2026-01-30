@@ -23,8 +23,8 @@ import { useBlockProps } from '@wordpress/block-editor';
  */
 export default function Edit() {
 	return (
-		<p { ...useBlockProps() }>
-			{ __( 'Infinite Scroll – hello from the editor!', 'infinite-scroll' ) }
-		</p>
+		<div { ...useBlockProps() }>
+			{ __( 'Infinite Scroll Beacon', 'infinite-scroll' ) }
+		</div>
 	);
 }
