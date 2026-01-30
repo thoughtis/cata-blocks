@@ -32,8 +32,8 @@ const Notices = () => {
 };
 
 const useSettings = () => {
-    const [ postId, setPostId ] = useState();
-    const [ active, setActive ] = useState();
+    const [ postId, setPostId ] = useState(0);
+    const [ active, setActive ] = useState( false );
 	const [ postTitle, setPostTitle ] = useState('');
 
 	const { createSuccessNotice } = useDispatch( noticesStore );
@@ -49,6 +49,7 @@ const useSettings = () => {
 
 		if ( 0 === postId ) {
 			setPostTitle( '' );
+			return;
 		}
 
 		apiFetch( { path: `/wp/v2/posts/${postId}` } ).then( ( post ) => {
@@ -116,7 +117,7 @@ const SettingsPage = () => {
 			return;
 		}
 
-		if ( '' === searchQuery ?? '' ) {
+		if ( 'undefined' === typeof searchQuery || '' === searchQuery ) {
 			return;
 		}
 
