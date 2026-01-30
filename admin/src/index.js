@@ -131,7 +131,11 @@ const SettingsPage = () => {
 
 		const posts = await apiFetch( { path: `/wp/v2/posts?search=${searchQuery}` } );
 
-		setPostsList( posts.map( ( { id, title } ) => ({ id, title: title.rendered }) ) );
+		setPostsList(
+			posts
+				.filter( post => '' !== post?.title?.rendered ?? '' )
+				.map( ( { id, title } ) => ({ id, title: title.rendered }) )
+		);
 
 		setIsLoading( false );
 	}
