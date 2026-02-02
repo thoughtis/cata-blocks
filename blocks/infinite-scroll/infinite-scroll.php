@@ -49,14 +49,17 @@ add_action( 'init', 'cata_infinite_scroll_beacon_block_init' );
  * @return array
  */
 function cata_blocks_get_infinite_scroll_config(): array {
-
-	$options   = get_option( 'cata_blocks' );
-	$next_post = get_post( absint( $options['post_id']) );
+	$next_post = get_post( cata_blocks_get_infinite_scroll_post_id() );
 	$post_urls = is_a( $next_post, 'WP_Post' ) ? [get_permalink( $next_post )] : []; 
 
 	return [
 		'postUrls' => $post_urls
 	];
+}
+
+function cata_blocks_get_infinite_scroll_post_id(): int {
+	$options = get_option( 'cata_blocks' );
+	return absint( $options['post_id'] );
 }
 
 function cata_blocks_get_infinite_scroll_active(): bool {
