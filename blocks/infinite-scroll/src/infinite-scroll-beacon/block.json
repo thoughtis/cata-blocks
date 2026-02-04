@@ -5,7 +5,6 @@
 	"version": "0.1.0",
 	"title": "Infinite Scroll Beacon",
 	"category": "widgets",
-	"icon": "smiley",
 	"description": "Determine when its time to load content in an infinite scroll container",
 	"example": {},
 	"supports": {

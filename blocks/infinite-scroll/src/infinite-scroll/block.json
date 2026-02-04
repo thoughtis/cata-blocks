@@ -5,7 +5,6 @@
 	"version": "0.1.0",
 	"title": "Infinite Scroll",
 	"category": "widgets",
-	"icon": "smiley",
 	"description": "Infinite Scroll container, must be paired with beacon to work.",
 	"example": {},
 	"supports": {
