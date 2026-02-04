@@ -4,6 +4,7 @@
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
  */
 import { registerBlockType } from '@wordpress/blocks';
+import { loop } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -27,4 +28,5 @@ registerBlockType( metadata.name, {
 	 * @see ./save.js
 	 */
 	save,
+	icon: loop
 } );
