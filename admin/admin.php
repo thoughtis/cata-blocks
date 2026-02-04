@@ -1,8 +1,11 @@
 <?php
 /**
- * Cata Block: Unadorned Announcement Bar
+ * Cata Blocks Admin
  */
 
+/**
+ * Settings Page
+ */
 function cata_blocks_settings_page() {
     add_options_page(
         __( 'Cata Blocks', 'cata' ),
@@ -12,9 +15,11 @@ function cata_blocks_settings_page() {
         'cata_blocks_settings_page_html'
     );
 }
-
 add_action( 'admin_menu', 'cata_blocks_settings_page' );
 
+/**
+ * Settings Page HTML
+ */
 function cata_blocks_settings_page_html() {
     printf(
         '<div class="wrap" id="cata-blocks-settings">%s</div>',
@@ -22,6 +27,9 @@ function cata_blocks_settings_page_html() {
     );
 }
 
+/**
+ * Enqueue Styles and Scripts
+ */
 function cata_blocks_settings_page_enqueue_style_script( $admin_page ) {
     if ( 'settings_page_cata-blocks' !== $admin_page ) {
         return;
@@ -60,6 +68,9 @@ function cata_blocks_settings_page_enqueue_style_script( $admin_page ) {
 }
 add_action( 'admin_enqueue_scripts', 'cata_blocks_settings_page_enqueue_style_script' );
 
+/**
+ * Register Settings
+ */
 function cata_blocks_settings() {
     $default = array(
 		'active'  => false,
@@ -89,5 +100,4 @@ function cata_blocks_settings() {
         )
     );
 }
-
 add_action( 'init', 'cata_blocks_settings' );
