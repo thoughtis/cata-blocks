@@ -1,41 +1,28 @@
 import {  getElement, store, useState, useEffect } from '@wordpress/interactivity';
 
-/**
- * UID
- * Unique ID - But Not Universal Unique ID
- *
- * @type {Object}
- */
-const uid = {
-	value: 0
-};
-
-Object.defineProperty( uid, 'next', {
-	get: function() {
-		return this.value++;
-	}
-});
+import createPageIndex from './imports/create-page-index';
 
 /**
- * Create Page Index
- *
- * @return {integer} index
+ * Set scroll restoration to manual,
+ * On popstate, scroll the element passed in the event state into view.
  */
-function createPageIndex() {
-	return uid.next;
-}
 
-window.history.scrollRestoration = "manual";
+window.history.scrollRestoration = 'manual';
+window.addEventListener( 'popstate', onPopState );
 
-window.addEventListener("popstate", (event) => {
+/**
+ * On PopState
+ *
+ * @param {Event} event
+ */
+function onPopState( event ) {
 	if ( null !== event?.state?.title ?? null ) {
 		window.document.title = event.state.title;
 	}
-
 	if ( null !== event?.state?.index ?? null ) {
 		document.querySelector(`[data-cata-infinite-scroll="${event.state.index}"]`).scrollIntoView();
 	}
-});
+}
 
 const useInView = () => {
     const [ inView, setInView ] = useState( false );
@@ -82,47 +69,64 @@ const { state } = store('cata-blocks-infinite-scroll', {
 					return;
 				}
 
-				const response = await fetch( state.postUrls[0] );
-				const data     = await response.text();
-				const doc      = (new DOMParser()).parseFromString( data, 'text/html' );
-
-				const element = doc.querySelector( '[data-wp-interactive="cata-blocks-infinite-scroll"]');
-
-				const styles = doc.querySelector( '#core-block-supports-inline-css' );
-
-				if ( null !== styles && ( 'CSSScopeRule' in window ) ) {
-
-					const scopedStyle = document.createElement( 'style' );
-
-					scopedStyle.textContent = `@scope { ${styles.textContent} }`;
-
-					element.insertBefore( scopedStyle, element.firstElementChild );
-
-					styles.remove();
+				if ( 0 === state?.postUrls?.length ?? 0 ) {
+					return;
 				}
 
-				ref.parentElement.insertBefore( element, ref );
-
-				element.dataset.cataInfiniteScroll = createPageIndex();
-
-				const title = getTitle( doc );
-
-				// Change title early, before pushstate in hopes Google Analytics sees correct title.
-				window.document.title = title;
-
-				window.history.pushState(
-					{
-						title,
-						index: element.dataset.cataInfiniteScroll
-					},
-					'',
-					state.postUrls[0]
-				);
-				
+				try {
+					await doInfiniteScroll( state.postUrls[0], ref )
+				} catch ( error ) {
+					console.error( err );
+				}				
 			}, [isInView] );
 		},
 	},
-})
+});
+
+/**
+ * Do Infinite Scroll
+ *
+ * @param {string} url 
+ * @param {HTMLElement} beaconElement 
+ */
+async function doInfiniteScroll( url, beaconElement ) {
+
+	const response = await fetch( url );
+	const data     = await response.text();
+	const doc      = (new DOMParser()).parseFromString( data, 'text/html' );
+	const element  = doc.querySelector( '[data-wp-interactive="cata-blocks-infinite-scroll"]');
+
+	/**
+	 * If there are any styles unique to this content,
+	 * get them from the new document and insert them in the existing DOM,
+	 * scoped to the new content element.
+	 */
+
+	const styles  = doc.querySelector( '#core-block-supports-inline-css' );
+
+	if ( null !== styles && ( 'CSSScopeRule' in window ) ) {
+		const scopedStyle = document.createElement( 'style' );
+		scopedStyle.textContent = `@scope { ${styles.textContent} }`;
+		element.insertBefore( scopedStyle, element.firstElementChild );
+		styles.remove();
+	}
+
+	beaconElement.parentElement.insertBefore( element, beaconElement );
+
+	element.dataset.cataInfiniteScroll = createPageIndex();
+
+	// Change title early, before pushstate in hopes Google Analytics sees correct title.
+	window.document.title = getTitle( doc );
+
+	window.history.pushState(
+		{
+			title: window.document.title,
+			index: element.dataset.cataInfiniteScroll
+		},
+		'',
+		url
+	);
+} 
 
 /**
  * Get Title
