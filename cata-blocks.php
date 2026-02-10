@@ -12,7 +12,7 @@
  * Description: Block Editor components for use with the Cata theme.
  * Author:      Thought & Expression Co. <devjobs@thought.is>
  * Author URI:  https://thought.is
- * Version:     0.11.9
+ * Version:     0.11.10
  * License:     GPL v3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.txt
  */
@@ -24,6 +24,11 @@ use WP_Block;
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+/**
+ * Admin
+ */
+require_once __DIR__ . '/admin/admin.php';
 
 /**
  * Filters
@@ -62,6 +67,11 @@ require_once __DIR__ . '/blocks/kicker/kicker.php';
  * Moodboard
  */
 require_once __DIR__ . '/blocks/moodboard/moodboard.php';
+
+/**
+ * Infinite Scroll
+ */
+require_once __DIR__ . '/blocks/infinite-scroll/infinite-scroll.php';
 
 /**
  * Newsletter

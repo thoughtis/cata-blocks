@@ -1,0 +1,19 @@
+.cata-blocks-post-list {
+	margin-block: 0;
+	padding: 0.5em;
+}
+
+.cata-blocks-post-list li {
+	margin-block: 0;
+	padding: 0.25em;
+
+	cursor: pointer;
+}
+
+.cata-blocks-post-list li:hover {
+	background-color: whitesmoke;
+}
+
+.cata-blocks-post-list li + li {
+	border-block-start: 1px solid gray;
+} 
