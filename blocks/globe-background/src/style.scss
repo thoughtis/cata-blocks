@@ -25,22 +25,17 @@
 		overflow: visible;
 	}
 
-	circle,
-	path {
-		fill: transparent;
-		stroke: inherit;
-		stroke-width: .1em;
-	}
-	
-	path {
-		transform-origin: center;
-		animation: globe 12s ease-out infinite;
-		animation-delay: calc( var( --globe-animation-order, 0 ) * 1.5s );
-	}
+}
+
+.wp-block-cata-globe-background__globe-rotate path {
+	fill: transparent;
+	transform-origin: center;
+	animation: globe 12s ease-out infinite;
+	animation-delay: calc( var( --globe-animation-order, 0 ) * 1.5s );
 }
 
 @media ( prefers-reduced-motion ) {
-	.wp-block-cata-globe-background__globe-svg path {
+	.wp-block-cata-globe-background__globe-rotate path {
 		animation: none;
 		transform: rotateY( calc( var( --globe-animation-order, 0 ) * 20deg + 20deg ) );
 	}

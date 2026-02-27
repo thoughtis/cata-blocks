@@ -3,7 +3,7 @@
  */
 
 import { InnerBlocks, useBlockProps, InspectorControls, useSettings } from '@wordpress/block-editor';
-import { Path, SVG, Circle } from '@wordpress/primitives';
+import { Path, G, SVG, Circle } from '@wordpress/primitives';
 import { ColorPalette, PanelBody } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import './editor.scss';
@@ -30,16 +30,18 @@ export default function Edit( { attributes, setAttributes } ) {
 			</InspectorControls>
 			<div {...useBlockProps()}>
 				<div className="wp-block-cata-globe-background__globe-svg" style={{stroke: globeColor}}>
-					<SVG viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" width="300" height="300">
+					<SVG viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" width="300" height="300" fill="transparent">
 						<Circle cx="50%" cy="50%" r="50%"/>
-						<Path d="M150,300A150,150,0,0,1,150,0"/>
-						<Path d="M150,300A150,150,0,0,1,150,0"/>
-						<Path d="M150,300A150,150,0,0,1,150,0"/>
-						<Path d="M150,300A150,150,0,0,1,150,0"/>
-						<Path d="M150,300A150,150,0,0,1,150,0"/>
-						<Path d="M150,300A150,150,0,0,1,150,0"/>
-						<Path d="M150,300A150,150,0,0,1,150,0"/>
-						<Path d="M150,300A150,150,0,0,1,150,0"/>
+						<G className="wp-block-cata-globe-background__globe-rotate">
+							<Path d="M150,300A150,150,0,0,1,150,0"/>
+							<Path d="M150,300A150,150,0,0,1,150,0"/>
+							<Path d="M150,300A150,150,0,0,1,150,0"/>
+							<Path d="M150,300A150,150,0,0,1,150,0"/>
+							<Path d="M150,300A150,150,0,0,1,150,0"/>
+							<Path d="M150,300A150,150,0,0,1,150,0"/>
+							<Path d="M150,300A150,150,0,0,1,150,0"/>
+							<Path d="M150,300A150,150,0,0,1,150,0"/>
+						</G>
 					</SVG>
 				</div>
 				<InnerBlocks />
