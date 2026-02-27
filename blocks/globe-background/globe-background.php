@@ -70,11 +70,11 @@ function cata_globe_animation_render_block( array $attributes, string $content, 
 					
 					<defs>
 						<!-- Globe surface: lit from upper-left, dark blue-gray at edges -->
-						<radialGradient id="globeGradient" cx="38%%" cy="32%%" r="65%%" fx="38%%" fy="32%%">
-							<stop offset="0%%"   stop-color="white" stop-opacity="0.2" />
-							<stop offset="35%%"  stop-color="color-mix( in srgb, white, transparent 5%% )" stop-opacity="0.2" />
-							<stop offset="75%%"  stop-color="color-mix( in srgb, white, transparent 75%% )" stop-opacity="0.15" />
-							<stop offset="100%%" stop-color="color-mix( in srgb, white, transparent 95%% )" stop-opacity="0.1" />
+						<radialGradient id="globeGradient" cx="150" cy="150" fx="85" fy="75" r="150" gradientUnits="userSpaceOnUse">
+							<stop offset="0" stop-color="#fff" stop-opacity=".3"/>
+							<stop offset=".3" stop-color="#fff" stop-opacity=".2"/>
+							<stop offset=".8" stop-color="#fff" stop-opacity="0"/>
+							<stop offset="1" stop-color="#fff" stop-opacity="0"/>
 						</radialGradient>
 
 						<!-- Specular highlight: bright spot in upper-left -->
