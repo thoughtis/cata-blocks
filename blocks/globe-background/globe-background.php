@@ -71,9 +71,8 @@ function cata_globe_animation_render_block( array $attributes, string $content, 
 					<defs>
 						<!-- Globe surface: lit from upper-left, dark blue-gray at edges -->
 						<radialGradient id="globeGradient" cx="150" cy="150" fx="85" fy="75" r="150" gradientUnits="userSpaceOnUse">
-							<stop offset="0" stop-color="#fff" stop-opacity=".3"/>
-							<stop offset=".3" stop-color="#fff" stop-opacity=".2"/>
-							<stop offset=".8" stop-color="#fff" stop-opacity="0"/>
+							<stop offset="0" stop-color="#fff" stop-opacity=".25"/>
+							<stop offset=".5" stop-color="#fff" stop-opacity=".15"/>
 							<stop offset="1" stop-color="#fff" stop-opacity="0"/>
 						</radialGradient>
 
