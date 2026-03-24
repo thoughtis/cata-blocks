@@ -32,8 +32,6 @@ export default function PostNetwork( { post, aspect_ratio, display, image_sizes,
 	const category = getCategory( post );
 	const date = (new Date( post.date )).toLocaleDateString( 'en-US', dateOptions );
 
-	console.log( horoscope_excerpt );
-
 	return(
 		<article className={`preview is-layout-${slug}`}>
 			<div className="preview__layout">
@@ -85,7 +83,7 @@ export default function PostNetwork( { post, aspect_ratio, display, image_sizes,
 							<li><a><Symbols.PiscesIcon/>Pisces</a></li>
 						</ul>
 					) }
-					{ display.horoscope_tabs && (
+					{ ( display.horoscope_tabs && Array.isArray( post.horoscopes ) ) && (
 						<div>
 							<ul className="preview__zodiac-tabs" inert="true">
 								<li><button><Symbols.AriesIcon/>Aries</button></li>

@@ -234,6 +234,14 @@ abstract class Layout {
 	 */
 	public static function render_zodiac_links( stdClass $post ): string {
 		
+		if ( ! property_exists( $post, 'horoscopes' ) ) {
+			return '';
+		}
+
+		if ( null === $post->horoscopes ) {
+			return '';
+		}
+
 		$signs = self::get_zodiac_signs( $post->horoscopes );
 
 		if ( empty( $signs ) ) {
@@ -357,6 +365,10 @@ abstract class Layout {
 		}
 
 		$signs = self::get_zodiac_signs( $post->horoscopes );
+
+		if ( empty( $signs ) ) {
+			return '';
+		}
 
 		$unique_id = wp_unique_id('horoscopes-');
 
