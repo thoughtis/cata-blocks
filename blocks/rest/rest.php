@@ -9,6 +9,7 @@
 namespace Cata\Blocks;
 
 use Throwable;
+use WP_Block;
 
 /**
  * Register REST block
@@ -27,6 +28,39 @@ function register_rest_block() : void {
 add_action( 'init', __NAMESPACE__ . '\\register_rest_block' );
 
 /**
+ * Remove View Script Module from Metadata
+ * Prevents WordPress from auto-enqueuing the view script module on every
+ * block render. We register it manually and enqueue it conditionally instead.
+ *
+ * @param array $metadata
+ * @return array
+ */
+function remove_rest_view_script_module_from_metadata( array $metadata ) : array {
+	if ( 'cata/rest' === ( $metadata['name'] ?? '' ) ) {
+		unset( $metadata['viewScriptModule'] );
+	}
+	return $metadata;
+}
+add_filter( 'block_type_metadata', __NAMESPACE__ . '\\remove_rest_view_script_module_from_metadata' );
+
+/**
+ * Register View Script Module
+ * Registers the module so it can be conditionally enqueued during rendering.
+ *
+ * @return void
+ */
+function register_rest_view_script_module() : void {
+	$asset = require __DIR__ . '/build/view.asset.php';
+	wp_register_script_module(
+		'cata-rest-view-script-module',
+		plugins_url( 'build/view.js', __FILE__ ),
+		$asset['dependencies'],
+		$asset['version']
+	);
+}
+add_action( 'init', __NAMESPACE__ . '\\register_rest_view_script_module' );
+
+/**
  * Render Callback
  * Calls the real render function, wrapping it in try/catch.
  *
@@ -34,7 +68,7 @@ add_action( 'init', __NAMESPACE__ . '\\register_rest_block' );
  * @param string $content
  * @return string
  */
-function cata_rest_render_callback( array $attributes, string $content ) : string {
+function cata_rest_render_callback( array $attributes, string $content, WP_Block $block ) : string {
 	try {
 		return cata_rest_render_block( $attributes, $content );
 	} catch( Throwable $e ) {
@@ -77,12 +111,19 @@ function cata_rest_render_block( array $attributes, string $content ) : string {
 		usort( $posts, get_sorting_function( $sorting ) );
 	}
 
+	// We only need the view script for horoscope tabs.
+	if ( true === $attributes['display']['horoscope_tabs'] ) {
+		wp_enqueue_script_module( 'cata-rest-view-script-module' );
+	}
+
 	$args = [
 		$content,
 		$posts,
 		$attributes['display'],
 		$layout,
-		$attributes['aspect_ratio']
+		$attributes['aspect_ratio'],
+		$attributes['horoscope_excerpt'],
+		$attributes['excerpt_length']
 	];
 
 	$new_content = get_layout_renderer( $layout )( ...$args );

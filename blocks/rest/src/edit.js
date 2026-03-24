@@ -24,7 +24,7 @@ import CompactGrid from './components/layout/compact-grid/CompactGrid';
 import './editor.scss';
 import Stack from './components/layout/stack/Stack';
 import StackGrid from './components/layout/stack-grid/StackGrid';
-import { CheckboxControl } from '@wordpress/components';
+import { CheckboxControl, ToggleControl, __experimentalNumberControl as NumberControl } from '@wordpress/components';
 
 const defaultDisplay = { 
 	image: false,
@@ -33,6 +33,7 @@ const defaultDisplay = {
 	title: false,
 	excerpt: false,
 	zodiac: false,
+	horoscope_tabs: false,
 	domain: false
 };
 
@@ -49,14 +50,16 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 		layout, 
 		sorting,
 		aspect_ratio,
-		display
+		display,
+		horoscope_excerpt,
+		excerpt_length
 	} = attributes;
 
 	const [url, setUrl] = useState('');
 	const [posts, setPosts] = useState([]);
 
 	useEffect(updatePosts, [urls]);
-	useEffect(updateContent, [posts, layout, sorting, aspect_ratio, display]);
+	useEffect(updateContent, [posts, layout, sorting, aspect_ratio, display, horoscope_excerpt, excerpt_length]);
 
 	const displayOptions = { ...defaultDisplay, ...display };	
 
@@ -125,7 +128,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 
 		setAttributes( {
 			...attributes,
-			content: <LayoutComponent posts={posts} sorting={sorting} display={display} aspect_ratio={aspect_ratio} />
+			content: <LayoutComponent posts={posts} sorting={sorting} display={display} aspect_ratio={aspect_ratio} horoscope_excerpt={horoscope_excerpt} excerpt_length={excerpt_length} />
 		});
 	}
 
@@ -252,6 +255,37 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 						</>
 					)}
 				</PanelBody>
+				{ displayOptions.horoscope_tabs && (
+					<PanelBody title="Horoscope Options" initialOpen={false}>
+						<PanelRow>
+							<ToggleControl
+								checked={horoscope_excerpt}
+								label="Limit Horoscope to Excerpt"
+								onChange={(newHoroscopeExcerpt) => {
+									setAttributes({
+										...attributes,
+										horoscope_excerpt: newHoroscopeExcerpt
+									})
+								}}
+							/>
+						</PanelRow>
+						{ horoscope_excerpt && (
+							<PanelRow>
+								<NumberControl
+									value={excerpt_length}
+									label="Max Words in Excerpt"
+									onChange={(newExcerptLength) => {
+										setAttributes({
+											...attributes,
+											excerpt_length: newExcerptLength
+										})
+									}}
+									shiftStep={ 1 }
+								/>
+							</PanelRow>
+						) }
+					</PanelBody>
+				)}
 				<PanelBody title="REST Sorting" initialOpen={false}>
 					<PanelRow>
 						<SelectControl

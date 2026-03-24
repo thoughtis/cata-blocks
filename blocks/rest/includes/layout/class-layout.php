@@ -232,31 +232,32 @@ abstract class Layout {
 	 * @param stdClass $post
 	 * @return string
 	 */
-	public static function get_zodiac_links( stdClass $post ): string {
-		$headings = self::get_zodiac_headings( $post->content->rendered );
+	public static function render_zodiac_links( stdClass $post ): string {
+		
+		$signs = self::get_zodiac_signs( $post->horoscopes );
 
-		if ( empty( $headings ) ) {
+		if ( empty( $signs ) ) {
 			return '';
 		}
 
 		$zodiac_links = array_map(
-			fn( $anchor, $text ) => self::get_zodiac_link( $anchor, $text, $post->link ),
-			array_keys( $headings ),
-			array_values( $headings ),
+			fn( $anchor, $text ) => self::render_zodiac_link( $anchor, $text, $post->link ),
+			array_map( 'strtolower', $signs ),
+			$signs,
 		);
 		
 		return implode( '', $zodiac_links );
 	}
 
 	/**
-	 * Get Zodiac Link
+	 * Render Zodiac Link
 	 * 
 	 * @param string $anchor
 	 * @param string $text
 	 * @param string $href
 	 * @return string
 	 */
-	public static function get_zodiac_link( string $anchor, string $text, string $href ): string {
+	public static function render_zodiac_link( string $anchor, string $text, string $href ): string {
 		$href     = esc_url( $href );
 		$anchor   = esc_attr( $anchor );
 		$text     = esc_html( wp_strip_all_tags( $text ) );
@@ -273,19 +274,109 @@ abstract class Layout {
 	}
 
 	/**
-	 * Get Zodiac Headings
+	 * Render Zodiac Tab Button
 	 * 
-	 * @param string $post_content
+	 * @param string $sign_key
+	 * @param string $text_content
+	 * @param string $unique_id
+	 * @param string $selected
+	 * @return string
+	 */
+	public static function render_zodiac_tab_button( string $sign_key, string $text_content, string $unique_id, string $selected ): string {
+		$svg_path = __DIR__ . "/daily-horoscope/svg/{$sign_key}.svg";
+		$symbol   = file_exists( $svg_path ) ? file_get_contents( $svg_path ) : '';
+		if ( empty( $symbol ) ) {
+			return '';
+		}
+		return "<button type=\"button\" aria-controls=\"{$unique_id}-panel-{$sign_key}\" id=\"{$unique_id}-tab-{$sign_key}\" aria-selected=\"{$selected}\" role=\"tab\">{$symbol}{$text_content}</button>";
+	}
+
+	/**
+	 * Get Zodiac Signs
+	 * 
+	 * @param array $horoscopes
 	 * @return array
 	 */
-	public static function get_zodiac_headings( string $post_content ): array {
-		$regex = '/<h2[^>]*id="([^"]*)"[^>]*>(.*)<\/h2>/im';
+	public static function get_zodiac_signs( array $horoscopes ): array {
+		return array_column( $horoscopes, 'sign' );
+	}
 
-		if ( preg_match_all( $regex, $post_content, $matches ) ) {
-			return array_combine( $matches[1], $matches[2] );
+	/**
+	 * Render Zodiac Tab
+	 *
+	 * @param string $sign
+	 * @param int $index
+	 * @param string $unique_id
+	 * @return string
+	 */
+	public static function render_zodiac_tab( string $sign, int $index, string $unique_id ): string {
+		$sign_key = strtolower( $sign );
+		$selected = $index === 0 ? "true" : "false";
+		$button   = self::render_zodiac_tab_button( $sign_key, $sign, $unique_id, $selected );
+
+		return "<li>{$button}</li>";
+	}
+
+	/**
+	 * Render Zodiac Panel
+	 *
+	 * @param stdClass $horoscope
+	 * @param int $index
+	 * @param stdClass $post
+	 * @param int $excerpt_length
+	 * @param string $unique_id
+	 * @param bool $horoscope_excerpt
+	 * @return string
+	 */
+	public static function render_zodiac_panel( stdClass $horoscope, int $index, stdClass $post, int $excerpt_length, string $unique_id, bool $horoscope_excerpt ): string {
+		$sign_key       = strtolower( $horoscope->sign );
+		$horoscope_text = $horoscope_excerpt ? wp_trim_words( $horoscope->horoscope, $excerpt_length ) : $horoscope->horoscope;
+		$url            = "{$post->link}#{$sign_key}";
+		$link           = $horoscope_excerpt ? "<p><a href=\"{$url}\">Read Full {$horoscope->sign} Horoscope</a></p>" : "";
+		$hidden         = $index === 0 ? "false" : "true";
+
+		return "<div aria-labelledby=\"{$unique_id}-tab-{$sign_key}\" aria-hidden=\"{$hidden}\" id=\"{$unique_id}-panel-{$sign_key}\" role=\"tabpanel\"><p>{$horoscope_text}</p>{$link}</div>";
+	}
+
+	/**
+	 * Render Horoscope Tabs
+	 *
+	 * @param stdClass $post
+	 * @param bool $horoscope_excerpt
+	 * @param int $excerpt_length
+	 * @return string
+	 */
+	public static function render_horoscope_tabs( stdClass $post, bool $horoscope_excerpt, int $excerpt_length ): string {
+
+		if ( ! property_exists( $post, 'horoscopes' ) ) {
+			return '';
 		}
 
-		return array();
+		if ( null === $post->horoscopes ) {
+			return '';
+		}
+
+		$signs = self::get_zodiac_signs( $post->horoscopes );
+
+		$unique_id = wp_unique_id('horoscopes-');
+
+		$tabs_array = array_map(
+			fn( $sign, $index ) => self::render_zodiac_tab( $sign, $index, $unique_id ),
+			$signs,
+			array_keys( $signs )
+		);
+
+		$tabs = join( "\n", $tabs_array );
+
+		$panels_array = array_map(
+			fn( $horoscope, $index ) => self::render_zodiac_panel( $horoscope, $index, $post, $excerpt_length, $unique_id, $horoscope_excerpt ),
+			$post->horoscopes,
+			array_keys( $post->horoscopes )
+		);
+
+		$panels = join( "\n", $panels_array );
+
+		return "<ul class=\"preview__zodiac-tabs\" role=\"tablist\">{$tabs}</ul><div>{$panels}</div>";
 	}
 
 	/**

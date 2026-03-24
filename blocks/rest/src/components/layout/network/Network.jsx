@@ -10,7 +10,7 @@ import { getSortingFunction } from '../sorting';
  * @param {array} posts
  * @param {string} sorting
  */
-export default function Network( { posts, sorting, aspect_ratio, display } ) {
+export default function Network( { posts, sorting, aspect_ratio, display, horoscope_excerpt, excerpt_length } ) {
 
 	if ( 0 === posts.length ) {
 		return null;
@@ -34,6 +34,8 @@ export default function Network( { posts, sorting, aspect_ratio, display } ) {
 							aspect_ratio={aspect_ratio}
 							slug="network"
 							image_sizes="(max-width: 40em) 92.5vw, 36em"
+							horoscope_excerpt={horoscope_excerpt}
+							excerpt_length={excerpt_length}
 						/>
 					)
 				} )

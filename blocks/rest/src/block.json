@@ -66,12 +66,22 @@
 				"title": true,
 				"excerpt": true,
 				"zodiac": true,
+				"horoscope_tabs": true,
 				"domain": true
 			}
+		},
+		"horoscope_excerpt": {
+			"type": "boolean",
+			"default": true
+		},
+		"excerpt_length": {
+			"type": "integer",
+			"default": 25
 		}
 	},
 	"keywords": [ "rest", "api" ],
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",
-	"style": "file:./style-index.css"
+	"style": "file:./style-index.css",
+	"viewScriptModule": "file:./view.js"
 }

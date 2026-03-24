@@ -26,11 +26,13 @@ const dateOptions = {
  * 
  * @param {object} post
  */
-export default function PostNetwork( { post, aspect_ratio, display, image_sizes, slug } ) {
+export default function PostNetwork( { post, aspect_ratio, display, image_sizes, slug, horoscope_excerpt, excerpt_length } ) {
 	const data = getImage( post );
 	const dimensions = getDimensions( data );
 	const category = getCategory( post );
 	const date = (new Date( post.date )).toLocaleDateString( 'en-US', dateOptions );
+
+	console.log( horoscope_excerpt );
 
 	return(
 		<article className={`preview is-layout-${slug}`}>
@@ -82,6 +84,34 @@ export default function PostNetwork( { post, aspect_ratio, display, image_sizes,
 							<li><a><Symbols.AquariusIcon/>Aquarius</a></li>
 							<li><a><Symbols.PiscesIcon/>Pisces</a></li>
 						</ul>
+					) }
+					{ display.horoscope_tabs && (
+						<div>
+							<ul className="preview__zodiac-tabs" inert="true">
+								<li><button><Symbols.AriesIcon/>Aries</button></li>
+								<li><button><Symbols.TaurusIcon/>Taurus</button></li>
+								<li><button><Symbols.GeminiIcon/>Gemini</button></li>
+								<li><button><Symbols.CancerIcon/>Cancer</button></li>
+								<li><button><Symbols.LeoIcon/>Leo</button></li>
+								<li><button><Symbols.VirgoIcon/>Virgo</button></li>
+								<li><button><Symbols.LibraIcon/>Libra</button></li>
+								<li><button><Symbols.ScorpioIcon/>Scorpio</button></li>
+								<li><button><Symbols.SagittariusIcon/>Sagittarius</button></li>
+								<li><button><Symbols.CapricornIcon/>Capricorn</button></li>
+								<li><button><Symbols.AquariusIcon/>Aquarius</button></li>
+								<li><button><Symbols.PiscesIcon/>Pisces</button></li>
+							</ul>
+							<div>
+								{ horoscope_excerpt ? (
+									<p>{post.horoscopes[0].horoscope.split( /\s+/, excerpt_length ).join( ' ' )}</p>
+								) : (
+									<p>{post.horoscopes[0].horoscope}</p>
+								) }
+								{ horoscope_excerpt && (
+									<a>{`Read Full ${post.horoscopes[0].sign} Horoscope`}</a>
+								) }
+							</div>
+						</div>
 					) }
 					{ display.domain && (
 						<p className="preview__domain">{ (new URL( post.link )).hostname }</p>

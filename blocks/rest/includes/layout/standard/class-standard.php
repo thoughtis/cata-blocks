@@ -22,7 +22,7 @@ class Standard extends Layout {
 	 * @param array $posts
 	 * @return string
 	 */
-	public static function render( string $content, array $posts, array $display, string $layout, ?string $aspect_ratio = '' ): string {
+	public static function render( string $content, array $posts, array $display, string $layout, ?string $aspect_ratio = '', ?bool $horoscope_excerpt = true, ?int $excerpt_length = 25 ): string {
 	
 		if ( empty( $posts ) ) {
 			return $content;
@@ -33,7 +33,7 @@ class Standard extends Layout {
 		$previews = implode(
 			PHP_EOL,
 			array_map( 
-				fn( $post ) => self::render_preview( $post, $display, $layout, $aspect_ratio ), $posts
+				fn( $post ) => self::render_preview( $post, $display, $layout, $aspect_ratio, $horoscope_excerpt, $excerpt_length ), $posts
 			)
 		);
 
@@ -51,7 +51,7 @@ class Standard extends Layout {
 	 * @param string $image
 	 * @return string
 	 */
-	public static function render_preview( stdClass $post, array $display, string $layout, string $aspect_ratio ) : string {
+	public static function render_preview( stdClass $post, array $display, string $layout, string $aspect_ratio, bool $horoscope_excerpt, int $excerpt_length ) : string {	
 		$title  = esc_html( $post->title->rendered );
 		$href   = esc_url( $post->link );
 		$image_data = self::get_image( $post );
@@ -80,8 +80,11 @@ class Standard extends Layout {
 		$excerpt = wp_kses_post( $post->excerpt->rendered );
 		$excerpt = ! $display['excerpt'] ? '' : "<div class=\"preview__excerpt\">{$excerpt}</div>";
 
-		$zodiac = self::get_zodiac_links( $post );
+		$zodiac = self::render_zodiac_links( $post );
 		$zodiac = ! $display['zodiac'] ? '' : "<ul class=\"preview__zodiac-signs\">{$zodiac}</ul>";	
+
+		$horoscope_tabs = self::render_horoscope_tabs( $post, $horoscope_excerpt, $excerpt_length );
+		$horoscope_tabs = ! $display['horoscope_tabs'] ? '' : $horoscope_tabs;
 
 		$domain = wp_parse_url( $post->link, PHP_URL_HOST );
 		$domain = ! $display['domain'] ? '' : "<p class=\"preview__domain\">{$domain}</p>";
@@ -95,6 +98,7 @@ class Standard extends Layout {
 					{$title}
 					{$excerpt}
 					{$zodiac}
+					{$horoscope_tabs}
 					{$domain}
 				</div>
 			</div>

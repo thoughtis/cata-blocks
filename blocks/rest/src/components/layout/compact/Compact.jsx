@@ -10,7 +10,7 @@ import { getSortingFunction } from '../sorting';
  * @param {array} posts
  * @param {string} sorting
  */
-export default function Compact( { posts, sorting, aspect_ratio, display_domain_names, display } ) {
+export default function Compact( { posts, sorting, aspect_ratio, display_domain_names, display, horoscope_excerpt, excerpt_length } ) {
 
 	if ( 0 === posts.length ) {
 		return null;
@@ -34,6 +34,8 @@ export default function Compact( { posts, sorting, aspect_ratio, display_domain_
 							display={display}
 							slug="compact"
 							image_sizes="(max-width: 20em) 46.25vw, 13em"
+							horoscope_excerpt={horoscope_excerpt}
+							excerpt_length={excerpt_length}
 						/>
 					)
 				} )

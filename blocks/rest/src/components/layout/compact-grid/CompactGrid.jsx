@@ -4,7 +4,7 @@
 import PostNetwork from "../../post/post-network/PostNetwork";
 import { getSortingFunction } from '../sorting';
 
-export default function CompactGrid( {posts, sorting, aspect_ratio, display } ) {
+export default function CompactGrid( {posts, sorting, aspect_ratio, display, horoscope_excerpt, excerpt_length } ) {
 	if ( 0 === posts.length ) {
 		return null;
 	}
@@ -27,6 +27,8 @@ export default function CompactGrid( {posts, sorting, aspect_ratio, display } ) 
 							display={display}
 							slug="compact-grid"
 							image_sizes="(max-width: 20em) 46.25vw, 13em"
+							horoscope_excerpt={horoscope_excerpt}
+							excerpt_length={excerpt_length}
 						/>
 					)
 				} )

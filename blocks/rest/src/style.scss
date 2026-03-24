@@ -154,6 +154,31 @@
 	}
 }
 
+.preview__zodiac-tabs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: .5em;
+	padding: 0;
+	list-style: none;
+	margin-block-start: 1.5em;
+
+	button {
+		background: transparent;
+		cursor: pointer;
+		font: inherit;
+		padding: .25em .5em;
+		border: 1px solid currentColor;
+	}
+
+	svg {
+		height: 1em;
+		fill: currentColor;
+		margin-inline-end: 0.5em;
+		vertical-align: middle;
+		pointer-events: none;
+	}
+}
+
 .has-text-align-center {
 	.preview__zodiac-signs {
 		justify-content: center;
@@ -216,4 +241,13 @@
 	grid-template-columns: repeat(auto-fill, minmax( min( var(--grid-fill-column-size, auto), 100% ), 1fr ));
 	column-gap: var( --wp--style--block-gap );
 	row-gap: calc( var( --wp--style--block-gap ) * 1.5 );
+}
+
+
+.wp-block-cata-rest {
+
+	[role=tabpanel][aria-hidden=true] {
+		display: none;
+	}
+
 }
