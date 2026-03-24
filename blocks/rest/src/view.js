@@ -41,10 +41,12 @@ class HoroscopeTabs {
 	 */
 	onClick( event ) {
 		this.panels.forEach( panel => panel.setAttribute( 'aria-hidden', 'true' ) );
+		this.tabs.forEach( tab => tab.setAttribute('aria-selected', 'false') );
 
 		const controls   = event.currentTarget.getAttribute('aria-controls');
 		const controlled = this.block.querySelector( `#${controls}` );
 
+		event.currentTarget.setAttribute('aria-selected', 'true')
 		controlled.setAttribute('aria-hidden', 'false');
 	}
 }
