@@ -1,6 +1,0 @@
-{
-	"scripts": {
-		"build": "NODE_ENV=production ../../node_modules/.bin/wp-scripts build",
-		"start": "NODE_ENV=production ../../node_modules/.bin/wp-scripts start"
-	}	
-}
