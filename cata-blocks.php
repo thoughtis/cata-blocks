@@ -170,15 +170,6 @@ require_once __DIR__ . '/blocks/outbrain/outbrain.php';
 require_once __DIR__ . '/blocks/globe-background/globe-background.php';
 
 /**
- * JustWatch
- */
-require_once __DIR__ . '/blocks/just-watch/just-watch.php';
-require_once __DIR__ . '/blocks/just-watch/includes/options/class-options.php';
-require_once __DIR__ . '/blocks/just-watch/includes/options/token/class-token.php';
-
-new Just_Watch\Options();
-
-/**
  * Advanced Modal
  */
 require_once __DIR__ . '/blocks/advanced-modal/advanced-modal.php';
