@@ -26,3 +26,12 @@ function cata_color_scheme_enqueue_scripts(): void {
 	wp_add_inline_style( 'wp-block-editor', 'body.has-active-dark-mode-element .block-editor-panel-color-gradient-settings__dropdown-content, body.has-active-dark-mode-element .block-editor-tools-panel-color-gradient-settings__dropdown { color-scheme: dark only; }');
 }
 add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\cata_color_scheme_enqueue_scripts' );
+
+/**
+ * Allow Color Scheme CSS Property
+ */
+function cata_allow_color_scheme_css_property( array $props ): array {
+	$props[] = 'color-scheme';
+	return $props;
+}
+add_filter( 'safe_style_css', __NAMESPACE__ . '\\cata_allow_color_scheme_css_property' );
