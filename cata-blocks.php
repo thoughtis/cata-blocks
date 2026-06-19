@@ -74,12 +74,6 @@ require_once __DIR__ . '/blocks/moodboard/moodboard.php';
 require_once __DIR__ . '/blocks/infinite-scroll/infinite-scroll.php';
 
 /**
- * Newsletter
- */
-require_once __DIR__ . '/blocks/newsletter/includes/class-renderer.php';
-require_once __DIR__ . '/blocks/newsletter/newsletter.php';
-
-/**
  * REST
  */
 require_once __DIR__ . '/blocks/rest/includes/layout/class-layout.php';

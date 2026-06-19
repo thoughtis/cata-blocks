@@ -23,10 +23,6 @@ An `<aside>` element with `InnerBlocks`.
 
 A `<p>` element styled to reduce the margin of the element immediately after it.
 
-### Newsletter
-
-A `<form>` for MailChimp newsletter sign ups. 
-
 ### Table of Contents
 
 A `<details>` element populated with links to Heading 2's (`<h2>`'s) in the post body.
