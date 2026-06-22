@@ -9,9 +9,8 @@ addFilter(
 /**
  * Add Term From Request Attribute
  *
- * The "Filter by current term" toggle that controls this attribute is rendered
- * alongside the Inherit Query toggle in the shared "Custom Query Filters" panel
- * (see block-editor/inherit-query/src/index.js).
+ * Registers the attribute on core/query. The toggle that controls it lives in
+ * the shared "Custom Query Filters" panel.
  *
  * @param {Object} settings
  * @param {string} name
