@@ -2,10 +2,8 @@
 /**
  * Block Editor > Term From Request
  *
- * For hybrid themes, provide the ability to filter a Query Loop by the
- * current request's taxonomy term, without hardcoding the term into the
- * saved block markup. Unlike inheriting the query, this keeps the loop
- * non-inherited so it continues to honor offset.
+ * Filter a Query Loop by the current request's taxonomy term without
+ * hardcoding the term into the saved block markup.
  *
  * @package Cata\Blocks
  * @since 0.12.2
@@ -36,15 +34,11 @@ add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\cata_term_from_req
 /**
  * Block Type Metadata
  *
- * Expose cataTermFromRequest through block context the WordPress-native way.
- * query_loop_block_query_vars receives the inner core/post-template and
- * core/query-pagination blocks, not the core/query block where the attribute
- * lives. Registering the attribute on core/query, providing it as context, and
- * consuming it on those children lets core propagate the value down so the
- * query vars filter can read it from $block->context.
+ * The query is built from the inner post-template and pagination blocks, so
+ * expose the core/query cataTermFromRequest attribute to them as context.
  *
- * @param array $metadata Parsed block.json metadata for the block being registered.
- * @return array $metadata Metadata with the term-from-request context wired up.
+ * @param array $metadata Block metadata.
+ * @return array $metadata
  */
 function cata_term_from_request_block_metadata( array $metadata ): array {
 
@@ -71,14 +65,14 @@ add_filter( 'block_type_metadata', __NAMESPACE__ . '\\cata_term_from_request_blo
 /**
  * Query Loop Block Query Vars
  *
- * Runs only for non-inherited Query Loop blocks (added in WP 6.1), which is
- * what we want, since non-inherited loops honor offset. When the toggle is on,
- * inject a tax_query for the term returned by the host theme.
+ * When cataTermFromRequest is set, filter the loop by the term the host theme
+ * returns for the current request. Runs only for non-inherited queries, which
+ * honor offset.
  *
- * @param array    $query The query vars for the Query Loop block.
- * @param WP_Block $block The Query Loop block instance (post-template / pagination).
- * @param int      $page  The current query page.
- * @return array $query Query vars, filtered by the current term when applicable.
+ * @param array    $query Query vars for the Query Loop block.
+ * @param WP_Block $block Block instance.
+ * @param int      $page  Current query page.
+ * @return array $query
  */
 function cata_term_from_request_query_vars( array $query, WP_Block $block, int $page ): array {
 
