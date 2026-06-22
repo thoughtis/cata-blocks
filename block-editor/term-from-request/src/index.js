@@ -1,6 +1,4 @@
-import { InspectorControls } from '@wordpress/block-editor';
 import { addFilter } from '@wordpress/hooks';
-import { ToggleControl, PanelBody, PanelRow } from '@wordpress/components';
 
 addFilter(
 	'blocks.registerBlockType',
@@ -8,14 +6,12 @@ addFilter(
 	addTermFromRequestAttribute
 );
 
-addFilter(
-	'editor.BlockEdit',
-	'cata/termFromRequest',
-	withTermFromRequest
-);
-
 /**
  * Add Term From Request Attribute
+ *
+ * The "Filter by current term" toggle that controls this attribute is rendered
+ * alongside the Inherit Query toggle in the shared "Custom Query Filters" panel
+ * (see block-editor/inherit-query/src/index.js).
  *
  * @param {Object} settings
  * @param {string} name
@@ -36,43 +32,4 @@ function addTermFromRequestAttribute( settings, name ) {
 	} );
 
 	return settings;
-}
-
-/**
- * With Term From Request
- *
- * @param {Object} BlockEdit
- */
-function withTermFromRequest( BlockEdit ) {
-
-	return ( props ) => {
-
-		if ( 'core/query' !== props.name ) {
-			return <BlockEdit key="edit" { ...props } />;
-		}
-
-		const { setAttributes, attributes } = props;
-		const cataTermFromRequest = attributes.cataTermFromRequest ?? false;
-
-		return (
-			<>
-				<BlockEdit key="edit" { ...props } />
-				<InspectorControls>
-					<PanelBody title="Custom Term From Request">
-						<PanelRow>
-							<ToggleControl
-							__nextHasNoMarginBottom
-							label="Filter by current term"
-							help="Filter this query by the current request's taxonomy term"
-							checked={ cataTermFromRequest }
-							onChange={ (newValue) => {
-								setAttributes( { cataTermFromRequest: newValue } );
-							} }
-							/>
-						</PanelRow>
-					</PanelBody>
-				</InspectorControls>
-			</>
-		)
-	};
 }

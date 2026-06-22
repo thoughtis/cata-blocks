@@ -53,12 +53,13 @@ function withInheritQuery( BlockEdit ) {
 
 		const { setAttributes, attributes } = props;
 		const cataInheritQuery = attributes.cataInheritQuery ?? false;
+		const cataTermFromRequest = attributes.cataTermFromRequest ?? false;
 
 		return (
 			<>
 				<BlockEdit key="edit" { ...props } />
 				<InspectorControls>
-					<PanelBody title="Custom Inherit Query">
+					<PanelBody title="Custom Query Filters">
 						<PanelRow>
 							<ToggleControl
 							__nextHasNoMarginBottom
@@ -67,6 +68,17 @@ function withInheritQuery( BlockEdit ) {
 							checked={ cataInheritQuery }
 							onChange={ (newValue) => {
 								setAttributes( { cataInheritQuery: newValue } );
+							} }
+							/>
+						</PanelRow>
+						<PanelRow>
+							<ToggleControl
+							__nextHasNoMarginBottom
+							label="Filter by current term"
+							help="Filter this query by the current request's taxonomy term"
+							checked={ cataTermFromRequest }
+							onChange={ (newValue) => {
+								setAttributes( { cataTermFromRequest: newValue } );
 							} }
 							/>
 						</PanelRow>
