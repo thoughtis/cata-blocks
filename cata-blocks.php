@@ -229,5 +229,6 @@ new Block_Filters\SVG_Icon();
  */
 require_once __DIR__ . '/block-editor/app/block-editor.php';
 require_once __DIR__ . '/block-editor/inherit-query/inherit-query.php';
+require_once __DIR__ . '/block-editor/term-from-request/term-from-request.php';
 require_once __DIR__ . '/block-editor/text-decoration-color/text-decoration-color.php';
 require_once __DIR__ . '/block-editor/color-scheme/color-scheme.php';
