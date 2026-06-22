@@ -6,7 +6,7 @@
  * specifically for use when making a Latest Posts page.
  *
  * @package Cata\Blocks
- * @since 0.11.3-beta1
+ * @since 0.11.3
  */
 
 namespace Cata\Blocks;
