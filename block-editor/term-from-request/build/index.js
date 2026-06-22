@@ -1,1 +1,0 @@
-(()=>{"use strict";(0,window.wp.hooks.addFilter)("blocks.registerBlockType","cata/termFromRequest",(function(e,t){return void 0===e.attributes||"core/query"!==t||Object.assign(e.attributes,{cataTermFromRequest:{type:"boolean",default:!1}}),e}))})();

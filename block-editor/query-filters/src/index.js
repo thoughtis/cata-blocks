@@ -4,25 +4,25 @@ import { ToggleControl, PanelBody, PanelRow } from '@wordpress/components';
 
 addFilter(
 	'blocks.registerBlockType',
-	'cata/inheritQuery',
-	addInheritQueryAttribute
+	'cata/queryFilters',
+	addQueryFilterAttributes
 );
 
 addFilter(
 	'editor.BlockEdit',
-	'core/inheritQuery',
-	withInheritQuery
+	'cata/queryFilters',
+	withQueryFilters
 );
 
 /**
- * Add Inherit Query Attribute
- * 
+ * Add Query Filter Attributes
+ *
  * @param {Object} settings
  * @param {string} name
- * 
+ *
  * @return {Object} updated settings
  */
-function addInheritQueryAttribute( settings, name ) {
+function addQueryFilterAttributes( settings, name ) {
 
 	if ( undefined === settings.attributes || 'core/query' !== name ) {
 		return settings;
@@ -32,6 +32,10 @@ function addInheritQueryAttribute( settings, name ) {
 		cataInheritQuery: {
 			type: 'boolean',
 			default: false
+		},
+		cataTermFromRequest: {
+			type: 'boolean',
+			default: false
 		}
 	} );
 
@@ -39,11 +43,11 @@ function addInheritQueryAttribute( settings, name ) {
 }
 
 /**
- * With Inherit Query
+ * With Query Filters
  *
- * @param {Object} BlockEdit 
+ * @param {Object} BlockEdit
  */
-function withInheritQuery( BlockEdit ) {
+function withQueryFilters( BlockEdit ) {
 
 	return ( props ) => {
 
@@ -88,5 +92,3 @@ function withInheritQuery( BlockEdit ) {
 		)
 	};
 }
-
-
