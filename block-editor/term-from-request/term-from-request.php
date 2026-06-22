@@ -34,35 +34,39 @@ function cata_term_from_request_enqueue_scripts(): void {
 add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\cata_term_from_request_enqueue_scripts' );
 
 /**
- * Render Block Context
+ * Block Type Metadata
  *
- * The cataTermFromRequest attribute lives on the core/query block, but
+ * Expose cataTermFromRequest through block context the WordPress-native way.
  * query_loop_block_query_vars receives the inner core/post-template and
- * core/query-pagination blocks, not the query block itself. Expose the
- * attribute as context on those children so the query vars filter can read it.
+ * core/query-pagination blocks, not the core/query block where the attribute
+ * lives. Registering the attribute on core/query, providing it as context, and
+ * consuming it on those children lets core propagate the value down so the
+ * query vars filter can read it from $block->context.
  *
- * @param array         $context      The block context.
- * @param array         $parsed_block The parsed block.
- * @param WP_Block|null $parent_block The parent block.
- * @return array $context Context with cataTermFromRequest exposed when applicable.
+ * @param array $metadata Parsed block.json metadata for the block being registered.
+ * @return array $metadata Metadata with the term-from-request context wired up.
  */
-function cata_term_from_request_render_block_context( array $context, array $parsed_block, WP_Block|null $parent_block ): array {
+function cata_term_from_request_block_metadata( array $metadata ): array {
 
-	if ( ! in_array( $parsed_block['blockName'], ['core/query-pagination', 'core/post-template'] ) ) {
-		return $context;
+	if ( ! isset( $metadata['name'] ) ) {
+		return $metadata;
 	}
 
-	if ( null === $parent_block || 'core/query' !== $parent_block->parsed_block['blockName'] ) {
-		return $context;
+	if ( 'core/query' === $metadata['name'] ) {
+		$metadata['attributes']['cataTermFromRequest'] = array(
+			'type'    => 'boolean',
+			'default' => false,
+		);
+		$metadata['providesContext']['cataTermFromRequest'] = 'cataTermFromRequest';
 	}
 
-	if ( true === ( $parent_block->parsed_block['attrs']['cataTermFromRequest'] ?? false ) ) {
-		$context['cataTermFromRequest'] = true;
+	if ( in_array( $metadata['name'], ['core/post-template', 'core/query-pagination'], true ) ) {
+		$metadata['usesContext'][] = 'cataTermFromRequest';
 	}
 
-	return $context;
+	return $metadata;
 }
-add_filter( 'render_block_context', __NAMESPACE__ . '\\cata_term_from_request_render_block_context', 10, 3 );
+add_filter( 'block_type_metadata', __NAMESPACE__ . '\\cata_term_from_request_block_metadata' );
 
 /**
  * Query Loop Block Query Vars
