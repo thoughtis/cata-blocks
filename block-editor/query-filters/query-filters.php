@@ -19,10 +19,6 @@ use WP_Term;
  */
 function cata_query_filters_enqueue_scripts(): void {
 
-	if ( true === wp_is_block_theme() ) {
-		return;
-	}
-
 	$asset = require __DIR__ . '/build/index.asset.php';
 
 	wp_enqueue_script(
