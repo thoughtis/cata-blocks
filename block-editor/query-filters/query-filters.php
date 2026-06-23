@@ -141,7 +141,7 @@ function cata_query_filters_term_from_request_query_vars( array $query, WP_Block
 		return $query;
 	}
 
-	$term = apply_filters( 'cata_query_filters_term_from_request', null );
+	$term = apply_filters( 'cata_query_filters_term_from_request', get_queried_object() );
 
 	if ( $term instanceof WP_Term ) {
 		$query['tax_query'][] = array(
