@@ -4,25 +4,25 @@ import { ToggleControl, PanelBody, PanelRow } from '@wordpress/components';
 
 addFilter(
 	'blocks.registerBlockType',
-	'cata/inheritQuery',
-	addInheritQueryAttribute
+	'cata/queryFilters',
+	addQueryFilterAttributes
 );
 
 addFilter(
 	'editor.BlockEdit',
-	'core/inheritQuery',
-	withInheritQuery
+	'cata/queryFilters',
+	withQueryFilters
 );
 
 /**
- * Add Inherit Query Attribute
- * 
+ * Add Query Filter Attributes
+ *
  * @param {Object} settings
  * @param {string} name
- * 
+ *
  * @return {Object} updated settings
  */
-function addInheritQueryAttribute( settings, name ) {
+function addQueryFilterAttributes( settings, name ) {
 
 	if ( undefined === settings.attributes || 'core/query' !== name ) {
 		return settings;
@@ -32,6 +32,10 @@ function addInheritQueryAttribute( settings, name ) {
 		cataInheritQuery: {
 			type: 'boolean',
 			default: false
+		},
+		cataTermFromRequest: {
+			type: 'boolean',
+			default: false
 		}
 	} );
 
@@ -39,11 +43,11 @@ function addInheritQueryAttribute( settings, name ) {
 }
 
 /**
- * With Inherit Query
+ * With Query Filters
  *
- * @param {Object} BlockEdit 
+ * @param {Object} BlockEdit
  */
-function withInheritQuery( BlockEdit ) {
+function withQueryFilters( BlockEdit ) {
 
 	return ( props ) => {
 
@@ -53,12 +57,13 @@ function withInheritQuery( BlockEdit ) {
 
 		const { setAttributes, attributes } = props;
 		const cataInheritQuery = attributes.cataInheritQuery ?? false;
+		const cataTermFromRequest = attributes.cataTermFromRequest ?? false;
 
 		return (
 			<>
 				<BlockEdit key="edit" { ...props } />
 				<InspectorControls>
-					<PanelBody title="Custom Inherit Query">
+					<PanelBody title="Custom Query Filters">
 						<PanelRow>
 							<ToggleControl
 							__nextHasNoMarginBottom
@@ -70,11 +75,20 @@ function withInheritQuery( BlockEdit ) {
 							} }
 							/>
 						</PanelRow>
+						<PanelRow>
+							<ToggleControl
+							__nextHasNoMarginBottom
+							label="Filter by current term"
+							help="Filter this query by the current request's taxonomy term"
+							checked={ cataTermFromRequest }
+							onChange={ (newValue) => {
+								setAttributes( { cataTermFromRequest: newValue } );
+							} }
+							/>
+						</PanelRow>
 					</PanelBody>
 				</InspectorControls>
 			</>
 		)
 	};
 }
-
-
