@@ -141,9 +141,6 @@ add_filter( 'block_type_metadata', __NAMESPACE__ . '\\cata_query_filters_term_fr
  */
 function cata_query_filters_term_from_request_query_vars( array $query, WP_Block $block, int $page ): array {
 
-	do_action('qm/debug', $query);
-	do_action('qm/debug', $block);
-
 	if ( true !== ( $block->context['cataTermFromRequest'] ?? false ) ) {
 		return $query;
 	}
