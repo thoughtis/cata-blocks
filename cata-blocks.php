@@ -12,7 +12,7 @@
  * Description: Block Editor components for use with the Cata theme.
  * Author:      Thought & Expression Co. <devjobs@thought.is>
  * Author URI:  https://thought.is
- * Version:     0.11.10
+ * Version:     0.12.0
  * License:     GPL v3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.txt
  */
@@ -72,12 +72,6 @@ require_once __DIR__ . '/blocks/moodboard/moodboard.php';
  * Infinite Scroll
  */
 require_once __DIR__ . '/blocks/infinite-scroll/infinite-scroll.php';
-
-/**
- * Newsletter
- */
-require_once __DIR__ . '/blocks/newsletter/includes/class-renderer.php';
-require_once __DIR__ . '/blocks/newsletter/newsletter.php';
 
 /**
  * REST
@@ -171,23 +165,9 @@ require_once __DIR__ . '/blocks/marquee/marquee.php';
 require_once __DIR__ . '/blocks/outbrain/outbrain.php';
 
 /**
- * 7Search
- */
-require_once __DIR__ . '/blocks/sevensearch/sevensearch.php';
-
-/**
  * Globe Background
  */
 require_once __DIR__ . '/blocks/globe-background/globe-background.php';
-
-/**
- * JustWatch
- */
-require_once __DIR__ . '/blocks/just-watch/just-watch.php';
-require_once __DIR__ . '/blocks/just-watch/includes/options/class-options.php';
-require_once __DIR__ . '/blocks/just-watch/includes/options/token/class-token.php';
-
-new Just_Watch\Options();
 
 /**
  * Advanced Modal
