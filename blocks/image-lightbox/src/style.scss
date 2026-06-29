@@ -15,8 +15,6 @@
 	max-width: 100%;
 	max-height: 100%;
 	margin: 0;
-
-	// Override default browser styles
 	padding: unset;
 	border: none;
 	background-color: transparent;
@@ -33,11 +31,11 @@
 	}
 }
 
-// The visible area behind the slider (and ad).
+// The visible area behind the slider
 .wp-block-cata-image-lightbox__panel {
 	position: relative;
 	display: flex;
-	gap: clamp( 1rem, 3vw, 2rem );
+	gap: 1rem;
 	box-sizing: border-box;
 	width: min( 92vw, 1400px );
 	height: min( 90vh, 900px );
@@ -45,6 +43,9 @@
 	background-color: var( --cata-image-lightbox-background, #ffffff );
 	color: var( --cata-image-lightbox-text, #1a1a1a );
 	border-radius: 4px;
+
+	// Add fixed padding to top so close button doesn't overlap image
+	padding-block-start: 2.5rem;
 }
 
 .wp-block-cata-image-lightbox__main {
@@ -85,11 +86,6 @@
 	object-fit: contain;
 }
 
-// Ad column beside the slider.
-.wp-block-cata-image-lightbox__ad {
-	flex: 0 0 var( --cata-image-lightbox-ad-width, 300px );
-}
-
 .wp-block-cata-image-lightbox__nav {
 	display: flex;
 	align-items: center;
@@ -119,18 +115,18 @@
 .wp-block-cata-image-lightbox__close {
 	position: absolute;
 	z-index: 1;
-	inset-block-start: 0.5rem;
-	inset-inline-end: 0.5rem;
-	width: 2.5rem;
-	height: 2.5rem;
+	top: 0.5rem;
+	right: 0.5rem;
+	width: 2rem;
+	height: 2rem;
 	font-size: 2rem;
 }
 
 .wp-block-cata-image-lightbox__prev,
 .wp-block-cata-image-lightbox__next {
 	width: 3rem;
-	height: 3rem;
-	font-size: 2.5rem;
+	height: 2rem;
+	font-size: 1.5rem;
 }
 
 .wp-block-cata-image-lightbox__counter {
