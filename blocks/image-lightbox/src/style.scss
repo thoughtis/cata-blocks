@@ -2,3 +2,139 @@
  * The following styles get applied both on the front of your site
  * and in the editor.
  */
+
+// Hover state for images that can open the lightbox
+.is-cata-image-lightbox-trigger {
+	cursor: zoom-in;
+}
+
+// Backdrop layer: fills the viewport and centres the panel.
+.wp-block-cata-image-lightbox__dialog {
+	width: 100%;
+	height: 100%;
+	max-width: 100%;
+	max-height: 100%;
+	margin: 0;
+
+	// Override default browser styles
+	padding: unset;
+	border: none;
+	background-color: transparent;
+
+	&[open] {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	&::backdrop {
+		background-color: var( --cata-image-lightbox-backdrop-color, #000000 );
+		opacity: calc( var( --cata-image-lightbox-backdrop-opacity, 80 ) / 100 );
+	}
+}
+
+// The visible area behind the slider (and ad).
+.wp-block-cata-image-lightbox__panel {
+	position: relative;
+	display: flex;
+	gap: clamp( 1rem, 3vw, 2rem );
+	box-sizing: border-box;
+	width: min( 92vw, 1400px );
+	height: min( 90vh, 900px );
+	padding: clamp( 1rem, 3vw, 2.5rem );
+	background-color: var( --cata-image-lightbox-background, #ffffff );
+	color: var( --cata-image-lightbox-text, #1a1a1a );
+	border-radius: 4px;
+}
+
+.wp-block-cata-image-lightbox__main {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.wp-block-cata-image-lightbox__viewport {
+	position: relative;
+	flex: 1 1 auto;
+	min-height: 0;
+}
+
+.wp-block-cata-image-lightbox__slide {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0;
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity 0.3s ease;
+
+	&.is-active {
+		opacity: 1;
+		visibility: visible;
+	}
+}
+
+.wp-block-cata-image-lightbox__image {
+	width: auto;
+	height: auto;
+	max-width: 100%;
+	max-height: 100%;
+	object-fit: contain;
+}
+
+// Ad column beside the slider.
+.wp-block-cata-image-lightbox__ad {
+	flex: 0 0 var( --cata-image-lightbox-ad-width, 300px );
+}
+
+.wp-block-cata-image-lightbox__nav {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+	padding-block-start: 1rem;
+
+	&[hidden] {
+		display: none;
+	}
+}
+
+.wp-block-cata-image-lightbox__close,
+.wp-block-cata-image-lightbox__prev,
+.wp-block-cata-image-lightbox__next {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	color: inherit;
+	background-color: transparent;
+	border: none;
+	cursor: pointer;
+	line-height: 1;
+}
+
+.wp-block-cata-image-lightbox__close {
+	position: absolute;
+	z-index: 1;
+	inset-block-start: 0.5rem;
+	inset-inline-end: 0.5rem;
+	width: 2.5rem;
+	height: 2.5rem;
+	font-size: 2rem;
+}
+
+.wp-block-cata-image-lightbox__prev,
+.wp-block-cata-image-lightbox__next {
+	width: 3rem;
+	height: 3rem;
+	font-size: 2.5rem;
+}
+
+.wp-block-cata-image-lightbox__counter {
+	min-width: 4ch;
+	font-size: 0.875rem;
+	text-align: center;
+}
