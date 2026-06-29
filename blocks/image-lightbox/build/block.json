@@ -1,0 +1,25 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "cata/image-lightbox",
+  "version": "0.1.0",
+  "title": "Image Lightbox",
+  "category": "design",
+  "description": "Opens every image in the post content inside a modal slider lightbox.",
+  "keywords": [
+    "modal",
+    "dialog",
+    "gallery",
+    "slider"
+  ],
+  "supports": {
+    "html": false,
+    "customClassName": false,
+    "interactivity": true
+  },
+  "textdomain": "cata",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "viewScriptModule": "file:./view.js"
+}

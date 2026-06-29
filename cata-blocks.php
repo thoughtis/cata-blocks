@@ -176,6 +176,11 @@ require_once __DIR__ . '/blocks/advanced-modal/advanced-modal.php';
 require_once __DIR__ . '/blocks/advanced-modal-close/advanced-modal-close.php';
 
 /**
+ * Image Lightbox
+ */
+require_once __DIR__ . '/blocks/image-lightbox/image-lightbox.php';
+
+/**
  * First Page Content
  */
 require_once __DIR__ . '/blocks/first-page-content/first-page-content.php';
