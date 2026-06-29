@@ -1,23 +1,8 @@
 /**
  * Save
- */
-
-import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
-
-/**
- * Save
  *
- * @export
- * @return {WPElement} Save
+ * Dynamic block — markup is produced by the PHP render callback.
  */
 export default function Save() {
-	const blockProps = useBlockProps.save();
-
-	return (
-		<div { ...blockProps } >
-			<div class="wp-block-cata-image-lightbox__inner-blocks">
-				<InnerBlocks.Content />
-			</div>
-		</div>
-	);
+	return null;
 }
