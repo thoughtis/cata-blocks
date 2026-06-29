@@ -2,9 +2,7 @@
  * Edit
  */
 
-import { InnerBlocks, useBlockProps, InspectorControls, useSettings } from '@wordpress/block-editor';
-import { Path, SVG, Circle } from '@wordpress/primitives';
-import { ColorPalette, PanelBody } from '@wordpress/components';
+import { useBlockProps } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
 import './editor.scss';
 
@@ -14,10 +12,15 @@ import './editor.scss';
  * @export
  * @return {WPElement} Edit
  */
-export default function Edit( { attributes, setAttributes } ) {
+export default function Edit() {
+	const blockProps = useBlockProps();
+
 	return (
-		<>
-			Image Modal Here
-		</>
+		<div { ...blockProps }>
+			{ __(
+				'Image Lightbox: in-content image blocks open in a modal slider on the front end when clicked.',
+				'cata'
+			) }
+		</div>
 	);
 }
