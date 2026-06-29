@@ -12,10 +12,20 @@
 		"gallery",
 		"slider"
 	],
+	"attributes": {
+		"backdropColor": { "type": "string" },
+		"customBackdropColor": { "type": "string", "default": "#000000" },
+		"backdropOpacity": { "type": "number", "default": 80 }
+	},
 	"supports": {
 		"html": false,
 		"customClassName": false,
-		"interactivity": true
+		"interactivity": true,
+		"color": {
+			"text": true,
+			"background": true,
+			"__experimentalSkipSerialization": true
+		}
 	},
 	"textdomain": "cata",
 	"editorScript": "file:./index.js",

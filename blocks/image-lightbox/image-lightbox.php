@@ -89,10 +89,20 @@ function cata_image_lightbox_render_block( array $attributes, string $content, W
 		)
 	);
 
+	// Editor color settings, emitted as the custom properties the styles consume.
+	$styles = sprintf(
+		'--cata-image-lightbox-backdrop-color: %s; --cata-image-lightbox-backdrop-opacity: %d; --cata-image-lightbox-background: %s; --cata-image-lightbox-text: %s;',
+		cata_image_lightbox_color( $attributes, 'backdropColor', 'customBackdropColor', '#000000' ),
+		$attributes['backdropOpacity'] ?? 80,
+		cata_image_lightbox_supports_color( $attributes, 'backgroundColor', 'background', '#ffffff' ),
+		cata_image_lightbox_supports_color( $attributes, 'textColor', 'text', '#1a1a1a' )
+	);
+
 	$wrapper_attributes = get_block_wrapper_attributes(
 		array(
 			'data-wp-interactive' => 'cata-blocks-image-lightbox',
 			'data-wp-init'        => 'callbacks.init',
+			'style'               => $styles,
 		)
 	);
 
@@ -152,6 +162,50 @@ function cata_image_lightbox_render_block( array $attributes, string $content, W
 	</div>
 	<?php
 	return ob_get_clean();
+}
+
+/**
+ * Resolve a colour attribute to a CSS value.
+ *
+ * A preset palette colour is stored as a slug and becomes a preset var; a custom
+ * colour is used as-is. Falls back to the given default.
+ *
+ * @param array  $attributes
+ * @param string $slug_key    Attribute holding a preset colour slug.
+ * @param string $custom_key  Attribute holding a custom colour value.
+ * @param string $default     Fallback colour.
+ *
+ * @return string
+ */
+function cata_image_lightbox_color( array $attributes, string $slug_key, string $custom_key, string $default ): string {
+	if ( ! empty( $attributes[ $slug_key ] ) ) {
+		return sprintf( 'var( --wp--preset--color--%s )', $attributes[ $slug_key ] );
+	}
+
+	return $attributes[ $custom_key ] ?? $default;
+}
+
+/**
+ * Resolve a native block-supports colour (text or background) to a CSS value.
+ *
+ * Presets are stored as a slug and become a preset var; a custom colour lives
+ * under style.color. Falls back to the given default.
+ *
+ * @param array  $attributes
+ * @param string $preset_key  Attribute holding a preset slug ('textColor'/'backgroundColor').
+ * @param string $style_key   style.color key for a custom value ('text'/'background').
+ * @param string $default     Fallback colour.
+ *
+ * @return string
+ */
+function cata_image_lightbox_supports_color( array $attributes, string $preset_key, string $style_key, string $default ): string {
+	if ( ! empty( $attributes[ $preset_key ] ) ) {
+		return sprintf( 'var( --wp--preset--color--%s )', $attributes[ $preset_key ] );
+	}
+
+	$custom = $attributes['style']['color'][ $style_key ] ?? '';
+
+	return '' !== $custom ? $custom : $default;
 }
 
 /**
