@@ -103,11 +103,12 @@ function cata_image_lightbox_get_images( array $blocks ): array {
  *
  * @param array $block A parsed image block.
  *
- * @return array{src: string, alt: string, id: int}|null
+ * @return array{src: string, alt: string, id: int, caption: string}|null
  */
 function cata_image_lightbox_parse_image( array $block ): ?array {
 
-	$tags = new WP_HTML_Tag_Processor( $block['innerHTML'] ?? '' );
+	$inner_html = $block['innerHTML'] ?? '';
+	$tags       = new WP_HTML_Tag_Processor( $inner_html );
 
 	if ( ! $tags->next_tag( 'img' ) ) {
 		return null;
@@ -122,10 +123,30 @@ function cata_image_lightbox_parse_image( array $block ): ?array {
 	$alt = $tags->get_attribute( 'alt' );
 
 	return array(
-		'src' => $src,
-		'alt' => is_string( $alt ) ? $alt : '',
-		'id'  => (int) ( $block['attrs']['id'] ?? 0 ),
+		'src'     => $src,
+		'alt'     => is_string( $alt ) ? $alt : '',
+		'id'      => (int) ( $block['attrs']['id'] ?? 0 ),
+		'caption' => cata_image_lightbox_caption( $inner_html ),
 	);
+}
+
+/**
+ * Caption
+ *
+ * Pull the figcaption out of an image block's saved markup so the same caption
+ * shown in the content can be repeated in the lightbox.
+ *
+ * @param string $inner_html The image block's inner HTML.
+ *
+ * @return string Caption HTML (inline formatting preserved), or '' when absent.
+ */
+function cata_image_lightbox_caption( string $inner_html ): string {
+
+	if ( ! preg_match( '#<figcaption[^>]*>(.*?)</figcaption>#is', $inner_html, $matches ) ) {
+		return '';
+	}
+
+	return trim( $matches[1] );
 }
 
 /**
