@@ -48,6 +48,12 @@ $styles = sprintf(
 	cata_image_lightbox_supports_color( $attributes, 'textColor', 'text', 'light-dark( #1a1a1a, #ffffff )' )
 );
 
+// Apply the per-block Color Scheme control to the wrapper; the dialog inherits it.
+$color_scheme = $attributes['cataBlocksColorScheme'] ?? '';
+if ( in_array( $color_scheme, array( 'light only', 'dark only' ), true ) ) {
+	$styles .= sprintf( ' color-scheme: %s;', $color_scheme );
+}
+
 $wrapper_attributes = get_block_wrapper_attributes(
 	array(
 		'data-wp-interactive' => 'cata-blocks-image-lightbox',
