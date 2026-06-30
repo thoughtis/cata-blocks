@@ -12,7 +12,7 @@
  * Description: Block Editor components for use with the Cata theme.
  * Author:      Thought & Expression Co. <devjobs@thought.is>
  * Author URI:  https://thought.is
- * Version:     0.12.2
+ * Version:     0.12.3
  * License:     GPL v3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.txt
  */
@@ -174,6 +174,11 @@ require_once __DIR__ . '/blocks/globe-background/globe-background.php';
  */
 require_once __DIR__ . '/blocks/advanced-modal/advanced-modal.php';
 require_once __DIR__ . '/blocks/advanced-modal-close/advanced-modal-close.php';
+
+/**
+ * Image Lightbox
+ */
+require_once __DIR__ . '/blocks/image-lightbox/image-lightbox.php';
 
 /**
  * First Page Content
