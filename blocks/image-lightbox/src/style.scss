@@ -67,11 +67,11 @@
 .wp-block-cata-image-lightbox__panel {
 	position: relative;
 	display: flex;
-	gap: 1rem;
+	gap: clamp( 0.5rem, 2%, 1rem );
 	box-sizing: border-box;
-	width: min( 92vw, 1400px );
-	height: min( 90vh, 900px );
-	padding: clamp( 1rem, 3vw, 2.5rem );
+	width: min( 95%, 86rem );
+	height: min( 95vh, 56rem );
+	padding: clamp( 1rem, 3%, 2.5rem );
 	background-color: var( --cata-image-lightbox-background, light-dark( #ffffff, #1a1a1a ) );
 	color: var( --cata-image-lightbox-text, light-dark( #1a1a1a, #ffffff ) );
 	border-radius: 4px;
@@ -186,16 +186,4 @@
 	min-width: 4ch;
 	font-size: 0.875rem;
 	text-align: center;
-}
-
-// Small screens: give the panel more of the viewport and tighten its spacing
-// so the contents have room and nothing bleeds off-screen.
-@media ( max-width: 600px ) {
-	.wp-block-cata-image-lightbox__panel {
-		width: 96vw;
-		height: 94vh;
-		gap: 0.5rem;
-		padding: 1rem;
-		padding-block-start: 2.5rem;
-	}
 }
