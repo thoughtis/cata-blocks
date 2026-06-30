@@ -8,6 +8,38 @@
 	cursor: zoom-in;
 }
 
+// Wrapper added around each clickable content image so the count badge can
+// anchor to the image's lower-left corner.
+.cata-image-lightbox-figure {
+	position: relative;
+	display: inline-block;
+	line-height: 0;
+}
+
+// Count badge: total number of images in the gallery, NY Post style. Doubles
+// as the keyboard-accessible button that opens the lightbox.
+.cata-image-lightbox-badge {
+	position: absolute;
+	bottom: 0.75rem;
+	left: 0.75rem;
+	padding: 0.5rem 0.75rem;
+	color: #ffffff;
+	font-family: inherit;
+	font-size: 1.125rem;
+	line-height: 1;
+	background-color: rgba( 0, 0, 0, 0.7 );
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+
+	// Hold the badge background against theme button hover/focus styles.
+	&:hover,
+	&:focus,
+	&:active {
+		background-color: rgba( 0, 0, 0, 0.7 );
+	}
+}
+
 // Backdrop layer: fills the viewport and centres the panel.
 .wp-block-cata-image-lightbox__dialog {
 	width: 100%;
@@ -35,11 +67,11 @@
 .wp-block-cata-image-lightbox__panel {
 	position: relative;
 	display: flex;
-	gap: 1rem;
+	gap: clamp( 0.5rem, 2%, 1rem );
 	box-sizing: border-box;
-	width: min( 92vw, 1400px );
-	height: min( 90vh, 900px );
-	padding: clamp( 1rem, 3vw, 2.5rem );
+	width: min( 95%, 86rem );
+	height: min( 95vh, 56rem );
+	padding: clamp( 1rem, 3%, 2.5rem );
 	background-color: var( --cata-image-lightbox-background, light-dark( #ffffff, #1a1a1a ) );
 	color: var( --cata-image-lightbox-text, light-dark( #1a1a1a, #ffffff ) );
 	border-radius: 4px;
@@ -53,6 +85,7 @@
 	flex: 1 1 auto;
 	flex-direction: column;
 	min-width: 0;
+	margin-block-start: 0.5rem;
 }
 
 .wp-block-cata-image-lightbox__viewport {
@@ -67,9 +100,12 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: center;
+	// Center when it fits; when image + caption overflow, scroll the whole
+	// slide. `safe` keeps the top reachable instead of clipping it.
+	justify-content: safe center;
 	gap: 0.75rem;
 	margin: 0;
+	overflow-y: auto;
 	opacity: 0;
 	visibility: hidden;
 	transition: opacity 0.3s ease;
@@ -83,7 +119,9 @@
 .wp-block-cata-image-lightbox__image {
 	width: auto;
 	height: auto;
-	min-height: 0;
+	// Keep the image visible; a long caption or short screen scrolls the slide
+	// rather than shrinking the image away.
+	min-height: 12rem;
 	max-width: 100%;
 	max-height: 100%;
 	object-fit: contain;
@@ -91,11 +129,13 @@
 
 .wp-block-cata-image-lightbox__caption {
 	flex: 0 0 auto;
-	max-width: 100%;
+	max-width: min( 100ch, 100% );
 	margin: 0;
 	font-size: 0.875rem;
 	line-height: 1.4;
 	text-align: center;
+	// Break long words/URLs so they don't bleed out of the panel.
+	overflow-wrap: break-word;
 	opacity: 0.8;
 }
 

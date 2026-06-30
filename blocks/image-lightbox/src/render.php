@@ -36,6 +36,8 @@ wp_interactivity_state(
 			'cata_blocks_image_lightbox_content_selector',
 			'.wp-block-post-content, .entry-content'
 		),
+		// Hover hint shown on each clickable content image.
+		'tooltip'         => __( 'Click to open the image gallery', 'cata' ),
 	)
 );
 
