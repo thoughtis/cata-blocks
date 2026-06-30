@@ -8,34 +8,6 @@ import { store, getContext, getElement } from '@wordpress/interactivity';
 // content-image listeners (which live outside the interactive region) can open it.
 let dialog = null;
 
-/**
- * Decorate a clickable content image with the gallery hints: a count badge in
- * the lower-left corner and a tooltip shown on hover.
- *
- * @param {HTMLImageElement} img   The clickable content image.
- * @param {number}           total Total number of images in the gallery.
- */
-function addImageHints( img, total ) {
-	// Wrap the image so the hints anchor to the image itself, regardless of
-	// the surrounding theme markup.
-	const wrapper = document.createElement( 'span' );
-	wrapper.className = 'cata-image-lightbox-figure';
-	img.parentNode.insertBefore( wrapper, img );
-	wrapper.appendChild( img );
-
-	const badge = document.createElement( 'span' );
-	badge.className = 'cata-image-lightbox-badge';
-	badge.setAttribute( 'aria-hidden', 'true' );
-	badge.textContent = total;
-	wrapper.appendChild( badge );
-
-	const tooltip = document.createElement( 'span' );
-	tooltip.className = 'cata-image-lightbox-tooltip';
-	tooltip.setAttribute( 'role', 'tooltip' );
-	tooltip.textContent = state.tooltip ?? '';
-	wrapper.appendChild( tooltip );
-}
-
 const { state, actions } = store( 'cata-blocks-image-lightbox', {
 	state: {
 		get hasMultiple() {
@@ -121,8 +93,44 @@ const { state, actions } = store( 'cata-blocks-image-lightbox', {
 				img.classList.add( 'is-cata-image-lightbox-trigger' );
 				img.addEventListener( 'click', () => actions.open( index ) );
 
-				addImageHints( img, state.images.length );
+				const badge = addImageHints( img, state.images.length );
+				badge.addEventListener( 'click', () => actions.open( index ) );
 			} );
 		},
 	},
 } );
+
+/**
+ * Adds an image count badge that doubles as an accessible modal trigger,
+ * plus a native tooltip for clarity
+ *
+ * @param {HTMLImageElement} img   The clickable content image.
+ * @param {number}           total Total number of images in the gallery.
+ *
+ * @return {HTMLButtonElement} The badge button that can open the lightbox.
+ */
+function addImageHints( img, total ) {
+	// A plain wrapper anchors the badge to the image's lower-left corner.
+	const wrapper = document.createElement( 'span' );
+	wrapper.className = 'cata-image-lightbox-figure';
+	img.parentNode.insertBefore( wrapper, img );
+	wrapper.appendChild( img );
+
+	// The badge is a button so keyboard users can open the lightbox; its label
+	// explains what it does.
+	const badge = document.createElement( 'button' );
+	badge.type = 'button';
+	badge.className = 'cata-image-lightbox-badge';
+	badge.textContent = total;
+
+	if ( state.tooltip ) {
+		badge.title = state.tooltip;
+		badge.setAttribute( 'aria-label', state.tooltip );
+		// Native tooltip on the image itself for mouse users.
+		img.title = state.tooltip;
+	}
+
+	wrapper.appendChild( badge );
+
+	return badge;
+}

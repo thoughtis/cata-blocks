@@ -16,42 +16,28 @@
 	line-height: 0;
 }
 
-// Count badge: total number of images in the gallery, NY Post style.
+// Count badge: total number of images in the gallery, NY Post style. Doubles
+// as the keyboard-accessible button that opens the lightbox.
 .cata-image-lightbox-badge {
 	position: absolute;
 	bottom: 0.75rem;
 	left: 0.75rem;
 	padding: 0.5rem 0.75rem;
 	color: #ffffff;
+	font-family: inherit;
 	font-size: 1.125rem;
 	line-height: 1;
 	background-color: rgba( 0, 0, 0, 0.7 );
+	border: none;
 	border-radius: 4px;
-	pointer-events: none;
-}
+	cursor: pointer;
 
-// Hover hint telling readers a click opens the gallery dialog.
-.cata-image-lightbox-tooltip {
-	position: absolute;
-	z-index: 1;
-	top: 0.75rem;
-	left: 50%;
-	transform: translateX( -50% );
-	max-width: calc( 100% - 1.5rem );
-	padding: 0.25rem 0.625rem;
-	color: #ffffff;
-	font-size: 0.8125rem;
-	line-height: 1.4;
-	text-align: center;
-	background-color: rgba( 0, 0, 0, 0.8 );
-	border-radius: 4px;
-	opacity: 0;
-	pointer-events: none;
-	transition: opacity 0.15s ease;
-}
-
-.cata-image-lightbox-figure:hover .cata-image-lightbox-tooltip {
-	opacity: 1;
+	// Hold the badge background against theme button hover/focus styles.
+	&:hover,
+	&:focus,
+	&:active {
+		background-color: rgba( 0, 0, 0, 0.7 );
+	}
 }
 
 // Backdrop layer: fills the viewport and centres the panel.
@@ -136,12 +122,16 @@
 }
 
 .wp-block-cata-image-lightbox__caption {
-	flex: 0 0 auto;
-	max-width: 100%;
+	flex: 0 1 auto;
+	max-width: min( 100ch, 100% );
+	max-height: 30%;
 	margin: 0;
+	overflow-y: auto;
 	font-size: 0.875rem;
 	line-height: 1.4;
 	text-align: center;
+	// Break long words/URLs and scroll tall captions so neither bleeds out.
+	overflow-wrap: break-word;
 	opacity: 0.8;
 }
 
@@ -192,4 +182,16 @@
 	min-width: 4ch;
 	font-size: 0.875rem;
 	text-align: center;
+}
+
+// Small screens: give the panel more of the viewport and tighten its spacing
+// so the contents have room and nothing bleeds off-screen.
+@media ( max-width: 600px ) {
+	.wp-block-cata-image-lightbox__panel {
+		width: 96vw;
+		height: 94vh;
+		gap: 0.5rem;
+		padding: 1rem;
+		padding-block-start: 2.5rem;
+	}
 }
