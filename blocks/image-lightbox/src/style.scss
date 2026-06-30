@@ -85,6 +85,7 @@
 	flex: 1 1 auto;
 	flex-direction: column;
 	min-width: 0;
+	margin-block-start: 0.5rem;
 }
 
 .wp-block-cata-image-lightbox__viewport {
@@ -99,9 +100,12 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: center;
+	// Center when it fits; when image + caption overflow, scroll the whole
+	// slide. `safe` keeps the top reachable instead of clipping it.
+	justify-content: safe center;
 	gap: 0.75rem;
 	margin: 0;
+	overflow-y: auto;
 	opacity: 0;
 	visibility: hidden;
 	transition: opacity 0.3s ease;
@@ -115,22 +119,22 @@
 .wp-block-cata-image-lightbox__image {
 	width: auto;
 	height: auto;
-	min-height: 0;
+	// Keep the image visible; a long caption or short screen scrolls the slide
+	// rather than shrinking the image away.
+	min-height: 12rem;
 	max-width: 100%;
 	max-height: 100%;
 	object-fit: contain;
 }
 
 .wp-block-cata-image-lightbox__caption {
-	flex: 0 1 auto;
+	flex: 0 0 auto;
 	max-width: min( 100ch, 100% );
-	max-height: 30%;
 	margin: 0;
-	overflow-y: auto;
 	font-size: 0.875rem;
 	line-height: 1.4;
 	text-align: center;
-	// Break long words/URLs and scroll tall captions so neither bleeds out.
+	// Break long words/URLs so they don't bleed out of the panel.
 	overflow-wrap: break-word;
 	opacity: 0.8;
 }
