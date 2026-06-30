@@ -40,8 +40,8 @@
 	width: min( 92vw, 1400px );
 	height: min( 90vh, 900px );
 	padding: clamp( 1rem, 3vw, 2.5rem );
-	background-color: var( --cata-image-lightbox-background, #ffffff );
-	color: var( --cata-image-lightbox-text, #1a1a1a );
+	background-color: var( --cata-image-lightbox-background, light-dark( #ffffff, #1a1a1a ) );
+	color: var( --cata-image-lightbox-text, light-dark( #1a1a1a, #ffffff ) );
 	border-radius: 4px;
 
 	// Add fixed padding to top so close button doesn't overlap image

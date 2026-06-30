@@ -44,8 +44,8 @@ $styles = sprintf(
 	'--cata-image-lightbox-backdrop-color: %s; --cata-image-lightbox-backdrop-opacity: %d; --cata-image-lightbox-background: %s; --cata-image-lightbox-text: %s;',
 	cata_image_lightbox_color( $attributes, 'backdropColor', 'customBackdropColor', '#000000' ),
 	$attributes['backdropOpacity'] ?? 80,
-	cata_image_lightbox_supports_color( $attributes, 'backgroundColor', 'background', '#ffffff' ),
-	cata_image_lightbox_supports_color( $attributes, 'textColor', 'text', '#1a1a1a' )
+	cata_image_lightbox_supports_color( $attributes, 'backgroundColor', 'background', 'light-dark( #ffffff, #1a1a1a )' ),
+	cata_image_lightbox_supports_color( $attributes, 'textColor', 'text', 'light-dark( #1a1a1a, #ffffff )' )
 );
 
 $wrapper_attributes = get_block_wrapper_attributes(
