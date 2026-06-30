@@ -8,6 +8,34 @@ import { store, getContext, getElement } from '@wordpress/interactivity';
 // content-image listeners (which live outside the interactive region) can open it.
 let dialog = null;
 
+/**
+ * Decorate a clickable content image with the gallery hints: a count badge in
+ * the lower-left corner and a tooltip shown on hover.
+ *
+ * @param {HTMLImageElement} img   The clickable content image.
+ * @param {number}           total Total number of images in the gallery.
+ */
+function addImageHints( img, total ) {
+	// Wrap the image so the hints anchor to the image itself, regardless of
+	// the surrounding theme markup.
+	const wrapper = document.createElement( 'span' );
+	wrapper.className = 'cata-image-lightbox-figure';
+	img.parentNode.insertBefore( wrapper, img );
+	wrapper.appendChild( img );
+
+	const badge = document.createElement( 'span' );
+	badge.className = 'cata-image-lightbox-badge';
+	badge.setAttribute( 'aria-hidden', 'true' );
+	badge.textContent = total;
+	wrapper.appendChild( badge );
+
+	const tooltip = document.createElement( 'span' );
+	tooltip.className = 'cata-image-lightbox-tooltip';
+	tooltip.setAttribute( 'role', 'tooltip' );
+	tooltip.textContent = state.tooltip ?? '';
+	wrapper.appendChild( tooltip );
+}
+
 const { state, actions } = store( 'cata-blocks-image-lightbox', {
 	state: {
 		get hasMultiple() {
@@ -92,6 +120,8 @@ const { state, actions } = store( 'cata-blocks-image-lightbox', {
 
 				img.classList.add( 'is-cata-image-lightbox-trigger' );
 				img.addEventListener( 'click', () => actions.open( index ) );
+
+				addImageHints( img, state.images.length );
 			} );
 		},
 	},

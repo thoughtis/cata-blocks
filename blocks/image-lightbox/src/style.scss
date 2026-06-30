@@ -8,6 +8,52 @@
 	cursor: zoom-in;
 }
 
+// Wrapper added around each clickable content image so the count badge can
+// anchor to the image's lower-left corner.
+.cata-image-lightbox-figure {
+	position: relative;
+	display: inline-block;
+	line-height: 0;
+}
+
+// Count badge: total number of images in the gallery, NY Post style.
+.cata-image-lightbox-badge {
+	position: absolute;
+	bottom: 0.75rem;
+	left: 0.75rem;
+	padding: 0.5rem 0.75rem;
+	color: #ffffff;
+	font-size: 1.125rem;
+	line-height: 1;
+	background-color: rgba( 0, 0, 0, 0.7 );
+	border-radius: 4px;
+	pointer-events: none;
+}
+
+// Hover hint telling readers a click opens the gallery dialog.
+.cata-image-lightbox-tooltip {
+	position: absolute;
+	z-index: 1;
+	top: 0.75rem;
+	left: 50%;
+	transform: translateX( -50% );
+	max-width: calc( 100% - 1.5rem );
+	padding: 0.25rem 0.625rem;
+	color: #ffffff;
+	font-size: 0.8125rem;
+	line-height: 1.4;
+	text-align: center;
+	background-color: rgba( 0, 0, 0, 0.8 );
+	border-radius: 4px;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.15s ease;
+}
+
+.cata-image-lightbox-figure:hover .cata-image-lightbox-tooltip {
+	opacity: 1;
+}
+
 // Backdrop layer: fills the viewport and centres the panel.
 .wp-block-cata-image-lightbox__dialog {
 	width: 100%;
