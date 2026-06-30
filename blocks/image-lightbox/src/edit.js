@@ -19,7 +19,7 @@ import './editor.scss';
 /**
  * Edit
  *
- * Panel text/background use native colour supports; only the backdrop (the dim
+ * Panel text/background use native color supports; only the backdrop (the dim
  * overlay) and its opacity need custom controls.
  *
  * @return {WPElement} Edit
