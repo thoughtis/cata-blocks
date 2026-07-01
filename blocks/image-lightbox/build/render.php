@@ -119,6 +119,14 @@ $next_icon  = apply_filters( 'cata_blocks_image_lightbox_next_icon', '→' );
 					><?php echo $next_icon; ?></button>
 				</div>
 			</div>
+
+			<?php if ( apply_filters( 'cata_blocks_image_lightbox_show_ad', true ) ) : ?>
+				<aside
+					class="wp-block-cata-image-lightbox__ad"
+					id="cata-image-lightbox-ad"
+					aria-label="<?php esc_attr_e( 'Advertisement', 'cata' ); ?>"
+				></aside>
+			<?php endif; ?>
 		</div>
 	</dialog>
 </div>
