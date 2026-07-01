@@ -101,9 +101,10 @@ $next_icon  = apply_filters( 'cata_blocks_image_lightbox_next_icon', '→' );
 							<?php echo wp_interactivity_data_wp_context( array( 'index' => $index ) ); ?>
 						>
 							<?php echo cata_image_lightbox_image_html( $image ); ?>
-							<?php if ( '' !== $image['caption'] ) : ?>
+							<?php $caption = apply_filters( 'cata_blocks_image_lightbox_caption', $image['caption'], $image ); ?>
+							<?php if ( '' !== $caption ) : ?>
 								<figcaption class="wp-block-cata-image-lightbox__caption">
-									<?php echo wp_kses_post( $image['caption'] ); ?>
+									<?php echo wp_kses_post( $caption ); ?>
 								</figcaption>
 							<?php endif; ?>
 						</figure>
