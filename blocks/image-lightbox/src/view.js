@@ -116,12 +116,31 @@ function addImageHints( img, total ) {
 	img.parentNode.insertBefore( wrapper, img );
 	wrapper.appendChild( img );
 
-	// The badge is a button so keyboard users can open the lightbox; its label
-	// explains what it does.
+	// The badge is a button so keyboard users can open the lightbox
 	const badge = document.createElement( 'button' );
 	badge.type = 'button';
 	badge.className = 'cata-image-lightbox-badge';
-	badge.textContent = total;
+
+	// Icon & count on one line
+	const count = document.createElement( 'span' );
+	count.className = 'cata-image-lightbox-badge__count';
+	count.innerHTML = state.badgeIcon ?? '';
+
+	const number = document.createElement( 'span' );
+	number.className = 'cata-image-lightbox-badge__number';
+	number.textContent = `+${ total }`;
+	count.appendChild( number );
+
+	badge.appendChild( count );
+
+	// Optional text below the icon and count. Rendered only when a filter
+	// supplies it.
+	if ( state.badgeText ) {
+		const text = document.createElement( 'span' );
+		text.className = 'cata-image-lightbox-badge__text';
+		text.textContent = state.badgeText;
+		badge.appendChild( text );
+	}
 
 	if ( state.tooltip ) {
 		badge.title = state.tooltip;
