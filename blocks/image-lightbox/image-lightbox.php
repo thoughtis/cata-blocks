@@ -84,8 +84,8 @@ function cata_image_lightbox_get_post_images( WP_Post $post ): array {
 		$images   = cata_image_lightbox_get_images( parse_blocks( $post->post_content ) );
 		$featured = cata_image_lightbox_featured_image( $post );
 
-		// Lead with the featured image unless it already appears in the content.
-		if ( null !== $featured && ! in_array( $featured['id'], array_column( $images, 'id' ), true ) ) {
+		// Lead with the featured image.
+		if ( null !== $featured ) {
 			array_unshift( $images, $featured );
 		}
 
