@@ -25,10 +25,11 @@ const { state, actions } = store( 'cata-blocks-image-lightbox', {
 	},
 	actions: {
 		open( index, trigger ) {
-			// Paint the rendition the reader is already looking at while the
+			// Warm first so the slide's load is no longer deferred, then paint
+			// the rendition the reader is already looking at while the
 			// full-size candidate downloads.
-			seedSlide( slideImages[ index ], trigger?.currentSrc );
 			warmAround( index );
+			seedSlide( slideImages[ index ], trigger?.currentSrc );
 			navigation++;
 			state.currentIndex = index;
 			dialog?.showModal();
