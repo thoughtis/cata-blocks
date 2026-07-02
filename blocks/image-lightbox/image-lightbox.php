@@ -318,9 +318,10 @@ function cata_image_lightbox_badge_html( int $total ): string {
 /**
  * Find slide index
  *
- * Match an image block to its slide by attachment id, which survives URL
- * rewrites and duplicate sources, falling back to a normalized source
- * comparison for images without an id.
+ * Match an image block to its slide by attachment id, falling back to source
+ * comparison for images without an id. Both sources are parsed from the raw
+ * post content, so they compare exactly. First occurrence wins when the same
+ * image appears more than once.
  *
  * @param array $image  Parsed image, from cata_image_lightbox_parse_image().
  * @param array $images Collected slide images.
@@ -337,32 +338,13 @@ function cata_image_lightbox_find_index( array $image, array $images ): ?int {
 		}
 	}
 
-	$src = cata_image_lightbox_normalize_src( $image['src'] );
-
 	foreach ( $images as $index => $candidate ) {
-		if ( cata_image_lightbox_normalize_src( $candidate['src'] ) === $src ) {
+		if ( $candidate['src'] === $image['src'] ) {
 			return $index;
 		}
 	}
 
 	return null;
-}
-
-/**
- * Normalize src
- *
- * Reduce an image URL to a form that survives scheme changes and appended
- * query args, so sources parsed from post content compare reliably.
- *
- * @param string $src
- *
- * @return string
- */
-function cata_image_lightbox_normalize_src( string $src ): string {
-
-	$src = (string) preg_replace( '#^https?:#i', '', $src );
-
-	return explode( '?', $src, 2 )[0];
 }
 
 /**
