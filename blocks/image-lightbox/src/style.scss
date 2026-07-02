@@ -120,6 +120,16 @@
 	margin-block-start: 0.5rem;
 }
 
+// Short landscape viewports (a phone at 844×390) have width to spare but
+// almost no height: stacking would leave the slider a sliver, so relax the
+// constraints that force wrapping and keep the ad beside the gallery.
+@media ( height < 500px ) {
+	.wp-block-cata-image-lightbox__main {
+		min-width: 0;
+		min-height: 0;
+	}
+}
+
 // Slot for an ad alongside the gallery; an ad is inserted into this element.
 // Sits beside the gallery on wide viewports and below it on narrow ones.
 // The box is reserved at a standard 300×250 creative size up front so
