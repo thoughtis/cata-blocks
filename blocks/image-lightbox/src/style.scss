@@ -8,12 +8,15 @@
 	cursor: zoom-in;
 }
 
-// Wrapper added around each clickable content image so the count badge can
-// anchor to the image's lower-left corner.
+// Wrapper rendered around each clickable content image so the count badge can
+// anchor to the image's lower-left corner. Shrink-wraps the image without
+// adding baseline space, so wrapping doesn't shift the surrounding layout.
 .cata-image-lightbox-figure {
 	position: relative;
 	display: inline-block;
+	max-width: 100%;
 	line-height: 0;
+	vertical-align: bottom;
 }
 
 // Count badge: total number of images in the gallery. Doubles
