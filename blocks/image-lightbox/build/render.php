@@ -71,7 +71,7 @@ $next_icon  = apply_filters( 'cata_blocks_image_lightbox_next_icon', '→' );
 <div <?php echo $wrapper_attributes; ?>>
 	<dialog
 		class="wp-block-cata-image-lightbox__dialog"
-		id="<?php echo esc_attr( 'cata-image-lightbox-' . $post->ID ); ?>"
+		id="<?php echo esc_attr( wp_unique_id( 'cata-image-lightbox-' ) ); ?>"
 		aria-label="<?php esc_attr_e( 'Image gallery', 'cata' ); ?>"
 		data-wp-on--keydown="actions.onKeydown"
 		data-wp-on--click="actions.onBackdropClick"
