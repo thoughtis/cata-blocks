@@ -135,13 +135,28 @@
 // The box is reserved at a standard 300×250 creative size up front so
 // injection doesn't reflow the panel and shift the nav controls. On panels
 // narrower than the creative, the box shrinks to fit rather than overflow.
+// A creative larger than the box (e.g. a 300×600 half page) is clipped at
+// the box edge rather than spilling out of the panel.
 .wp-block-cata-image-lightbox__ad {
 	flex: 1 1 300px;
 	align-self: flex-start;
 	min-width: min( 300px, 100% );
 	max-width: 320px;
 	min-height: 250px;
+	// Beside the gallery the box may grow with the creative, but never past
+	// the bottom of the panel.
+	max-height: 100%;
 	margin-block-start: 0.5rem;
+	overflow: hidden;
+}
+
+// Stacked below the ~1000px wrap point, the ad row only has the 250px the
+// slider's min-height reserves for it, so cap the box at that reservation.
+// Short viewports sit beside the gallery instead and keep the 100% cap.
+@media ( width < 1050px ) and ( height >= 500px ) {
+	.wp-block-cata-image-lightbox__ad {
+		max-height: 250px;
+	}
 }
 
 .wp-block-cata-image-lightbox__viewport {
