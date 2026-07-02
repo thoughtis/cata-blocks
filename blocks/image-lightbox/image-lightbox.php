@@ -81,10 +81,59 @@ function cata_image_lightbox_get_post_images( WP_Post $post ): array {
 	static $cache = array();
 
 	if ( ! array_key_exists( $post->ID, $cache ) ) {
-		$cache[ $post->ID ] = cata_image_lightbox_get_images( parse_blocks( $post->post_content ) );
+		$images   = cata_image_lightbox_get_images( parse_blocks( $post->post_content ) );
+		$featured = cata_image_lightbox_featured_image( $post );
+
+		// Lead with the featured image unless it already appears in the content.
+		if ( null !== $featured && ! in_array( $featured['id'], array_column( $images, 'id' ), true ) ) {
+			array_unshift( $images, $featured );
+		}
+
+		/**
+		 * Filter the collected lightbox images so themes can add slides.
+		 *
+		 * Each entry must have src, alt, id, and caption keys; id may be 0 for
+		 * images that are not attachments.
+		 *
+		 * @param array<int, array{src: string, alt: string, id: int, caption: string}> $images
+		 * @param WP_Post                                                               $post
+		 */
+		$cache[ $post->ID ] = apply_filters( 'cata_blocks_image_lightbox_images', $images, $post );
 	}
 
 	return $cache[ $post->ID ];
+}
+
+/**
+ * Featured image
+ *
+ * Build the featured image's slide entry so the most prominent image on the
+ * page can lead the gallery.
+ *
+ * @param WP_Post $post
+ *
+ * @return array{src: string, alt: string, id: int, caption: string}|null
+ */
+function cata_image_lightbox_featured_image( WP_Post $post ): ?array {
+
+	$id = (int) get_post_thumbnail_id( $post );
+
+	if ( 0 === $id ) {
+		return null;
+	}
+
+	$src = wp_get_attachment_image_url( $id, 'large' );
+
+	if ( false === $src ) {
+		return null;
+	}
+
+	return array(
+		'src'     => $src,
+		'alt'     => (string) get_post_meta( $id, '_wp_attachment_image_alt', true ),
+		'id'      => $id,
+		'caption' => (string) wp_get_attachment_caption( $id ),
+	);
 }
 
 /**
@@ -269,8 +318,9 @@ function cata_image_lightbox_badge_html( int $total ): string {
 /**
  * Find slide index
  *
- * Match an image block's source to its slide, first occurrence winning when
- * the same source appears more than once.
+ * Match an image block to its slide by attachment id, which survives URL
+ * rewrites and duplicate sources, falling back to a normalized source
+ * comparison for images without an id.
  *
  * @param array $image  Parsed image, from cata_image_lightbox_parse_image().
  * @param array $images Collected slide images.
@@ -279,13 +329,40 @@ function cata_image_lightbox_badge_html( int $total ): string {
  */
 function cata_image_lightbox_find_index( array $image, array $images ): ?int {
 
+	if ( 0 !== $image['id'] ) {
+		foreach ( $images as $index => $candidate ) {
+			if ( $image['id'] === (int) $candidate['id'] ) {
+				return $index;
+			}
+		}
+	}
+
+	$src = cata_image_lightbox_normalize_src( $image['src'] );
+
 	foreach ( $images as $index => $candidate ) {
-		if ( $candidate['src'] === $image['src'] ) {
+		if ( cata_image_lightbox_normalize_src( $candidate['src'] ) === $src ) {
 			return $index;
 		}
 	}
 
 	return null;
+}
+
+/**
+ * Normalize src
+ *
+ * Reduce an image URL to a form that survives scheme changes and appended
+ * query args, so sources parsed from post content compare reliably.
+ *
+ * @param string $src
+ *
+ * @return string
+ */
+function cata_image_lightbox_normalize_src( string $src ): string {
+
+	$src = (string) preg_replace( '#^https?:#i', '', $src );
+
+	return explode( '?', $src, 2 )[0];
 }
 
 /**
