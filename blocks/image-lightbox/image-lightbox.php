@@ -169,7 +169,10 @@ function cata_image_lightbox_image_html( array $image ): string {
 			false,
 			array(
 				'class'    => 'wp-block-cata-image-lightbox__image',
-				'sizes'    => '(min-width: 1240px) 1000px, 90vw',
+				// Rendered width inside the panel: 95vw panel minus its padding,
+				// less the ad column and gap once they sit alongside at 1240px,
+				// capped where the panel stops growing.
+				'sizes'    => '(min-width: 1450px) 990px, (min-width: 1240px) calc(89vw - 304px), calc(95vw - 2rem)',
 				'alt'      => $image['alt'],
 				'loading'  => 'lazy',
 				'decoding' => 'async',

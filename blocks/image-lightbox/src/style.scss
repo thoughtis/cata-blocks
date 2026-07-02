@@ -126,10 +126,12 @@
 	min-height: 0;
 }
 
+// Inactive slides use display: none rather than a visibility toggle so their
+// lazy images have no geometry and never start downloading.
 .wp-block-cata-image-lightbox__slide {
 	position: absolute;
 	inset: 0;
-	display: flex;
+	display: none;
 	flex-direction: column;
 	align-items: center;
 	// Center when it fits; when image & caption overflow, scroll the whole
@@ -139,12 +141,25 @@
 	margin: 0;
 	overflow-y: auto;
 	opacity: 0;
-	visibility: hidden;
-	transition: opacity 0.3s ease;
 
 	&.is-active {
+		display: flex;
 		opacity: 1;
-		visibility: visible;
+	}
+}
+
+// Crossfade between slides: the outgoing slide keeps its box until the fade
+// ends (allow-discrete delays the switch to display: none) while the incoming
+// slide fades up from the @starting-style opacity.
+@media ( prefers-reduced-motion: no-preference ) {
+	.wp-block-cata-image-lightbox__slide {
+		transition: opacity 150ms ease, display 150ms allow-discrete;
+	}
+
+	@starting-style {
+		.wp-block-cata-image-lightbox__slide.is-active {
+			opacity: 0;
+		}
 	}
 }
 
