@@ -127,9 +127,68 @@ const { state, actions } = store( 'cata-blocks-image-lightbox', {
 
 				actions.open( index, figure.querySelector( 'img' ) );
 			} );
+
+			const triggers = wireDetachedTriggers( ref, content );
+
+			// A matching regression fails silently — slides render but
+			// nothing opens them — so make it observable.
+			if ( state.images.length > 0 && 0 === triggers ) {
+				// eslint-disable-next-line no-console
+				console.warn(
+					`Image Lightbox: ${ state.images.length } slide(s) rendered but no triggers were wired.`
+				);
+			}
 		},
 	},
 } );
+
+/**
+ * Wire badge wrappers that render outside the content container.
+ *
+ * The featured image's wrapper sits above the content the delegated listeners
+ * scan, so it gets its own listeners. Returns the total trigger count, wired
+ * here or covered by the delegation.
+ *
+ * @param {HTMLElement} ref     The block wrapper, so its own markup is skipped.
+ * @param {HTMLElement} content The container the delegated listeners cover.
+ *
+ * @return {number} How many triggers are wired in total.
+ */
+function wireDetachedTriggers( ref, content ) {
+	let wired = 0;
+
+	document
+		.querySelectorAll( '.cata-image-lightbox-figure' )
+		.forEach( ( figure ) => {
+			if ( ref.contains( figure ) ) {
+				return;
+			}
+
+			wired++;
+
+			// The delegated listeners already cover the content container.
+			if ( content.contains( figure ) ) {
+				return;
+			}
+
+			const index = Number( figure.dataset.cataImageLightboxIndex );
+
+			if ( ! Number.isInteger( index ) ) {
+				return;
+			}
+
+			const warmSlide = () => warm( slideImages[ index ], 'high' );
+			figure.addEventListener( 'pointerover', warmSlide, { passive: true } );
+			figure.addEventListener( 'touchstart', warmSlide, { passive: true } );
+
+			figure.addEventListener( 'click', ( event ) => {
+				event.preventDefault();
+				actions.open( index, figure.querySelector( 'img' ) );
+			} );
+		} );
+
+	return wired;
+}
 
 /**
  * Read the slide index from the badge wrapper around an event's target.
