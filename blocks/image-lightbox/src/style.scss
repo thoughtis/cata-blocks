@@ -93,7 +93,8 @@
 	display: flex;
 	// Let the ad wrap below the gallery when the panel is too narrow for both.
 	flex-wrap: wrap;
-	gap: clamp( 0.5rem, 2%, 1rem );
+	// At least 1rem so the ad never sits flush against the slider.
+	gap: clamp( 1rem, 2%, 1.5rem );
 	box-sizing: border-box;
 	width: min( 95%, 86rem );
 	height: min( 95vh, 56rem );
