@@ -262,7 +262,7 @@ function dispatchLightboxEvent( name ) {
 			detail: {
 				currentIndex: state.currentIndex,
 				totalSlides: state.images.length,
-				galleryId: state.galleryId ?? null,
+				galleryId: dialog?.id || null,
 				adContainerId,
 			},
 		} )

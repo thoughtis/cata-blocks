@@ -30,8 +30,6 @@ wp_interactivity_state(
 	array(
 		'images'          => $images,
 		'currentIndex'    => 0,
-		// Identifies the gallery in the events dispatched for ad integrations.
-		'galleryId'       => $post->ID,
 		// Scope for the clickable content images; falls back to the whole
 		// document client-side when no match is found.
 		'contentSelector' => apply_filters(
@@ -73,6 +71,7 @@ $next_icon  = apply_filters( 'cata_blocks_image_lightbox_next_icon', '→' );
 <div <?php echo $wrapper_attributes; ?>>
 	<dialog
 		class="wp-block-cata-image-lightbox__dialog"
+		id="<?php echo esc_attr( 'cata-image-lightbox-' . $post->ID ); ?>"
 		aria-label="<?php esc_attr_e( 'Image gallery', 'cata' ); ?>"
 		data-wp-on--keydown="actions.onKeydown"
 		data-wp-on--click="actions.onBackdropClick"
