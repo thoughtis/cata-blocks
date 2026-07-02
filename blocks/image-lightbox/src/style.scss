@@ -91,7 +91,7 @@
 .wp-block-cata-image-lightbox__panel {
 	position: relative;
 	display: flex;
-	// Let the ad wrap below the gallery when the panel is too narrow for both.
+	// Let the ad wrap below the slider when the panel is too narrow for both.
 	flex-wrap: wrap;
 	// At least 1rem so the ad never sits flush against the slider.
 	gap: clamp( 1rem, 2%, 1.5rem );
@@ -110,12 +110,18 @@
 	display: flex;
 	flex: 1 1 auto;
 	flex-direction: column;
-	min-width: 0;
+	// Wraps the ad below before the slider gets narrower than 600px.
+	min-width: min( 600px, 100% );
+	// Wrapped flex lines split the leftover height evenly, which strands dead
+	// space under the ad. Claim everything but the ad row (250px plus margins
+	// and gap) so the slider stretches instead. Side by side this is a no-op:
+	// the single line already spans the full panel height.
+	min-height: calc( 100% - 250px - 2.5rem );
 	margin-block-start: 0.5rem;
 }
 
 // Slot for an ad alongside the gallery; an ad is inserted into this element.
-// Sits beside the gallery on wide panels and wraps below on narrow ones.
+// Sits beside the gallery on wide viewports and below it on narrow ones.
 // The box is reserved at a standard 300×250 creative size up front so
 // injection doesn't reflow the panel and shift the nav controls. On panels
 // narrower than the creative, the box shrinks to fit rather than overflow.
