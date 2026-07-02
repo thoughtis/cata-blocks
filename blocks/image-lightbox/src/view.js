@@ -14,6 +14,13 @@ let slideImages = [];
 // Bumped on every open/navigation so a slow decode can't reveal a stale slide.
 let navigation = 0;
 
+// The ad slot's element id, included in event details. Set on init.
+let adContainerId = null;
+
+// Pending timer for the delayed open event; cleared when the dialog closes
+// before it fires.
+let openEventTimer = null;
+
 const { state, actions } = store( 'cata-blocks-image-lightbox', {
 	state: {
 		get hasMultiple() {
@@ -33,6 +40,13 @@ const { state, actions } = store( 'cata-blocks-image-lightbox', {
 			navigation++;
 			state.currentIndex = index;
 			dialog?.showModal();
+
+			// Delay the open event so the ad request it triggers doesn't
+			// compete with the active slide image download.
+			openEventTimer = setTimeout( () => {
+				openEventTimer = null;
+				dispatchLightboxEvent( 'slideshow:open' );
+			}, 300 );
 		},
 		close() {
 			dialog?.close();
@@ -70,6 +84,17 @@ const { state, actions } = store( 'cata-blocks-image-lightbox', {
 		init() {
 			const { ref } = getElement();
 			dialog = ref.querySelector( 'dialog' );
+
+			adContainerId =
+				ref.querySelector( '.wp-block-cata-image-lightbox__ad' )?.id ?? null;
+
+			// The dialog's native close event covers the close button,
+			// backdrop clicks, and Escape.
+			dialog?.addEventListener( 'close', () => {
+				clearTimeout( openEventTimer );
+				openEventTimer = null;
+				dispatchLightboxEvent( 'slideshow:close' );
+			} );
 
 			slideImages = Array.from(
 				ref.querySelectorAll( '.wp-block-cata-image-lightbox__slide' )
@@ -200,6 +225,10 @@ function seedSlide( img, src ) {
  * @param {number} index Slide index to show.
  */
 async function showSlide( index ) {
+	if ( index === state.currentIndex ) {
+		return;
+	}
+
 	warmAround( index );
 
 	const token = ++navigation;
@@ -219,4 +248,23 @@ async function showSlide( index ) {
 	}
 
 	state.currentIndex = index;
+	dispatchLightboxEvent( 'slideshow:slidechange' );
+}
+
+/**
+ * Notify outside integrations, such as the ad script, of lightbox activity.
+ *
+ * @param {string} name Event name, e.g. 'slideshow:open'.
+ */
+function dispatchLightboxEvent( name ) {
+	document.dispatchEvent(
+		new CustomEvent( name, {
+			detail: {
+				currentIndex: state.currentIndex,
+				totalSlides: state.images.length,
+				galleryId: state.galleryId ?? null,
+				adContainerId,
+			},
+		} )
+	);
 }

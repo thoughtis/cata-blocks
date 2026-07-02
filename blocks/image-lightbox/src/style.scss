@@ -115,11 +115,14 @@
 
 // Slot for an ad alongside the gallery; an ad is inserted into this element.
 // Sits beside the gallery on wide panels and wraps below on narrow ones.
+// The box is reserved at a standard 300×250 creative size up front so
+// injection doesn't reflow the panel and shift the nav controls.
 .wp-block-cata-image-lightbox__ad {
-	flex: 1 1 18rem;
+	flex: 1 1 300px;
 	align-self: flex-start;
-	min-width: 14rem;
-	max-width: 18rem;
+	min-width: 300px;
+	max-width: 320px;
+	min-height: 250px;
 	margin-block-start: 0.5rem;
 }
 

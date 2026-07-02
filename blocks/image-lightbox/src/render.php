@@ -30,6 +30,8 @@ wp_interactivity_state(
 	array(
 		'images'          => $images,
 		'currentIndex'    => 0,
+		// Identifies the gallery in the events dispatched for ad integrations.
+		'galleryId'       => $post->ID,
 		// Scope for the clickable content images; falls back to the whole
 		// document client-side when no match is found.
 		'contentSelector' => apply_filters(
