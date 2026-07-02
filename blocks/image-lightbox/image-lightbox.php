@@ -421,10 +421,28 @@ function cata_image_lightbox_add_badge( string $block_content, array $block ): s
 		return $block_content;
 	}
 
-	$tags = new WP_HTML_Tag_Processor( $block_content );
+	return cata_image_lightbox_wrap_trigger( $block_content, $index, count( $images ) );
+}
+add_filter( 'render_block_core/image', __NAMESPACE__ . '\\cata_image_lightbox_add_badge', 10, 2 );
+
+/**
+ * Wrap trigger
+ *
+ * Mark an image as a lightbox trigger: trigger class and tooltip on the img,
+ * badge-carrying wrapper with the slide index around it.
+ *
+ * @param string $html  Markup containing the image.
+ * @param int    $index Slide index the trigger opens.
+ * @param int    $total Total number of slides.
+ *
+ * @return string
+ */
+function cata_image_lightbox_wrap_trigger( string $html, int $index, int $total ): string {
+
+	$tags = new WP_HTML_Tag_Processor( $html );
 
 	if ( ! $tags->next_tag( 'img' ) ) {
-		return $block_content;
+		return $html;
 	}
 
 	$tags->add_class( 'is-cata-image-lightbox-trigger' );
@@ -434,12 +452,12 @@ function cata_image_lightbox_add_badge( string $block_content, array $block ): s
 		$tags->set_attribute( 'title', cata_image_lightbox_tooltip() );
 	}
 
-	$block_content = $tags->get_updated_html();
+	$html = $tags->get_updated_html();
 
 	// WP_HTML_Tag_Processor can only change attributes, so the wrapper and
 	// badge are added around the img tag by string replacement.
-	if ( ! preg_match( '#<img\b[^>]*>#i', $block_content, $matches, PREG_OFFSET_CAPTURE ) ) {
-		return $block_content;
+	if ( ! preg_match( '#<img\b[^>]*>#i', $html, $matches, PREG_OFFSET_CAPTURE ) ) {
+		return $html;
 	}
 
 	list( $img, $offset ) = $matches[0];
@@ -448,12 +466,69 @@ function cata_image_lightbox_add_badge( string $block_content, array $block ): s
 		'<span class="cata-image-lightbox-figure" data-cata-image-lightbox-index="%d">%s%s</span>',
 		$index,
 		$img,
-		cata_image_lightbox_badge_html( count( $images ) )
+		cata_image_lightbox_badge_html( $total )
 	);
 
-	return substr_replace( $block_content, $replacement, $offset, strlen( $img ) );
+	return substr_replace( $html, $replacement, $offset, strlen( $img ) );
 }
-add_filter( 'render_block_core/image', __NAMESPACE__ . '\\cata_image_lightbox_add_badge', 10, 2 );
+
+/**
+ * Add badge to featured image
+ *
+ * Filter the queried post's thumbnail markup so the featured image opens the
+ * lightbox like the content images do. Post thumbnails don't carry the
+ * wp-image-{id} class, so the slide is matched here by attachment id and the
+ * wrapper ships the index for the view script.
+ *
+ * @param string $html
+ * @param int    $post_id
+ * @param int    $post_thumbnail_id
+ *
+ * @return string
+ */
+function cata_image_lightbox_add_featured_badge( string $html, int $post_id, int $post_thumbnail_id ): string {
+
+	if ( ! apply_filters( 'cata_blocks_support_image_lightbox_block', true ) ) {
+		return $html;
+	}
+
+	if ( '' === $html || is_admin() || ! is_singular() ) {
+		return $html;
+	}
+
+	$post = get_queried_object();
+
+	// Leave thumbnails of other posts (related-post loops, etc.) alone.
+	if ( ! $post instanceof WP_Post || $post->ID !== $post_id ) {
+		return $html;
+	}
+
+	// Leave thumbnails the theme made into links.
+	if ( preg_match( '#<a\b#i', $html ) ) {
+		return $html;
+	}
+
+	$images = cata_image_lightbox_get_post_images( $post );
+
+	if ( empty( $images ) ) {
+		return $html;
+	}
+
+	$index = cata_image_lightbox_find_index(
+		array(
+			'id'  => (int) $post_thumbnail_id,
+			'src' => '',
+		),
+		$images
+	);
+
+	if ( null === $index ) {
+		return $html;
+	}
+
+	return cata_image_lightbox_wrap_trigger( $html, $index, count( $images ) );
+}
+add_filter( 'post_thumbnail_html', __NAMESPACE__ . '\\cata_image_lightbox_add_featured_badge', 10, 3 );
 
 /**
  * Enqueue badge styles
