@@ -30,6 +30,9 @@ wp_interactivity_state(
 	array(
 		'images'          => $images,
 		'currentIndex'    => 0,
+		// The featured image renders outside the content container, so the
+		// view script wires it as a trigger by attachment id.
+		'featuredId'      => (int) get_post_thumbnail_id( $post ),
 		// Scope for the clickable content images; falls back to the whole
 		// document client-side when no match is found.
 		'contentSelector' => apply_filters(

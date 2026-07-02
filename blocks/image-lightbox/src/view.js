@@ -127,9 +127,79 @@ const { state, actions } = store( 'cata-blocks-image-lightbox', {
 
 				actions.open( index, figure.querySelector( 'img' ) );
 			} );
+
+			const featuredTriggers = wireFeaturedTriggers( ref );
+			const contentTriggers = document.querySelectorAll(
+				'.cata-image-lightbox-figure'
+			).length;
+
+			// A matching regression fails silently — slides render but
+			// nothing opens them — so make it observable.
+			if (
+				state.images.length > 0 &&
+				0 === featuredTriggers + contentTriggers
+			) {
+				// eslint-disable-next-line no-console
+				console.warn(
+					`Image Lightbox: ${ state.images.length } slide(s) rendered but no triggers were wired.`
+				);
+			}
 		},
 	},
 } );
+
+/**
+ * Wire the featured image as a trigger for its slide.
+ *
+ * The featured image renders outside the content container the delegated
+ * listeners scan, so it's found anywhere in the document by its attachment
+ * id class and wired directly.
+ *
+ * @param {HTMLElement} ref The block wrapper, so its own slides are skipped.
+ *
+ * @return {number} How many featured triggers were wired.
+ */
+function wireFeaturedTriggers( ref ) {
+	if ( ! state.featuredId ) {
+		return 0;
+	}
+
+	const index = state.images.findIndex(
+		( image ) => image.id === state.featuredId
+	);
+
+	if ( -1 === index ) {
+		return 0;
+	}
+
+	let wired = 0;
+
+	document
+		.querySelectorAll( `img.wp-image-${ state.featuredId }` )
+		.forEach( ( img ) => {
+			// Leave slides, badge-wrapped content images, and images with
+			// their own click behavior (links) alone.
+			if (
+				ref.contains( img ) ||
+				img.closest( '.cata-image-lightbox-figure' ) ||
+				img.closest( 'a' )
+			) {
+				return;
+			}
+
+			img.classList.add( 'is-cata-image-lightbox-trigger' );
+
+			const warmSlide = () => warm( slideImages[ index ], 'high' );
+			img.addEventListener( 'pointerover', warmSlide, { passive: true } );
+			img.addEventListener( 'touchstart', warmSlide, { passive: true } );
+
+			img.addEventListener( 'click', () => actions.open( index, img ) );
+
+			wired++;
+		} );
+
+	return wired;
+}
 
 /**
  * Read the slide index from the badge wrapper around an event's target.
