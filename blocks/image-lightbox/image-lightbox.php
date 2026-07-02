@@ -8,6 +8,7 @@
 namespace Cata\Blocks;
 
 use WP_HTML_Tag_Processor;
+use WP_Post;
 
 /**
  * Register Image Lightbox Block
@@ -63,6 +64,27 @@ function cata_image_lightbox_supports_color( array $attributes, string $preset_k
 	$custom = $attributes['style']['color'][ $style_key ] ?? '';
 
 	return '' !== $custom ? $custom : $default;
+}
+
+/**
+ * Get post images
+ *
+ * Collect the lightbox images for a post, cached per post so the block render
+ * and the image-block badge filter share one parse per request.
+ *
+ * @param WP_Post $post
+ *
+ * @return array<int, array{src: string, alt: string, id: int, caption: string}>
+ */
+function cata_image_lightbox_get_post_images( WP_Post $post ): array {
+
+	static $cache = array();
+
+	if ( ! array_key_exists( $post->ID, $cache ) ) {
+		$cache[ $post->ID ] = cata_image_lightbox_get_images( parse_blocks( $post->post_content ) );
+	}
+
+	return $cache[ $post->ID ];
 }
 
 /**
@@ -190,3 +212,199 @@ function cata_image_lightbox_image_html( array $image ): string {
 		esc_attr( $image['alt'] )
 	);
 }
+
+/**
+ * Badge icon
+ *
+ * Camera icon shown at the start of the count badge.
+ *
+ * @return string
+ */
+function cata_image_lightbox_badge_icon(): string {
+	return '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M20 4h-3.17L15 2H9L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h4.05l1.83-2h4.24l1.83 2H20v12zM12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3z"/></svg>';
+}
+
+/**
+ * Badge tooltip
+ *
+ * Hint shown on each clickable content image and used as the badge label.
+ *
+ * @return string
+ */
+function cata_image_lightbox_tooltip(): string {
+	return __( 'Click to open the image gallery', 'cata' );
+}
+
+/**
+ * Badge HTML
+ *
+ * Image count badge that doubles as an accessible button for opening the
+ * lightbox.
+ *
+ * @param int $total Total number of images in the gallery.
+ *
+ * @return string
+ */
+function cata_image_lightbox_badge_html( int $total ): string {
+
+	$icon    = apply_filters( 'cata_blocks_image_lightbox_badge_icon', cata_image_lightbox_badge_icon() );
+	$tooltip = cata_image_lightbox_tooltip();
+
+	// Optional text below the icon and count; rendered only when a filter
+	// supplies it.
+	$text      = apply_filters( 'cata_blocks_image_lightbox_badge_text', '' );
+	$text_html = '' === $text
+		? ''
+		: sprintf( '<span class="cata-image-lightbox-badge__text">%s</span>', esc_html( $text ) );
+
+	return sprintf(
+		'<button type="button" class="cata-image-lightbox-badge" title="%1$s" aria-label="%1$s"><span class="cata-image-lightbox-badge__count">%2$s<span class="cata-image-lightbox-badge__number">+%3$d</span></span>%4$s</button>',
+		esc_attr( $tooltip ),
+		$icon,
+		$total,
+		$text_html
+	);
+}
+
+/**
+ * Find slide index
+ *
+ * Match an image block's source to its slide, first occurrence winning when
+ * the same source appears more than once.
+ *
+ * @param array $image  Parsed image, from cata_image_lightbox_parse_image().
+ * @param array $images Collected slide images.
+ *
+ * @return int|null
+ */
+function cata_image_lightbox_find_index( array $image, array $images ): ?int {
+
+	foreach ( $images as $index => $candidate ) {
+		if ( $candidate['src'] === $image['src'] ) {
+			return $index;
+		}
+	}
+
+	return null;
+}
+
+/**
+ * Add badge to image block
+ *
+ * Filter core/image output on singular views so the count badge and trigger
+ * class ship in the initial HTML, present and visible before (or without) the
+ * view script.
+ *
+ * @param string $block_content
+ * @param array  $block
+ *
+ * @return string
+ */
+function cata_image_lightbox_add_badge( string $block_content, array $block ): string {
+
+	if ( ! apply_filters( 'cata_blocks_support_image_lightbox_block', true ) ) {
+		return $block_content;
+	}
+
+	if ( is_admin() || ! is_singular() ) {
+		return $block_content;
+	}
+
+	$post = get_queried_object();
+
+	if ( ! $post instanceof WP_Post ) {
+		return $block_content;
+	}
+
+	$images = cata_image_lightbox_get_post_images( $post );
+
+	if ( empty( $images ) ) {
+		return $block_content;
+	}
+
+	// Leave images that already have their own click behavior:
+	// core's "enlarge on click" lightbox or a link around the image.
+	if ( ! empty( $block['attrs']['lightbox']['enabled'] ) || str_contains( $block_content, 'lightbox-trigger' ) ) {
+		return $block_content;
+	}
+
+	if ( preg_match( '#<a\b[^>]*>\s*<img\b#i', $block_content ) ) {
+		return $block_content;
+	}
+
+	$image = cata_image_lightbox_parse_image( $block );
+
+	if ( null === $image ) {
+		return $block_content;
+	}
+
+	$index = cata_image_lightbox_find_index( $image, $images );
+
+	if ( null === $index ) {
+		return $block_content;
+	}
+
+	$tags = new WP_HTML_Tag_Processor( $block_content );
+
+	if ( ! $tags->next_tag( 'img' ) ) {
+		return $block_content;
+	}
+
+	$tags->add_class( 'is-cata-image-lightbox-trigger' );
+
+	// Native tooltip on the image itself for mouse users.
+	if ( null === $tags->get_attribute( 'title' ) ) {
+		$tags->set_attribute( 'title', cata_image_lightbox_tooltip() );
+	}
+
+	$block_content = $tags->get_updated_html();
+
+	// WP_HTML_Tag_Processor can only change attributes, so the wrapper and
+	// badge are added around the img tag by string replacement.
+	if ( ! preg_match( '#<img\b[^>]*>#i', $block_content, $matches, PREG_OFFSET_CAPTURE ) ) {
+		return $block_content;
+	}
+
+	list( $img, $offset ) = $matches[0];
+
+	$replacement = sprintf(
+		'<span class="cata-image-lightbox-figure" data-cata-image-lightbox-index="%d">%s%s</span>',
+		$index,
+		$img,
+		cata_image_lightbox_badge_html( count( $images ) )
+	);
+
+	return substr_replace( $block_content, $replacement, $offset, strlen( $img ) );
+}
+add_filter( 'render_block_core/image', __NAMESPACE__ . '\\cata_image_lightbox_add_badge', 10, 2 );
+
+/**
+ * Enqueue badge styles
+ *
+ * The block's stylesheet normally enqueues when the block renders, which can
+ * land in the footer. Badges render inside the content, so enqueue early
+ * whenever they will appear, keeping them styled at first paint.
+ */
+function cata_image_lightbox_enqueue_badge_styles() {
+
+	if ( ! apply_filters( 'cata_blocks_support_image_lightbox_block', true ) ) {
+		return;
+	}
+
+	if ( ! is_singular() ) {
+		return;
+	}
+
+	$post = get_queried_object();
+
+	if ( ! $post instanceof WP_Post ) {
+		return;
+	}
+
+	if ( empty( cata_image_lightbox_get_post_images( $post ) ) ) {
+		return;
+	}
+
+	wp_enqueue_style( 'cata-image-lightbox-style' );
+}
+add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\\cata_image_lightbox_enqueue_badge_styles' );
