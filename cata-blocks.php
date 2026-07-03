@@ -186,6 +186,11 @@ require_once __DIR__ . '/blocks/image-lightbox/image-lightbox.php';
 require_once __DIR__ . '/blocks/first-page-content/first-page-content.php';
 
 /**
+ * Fresh Post Dot
+ */
+require_once __DIR__ . '/blocks/fresh-post-dot/fresh-post-dot.php';
+
+/**
  * Trivia Pattern
  */
 require_once __DIR__ . '/patterns/trivia/trivia.php';
