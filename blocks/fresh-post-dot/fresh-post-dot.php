@@ -3,6 +3,7 @@
  * Blocks > Fresh Post Dot
  *
  * @package Cata\Blocks
+ * @since 0.12.14-beta1
  */
 
 namespace Cata\Blocks;
