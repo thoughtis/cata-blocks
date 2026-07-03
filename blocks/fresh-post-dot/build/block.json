@@ -1,0 +1,63 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "cata/fresh-post-dot",
+  "version": "0.1.0",
+  "title": "Fresh Post Dot",
+  "category": "widgets",
+  "icon": "clock",
+  "description": "Wraps a post-date block with a red freshness indicator dot when the post is recent.",
+  "example": {
+    "attributes": {
+      "thresholdHours": 3
+    },
+    "innerBlocks": [
+      {
+        "name": "core/post-date",
+        "attributes": {
+          "format": "human-diff",
+          "metadata": {
+            "bindings": {
+              "datetime": {
+                "source": "core/post-data",
+                "args": {
+                  "field": "date"
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "attributes": {
+    "thresholdHours": {
+      "type": "number",
+      "default": 3
+    }
+  },
+  "usesContext": [
+    "postId",
+    "postType"
+  ],
+  "supports": {
+    "html": false,
+    "color": {
+      "text": true,
+      "background": false
+    },
+    "typography": {
+      "fontSize": true,
+      "fontFamily": true
+    },
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  },
+  "textdomain": "cata",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "render": "file:./render.php"
+}
