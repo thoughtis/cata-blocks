@@ -1,0 +1,21 @@
+/**
+ * The following styles get applied both on the front of your site
+ * and in the editor.
+ */
+
+.wp-block-cata-fresh-post-dot {
+	display: flex;
+	align-items: center;
+	gap: 0;
+}
+
+.wp-block-cata-fresh-post-dot.is-fresh::before {
+	content: "";
+	display: inline-block;
+	width: 0.55em;
+	height: 0.55em;
+	border-radius: 50%;
+	background-color: #fe1600;
+	margin-right: 0.4em;
+	flex-shrink: 0;
+}

@@ -30,7 +30,7 @@ add_action( 'init', __NAMESPACE__ . '\\register_shopify_block' );
  * Shopify Render Callback
  * 
  * @param array $attributes Block attributes
- * @param array $content Block content
+ * @param string $content Block content
  * @return string
  */
 function shopify_render_callback( array $attributes, string $content ) : string {
