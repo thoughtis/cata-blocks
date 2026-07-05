@@ -191,6 +191,11 @@ require_once __DIR__ . '/blocks/first-page-content/first-page-content.php';
 require_once __DIR__ . '/blocks/fresh-post-dot/fresh-post-dot.php';
 
 /**
+ * Moments Hero
+ */
+require_once __DIR__ . '/blocks/moments-hero/moments-hero.php';
+
+/**
  * Trivia Pattern
  */
 require_once __DIR__ . '/patterns/trivia/trivia.php';
