@@ -23,6 +23,78 @@ function register_image_lightbox_block() {
 add_action( 'init', __NAMESPACE__ . '\\register_image_lightbox_block' );
 
 /**
+ * Register Image Lightbox Meta
+ *
+ * Lightbox-only images: attachment ids stored on the post, appended to the
+ * gallery as slides without appearing in the post content. Exposed in REST so
+ * posts can be given extra images programmatically, e.g.
+ * `{ "meta": { "cata_lightbox_image_ids": [ 123, 456 ] } }` on wp/v2/posts.
+ */
+function register_image_lightbox_meta() {
+
+	if ( ! apply_filters( 'cata_blocks_support_image_lightbox_block', true ) ) {
+		return;
+	}
+
+	$post_types = apply_filters( 'cata_blocks_image_lightbox_meta_post_types', array( 'post' ) );
+
+	foreach ( $post_types as $post_type ) {
+		register_post_meta(
+			$post_type,
+			'cata_lightbox_image_ids',
+			array(
+				'type'              => 'array',
+				'single'            => true,
+				'default'           => array(),
+				'show_in_rest'      => array(
+					'schema' => array(
+						'type'  => 'array',
+						'items' => array( 'type' => 'integer' ),
+					),
+				),
+				'sanitize_callback' => __NAMESPACE__ . '\\cata_image_lightbox_sanitize_image_ids',
+				'auth_callback'     => __NAMESPACE__ . '\\cata_image_lightbox_meta_auth',
+			)
+		);
+	}
+}
+add_action( 'init', __NAMESPACE__ . '\\register_image_lightbox_meta' );
+
+/**
+ * Sanitize image ids
+ *
+ * Keep the stored value a flat list of positive integers; anything else is
+ * discarded rather than saved.
+ *
+ * @param mixed $ids
+ *
+ * @return array<int, int>
+ */
+function cata_image_lightbox_sanitize_image_ids( $ids ): array {
+
+	if ( ! is_array( $ids ) ) {
+		return array();
+	}
+
+	return array_values( array_filter( array_map( 'absint', $ids ) ) );
+}
+
+/**
+ * Meta auth
+ *
+ * Allow editing the lightbox image ids for anyone who can edit the post.
+ *
+ * @param bool   $allowed
+ * @param string $meta_key
+ * @param int    $object_id
+ *
+ * @return bool
+ */
+function cata_image_lightbox_meta_auth( bool $allowed, string $meta_key, int $object_id ): bool {
+	return current_user_can( 'edit_post', $object_id );
+}
+
+/**
  * Resolve a color attribute to a CSS value.
  *
  * A preset palette color is stored as a slug and becomes a preset var; a custom
@@ -115,8 +187,20 @@ function cata_image_lightbox_get_post_images( WP_Post $post ): array {
  * @return array{src: string, alt: string, id: int, caption: string}|null
  */
 function cata_image_lightbox_featured_image( WP_Post $post ): ?array {
+	return cata_image_lightbox_attachment_image( (int) get_post_thumbnail_id( $post ) );
+}
 
-	$id = (int) get_post_thumbnail_id( $post );
+/**
+ * Attachment image
+ *
+ * Build a slide entry from an attachment, or null when the attachment has no
+ * usable image source.
+ *
+ * @param int $id Attachment id.
+ *
+ * @return array{src: string, alt: string, id: int, caption: string}|null
+ */
+function cata_image_lightbox_attachment_image( int $id ): ?array {
 
 	if ( 0 === $id ) {
 		return null;
@@ -135,6 +219,59 @@ function cata_image_lightbox_featured_image( WP_Post $post ): ?array {
 		'caption' => (string) wp_get_attachment_caption( $id ),
 	);
 }
+
+/**
+ * Add meta images
+ *
+ * Append the post's lightbox-only images to the collected slides. Appending
+ * keeps every trigger index on the page stable.
+ *
+ * @param array<int, array{src: string, alt: string, id: int, caption: string}> $images Collected slide images.
+ * @param WP_Post                                                               $post
+ *
+ * @return array<int, array{src: string, alt: string, id: int, caption: string}>
+ */
+function cata_image_lightbox_add_meta_images( array $images, WP_Post $post ): array {
+
+	// Extras extend a gallery the reader can already open; without other
+	// slides there is no trigger on the page, so add nothing.
+	if ( empty( $images ) ) {
+		return $images;
+	}
+
+	$ids = get_post_meta( $post->ID, 'cata_lightbox_image_ids', true );
+
+	if ( ! is_array( $ids ) ) {
+		return $images;
+	}
+
+	$existing = array_map( 'intval', array_column( $images, 'id' ) );
+
+	foreach ( $ids as $id ) {
+		$id = (int) $id;
+
+		// Skip duplicates of slides already collected from the page.
+		if ( in_array( $id, $existing, true ) ) {
+			continue;
+		}
+
+		if ( ! wp_attachment_is_image( $id ) ) {
+			continue;
+		}
+
+		$image = cata_image_lightbox_attachment_image( $id );
+
+		if ( null === $image ) {
+			continue;
+		}
+
+		$images[]   = $image;
+		$existing[] = $id;
+	}
+
+	return $images;
+}
+add_filter( 'cata_blocks_image_lightbox_images', __NAMESPACE__ . '\\cata_image_lightbox_add_meta_images', 10, 2 );
 
 /**
  * Get images
