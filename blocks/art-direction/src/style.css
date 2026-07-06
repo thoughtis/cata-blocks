@@ -1,0 +1,40 @@
+/**
+ * Art Direction — front-end styles.
+ *
+ * Structural only: layout grids, gaps, and crop anchoring. Typography and
+ * color belong to the surrounding pattern and theme.
+ */
+
+.cata-art-direction__media {
+	display: block;
+}
+
+.cata-art-direction__media--diptych {
+	display: flex;
+	align-items: stretch;
+	gap: 4px;
+}
+
+.cata-art-direction__media--diptych .cata-art-direction__panel {
+	flex: 1 1 0;
+	min-width: 0;
+}
+
+.cata-art-direction__media--collage {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 4px;
+}
+
+.cata-art-direction__media img {
+	display: block;
+	width: 100%;
+	height: auto;
+	/* Portrait art cropped to a wide cell should lose feet, not faces. */
+	object-position: center top;
+}
+
+.cata-art-direction__media--diptych img,
+.cata-art-direction__media--collage img {
+	height: 100%;
+}

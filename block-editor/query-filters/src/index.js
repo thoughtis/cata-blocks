@@ -1,6 +1,12 @@
 import { InspectorControls } from '@wordpress/block-editor';
 import { addFilter } from '@wordpress/hooks';
-import { ToggleControl, PanelBody, PanelRow } from '@wordpress/components';
+import {
+	TextControl,
+	ToggleControl,
+	PanelBody,
+	PanelRow,
+} from '@wordpress/components';
+import { useState } from '@wordpress/element';
 
 addFilter(
 	'blocks.registerBlockType',
@@ -36,6 +42,14 @@ function addQueryFilterAttributes( settings, name ) {
 		cataTermFromRequest: {
 			type: 'boolean',
 			default: false
+		},
+		cataPinnedFallback: {
+			type: 'boolean',
+			default: false
+		},
+		cataPinnedFallbackCategories: {
+			type: 'array',
+			default: []
 		}
 	} );
 
@@ -58,6 +72,12 @@ function withQueryFilters( BlockEdit ) {
 		const { setAttributes, attributes } = props;
 		const cataInheritQuery = attributes.cataInheritQuery ?? false;
 		const cataTermFromRequest = attributes.cataTermFromRequest ?? false;
+		const cataPinnedFallback = attributes.cataPinnedFallback ?? false;
+		const cataPinnedFallbackCategories = attributes.cataPinnedFallbackCategories ?? [];
+
+		// Draft text for the category IDs field, so in-progress input
+		// (trailing commas, partial numbers) is not normalized away mid-keystroke.
+		const [ fallbackCategoriesDraft, setFallbackCategoriesDraft ] = useState( null );
 
 		return (
 			<>
@@ -86,6 +106,38 @@ function withQueryFilters( BlockEdit ) {
 							} }
 							/>
 						</PanelRow>
+						<PanelRow>
+							<ToggleControl
+							__nextHasNoMarginBottom
+							label="Fallback when nothing is pinned"
+							help="For loops showing only pinned posts: when no pinned post is published, show the latest post that has a featured image instead"
+							checked={ cataPinnedFallback }
+							onChange={ (newValue) => {
+								setAttributes( { cataPinnedFallback: newValue } );
+							} }
+							/>
+						</PanelRow>
+						{ cataPinnedFallback && (
+							<PanelRow>
+								<TextControl
+								__nextHasNoMarginBottom
+								__next40pxDefaultSize
+								label="Fallback category IDs"
+								help="Optional comma-separated category IDs that scope the fallback post"
+								value={ fallbackCategoriesDraft ?? cataPinnedFallbackCategories.join( ',' ) }
+								onChange={ (newValue) => {
+									setFallbackCategoriesDraft( newValue );
+									setAttributes( {
+										cataPinnedFallbackCategories: newValue
+											.split( ',' )
+											.map( ( id ) => parseInt( id.trim(), 10 ) )
+											.filter( ( id ) => Number.isInteger( id ) && id > 0 ),
+									} );
+								} }
+								onBlur={ () => setFallbackCategoriesDraft( null ) }
+								/>
+							</PanelRow>
+						) }
 					</PanelBody>
 				</InspectorControls>
 			</>

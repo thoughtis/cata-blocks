@@ -191,9 +191,9 @@ require_once __DIR__ . '/blocks/first-page-content/first-page-content.php';
 require_once __DIR__ . '/blocks/fresh-post-dot/fresh-post-dot.php';
 
 /**
- * Moments Hero
+ * Art Direction
  */
-require_once __DIR__ . '/blocks/moments-hero/moments-hero.php';
+require_once __DIR__ . '/blocks/art-direction/art-direction.php';
 
 /**
  * Trivia Pattern

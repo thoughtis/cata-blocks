@@ -104,7 +104,20 @@ function cata_query_filters_term_from_request_block_metadata( array $metadata ):
 			'type'    => 'boolean',
 			'default' => false,
 		);
-		$metadata['providesContext']['cataTermFromRequest'] = 'cataTermFromRequest';
+		$metadata['attributes']['cataPinnedFallback'] = array(
+			'type'    => 'boolean',
+			'default' => false,
+		);
+		$metadata['attributes']['cataPinnedFallbackCategories'] = array(
+			'type'    => 'array',
+			'default' => array(),
+			'items'   => array(
+				'type' => 'number',
+			),
+		);
+		$metadata['providesContext']['cataTermFromRequest']          = 'cataTermFromRequest';
+		$metadata['providesContext']['cataPinnedFallback']           = 'cataPinnedFallback';
+		$metadata['providesContext']['cataPinnedFallbackCategories'] = 'cataPinnedFallbackCategories';
 	}
 
 	$query_building_blocks = [
@@ -116,6 +129,8 @@ function cata_query_filters_term_from_request_block_metadata( array $metadata ):
 
 	if ( in_array( $metadata['name'], $query_building_blocks, true ) ) {
 		$metadata['usesContext'][] = 'cataTermFromRequest';
+		$metadata['usesContext'][] = 'cataPinnedFallback';
+		$metadata['usesContext'][] = 'cataPinnedFallbackCategories';
 	}
 
 	return $metadata;
@@ -153,3 +168,75 @@ function cata_query_filters_term_from_request_query_vars( array $query, WP_Block
 	return $query;
 }
 add_filter( 'query_loop_block_query_vars', __NAMESPACE__ . '\\cata_query_filters_term_from_request_query_vars', 10, 3 );
+
+/**
+ * Whether at least one pinned post is published.
+ *
+ * Core's "Only pinned posts" Query Loop setting resolves an empty pin list to
+ * `post__in => array( 0 )`, so the loop renders nothing. This check lets the
+ * pinned-fallback filter distinguish "nothing pinned" (fall back) from
+ * "pinned posts exist" (leave the query alone).
+ *
+ * @return bool
+ */
+function cata_query_filters_has_published_pinned_post(): bool {
+
+	$sticky_ids = array_filter( array_map( 'absint', (array) get_option( 'sticky_posts', array() ) ) );
+
+	if ( empty( $sticky_ids ) ) {
+		return false;
+	}
+
+	$published = get_posts(
+		array(
+			'post__in'            => $sticky_ids,
+			'post_type'           => 'post',
+			'post_status'         => 'publish',
+			'posts_per_page'      => 1,
+			'fields'              => 'ids',
+			'ignore_sticky_posts' => true,
+			'no_found_rows'       => true,
+		)
+	);
+
+	return ! empty( $published );
+}
+
+/**
+ * Pinned Fallback Query Vars
+ *
+ * When cataPinnedFallback is set on a Query Loop configured to show only
+ * pinned posts, and no published pinned post exists, swap the pin constraint
+ * for the latest post that has a featured image — optionally scoped to
+ * cataPinnedFallbackCategories — so the loop is never empty.
+ *
+ * @param array    $query Query vars for the Query Loop block.
+ * @param WP_Block $block Block instance.
+ * @param int      $page  Current query page.
+ *
+ * @return array $query
+ */
+function cata_query_filters_pinned_fallback_query_vars( array $query, WP_Block $block, int $page ): array {
+
+	if ( true !== ( $block->context['cataPinnedFallback'] ?? false ) ) {
+		return $query;
+	}
+
+	if ( cata_query_filters_has_published_pinned_post() ) {
+		return $query;
+	}
+
+	unset( $query['post__in'] );
+	$query['ignore_sticky_posts'] = true;
+	// The fallback exists to keep a visual slot filled — skip art-less posts.
+	$query['meta_key'] = '_thumbnail_id';
+
+	$categories = array_filter( array_map( 'absint', (array) ( $block->context['cataPinnedFallbackCategories'] ?? array() ) ) );
+
+	if ( ! empty( $categories ) ) {
+		$query['category__in'] = $categories;
+	}
+
+	return $query;
+}
+add_filter( 'query_loop_block_query_vars', __NAMESPACE__ . '\\cata_query_filters_pinned_fallback_query_vars', 10, 3 );
