@@ -608,12 +608,6 @@ function cata_image_lightbox_add_badge( string $block_content, array $block ): s
 		return $block_content;
 	}
 
-	// Excluded images render untouched, plus a marker class so the exclusion
-	// is visible in the markup.
-	if ( cata_image_lightbox_is_excluded( $block ) ) {
-		return cata_image_lightbox_mark_excluded( $block_content );
-	}
-
 	// Leave images that already have their own click behavior:
 	// core's "enlarge on click" lightbox or a link around the image.
 	if ( ! empty( $block['attrs']['lightbox']['enabled'] ) || str_contains( $block_content, 'lightbox-trigger' ) ) {
@@ -622,6 +616,17 @@ function cata_image_lightbox_add_badge( string $block_content, array $block ): s
 
 	if ( preg_match( '#<a\b[^>]*>\s*<img\b#i', $block_content ) ) {
 		return $block_content;
+	}
+
+	// Excluded images have no slide of their own but still open the gallery,
+	// at its first slide. The marker class flags the exclusion in the markup
+	// and tells the view script not to seed the slide from this image.
+	if ( cata_image_lightbox_is_excluded( $block ) ) {
+		return cata_image_lightbox_wrap_trigger(
+			cata_image_lightbox_mark_excluded( $block_content ),
+			0,
+			count( $images )
+		);
 	}
 
 	$image = cata_image_lightbox_parse_image( $block );

@@ -125,7 +125,7 @@ const { state, actions } = store( 'cata-blocks-image-lightbox', {
 
 				const figure = event.target.closest( '.cata-image-lightbox-figure' );
 
-				actions.open( index, figure.querySelector( 'img' ) );
+				actions.open( index, triggerImage( figure ) );
 			} );
 
 			const triggers = wireDetachedTriggers( ref, content );
@@ -183,11 +183,29 @@ function wireDetachedTriggers( ref, content ) {
 
 			figure.addEventListener( 'click', ( event ) => {
 				event.preventDefault();
-				actions.open( index, figure.querySelector( 'img' ) );
+				actions.open( index, triggerImage( figure ) );
 			} );
 		} );
 
 	return wired;
+}
+
+/**
+ * Get the trigger image to seed the target slide from.
+ *
+ * An excluded image opens the gallery without having a slide of its own, so
+ * seeding from it would paint the wrong image; those triggers return null.
+ *
+ * @param {HTMLElement} figure The badge wrapper that was clicked.
+ *
+ * @return {HTMLImageElement|null} The image to seed from, or null.
+ */
+function triggerImage( figure ) {
+	if ( figure.closest( '.cata-image-lightbox-exclude' ) ) {
+		return null;
+	}
+
+	return figure.querySelector( 'img' );
 }
 
 /**

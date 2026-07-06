@@ -71,7 +71,7 @@ function withExcludeFromLightboxControl( BlockEdit ) {
 						<PanelBody title={ __( 'Image Lightbox', 'cata' ) }>
 							<ToggleControl
 								label={ __( 'Exclude from image lightbox', 'cata' ) }
-								help={ __( 'The image still displays in the content, but is left out of the lightbox gallery.', 'cata' ) }
+								help={ __( 'The image does not appear as a slide in the lightbox. Clicking it still opens the lightbox at its first slide.', 'cata' ) }
 								checked={ Boolean( attributes.excludeFromLightbox ) }
 								onChange={ ( excludeFromLightbox ) => {
 									setAttributes( { excludeFromLightbox } );
