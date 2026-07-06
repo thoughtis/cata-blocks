@@ -221,3 +221,4 @@ require_once __DIR__ . '/block-editor/app/block-editor.php';
 require_once __DIR__ . '/block-editor/query-filters/query-filters.php';
 require_once __DIR__ . '/block-editor/text-decoration-color/text-decoration-color.php';
 require_once __DIR__ . '/block-editor/color-scheme/color-scheme.php';
+require_once __DIR__ . '/block-editor/image-lightbox-exclude/image-lightbox-exclude.php';
