@@ -96,8 +96,8 @@
 	// At least 1rem so the ad never sits flush against the slider.
 	gap: clamp( 1rem, 2%, 1.5rem );
 	box-sizing: border-box;
-	width: min( 95%, 86rem );
-	height: min( 95vh, 56rem );
+	width: min( 95%, 96rem );
+	height: min( 95vh, 66rem );
 	padding: clamp( 1rem, 3%, 2.5rem );
 	background-color: var( --cata-image-lightbox-background, light-dark( #ffffff, #1a1a1a ) );
 	color: var( --cata-image-lightbox-text, light-dark( #1a1a1a, #ffffff ) );
