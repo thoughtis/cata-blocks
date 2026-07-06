@@ -287,7 +287,7 @@ function cata_image_lightbox_get_images( array $blocks ): array {
 	$images = array();
 
 	foreach ( $blocks as $block ) {
-		if ( 'core/image' === $block['blockName'] ) {
+		if ( 'core/image' === $block['blockName'] && ! cata_image_lightbox_is_excluded( $block ) ) {
 			$image = cata_image_lightbox_parse_image( $block );
 
 			if ( null !== $image ) {
@@ -301,6 +301,21 @@ function cata_image_lightbox_get_images( array $blocks ): array {
 	}
 
 	return $images;
+}
+
+/**
+ * Is excluded
+ *
+ * Whether an image block opted out of the lightbox. The attribute lives in the
+ * block-comment JSON, so it works for posts written programmatically as well
+ * as in the editor.
+ *
+ * @param array $block A parsed image block.
+ *
+ * @return bool
+ */
+function cata_image_lightbox_is_excluded( array $block ): bool {
+	return ! empty( $block['attrs']['excludeFromLightbox'] );
 }
 
 /**
@@ -603,6 +618,17 @@ function cata_image_lightbox_add_badge( string $block_content, array $block ): s
 		return $block_content;
 	}
 
+	// Excluded images have no slide of their own but still open the gallery,
+	// at its first slide. The marker class flags the exclusion in the markup
+	// and tells the view script not to seed the slide from this image.
+	if ( cata_image_lightbox_is_excluded( $block ) ) {
+		return cata_image_lightbox_wrap_trigger(
+			cata_image_lightbox_mark_excluded( $block_content ),
+			0,
+			count( $images )
+		);
+	}
+
 	$image = cata_image_lightbox_parse_image( $block );
 
 	if ( null === $image ) {
@@ -618,6 +644,27 @@ function cata_image_lightbox_add_badge( string $block_content, array $block ): s
 	return cata_image_lightbox_wrap_trigger( $block_content, $index, count( $images ) );
 }
 add_filter( 'render_block_core/image', __NAMESPACE__ . '\\cata_image_lightbox_add_badge', 10, 2 );
+
+/**
+ * Mark excluded
+ *
+ * Add the exclusion class to an image block's figure so external tooling can
+ * see the opt-out in the rendered markup.
+ *
+ * @param string $html The image block's markup.
+ *
+ * @return string
+ */
+function cata_image_lightbox_mark_excluded( string $html ): string {
+
+	$tags = new WP_HTML_Tag_Processor( $html );
+
+	if ( $tags->next_tag( 'figure' ) ) {
+		$tags->add_class( 'cata-image-lightbox-exclude' );
+	}
+
+	return $tags->get_updated_html();
+}
 
 /**
  * Wrap trigger
