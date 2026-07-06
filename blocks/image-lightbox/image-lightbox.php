@@ -329,13 +329,88 @@ function cata_image_lightbox_parse_image( array $block ): ?array {
 	}
 
 	$alt = $tags->get_attribute( 'alt' );
+	$id  = (int) ( $block['attrs']['id'] ?? 0 );
+
+	if ( 0 === $id ) {
+		$id = cata_image_lightbox_resolve_image_id( $tags, $src );
+	}
 
 	return array(
 		'src'     => $src,
 		'alt'     => is_string( $alt ) ? $alt : '',
-		'id'      => (int) ( $block['attrs']['id'] ?? 0 ),
+		'id'      => $id,
 		'caption' => cata_image_lightbox_caption( $inner_html ),
 	);
+}
+
+/**
+ * Resolve image id
+ *
+ * Recover the attachment id for an image block that saved without one, first
+ * from the wp-image-{id} class in its markup, then by looking the image URL up
+ * in the media library. Returns 0 when the image is not a local attachment.
+ *
+ * @param WP_HTML_Tag_Processor $tags Processor with its cursor on the img tag.
+ * @param string                $src  The img src.
+ *
+ * @return int Attachment id, or 0 when none could be resolved.
+ */
+function cata_image_lightbox_resolve_image_id( WP_HTML_Tag_Processor $tags, string $src ): int {
+
+	$class = $tags->get_attribute( 'class' );
+
+	if ( is_string( $class ) && preg_match( '/\bwp-image-(\d+)\b/', $class, $matches ) ) {
+		return (int) $matches[1];
+	}
+
+	return cata_image_lightbox_url_to_id( $src );
+}
+
+/**
+ * URL to id
+ *
+ * Look up an attachment id from an image URL. Sized renditions point at the
+ * original file once the dimensions suffix is removed, so that candidate is
+ * tried first. Results are cached per URL for the request because each image
+ * is parsed twice: once for the slides and once for its badge.
+ *
+ * @param string $src The img src.
+ *
+ * @return int Attachment id, or 0 when the URL is not a local attachment.
+ */
+function cata_image_lightbox_url_to_id( string $src ): int {
+
+	static $cache = array();
+
+	if ( array_key_exists( $src, $cache ) ) {
+		return $cache[ $src ];
+	}
+
+	$url = preg_replace( '/[?#].*$/', '', $src );
+
+	$candidates = array_unique(
+		array(
+			preg_replace( '/-\d+x\d+(?=\.\w{3,4}$)/', '', $url ),
+			$url,
+		)
+	);
+
+	$id = 0;
+
+	foreach ( $candidates as $candidate ) {
+		// Prefer the cached VIP wrapper; core's lookup is an uncached query.
+		$id = function_exists( 'wpcom_vip_attachment_url_to_postid' )
+			? (int) wpcom_vip_attachment_url_to_postid( $candidate )
+			: (int) attachment_url_to_postid( $candidate );
+
+		if ( 0 !== $id ) {
+			break;
+		}
+	}
+
+	$cache[ $src ] = $id;
+
+	return $id;
 }
 
 /**
@@ -380,7 +455,7 @@ function cata_image_lightbox_image_html( array $image ): string {
 				// Rendered width inside the panel: 95vw panel minus its padding,
 				// less the ad column and gap once they sit alongside at 1240px,
 				// capped where the panel stops growing.
-				'sizes'    => '(min-width: 1450px) 990px, (min-width: 1240px) calc(89vw - 304px), calc(95vw - 2rem)',
+				'sizes'    => '(min-width: 1620px) 1150px, (min-width: 1240px) calc(89vw - 304px), calc(95vw - 2rem)',
 				'alt'      => $image['alt'],
 				'loading'  => 'lazy',
 				'decoding' => 'async',
