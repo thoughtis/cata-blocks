@@ -101,6 +101,12 @@ $next_icon  = apply_filters( 'cata_blocks_image_lightbox_next_icon', '→' );
 							<?php endif; ?>
 						</figure>
 					<?php endforeach; ?>
+
+					<?php // Whole-image navigation: the left half of the image steps back, the
+					// right half steps forward. Redundant with the arrow buttons and arrow keys,
+					// so these are mouse-only affordances (aria-hidden, not focusable). ?>
+					<div class="wp-block-cata-image-lightbox__navzone wp-block-cata-image-lightbox__navzone--prev" data-wp-on--click="actions.prev" data-wp-bind--hidden="!state.hasMultiple" aria-hidden="true"></div>
+					<div class="wp-block-cata-image-lightbox__navzone wp-block-cata-image-lightbox__navzone--next" data-wp-on--click="actions.next" data-wp-bind--hidden="!state.hasMultiple" aria-hidden="true"></div>
 				</div>
 
 				<div class="wp-block-cata-image-lightbox__nav" data-wp-bind--hidden="!state.hasMultiple">
