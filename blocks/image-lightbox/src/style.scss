@@ -165,6 +165,33 @@
 	min-height: 0;
 }
 
+// Whole-image navigation: the left and right halves of the viewport are click
+// targets that step the gallery back and forward, so the reader never has to aim
+// for the small arrows (the Google Photos / Behance pattern). Mouse-only — the
+// arrow buttons and arrow keys remain the keyboard and assistive-tech path.
+.wp-block-cata-image-lightbox__navzone {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 50%;
+	z-index: 2;
+
+	&[hidden] {
+		display: none;
+	}
+}
+
+.wp-block-cata-image-lightbox__navzone--prev {
+	left: 0;
+	cursor: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDMyIDMyIj48cGF0aCBkPSJNMjAgNyBMMTEgMTYgTDIwIDI1IiBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAiIHN0cm9rZS1vcGFjaXR5PSIuNDUiIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTIwIDcgTDExIDE2IEwyMCAyNSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==") 16 16, w-resize;
+}
+
+.wp-block-cata-image-lightbox__navzone--next {
+	right: 0;
+	cursor: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDMyIDMyIj48cGF0aCBkPSJNMTIgNyBMMjEgMTYgTDEyIDI1IiBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAiIHN0cm9rZS1vcGFjaXR5PSIuNDUiIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTEyIDcgTDIxIDE2IEwxMiAyNSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==") 16 16, e-resize;
+}
+
+
 // Inactive slides use display: none rather than a visibility toggle so their
 // lazy images have no geometry and never start downloading.
 .wp-block-cata-image-lightbox__slide {
