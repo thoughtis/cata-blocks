@@ -92,6 +92,7 @@ $next_icon  = apply_filters( 'cata_blocks_image_lightbox_next_icon', '→' );
 							data-wp-class--is-active="callbacks.isActive"
 							<?php echo wp_interactivity_data_wp_context( array( 'index' => $index ) ); ?>
 						>
+							<img class="wp-block-cata-image-lightbox__placeholder" alt="" aria-hidden="true" />
 							<?php echo cata_image_lightbox_image_html( $image ); ?>
 							<?php $caption = apply_filters( 'cata_blocks_image_lightbox_caption', $image['caption'], $image ); ?>
 							<?php if ( '' !== $caption ) : ?>
