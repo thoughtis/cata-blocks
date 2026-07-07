@@ -23,6 +23,78 @@ function register_image_lightbox_block() {
 add_action( 'init', __NAMESPACE__ . '\\register_image_lightbox_block' );
 
 /**
+ * Register Image Lightbox Meta
+ *
+ * Lightbox-only images: attachment ids stored on the post, appended to the
+ * gallery as slides without appearing in the post content. Exposed in REST so
+ * posts can be given extra images programmatically, e.g.
+ * `{ "meta": { "cata_lightbox_image_ids": [ 123, 456 ] } }` on wp/v2/posts.
+ */
+function register_image_lightbox_meta() {
+
+	if ( ! apply_filters( 'cata_blocks_support_image_lightbox_block', true ) ) {
+		return;
+	}
+
+	$post_types = apply_filters( 'cata_blocks_image_lightbox_meta_post_types', array( 'post' ) );
+
+	foreach ( $post_types as $post_type ) {
+		register_post_meta(
+			$post_type,
+			'cata_lightbox_image_ids',
+			array(
+				'type'              => 'array',
+				'single'            => true,
+				'default'           => array(),
+				'show_in_rest'      => array(
+					'schema' => array(
+						'type'  => 'array',
+						'items' => array( 'type' => 'integer' ),
+					),
+				),
+				'sanitize_callback' => __NAMESPACE__ . '\\cata_image_lightbox_sanitize_image_ids',
+				'auth_callback'     => __NAMESPACE__ . '\\cata_image_lightbox_meta_auth',
+			)
+		);
+	}
+}
+add_action( 'init', __NAMESPACE__ . '\\register_image_lightbox_meta' );
+
+/**
+ * Sanitize image ids
+ *
+ * Keep the stored value a flat list of positive integers; anything else is
+ * discarded rather than saved.
+ *
+ * @param mixed $ids
+ *
+ * @return array<int, int>
+ */
+function cata_image_lightbox_sanitize_image_ids( $ids ): array {
+
+	if ( ! is_array( $ids ) ) {
+		return array();
+	}
+
+	return array_values( array_filter( array_map( 'absint', $ids ) ) );
+}
+
+/**
+ * Meta auth
+ *
+ * Allow editing the lightbox image ids for anyone who can edit the post.
+ *
+ * @param bool   $allowed
+ * @param string $meta_key
+ * @param int    $object_id
+ *
+ * @return bool
+ */
+function cata_image_lightbox_meta_auth( bool $allowed, string $meta_key, int $object_id ): bool {
+	return current_user_can( 'edit_post', $object_id );
+}
+
+/**
  * Resolve a color attribute to a CSS value.
  *
  * A preset palette color is stored as a slug and becomes a preset var; a custom
@@ -115,8 +187,20 @@ function cata_image_lightbox_get_post_images( WP_Post $post ): array {
  * @return array{src: string, alt: string, id: int, caption: string}|null
  */
 function cata_image_lightbox_featured_image( WP_Post $post ): ?array {
+	return cata_image_lightbox_attachment_image( (int) get_post_thumbnail_id( $post ) );
+}
 
-	$id = (int) get_post_thumbnail_id( $post );
+/**
+ * Attachment image
+ *
+ * Build a slide entry from an attachment, or null when the attachment has no
+ * usable image source.
+ *
+ * @param int $id Attachment id.
+ *
+ * @return array{src: string, alt: string, id: int, caption: string}|null
+ */
+function cata_image_lightbox_attachment_image( int $id ): ?array {
 
 	if ( 0 === $id ) {
 		return null;
@@ -137,6 +221,59 @@ function cata_image_lightbox_featured_image( WP_Post $post ): ?array {
 }
 
 /**
+ * Add meta images
+ *
+ * Append the post's lightbox-only images to the collected slides. Appending
+ * keeps every trigger index on the page stable.
+ *
+ * @param array<int, array{src: string, alt: string, id: int, caption: string}> $images Collected slide images.
+ * @param WP_Post                                                               $post
+ *
+ * @return array<int, array{src: string, alt: string, id: int, caption: string}>
+ */
+function cata_image_lightbox_add_meta_images( array $images, WP_Post $post ): array {
+
+	// Extras extend a gallery the reader can already open; without other
+	// slides there is no trigger on the page, so add nothing.
+	if ( empty( $images ) ) {
+		return $images;
+	}
+
+	$ids = get_post_meta( $post->ID, 'cata_lightbox_image_ids', true );
+
+	if ( ! is_array( $ids ) ) {
+		return $images;
+	}
+
+	$existing = array_map( 'intval', array_column( $images, 'id' ) );
+
+	foreach ( $ids as $id ) {
+		$id = (int) $id;
+
+		// Skip duplicates of slides already collected from the page.
+		if ( in_array( $id, $existing, true ) ) {
+			continue;
+		}
+
+		if ( ! wp_attachment_is_image( $id ) ) {
+			continue;
+		}
+
+		$image = cata_image_lightbox_attachment_image( $id );
+
+		if ( null === $image ) {
+			continue;
+		}
+
+		$images[]   = $image;
+		$existing[] = $id;
+	}
+
+	return $images;
+}
+add_filter( 'cata_blocks_image_lightbox_images', __NAMESPACE__ . '\\cata_image_lightbox_add_meta_images', 10, 2 );
+
+/**
  * Get images
  *
  * Collect images from image blocks, recursing through nested blocks.
@@ -150,7 +287,7 @@ function cata_image_lightbox_get_images( array $blocks ): array {
 	$images = array();
 
 	foreach ( $blocks as $block ) {
-		if ( 'core/image' === $block['blockName'] ) {
+		if ( 'core/image' === $block['blockName'] && ! cata_image_lightbox_is_excluded( $block ) ) {
 			$image = cata_image_lightbox_parse_image( $block );
 
 			if ( null !== $image ) {
@@ -164,6 +301,21 @@ function cata_image_lightbox_get_images( array $blocks ): array {
 	}
 
 	return $images;
+}
+
+/**
+ * Is excluded
+ *
+ * Whether an image block opted out of the lightbox. The attribute lives in the
+ * block-comment JSON, so it works for posts written programmatically as well
+ * as in the editor.
+ *
+ * @param array $block A parsed image block.
+ *
+ * @return bool
+ */
+function cata_image_lightbox_is_excluded( array $block ): bool {
+	return ! empty( $block['attrs']['excludeFromLightbox'] );
 }
 
 /**
@@ -192,13 +344,88 @@ function cata_image_lightbox_parse_image( array $block ): ?array {
 	}
 
 	$alt = $tags->get_attribute( 'alt' );
+	$id  = (int) ( $block['attrs']['id'] ?? 0 );
+
+	if ( 0 === $id ) {
+		$id = cata_image_lightbox_resolve_image_id( $tags, $src );
+	}
 
 	return array(
 		'src'     => $src,
 		'alt'     => is_string( $alt ) ? $alt : '',
-		'id'      => (int) ( $block['attrs']['id'] ?? 0 ),
+		'id'      => $id,
 		'caption' => cata_image_lightbox_caption( $inner_html ),
 	);
+}
+
+/**
+ * Resolve image id
+ *
+ * Recover the attachment id for an image block that saved without one, first
+ * from the wp-image-{id} class in its markup, then by looking the image URL up
+ * in the media library. Returns 0 when the image is not a local attachment.
+ *
+ * @param WP_HTML_Tag_Processor $tags Processor with its cursor on the img tag.
+ * @param string                $src  The img src.
+ *
+ * @return int Attachment id, or 0 when none could be resolved.
+ */
+function cata_image_lightbox_resolve_image_id( WP_HTML_Tag_Processor $tags, string $src ): int {
+
+	$class = $tags->get_attribute( 'class' );
+
+	if ( is_string( $class ) && preg_match( '/\bwp-image-(\d+)\b/', $class, $matches ) ) {
+		return (int) $matches[1];
+	}
+
+	return cata_image_lightbox_url_to_id( $src );
+}
+
+/**
+ * URL to id
+ *
+ * Look up an attachment id from an image URL. Sized renditions point at the
+ * original file once the dimensions suffix is removed, so that candidate is
+ * tried first. Results are cached per URL for the request because each image
+ * is parsed twice: once for the slides and once for its badge.
+ *
+ * @param string $src The img src.
+ *
+ * @return int Attachment id, or 0 when the URL is not a local attachment.
+ */
+function cata_image_lightbox_url_to_id( string $src ): int {
+
+	static $cache = array();
+
+	if ( array_key_exists( $src, $cache ) ) {
+		return $cache[ $src ];
+	}
+
+	$url = preg_replace( '/[?#].*$/', '', $src );
+
+	$candidates = array_unique(
+		array(
+			preg_replace( '/-\d+x\d+(?=\.\w{3,4}$)/', '', $url ),
+			$url,
+		)
+	);
+
+	$id = 0;
+
+	foreach ( $candidates as $candidate ) {
+		// Prefer the cached VIP wrapper; core's lookup is an uncached query.
+		$id = function_exists( 'wpcom_vip_attachment_url_to_postid' )
+			? (int) wpcom_vip_attachment_url_to_postid( $candidate )
+			: (int) attachment_url_to_postid( $candidate );
+
+		if ( 0 !== $id ) {
+			break;
+		}
+	}
+
+	$cache[ $src ] = $id;
+
+	return $id;
 }
 
 /**
@@ -243,7 +470,7 @@ function cata_image_lightbox_image_html( array $image ): string {
 				// Rendered width inside the panel: 95vw panel minus its padding,
 				// less the ad column and gap once they sit alongside at 1240px,
 				// capped where the panel stops growing.
-				'sizes'    => '(min-width: 1450px) 990px, (min-width: 1240px) calc(89vw - 304px), calc(95vw - 2rem)',
+				'sizes'    => '(min-width: 1620px) 1150px, (min-width: 1240px) calc(89vw - 304px), calc(95vw - 2rem)',
 				'alt'      => $image['alt'],
 				'loading'  => 'lazy',
 				'decoding' => 'async',
@@ -391,6 +618,17 @@ function cata_image_lightbox_add_badge( string $block_content, array $block ): s
 		return $block_content;
 	}
 
+	// Excluded images have no slide of their own but still open the gallery,
+	// at its first slide. The marker class flags the exclusion in the markup
+	// and tells the view script not to seed the slide from this image.
+	if ( cata_image_lightbox_is_excluded( $block ) ) {
+		return cata_image_lightbox_wrap_trigger(
+			cata_image_lightbox_mark_excluded( $block_content ),
+			0,
+			count( $images )
+		);
+	}
+
 	$image = cata_image_lightbox_parse_image( $block );
 
 	if ( null === $image ) {
@@ -406,6 +644,27 @@ function cata_image_lightbox_add_badge( string $block_content, array $block ): s
 	return cata_image_lightbox_wrap_trigger( $block_content, $index, count( $images ) );
 }
 add_filter( 'render_block_core/image', __NAMESPACE__ . '\\cata_image_lightbox_add_badge', 10, 2 );
+
+/**
+ * Mark excluded
+ *
+ * Add the exclusion class to an image block's figure so external tooling can
+ * see the opt-out in the rendered markup.
+ *
+ * @param string $html The image block's markup.
+ *
+ * @return string
+ */
+function cata_image_lightbox_mark_excluded( string $html ): string {
+
+	$tags = new WP_HTML_Tag_Processor( $html );
+
+	if ( $tags->next_tag( 'figure' ) ) {
+		$tags->add_class( 'cata-image-lightbox-exclude' );
+	}
+
+	return $tags->get_updated_html();
+}
 
 /**
  * Wrap trigger
