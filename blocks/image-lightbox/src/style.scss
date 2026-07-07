@@ -210,6 +210,11 @@
 
 	&.is-active {
 		display: flex;
+		// Restate the column direction on the rule that toggles the slide
+		// visible. iOS Safari was laying the active slide out as a row (image
+		// beside caption); repeating flex-direction on this higher-specificity
+		// selector forces the intended vertical stack there.
+		flex-direction: column;
 		opacity: 1;
 	}
 }
