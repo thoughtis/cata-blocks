@@ -23,6 +23,34 @@ function register_image_lightbox_block() {
 add_action( 'init', __NAMESPACE__ . '\\register_image_lightbox_block' );
 
 /**
+ * Version the block's stylesheet by its own content hash.
+ *
+ * WordPress versions a block's `style` with the static block.json `version`,
+ * so CSS changes never bust returning visitors' caches. The generated
+ * `*.asset.php` version can't stand in for it either: wp-scripts extracts the
+ * CSS to its own file, so that hash only tracks the JS and a CSS-only change
+ * leaves it unchanged. Hash the built stylesheet instead, so its `?ver`
+ * changes exactly when the CSS does — automatically, on every build.
+ *
+ * @param array $metadata Parsed block.json metadata.
+ * @return array Metadata, with a content-derived version for this block.
+ */
+function version_image_lightbox_style( array $metadata ): array {
+	if ( 'cata/image-lightbox' !== ( $metadata['name'] ?? '' ) ) {
+		return $metadata;
+	}
+
+	$stylesheet = __DIR__ . '/build/style-index.css';
+
+	if ( is_readable( $stylesheet ) ) {
+		$metadata['version'] = substr( md5_file( $stylesheet ), 0, 20 );
+	}
+
+	return $metadata;
+}
+add_filter( 'block_type_metadata', __NAMESPACE__ . '\\version_image_lightbox_style' );
+
+/**
  * Register Image Lightbox Meta
  *
  * Lightbox-only images: attachment ids stored on the post, appended to the
