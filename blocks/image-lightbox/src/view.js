@@ -11,6 +11,10 @@ let dialog = null;
 // Slide <img> elements, ordered to match state.images. Set on init.
 let slideImages = [];
 
+// Slide placeholder <img> elements (tiny blurred preview), ordered to match
+// state.images. Set on init.
+let slidePlaceholders = [];
+
 // Bumped on every open/navigation so a slow decode can't reveal a stale slide.
 let navigation = 0;
 
@@ -37,6 +41,7 @@ const { state, actions } = store( 'cata-blocks-image-lightbox', {
 			// full-size candidate downloads.
 			warmAround( index );
 			seedSlide( slideImages[ index ], trigger?.currentSrc );
+			showPlaceholder( index );
 			navigation++;
 			state.currentIndex = index;
 			dialog?.showModal();
@@ -100,6 +105,12 @@ const { state, actions } = store( 'cata-blocks-image-lightbox', {
 				ref.querySelectorAll( '.wp-block-cata-image-lightbox__slide' )
 			).map( ( slide ) =>
 				slide.querySelector( '.wp-block-cata-image-lightbox__image' )
+			);
+
+			slidePlaceholders = Array.from(
+				ref.querySelectorAll( '.wp-block-cata-image-lightbox__slide' )
+			).map( ( slide ) =>
+				slide.querySelector( '.wp-block-cata-image-lightbox__placeholder' )
 			);
 
 			const content = document.querySelector( state.contentSelector ) ?? document;
@@ -395,6 +406,72 @@ function seedSlide( img, src ) {
 }
 
 /**
+ * Show a tiny blurred preview behind a slide's image while it loads, so
+ * navigating to an unloaded slide reveals a soft preview instead of a
+ * blank gap on a slow connection. Clears itself once the full image is
+ * ready.
+ *
+ * @param {number} index Slide index.
+ */
+function showPlaceholder( index ) {
+	const placeholder = slidePlaceholders[ index ];
+	const img = slideImages[ index ];
+
+	if ( ! placeholder || ! img || img.complete ) {
+		return;
+	}
+
+	if ( ! placeholder.src ) {
+		const tiny = tinyPreviewSrc( img.getAttribute( 'src' ) );
+
+		if ( ! tiny ) {
+			return;
+		}
+
+		placeholder.src = tiny;
+	}
+
+	placeholder.classList.add( 'is-visible' );
+
+	img
+		.decode()
+		.catch( () => {} )
+		.finally( () => hidePlaceholder( index ) );
+}
+
+/**
+ * Hide a slide's loading placeholder now that its full image is ready.
+ *
+ * @param {number} index Slide index.
+ */
+function hidePlaceholder( index ) {
+	slidePlaceholders[ index ]?.classList.remove( 'is-visible' );
+}
+
+/**
+ * Build a tiny, low-cost preview URL from a Photon-served image URL by
+ * overriding its width — works regardless of the source's own srcset/sizes.
+ *
+ * @param {string|null} src Full-size image URL.
+ *
+ * @return {string|null} A ~24px-wide variant of the same URL, or null if
+ *                       `src` isn't a URL Photon can resize.
+ */
+function tinyPreviewSrc( src ) {
+	if ( ! src ) {
+		return null;
+	}
+
+	try {
+		const url = new URL( src, window.location.href );
+		url.searchParams.set( 'w', '24' );
+		return url.toString();
+	} catch ( error ) {
+		return null;
+	}
+}
+
+/**
  * Make a slide current, waiting for its image so the outgoing slide stays
  * visible until the incoming one can paint — a crossfade, not a blank flash.
  *
@@ -406,6 +483,7 @@ async function showSlide( index ) {
 	}
 
 	warmAround( index );
+	showPlaceholder( index );
 
 	const token = ++navigation;
 	const img = slideImages[ index ];

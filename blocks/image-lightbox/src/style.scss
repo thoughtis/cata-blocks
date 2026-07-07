@@ -184,8 +184,10 @@
 	min-height: 0;
 	// Leave vertical scrolling (for a slide taller than the viewport) to the
 	// browser; hand horizontal movement to the swipe-to-navigate JS instead of
-	// the OS's edge-swipe-back gesture.
-	touch-action: pan-y;
+	// the OS's edge-swipe-back gesture. `pinch-zoom` is additive here — without
+	// it, `pan-y` alone disables pinch entirely, and pinching to inspect a
+	// photo's detail is expected default behavior.
+	touch-action: pan-y pinch-zoom;
 }
 
 // Whole-image navigation: the left and right halves of the viewport are click
@@ -266,6 +268,28 @@
 	max-width: 100%;
 	max-height: 100%;
 	object-fit: contain;
+}
+
+// Tiny blurred Photon rendition shown behind a slide while its full-size
+// image is still decoding, so navigating to an unloaded slide reveals a soft
+// preview instead of a blank gap on a slow connection. Negative z-index
+// keeps it behind the image and caption without any change to their own
+// stacking; scaled past its blur radius so the blurred edge doesn't peek out.
+.wp-block-cata-image-lightbox__placeholder {
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	filter: blur( 16px );
+	transform: scale( 1.08 );
+	opacity: 0;
+	transition: opacity 200ms ease;
+
+	&.is-visible {
+		opacity: 1;
+	}
 }
 
 .wp-block-cata-image-lightbox__caption {
