@@ -1,0 +1,48 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "cata/moments-hero",
+  "version": "0.1.0",
+  "title": "Moments Hero",
+  "category": "widgets",
+  "icon": "star-filled",
+  "description": "Renders one homepage hero slot: the Nth newest pinned post, laid out by the art it carries (single, diptych, or 2x2 collage).",
+  "example": {
+    "attributes": {
+      "slot": 1
+    }
+  },
+  "attributes": {
+    "slot": {
+      "type": "number",
+      "default": 1
+    },
+    "fallbackCategories": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "number"
+      }
+    },
+    "thresholdHours": {
+      "type": "number",
+      "default": 3
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": [
+      "wide",
+      "full"
+    ],
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  },
+  "textdomain": "cata",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "render": "file:./render.php"
+}
