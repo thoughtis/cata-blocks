@@ -132,41 +132,39 @@ function get_good_images( WP_Post $post ): array {
 /**
  * Choose a layout for a slot's post.
  *
- * Rules:
- * - Slot 2 favors the diptych (featured image beside the best second image,
- *   preferring portrait art) and falls back to single when the post has no
- *   usable second image.
- * - Other slots use the 2x2 collage when a post carries at least four good
- *   images of the same orientation, and single otherwise.
+ * The layout is driven by the post's own art, not by which slot it occupies:
+ * - Diptych when the post can show two vertical images: a portrait featured
+ *   image beside the post's first portrait content image.
+ * - Otherwise a 2x2 collage when the post carries at least four good images
+ *   of the same orientation.
+ * - Single otherwise.
  *
- * @param int     $slot 1-indexed hero slot.
+ * @param int     $slot 1-indexed hero slot. Retained for API symmetry; every
+ *                      slot uses the same content-driven rules.
  * @param WP_Post $post Post to lay out.
  * @return array Array: layout (single|diptych|collage), images (array[]).
  */
 function get_slot_layout( int $slot, WP_Post $post ): array {
 	$good_images = get_good_images( $post );
 
-	if ( 2 === $slot ) {
-		if ( empty( $good_images ) ) {
-			return array(
-				'layout' => 'single',
-				'images' => array(),
-			);
+	// Diptych: two vertical images — the portrait featured image beside the
+	// post's first portrait content image.
+	$featured_id       = (int) get_post_thumbnail_id( $post );
+	$featured_metadata = $featured_id ? wp_get_attachment_metadata( $featured_id ) : false;
+	$featured_portrait = is_array( $featured_metadata )
+		&& ! empty( $featured_metadata['width'] )
+		&& ! empty( $featured_metadata['height'] )
+		&& (int) $featured_metadata['height'] > (int) $featured_metadata['width'];
+
+	if ( $featured_portrait ) {
+		foreach ( $good_images as $image ) {
+			if ( 'portrait' === $image['orientation'] ) {
+				return array(
+					'layout' => 'diptych',
+					'images' => array( $image ),
+				);
+			}
 		}
-
-		$portraits = array_values(
-			array_filter(
-				$good_images,
-				static function ( array $image ): bool {
-					return 'portrait' === $image['orientation'];
-				}
-			)
-		);
-
-		return array(
-			'layout' => 'diptych',
-			'images' => array( $portraits[0] ?? $good_images[0] ),
-		);
 	}
 
 	foreach ( array( 'landscape', 'portrait' ) as $orientation ) {

@@ -58,8 +58,8 @@ if ( 'diptych' === $moments_hero_layout && isset( $moments_hero_images[0] ) ) {
 	$moments_hero_media = sprintf(
 		'<div class="cata-moments-hero__media cata-moments-hero__media--diptych"><a class="cata-moments-hero__panel" href="%1$s">%2$s</a><a class="cata-moments-hero__panel" href="%1$s">%3$s</a></div>',
 		esc_url( $moments_hero_permalink ),
-		get_the_post_thumbnail( $moments_hero_post, 'large', $moments_hero_image_attributes( '8/7' ) ),
-		wp_get_attachment_image( $moments_hero_images[0]['id'], 'large', false, $moments_hero_image_attributes( '8/7' ) )
+		get_the_post_thumbnail( $moments_hero_post, 'large', $moments_hero_image_attributes( '3/4' ) ),
+		wp_get_attachment_image( $moments_hero_images[0]['id'], 'large', false, $moments_hero_image_attributes( '3/4' ) )
 	);
 } elseif ( 'collage' === $moments_hero_layout && 4 === count( $moments_hero_images ) ) {
 	$moments_hero_cell_ratio = 'portrait' === $moments_hero_images[0]['orientation'] ? '3/4' : '3/2';
