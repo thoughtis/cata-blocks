@@ -38,11 +38,30 @@
 	border: none;
 	border-radius: 4px;
 	cursor: pointer;
+	// Visible by default (mobile-first): touch devices can't hover, so the
+	// gallery badge has to be discoverable at a glance.
+	opacity: 1;
+	transition: opacity 150ms ease-in-out;
 
 	&:hover,
 	&:focus,
 	&:active {
 		background-color: rgba( 0, 0, 0, 0.7 );
+	}
+}
+
+// On devices that can hover (desktop with a mouse), keep the badge out of the
+// way while reading the article — reveal it only when the reader hovers the
+// image or focuses a trigger by keyboard. Touch / no-hover devices keep the
+// always-visible default above.
+@media ( hover: hover ) and ( pointer: fine ) {
+	.cata-image-lightbox-badge {
+		opacity: 0;
+	}
+
+	.cata-image-lightbox-figure:hover .cata-image-lightbox-badge,
+	.cata-image-lightbox-figure:focus-within .cata-image-lightbox-badge {
+		opacity: 1;
 	}
 }
 
