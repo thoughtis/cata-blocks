@@ -191,6 +191,11 @@ require_once __DIR__ . '/blocks/first-page-content/first-page-content.php';
 require_once __DIR__ . '/blocks/fresh-post-dot/fresh-post-dot.php';
 
 /**
+ * Art Direction
+ */
+require_once __DIR__ . '/blocks/art-direction/art-direction.php';
+
+/**
  * Trivia Pattern
  */
 require_once __DIR__ . '/patterns/trivia/trivia.php';

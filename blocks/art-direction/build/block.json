@@ -1,0 +1,42 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "cata/art-direction",
+  "version": "0.1.0",
+  "title": "Art Direction",
+  "category": "widgets",
+  "icon": "format-gallery",
+  "description": "Renders a post's art as a single image, diptych, or 2×2 collage — chosen from the images the post actually carries.",
+  "usesContext": [
+    "postId",
+    "postType"
+  ],
+  "attributes": {
+    "layout": {
+      "type": "string",
+      "enum": [
+        "auto",
+        "single",
+        "diptych",
+        "collage"
+      ],
+      "default": "auto"
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": [
+      "wide",
+      "full"
+    ],
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  },
+  "textdomain": "cata",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "render": "file:./render.php"
+}
