@@ -263,6 +263,6 @@ function get_art_direction_data( WP_Post $post ): array {
 		'images'   => array_map( __NAMESPACE__ . '\\add_image_src', $good_images ),
 		'diptych'  => null !== $diptych ? array( add_image_src( $diptych ) ) : array(),
 		'collage'  => array_map( __NAMESPACE__ . '\\add_image_src', $collage ),
-		'auto'     => ! empty( $collage ) ? 'collage' : 'single',
+		'auto'     => resolve_layout( 'auto', $post )['layout'],
 	);
 }
