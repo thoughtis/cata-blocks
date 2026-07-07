@@ -508,9 +508,27 @@ async function showSlide( index ) {
 /**
  * Notify outside integrations, such as the ad script, of lightbox activity.
  *
+ * Also mirrors the current slide into the URL hash as an ad refresh signal,
+ * not a deep link. replaceState keeps history.state intact and adds no
+ * entries, so back-button behavior is unaffected.
+ *
  * @param {string} name Event name, e.g. 'slideshow:open'.
  */
 function dispatchLightboxEvent( name ) {
+	if ( 'slideshow:close' === name ) {
+		history.replaceState(
+			history.state,
+			'',
+			window.location.pathname + window.location.search
+		);
+	} else {
+		history.replaceState(
+			history.state,
+			'',
+			`#slide-${ state.currentIndex + 1 }`
+		);
+	}
+
 	document.dispatchEvent(
 		new CustomEvent( name, {
 			detail: {

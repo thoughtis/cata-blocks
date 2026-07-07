@@ -83,6 +83,14 @@
 	font-size: 0.75rem;
 }
 
+// Lock page scroll while the lightbox is open, so wheel and touch input
+// behind the dialog can't move the page or change the URL via infinite
+// scroll. The lock lives on the root element because iOS Safari ignores
+// overflow on body; :modal only matches dialogs opened with showModal().
+html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
+	overflow: hidden;
+}
+
 // Backdrop layer: fills the viewport and centres the panel.
 .wp-block-cata-image-lightbox__dialog {
 	width: 100%;
@@ -93,6 +101,8 @@
 	padding: unset;
 	border: none;
 	background-color: transparent;
+	// Keep scrolling inside the dialog from chaining to the page.
+	overscroll-behavior: contain;
 
 	&[open] {
 		display: flex;
@@ -270,15 +280,23 @@
 	object-fit: contain;
 }
 
-// Tiny blurred Photon rendition shown behind a slide while its full-size
-// image is still decoding, so navigating to an unloaded slide reveals a soft
-// preview instead of a blank gap on a slow connection. Negative z-index
-// keeps it behind the image and caption without any change to their own
-// stacking; scaled past its blur radius so the blurred edge doesn't peek out.
-.wp-block-cata-image-lightbox__placeholder {
+// Frame for the blurred placeholder. Fills the slide box and clips the
+// scaled image inside it: the slide is a scroll container, and a transformed
+// box overhanging it would otherwise register as scrollable overflow and
+// draw scrollbars on every slide. Negative z-index keeps the preview behind
+// the image and caption without any change to their own stacking.
+.wp-block-cata-image-lightbox__placeholder-frame {
 	position: absolute;
 	inset: 0;
 	z-index: -1;
+	overflow: hidden;
+}
+
+// Tiny blurred Photon rendition shown behind a slide while its full-size
+// image is still decoding, so navigating to an unloaded slide reveals a soft
+// preview instead of a blank gap on a slow connection. Scaled past its blur
+// radius so the blurred edge doesn't peek out; the frame clips the overhang.
+.wp-block-cata-image-lightbox__placeholder {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
