@@ -182,6 +182,10 @@
 	position: relative;
 	flex: 1 1 auto;
 	min-height: 0;
+	// Leave vertical scrolling (for a slide taller than the viewport) to the
+	// browser; hand horizontal movement to the swipe-to-navigate JS instead of
+	// the OS's edge-swipe-back gesture.
+	touch-action: pan-y;
 }
 
 // Whole-image navigation: the left and right halves of the viewport are click

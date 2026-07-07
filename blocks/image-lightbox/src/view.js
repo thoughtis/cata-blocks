@@ -138,9 +138,108 @@ const { state, actions } = store( 'cata-blocks-image-lightbox', {
 					`Image Lightbox: ${ state.images.length } slide(s) rendered but no triggers were wired.`
 				);
 			}
+
+			wireSwipeNavigation(
+				ref.querySelector( '.wp-block-cata-image-lightbox__viewport' )
+			);
 		},
 	},
 } );
+
+// Horizontal distance, in pixels, a touch must travel before it counts as a
+// swipe rather than a tap or a vertical scroll.
+const SWIPE_THRESHOLD = 50;
+
+// Horizontal distance, in pixels, before a gesture commits to being a swipe
+// (vs. a vertical scroll) and starts blocking the page's own touch handling.
+const DIRECTION_LOCK = 10;
+
+/**
+ * Wire swipe-to-navigate on the slide viewport.
+ *
+ * Touch and pen only — mouse users already have the tap-to-navigate zones,
+ * the arrow buttons, and the arrow keys, and a mouse-drag gesture would
+ * collide with selecting the caption text. `touch-action: pan-y` on the
+ * viewport (see style.scss) leaves vertical scrolling (for a slide taller
+ * than the viewport) to the browser and hands horizontal movement to this
+ * gesture instead of the OS's edge-swipe-back gesture.
+ *
+ * Swipe direction follows the arrow buttons' fixed left-to-right sense
+ * (swipe left = next, swipe right = previous), not text direction.
+ *
+ * @param {HTMLElement} viewport The slide viewport element.
+ */
+function wireSwipeNavigation( viewport ) {
+	if ( ! viewport ) {
+		return;
+	}
+
+	let pointerId = null;
+	let startX = 0;
+	let startY = 0;
+	let horizontal = false;
+
+	viewport.addEventListener( 'pointerdown', ( event ) => {
+		if ( 'touch' !== event.pointerType && 'pen' !== event.pointerType ) {
+			return;
+		}
+
+		// A second finger landing mid-gesture (e.g. a pinch) abandons the swipe
+		// rather than reading its position as a continuation of the first.
+		if ( null !== pointerId ) {
+			return;
+		}
+
+		pointerId = event.pointerId;
+		startX = event.clientX;
+		startY = event.clientY;
+		horizontal = false;
+	} );
+
+	viewport.addEventListener( 'pointermove', ( event ) => {
+		if ( event.pointerId !== pointerId ) {
+			return;
+		}
+
+		const dx = event.clientX - startX;
+		const dy = event.clientY - startY;
+
+		if ( ! horizontal && Math.abs( dx ) > DIRECTION_LOCK && Math.abs( dx ) > Math.abs( dy ) ) {
+			horizontal = true;
+		}
+
+		// Once committed to a horizontal swipe, stop the browser from also
+		// rubber-banding or interpreting the same gesture as edge-swipe-back.
+		if ( horizontal && event.cancelable ) {
+			event.preventDefault();
+		}
+	} );
+
+	const release = ( event ) => {
+		if ( event.pointerId !== pointerId ) {
+			return;
+		}
+
+		const dx = event.clientX - startX;
+
+		pointerId = null;
+
+		if ( ! horizontal || Math.abs( dx ) < SWIPE_THRESHOLD ) {
+			return;
+		}
+
+		if ( dx < 0 ) {
+			actions.next();
+		} else {
+			actions.prev();
+		}
+	};
+
+	viewport.addEventListener( 'pointerup', release );
+	viewport.addEventListener( 'pointercancel', () => {
+		pointerId = null;
+	} );
+}
 
 /**
  * Wire badge wrappers that render outside the content container.
