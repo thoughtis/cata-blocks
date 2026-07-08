@@ -33,11 +33,23 @@ const LAYOUTS = array( 'auto', 'single', 'diptych', 'collage' );
  * @return array[] List of arrays: id, width, height, alt, orientation.
  */
 function get_good_images( WP_Post $post ): array {
-	$featured_id   = (int) get_post_thumbnail_id( $post );
-	$featured_file = $featured_id ? pathinfo( (string) get_attached_file( $featured_id ), PATHINFO_FILENAME ) : '';
+	$featured_id       = (int) get_post_thumbnail_id( $post );
+	$featured_file     = $featured_id ? pathinfo( (string) get_attached_file( $featured_id ), PATHINFO_FILENAME ) : '';
+	$featured_metadata = $featured_id ? wp_get_attachment_metadata( $featured_id ) : false;
 
 	if ( ! preg_match_all( '/wp-image-(\d+)/', (string) $post->post_content, $matches ) ) {
 		return array();
+	}
+
+	// Track the byte sizes already represented — seeded with the featured
+	// image — so a re-upload of the same photo is never treated as a distinct
+	// second image. TC names every image in a post from the post slug, so a
+	// re-uploaded featured image lands as a new attachment with a "-2"/"-3"
+	// filename that filename matching can't catch; an identical byte count
+	// (different frames essentially never collide) can.
+	$seen_filesizes = array();
+	if ( is_array( $featured_metadata ) && ! empty( $featured_metadata['filesize'] ) ) {
+		$seen_filesizes[] = (int) $featured_metadata['filesize'];
 	}
 
 	$good = array();
@@ -65,6 +77,16 @@ function get_good_images( WP_Post $post ): array {
 
 		if ( empty( $metadata['width'] ) || empty( $metadata['height'] ) ) {
 			continue;
+		}
+
+		$filesize = ! empty( $metadata['filesize'] ) ? (int) $metadata['filesize'] : 0;
+
+		if ( $filesize > 0 && in_array( $filesize, $seen_filesizes, true ) ) {
+			continue;
+		}
+
+		if ( $filesize > 0 ) {
+			$seen_filesizes[] = $filesize;
 		}
 
 		$good[] = array(
