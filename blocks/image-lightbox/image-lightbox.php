@@ -181,41 +181,39 @@ function cata_image_lightbox_get_post_images( WP_Post $post ): array {
 	static $cache = array();
 
 	if ( ! array_key_exists( $post->ID, $cache ) ) {
-		$images   = cata_image_lightbox_get_images( parse_blocks( $post->post_content ) );
-		$featured = cata_image_lightbox_featured_image( $post );
-
-		// Lead with the featured image.
-		if ( null !== $featured ) {
-			array_unshift( $images, $featured );
-		}
+		$images = cata_image_lightbox_get_images( parse_blocks( $post->post_content ) );
 
 		/**
-		 * Filter the collected lightbox images so themes can add slides.
+		 * Minimum in-content photos before a post becomes a lightbox gallery.
+		 * Image-light posts (fewer than this) stay ungalleried unless an editor
+		 * curates lightbox images to force one on. The featured image is never a
+		 * slide, so only in-content photos count toward this minimum.
 		 *
-		 * Each entry must have src, alt, id, and caption keys; id may be 0 for
-		 * images that are not attachments.
-		 *
-		 * @param array<int, array{src: string, alt: string, id: int, caption: string}> $images
-		 * @param WP_Post                                                               $post
+		 * @param int $minimum Minimum in-content image count. Default 6.
 		 */
-		$cache[ $post->ID ] = apply_filters( 'cata_blocks_image_lightbox_images', $images, $post );
+		$minimum = (int) apply_filters( 'cata_blocks_image_lightbox_minimum_images', 6 );
+
+		// Curated lightbox images (the cata_lightbox_image_ids meta) force the
+		// gallery on no matter how few in-content photos the post has.
+		$forced = array() !== (array) get_post_meta( $post->ID, 'cata_lightbox_image_ids', true );
+
+		if ( count( $images ) < $minimum && ! $forced ) {
+			$cache[ $post->ID ] = array();
+		} else {
+			/**
+			 * Filter the collected lightbox images so themes can add slides.
+			 *
+			 * Each entry must have src, alt, id, and caption keys; id may be 0 for
+			 * images that are not attachments.
+			 *
+			 * @param array<int, array{src: string, alt: string, id: int, caption: string}> $images
+			 * @param WP_Post                                                               $post
+			 */
+			$cache[ $post->ID ] = apply_filters( 'cata_blocks_image_lightbox_images', $images, $post );
+		}
 	}
 
 	return $cache[ $post->ID ];
-}
-
-/**
- * Featured image
- *
- * Build the featured image's slide entry so the most prominent image on the
- * page can lead the gallery.
- *
- * @param WP_Post $post
- *
- * @return array{src: string, alt: string, id: int, caption: string}|null
- */
-function cata_image_lightbox_featured_image( WP_Post $post ): ?array {
-	return cata_image_lightbox_attachment_image( (int) get_post_thumbnail_id( $post ) );
 }
 
 /**
@@ -740,64 +738,6 @@ function cata_image_lightbox_wrap_trigger( string $html, int $index, int $total 
 
 	return substr_replace( $html, $replacement, $offset, strlen( $img ) );
 }
-
-/**
- * Add badge to featured image
- *
- * Filter the queried post's thumbnail markup so the featured image opens the
- * lightbox like the content images do. Post thumbnails don't carry the
- * wp-image-{id} class, so the slide is matched here by attachment id and the
- * wrapper ships the index for the view script.
- *
- * @param string $html
- * @param int    $post_id
- * @param int    $post_thumbnail_id
- *
- * @return string
- */
-function cata_image_lightbox_add_featured_badge( string $html, int $post_id, int $post_thumbnail_id ): string {
-
-	if ( ! apply_filters( 'cata_blocks_support_image_lightbox_block', true ) ) {
-		return $html;
-	}
-
-	if ( '' === $html || is_admin() || ! is_singular() ) {
-		return $html;
-	}
-
-	$post = get_queried_object();
-
-	// Leave thumbnails of other posts (related-post loops, etc.) alone.
-	if ( ! $post instanceof WP_Post || $post->ID !== $post_id ) {
-		return $html;
-	}
-
-	// Leave thumbnails the theme made into links.
-	if ( preg_match( '#<a\b#i', $html ) ) {
-		return $html;
-	}
-
-	$images = cata_image_lightbox_get_post_images( $post );
-
-	if ( empty( $images ) ) {
-		return $html;
-	}
-
-	$index = cata_image_lightbox_find_index(
-		array(
-			'id'  => (int) $post_thumbnail_id,
-			'src' => '',
-		),
-		$images
-	);
-
-	if ( null === $index ) {
-		return $html;
-	}
-
-	return cata_image_lightbox_wrap_trigger( $html, $index, count( $images ) );
-}
-add_filter( 'post_thumbnail_html', __NAMESPACE__ . '\\cata_image_lightbox_add_featured_badge', 10, 3 );
 
 /**
  * Enqueue badge styles
