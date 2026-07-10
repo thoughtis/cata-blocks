@@ -486,33 +486,110 @@ function cata_image_lightbox_caption( string $inner_html ): string {
  */
 function cata_image_lightbox_image_html( array $image ): string {
 
-	if ( $image['id'] ) {
-		$html = wp_get_attachment_image(
-			$image['id'],
-			'large',
-			false,
-			array(
-				'class'    => 'wp-block-cata-image-lightbox__image',
-				// Rendered width inside the panel: 95vw panel minus its padding,
-				// less the ad column and gap once they sit alongside at 1240px,
-				// capped where the panel stops growing.
-				'sizes'    => '(min-width: 1620px) 1150px, (min-width: 1240px) calc(89vw - 304px), calc(95vw - 2rem)',
-				'alt'      => $image['alt'],
-				'loading'  => 'lazy',
-				'decoding' => 'async',
-			)
-		);
+	// Rendered width inside the panel: 95vw panel minus its padding, less the ad
+	// column and gap once they sit alongside at 1240px, capped where the panel
+	// stops growing.
+	$sizes = '(min-width: 1620px) 1150px, (min-width: 1240px) calc(89vw - 304px), calc(95vw - 2rem)';
 
-		if ( '' !== $html ) {
-			return $html;
+	// Resolve the full-size source and the original width so srcset candidates
+	// never claim to be wider than the image the CDN can actually deliver.
+	$base     = $image['src'];
+	$original = 0;
+
+	if ( $image['id'] ) {
+		$full = wp_get_attachment_image_url( $image['id'], 'full' );
+
+		if ( false !== $full ) {
+			$base = $full;
+		}
+
+		$meta = wp_get_attachment_metadata( $image['id'] );
+
+		if ( is_array( $meta ) && ! empty( $meta['width'] ) ) {
+			$original = (int) $meta['width'];
 		}
 	}
 
+	if ( '' === $base ) {
+		return '';
+	}
+
+	$srcset = cata_image_lightbox_srcset( $base, $original );
+
+	// No resizable candidates (e.g. a source the CDN can't resize): serve the
+	// single collected source rather than nothing.
+	if ( '' === $srcset ) {
+		return sprintf(
+			'<img class="wp-block-cata-image-lightbox__image" src="%s" alt="%s" loading="lazy" decoding="async" />',
+			esc_url( $image['src'] ),
+			esc_attr( $image['alt'] )
+		);
+	}
+
 	return sprintf(
-		'<img class="wp-block-cata-image-lightbox__image" src="%s" alt="%s" loading="lazy" decoding="async" />',
-		esc_url( $image['src'] ),
+		'<img class="wp-block-cata-image-lightbox__image" src="%s" srcset="%s" sizes="%s" alt="%s" loading="lazy" decoding="async" />',
+		esc_url( cata_image_lightbox_sized_url( $base, 1280 ) ),
+		esc_attr( $srcset ),
+		esc_attr( $sizes ),
 		esc_attr( $image['alt'] )
 	);
+}
+
+/**
+ * Sized URL
+ *
+ * Point an image URL at a specific rendered width via the CDN's on-demand
+ * resizing, dropping any existing sizing params so only the requested width
+ * applies.
+ *
+ * @param string $url   Image URL.
+ * @param int    $width Target width in pixels.
+ *
+ * @return string
+ */
+function cata_image_lightbox_sized_url( string $url, int $width ): string {
+	$url = remove_query_arg( array( 'w', 'h', 'fit', 'resize', 'crop' ), $url );
+
+	return add_query_arg( 'w', $width, $url );
+}
+
+/**
+ * Srcset
+ *
+ * Build a width-based srcset from one source URL using the CDN's on-demand
+ * resizing. Jetpack/Photon on VIP serves any requested width from the
+ * original, so no intermediate thumbnails need to exist — which is why
+ * wp_get_attachment_image()'s metadata-derived srcset comes back empty here
+ * and the browser was left with a single, retina-soft source. Candidates are
+ * capped at the original width so their descriptors stay honest.
+ *
+ * @param string $url      Full-size image URL.
+ * @param int    $original Original width in pixels, or 0 when unknown.
+ *
+ * @return string Srcset value, or '' when no candidates apply.
+ */
+function cata_image_lightbox_srcset( string $url, int $original ): string {
+
+	$widths = array( 640, 960, 1280, 1600, 2048 );
+
+	// Offer the original itself when it lands between candidates, so the
+	// sharpest honest width is always available.
+	if ( $original > 0 && $original < 2048 && ! in_array( $original, $widths, true ) ) {
+		$widths[] = $original;
+		sort( $widths );
+	}
+
+	$candidates = array();
+
+	foreach ( $widths as $width ) {
+		if ( $original > 0 && $width > $original ) {
+			continue;
+		}
+
+		$candidates[] = esc_url( cata_image_lightbox_sized_url( $url, $width ) ) . ' ' . $width . 'w';
+	}
+
+	return implode( ', ', $candidates );
 }
 
 /**
