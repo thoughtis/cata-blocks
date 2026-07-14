@@ -32,8 +32,9 @@ if ( empty( $related_content_posts ) ) {
 	return;
 }
 
-$related_content_layout = 1 === count( $related_content_posts ) ? 'feature' : 'pair';
-$related_content_items  = '';
+$related_content_layout  = 1 === count( $related_content_posts ) ? 'feature' : 'pair';
+$related_content_heading = trim( (string) ( $attributes['heading'] ?? '' ) );
+$related_content_items   = '';
 
 foreach ( $related_content_posts as $related_content_post ) {
 	$related_content_permalink = get_permalink( $related_content_post );
@@ -65,7 +66,9 @@ $related_content_wrapper_attributes = get_block_wrapper_attributes(
 
 ?>
 <aside <?php echo $related_content_wrapper_attributes; ?>>
-	<h2 class="cata-related-content__heading"><?php echo esc_html__( 'Related Stories', 'cata' ); ?></h2>
+	<?php if ( '' !== $related_content_heading ) : ?>
+		<h2 class="cata-related-content__heading"><?php echo wp_kses_post( $related_content_heading ); ?></h2>
+	<?php endif; ?>
 	<div class="cata-related-content__items">
 		<?php echo $related_content_items; ?>
 	</div>
