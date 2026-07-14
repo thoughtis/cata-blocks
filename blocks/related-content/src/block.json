@@ -7,12 +7,6 @@
 	"category": "widgets",
 	"icon": "excerpt-view",
 	"description": "Shows one or two recently published posts that share a headline subject with the current post. Renders nothing when no posts qualify.",
-	"attributes": {
-		"heading": {
-			"type": "string",
-			"default": "Related Stories"
-		}
-	},
 	"usesContext": [ "postId" ],
 	"supports": {
 		"html": false,

@@ -14,8 +14,6 @@ The Related Content block shows 1–2 recently published posts that share a real
 - **1 match** — a single feature-style card with more visual weight.
 - **2 matches** — an even two-up grid (stacked on small screens).
 
-The heading above the cards is editable (default "Related Stories"); clear it to render the cards without one.
-
 ## Usage
 
 The block is template-level, not something to drop mid-article: it's hidden from the post editor's inserter, but insertable in the Site Editor so block themes can add it to their templates.

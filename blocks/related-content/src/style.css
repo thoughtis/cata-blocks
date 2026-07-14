@@ -1,18 +1,9 @@
 /**
  * Related Content — front-end styles.
  *
- * Structural layout plus a muted heading. Colors use light-dark() so the
- * block responds to a site's color scheme without child-theme overrides.
+ * Structural only: card grids and crop anchoring. Typography and color
+ * inherit from the theme.
  */
-
-.cata-related-content__heading {
-	margin: 0 0 1rem;
-	font-size: 0.8125rem;
-	font-weight: 700;
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
-	color: light-dark( #555555, #bbbbbb );
-}
 
 .cata-related-content__items {
 	display: grid;
