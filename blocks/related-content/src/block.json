@@ -1,0 +1,28 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cata/related-content",
+	"version": "0.1.0",
+	"title": "Related Content",
+	"category": "widgets",
+	"icon": "excerpt-view",
+	"description": "Shows one or two recently published posts that share a headline subject with the current post. Renders nothing when no posts qualify.",
+	"usesContext": [ "postId" ],
+	"supports": {
+		"html": false,
+		"inserter": false,
+		"color": {
+			"text": true,
+			"background": true,
+			"link": true
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true
+		}
+	},
+	"textdomain": "cata",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

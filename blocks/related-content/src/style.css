@@ -1,0 +1,57 @@
+/**
+ * Related Content — front-end styles.
+ *
+ * Structural only: card grids and crop anchoring. Typography and color
+ * inherit from the theme.
+ */
+
+.cata-related-content__items {
+	display: grid;
+	gap: 1.5rem;
+}
+
+.cata-related-content--pair .cata-related-content__items {
+	grid-template-columns: 1fr 1fr;
+}
+
+.cata-related-content__media {
+	display: block;
+}
+
+.cata-related-content__image {
+	display: block;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 3 / 2;
+	object-fit: cover;
+}
+
+.cata-related-content--feature .cata-related-content__image {
+	aspect-ratio: 16 / 9;
+}
+
+.cata-related-content__title {
+	margin: 0.625rem 0 0;
+	font-size: 1.125rem;
+	line-height: 1.3;
+}
+
+.cata-related-content--feature .cata-related-content__title {
+	font-size: 1.5rem;
+}
+
+.cata-related-content__link {
+	color: inherit;
+	text-decoration: none;
+}
+
+.cata-related-content__link:hover,
+.cata-related-content__link:focus {
+	text-decoration: underline;
+}
+
+@media ( max-width: 599px ) {
+	.cata-related-content--pair .cata-related-content__items {
+		grid-template-columns: 1fr;
+	}
+}
