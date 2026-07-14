@@ -16,9 +16,9 @@ The Related Content block shows 1–2 recently published posts that share a real
 
 ## Usage
 
-The block is hidden from the inserter — it's template-level, not something to drop mid-article.
+The block is template-level, not something to drop mid-article: it's hidden from the post editor's inserter, but insertable in the Site Editor so block themes can add it to their templates.
 
 - **Hybrid themes**: `do_blocks( '<!-- wp:cata/related-content /-->' )` after the post content, before comments.
-- **FSE themes**: add `<!-- wp:cata/related-content /-->` to the single template.
+- **FSE themes**: add `<!-- wp:cata/related-content /-->` to the single template (via the Site Editor or the theme's template files).
 
 The anchor post ID comes from block context (`postId`), falling back to `get_the_ID()`, so both placements work.

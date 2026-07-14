@@ -27,6 +27,13 @@ import metadata from './block.json';
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
  */
 registerBlockType( metadata.name, {
+	// Template-level block: hidden from the post editor's inserter
+	// (block.json sets inserter: false), but insertable in the Site
+	// Editor so block themes can add it to their single template.
+	supports: {
+		...metadata.supports,
+		inserter: 'site-editor' === window.pagenow,
+	},
 	edit: Edit,
 	save,
 } );
