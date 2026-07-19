@@ -36,6 +36,10 @@ function addQueryFilterAttributes( settings, name ) {
 		cataTermFromRequest: {
 			type: 'boolean',
 			default: false
+		},
+		cataExcludeRendered: {
+			type: 'boolean',
+			default: false
 		}
 	} );
 
@@ -58,6 +62,7 @@ function withQueryFilters( BlockEdit ) {
 		const { setAttributes, attributes } = props;
 		const cataInheritQuery = attributes.cataInheritQuery ?? false;
 		const cataTermFromRequest = attributes.cataTermFromRequest ?? false;
+		const cataExcludeRendered = attributes.cataExcludeRendered ?? false;
 
 		return (
 			<>
@@ -83,6 +88,17 @@ function withQueryFilters( BlockEdit ) {
 							checked={ cataTermFromRequest }
 							onChange={ (newValue) => {
 								setAttributes( { cataTermFromRequest: newValue } );
+							} }
+							/>
+						</PanelRow>
+						<PanelRow>
+							<ToggleControl
+							__nextHasNoMarginBottom
+							label="Exclude already-shown posts"
+							help="Skip posts a loop above this one already rendered on the same page"
+							checked={ cataExcludeRendered }
+							onChange={ (newValue) => {
+								setAttributes( { cataExcludeRendered: newValue } );
 							} }
 							/>
 						</PanelRow>
