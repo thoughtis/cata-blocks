@@ -243,7 +243,13 @@ function cata_query_filters_exclude_rendered_query_vars( array $query, WP_Block 
 		$query['post__not_in']  = array_values( array_unique( array_merge( $existing, $rendered ) ) );
 	}
 
-	$query['cata_query_filters_register_rendered'] = true;
+	// Only the display loop registers results. Sibling query-builders
+	// (query-no-results, pagination) run CHECK queries with the same vars —
+	// registering those would mark posts as rendered that never displayed,
+	// silently hiding them from every loop below.
+	if ( 'core/post-template' === $block->name ) {
+		$query['cata_query_filters_register_rendered'] = true;
+	}
 
 	return $query;
 }
