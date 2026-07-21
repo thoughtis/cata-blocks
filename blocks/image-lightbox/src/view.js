@@ -18,9 +18,16 @@ const DIRECTION_LOCK = 10;
 // doesn't compete with the active slide image download.
 const OPEN_EVENT_DELAY = 300;
 
-// Galleries belonging to infinitely scrolled articles, keyed by the article
-// element their content images live in.
+// Galleries for articles added after page load, keyed by the element holding
+// the content images that open them.
 const galleries = new Map();
+
+// Every wired gallery, keyed by its block wrapper, so a gallery found in the
+// DOM is recognized rather than wired a second time.
+const regions = new WeakMap();
+
+// The gallery each content image opens, so the lookup runs once per image.
+const triggerGalleries = new WeakMap();
 
 // How many articles have been given a gallery, so each one's ids stay unique.
 let articleCount = 0;
@@ -85,10 +92,7 @@ function onArticleLoad( event ) {
 		region = document.body.appendChild( document.importNode( fetched, true ) );
 	}
 
-	articleCount++;
-	renameIds( region, articleCount );
-
-	const gallery = createGallery( region );
+	const gallery = adoptGallery( region );
 
 	if ( ! gallery ) {
 		return;
@@ -96,6 +100,20 @@ function onArticleLoad( event ) {
 
 	galleries.set( article, gallery );
 	warnWhenUnwired( gallery, article );
+}
+
+/**
+ * Wire a gallery that arrived after the page did.
+ *
+ * @param {HTMLElement} region The gallery's block wrapper.
+ *
+ * @return {Object|null} The gallery, or null when the region has no dialog.
+ */
+function adoptGallery( region ) {
+	articleCount++;
+	renameIds( region, articleCount );
+
+	return createGallery( region );
 }
 
 /**
@@ -175,13 +193,71 @@ function onTriggerWarm( event ) {
  * @return {Object|null} The gallery, or null when the page has none.
  */
 function galleryFor( figure ) {
+	const known = triggerGalleries.get( figure );
+
+	if ( known ) {
+		return known;
+	}
+
+	const gallery =
+		registeredGallery( figure ) ?? nearestGallery( figure ) ?? pageGallery;
+
+	// A content image never changes article, so the answer holds for the rest
+	// of the session.
+	if ( gallery ) {
+		triggerGalleries.set( figure, gallery );
+	}
+
+	return gallery;
+}
+
+/**
+ * Find the gallery an article announced when it loaded.
+ *
+ * @param {HTMLElement} figure The badge wrapper around a content image.
+ *
+ * @return {Object|null} The gallery, or null when no article claims the image.
+ */
+function registeredGallery( figure ) {
 	for ( const [ article, gallery ] of galleries ) {
 		if ( article.contains( figure ) ) {
 			return gallery;
 		}
 	}
 
-	return pageGallery;
+	return null;
+}
+
+/**
+ * Find the gallery for an article that arrived without announcing itself.
+ *
+ * A theme running its own infinite scroll inserts the article with its gallery
+ * already inside it and dispatches no load event, so there is nothing to react
+ * to at insertion. Walking up from the content image finds that gallery the
+ * first time one of the article's images is used, and finds the right one: the
+ * article's own container is reached before any ancestor holding more than one
+ * gallery.
+ *
+ * @param {HTMLElement} figure The badge wrapper around a content image.
+ *
+ * @return {Object|null} The gallery, or null when no ancestor holds one.
+ */
+function nearestGallery( figure ) {
+	let root = figure.parentElement;
+
+	// The body is left out: a gallery found there is the page's own, which is
+	// what the caller falls back to anyway.
+	while ( root && root !== document.body ) {
+		const region = root.querySelector( '.wp-block-cata-image-lightbox' );
+
+		if ( region ) {
+			return regions.get( region ) ?? adoptGallery( region );
+		}
+
+		root = root.parentElement;
+	}
+
+	return null;
 }
 
 /**
@@ -488,11 +564,15 @@ function createGallery( region ) {
 		prev
 	);
 
-	return {
+	const gallery = {
 		open,
 		total: slides.length,
 		warmSlide: ( index ) => warm( images[ index ], 'high' ),
 	};
+
+	regions.set( region, gallery );
+
+	return gallery;
 }
 
 /**
