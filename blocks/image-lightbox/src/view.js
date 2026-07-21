@@ -1,161 +1,10 @@
 /**
  * Image Lightbox — frontend interactivity
+ *
+ * Galleries are wired up here rather than with Interactivity API directives.
+ * Directives only bind while the page hydrates, so an article appended later by
+ * infinite scroll would show its badges but never open anything.
  */
-
-import { store, getContext, getElement } from '@wordpress/interactivity';
-
-// The <dialog> for the current lightbox. Set on init so the manually wired
-// content-image listeners (which live outside the interactive region) can open it.
-let dialog = null;
-
-// Slide <img> elements, ordered to match state.images. Set on init.
-let slideImages = [];
-
-// Slide placeholder <img> elements (tiny blurred preview), ordered to match
-// state.images. Set on init.
-let slidePlaceholders = [];
-
-// Bumped on every open/navigation so a slow decode can't reveal a stale slide.
-let navigation = 0;
-
-// The ad slot's element id, included in event details. Set on init.
-let adContainerId = null;
-
-// Pending timer for the delayed open event; cleared when the dialog closes
-// before it fires.
-let openEventTimer = null;
-
-const { state, actions } = store( 'cata-blocks-image-lightbox', {
-	state: {
-		get hasMultiple() {
-			return state.images.length > 1;
-		},
-		get position() {
-			return `${ state.currentIndex + 1 } / ${ state.images.length }`;
-		},
-	},
-	actions: {
-		open( index, trigger ) {
-			// Warm first so the slide's load is no longer deferred, then paint
-			// the rendition the reader is already looking at while the
-			// full-size candidate downloads.
-			warmAround( index );
-			seedSlide( slideImages[ index ], trigger?.currentSrc );
-			showPlaceholder( index );
-			navigation++;
-			state.currentIndex = index;
-			dialog?.showModal();
-
-			// Delay the open event so the ad request it triggers doesn't
-			// compete with the active slide image download.
-			openEventTimer = setTimeout( () => {
-				openEventTimer = null;
-				dispatchLightboxEvent( 'slideshow:open' );
-			}, 300 );
-		},
-		close() {
-			dialog?.close();
-		},
-		next() {
-			showSlide( ( state.currentIndex + 1 ) % state.images.length );
-		},
-		prev() {
-			showSlide(
-				( state.currentIndex - 1 + state.images.length ) % state.images.length
-			);
-		},
-		onKeydown( event ) {
-			if ( 'ArrowRight' === event.key ) {
-				actions.next();
-			} else if ( 'ArrowLeft' === event.key ) {
-				actions.prev();
-			}
-		},
-		onBackdropClick( event ) {
-			if ( event.target === dialog ) {
-				actions.close();
-			}
-		},
-	},
-	callbacks: {
-		// Bound via data-wp-class--is-active on each slide. Runs when block
-		// loads in browser and again whenever currentIndex changes.
-		isActive() {
-			return getContext().index === state.currentIndex;
-		},
-		// Runs once via data-wp-init when the block loads in browser.
-		// The badges and trigger classes are rendered server-side, so a few
-		// delegated listeners on the content container wire them all.
-		init() {
-			const { ref } = getElement();
-			dialog = ref.querySelector( 'dialog' );
-
-			adContainerId =
-				ref.querySelector( '.wp-block-cata-image-lightbox__ad' )?.id ?? null;
-
-			// The dialog's native close event covers the close button,
-			// backdrop clicks, and Escape.
-			dialog?.addEventListener( 'close', () => {
-				clearTimeout( openEventTimer );
-				openEventTimer = null;
-				dispatchLightboxEvent( 'slideshow:close' );
-			} );
-
-			slideImages = Array.from(
-				ref.querySelectorAll( '.wp-block-cata-image-lightbox__slide' )
-			).map( ( slide ) =>
-				slide.querySelector( '.wp-block-cata-image-lightbox__image' )
-			);
-
-			slidePlaceholders = Array.from(
-				ref.querySelectorAll( '.wp-block-cata-image-lightbox__slide' )
-			).map( ( slide ) =>
-				slide.querySelector( '.wp-block-cata-image-lightbox__placeholder' )
-			);
-
-			const content = document.querySelector( state.contentSelector ) ?? document;
-
-			// Start the slide image downloading as soon as a click looks
-			// likely, so it's warm by the time the lightbox opens.
-			const warmTrigger = ( event ) => {
-				const index = triggerIndex( event.target, ref );
-
-				if ( null !== index ) {
-					warm( slideImages[ index ], 'high' );
-				}
-			};
-			content.addEventListener( 'pointerover', warmTrigger, { passive: true } );
-			content.addEventListener( 'touchstart', warmTrigger, { passive: true } );
-
-			content.addEventListener( 'click', ( event ) => {
-				const index = triggerIndex( event.target, ref );
-
-				if ( null === index ) {
-					return;
-				}
-
-				const figure = event.target.closest( '.cata-image-lightbox-figure' );
-
-				actions.open( index, triggerImage( figure ) );
-			} );
-
-			const triggers = wireDetachedTriggers( ref, content );
-
-			// A matching regression fails silently — slides render but
-			// nothing opens them — so make it observable.
-			if ( state.images.length > 0 && 0 === triggers ) {
-				// eslint-disable-next-line no-console
-				console.warn(
-					`Image Lightbox: ${ state.images.length } slide(s) rendered but no triggers were wired.`
-				);
-			}
-
-			wireSwipeNavigation(
-				ref.querySelector( '.wp-block-cata-image-lightbox__viewport' )
-			);
-		},
-	},
-} );
 
 // Horizontal distance, in pixels, a touch must travel before it counts as a
 // swipe rather than a tap or a vertical scroll.
@@ -164,6 +13,487 @@ const SWIPE_THRESHOLD = 50;
 // Horizontal distance, in pixels, before a gesture commits to being a swipe
 // (vs. a vertical scroll) and starts blocking the page's own touch handling.
 const DIRECTION_LOCK = 10;
+
+// How long the open event waits, in milliseconds, so the ad request it triggers
+// doesn't compete with the active slide image download.
+const OPEN_EVENT_DELAY = 300;
+
+// Galleries belonging to infinitely scrolled articles, keyed by the article
+// element their content images live in.
+const galleries = new Map();
+
+// How many articles have been given a gallery, so each one's ids stay unique.
+let articleCount = 0;
+
+// The gallery that rendered with the page, serving every content image that
+// isn't inside an article added later.
+let pageGallery = null;
+
+wire();
+
+/**
+ * Wire the page's own gallery and listen for the articles infinite scroll adds.
+ *
+ * The badges and trigger classes are rendered server-side, so a few delegated
+ * listeners cover every content image on the page, however it arrived.
+ */
+function wire() {
+	pageGallery = createGallery(
+		document.querySelector( '.wp-block-cata-image-lightbox' )
+	);
+
+	warnWhenUnwired( pageGallery, document );
+
+	document.addEventListener( 'click', onTriggerClick );
+	document.addEventListener( 'pointerover', onTriggerWarm, { passive: true } );
+	document.addEventListener( 'touchstart', onTriggerWarm, { passive: true } );
+	document.addEventListener( 'cata-blocks:infinite-scroll:load', onArticleLoad );
+}
+
+/**
+ * Give an infinitely scrolled article a gallery of its own.
+ *
+ * The lightbox block usually renders outside the infinite scroll wrapper, so
+ * the article arrives with its badges but without its slides; those come from
+ * the fetched document before it is discarded. Its badge indices count from its
+ * own first image, so the article needs a gallery of its own rather than a
+ * place in the page's.
+ *
+ * @param {CustomEvent} event The infinite scroll load event.
+ */
+function onArticleLoad( event ) {
+	const { article, source } = event.detail ?? {};
+
+	if ( ! article || ! source ) {
+		return;
+	}
+
+	let region = article.querySelector( '.wp-block-cata-image-lightbox' );
+
+	if ( ! region ) {
+		const fetched = source.querySelector( '.wp-block-cata-image-lightbox' );
+
+		// An article with too few images renders no gallery, and no badges to
+		// open one with either.
+		if ( ! fetched ) {
+			return;
+		}
+
+		// The gallery goes on the body rather than into the article: it is a
+		// modal, and an empty wrapper in the article's flow would take on the
+		// content area's block spacing.
+		region = document.body.appendChild( document.importNode( fetched, true ) );
+	}
+
+	articleCount++;
+	renameIds( region, articleCount );
+
+	const gallery = createGallery( region );
+
+	if ( ! gallery ) {
+		return;
+	}
+
+	galleries.set( article, gallery );
+	warnWhenUnwired( gallery, article );
+}
+
+/**
+ * Namespace a newly arrived gallery's ids.
+ *
+ * The markup comes from a page where it was the only gallery, so its dialog and
+ * ad container ids repeat the ones already in the document.
+ *
+ * @param {HTMLElement} region The gallery's block wrapper.
+ * @param {number}      suffix Number that makes this article's ids its own.
+ */
+function renameIds( region, suffix ) {
+	region.querySelectorAll( '[id]' ).forEach( ( element ) => {
+		element.id = `${ element.id }-${ suffix }`;
+	} );
+}
+
+/**
+ * Open the gallery a clicked content image belongs to.
+ *
+ * @param {MouseEvent} event A click anywhere on the page.
+ */
+function onTriggerClick( event ) {
+	const figure = event.target.closest?.( '.cata-image-lightbox-figure' );
+
+	if ( ! figure ) {
+		return;
+	}
+
+	const gallery = galleryFor( figure );
+	const index = triggerIndex( figure );
+
+	if ( ! gallery || null === index ) {
+		return;
+	}
+
+	// An index past the end means the image was matched to the wrong article's
+	// gallery, which would otherwise open silently on the wrong slide.
+	if ( index >= gallery.total ) {
+		// eslint-disable-next-line no-console
+		console.warn(
+			`Image Lightbox: a content image asked for slide ${ index + 1 } of ${ gallery.total }.`
+		);
+		return;
+	}
+
+	event.preventDefault();
+	gallery.open( index, triggerImage( figure ) );
+}
+
+/**
+ * Start the slide image downloading as soon as a click looks likely, so it's
+ * warm by the time the lightbox opens.
+ *
+ * @param {Event} event A pointer or touch event anywhere on the page.
+ */
+function onTriggerWarm( event ) {
+	const figure = event.target.closest?.( '.cata-image-lightbox-figure' );
+
+	if ( ! figure ) {
+		return;
+	}
+
+	const gallery = galleryFor( figure );
+	const index = triggerIndex( figure );
+
+	if ( gallery && null !== index ) {
+		gallery.warmSlide( index );
+	}
+}
+
+/**
+ * Find the gallery a content image opens.
+ *
+ * @param {HTMLElement} figure The badge wrapper around a content image.
+ *
+ * @return {Object|null} The gallery, or null when the page has none.
+ */
+function galleryFor( figure ) {
+	for ( const [ article, gallery ] of galleries ) {
+		if ( article.contains( figure ) ) {
+			return gallery;
+		}
+	}
+
+	return pageGallery;
+}
+
+/**
+ * Read the slide index off a content image's badge wrapper.
+ *
+ * @param {HTMLElement} figure The badge wrapper around a content image.
+ *
+ * @return {number|null} The slide index, or null when the wrapper has none.
+ */
+function triggerIndex( figure ) {
+	const index = Number( figure.dataset.cataImageLightboxIndex );
+
+	return Number.isInteger( index ) ? index : null;
+}
+
+/**
+ * A matching regression fails silently — slides render but nothing opens
+ * them — so make it observable.
+ *
+ * @param {Object|null}          gallery The gallery wired for this root.
+ * @param {Document|HTMLElement} root    Where its content images should be.
+ */
+function warnWhenUnwired( gallery, root ) {
+	if ( ! gallery || 0 === gallery.total ) {
+		return;
+	}
+
+	if ( root.querySelector( '.cata-image-lightbox-figure' ) ) {
+		return;
+	}
+
+	// eslint-disable-next-line no-console
+	console.warn(
+		`Image Lightbox: ${ gallery.total } slide(s) rendered but no content images open them.`
+	);
+}
+
+/**
+ * Wire a lightbox region into a working gallery.
+ *
+ * @param {HTMLElement|null} region The block wrapper holding the dialog.
+ *
+ * @return {Object|null} The gallery, or null when the region has no dialog.
+ */
+function createGallery( region ) {
+	const dialog = region?.querySelector(
+		'.wp-block-cata-image-lightbox__dialog'
+	);
+
+	if ( ! dialog ) {
+		return null;
+	}
+
+	const slides = Array.from(
+		region.querySelectorAll( '.wp-block-cata-image-lightbox__slide' )
+	);
+
+	// Slide images and their tiny blurred previews, ordered to match the slides.
+	const images = slides.map( ( slide ) =>
+		slide.querySelector( '.wp-block-cata-image-lightbox__image' )
+	);
+	const placeholders = slides.map( ( slide ) =>
+		slide.querySelector( '.wp-block-cata-image-lightbox__placeholder' )
+	);
+
+	const counter = region.querySelector(
+		'.wp-block-cata-image-lightbox__counter'
+	);
+
+	// The ad slot's element id, included in event details.
+	const adContainerId =
+		region.querySelector( '.wp-block-cata-image-lightbox__ad' )?.id ?? null;
+
+	let currentIndex = 0;
+
+	// Bumped on every open/navigation so a slow decode can't reveal a stale slide.
+	let navigation = 0;
+
+	// Pending timer for the delayed open event; cleared when the dialog closes
+	// before it fires.
+	let openEventTimer = null;
+
+	/**
+	 * Open the gallery on a slide.
+	 *
+	 * @param {number}                index   Slide index to open on.
+	 * @param {HTMLImageElement|null} trigger The content image that was clicked.
+	 */
+	function open( index, trigger ) {
+		// Warm first so the slide's load is no longer deferred, then paint the
+		// rendition the reader is already looking at while the full-size
+		// candidate downloads.
+		warmAround( index );
+		seedSlide( images[ index ], trigger?.currentSrc );
+		showPlaceholder( index );
+		navigation++;
+		show( index );
+		dialog.showModal();
+
+		// Delay the open event so the ad request it triggers doesn't compete
+		// with the active slide image download.
+		openEventTimer = setTimeout( () => {
+			openEventTimer = null;
+			dispatchLightboxEvent( 'slideshow:open' );
+		}, OPEN_EVENT_DELAY );
+	}
+
+	/**
+	 * Close the gallery.
+	 */
+	function close() {
+		dialog.close();
+	}
+
+	/**
+	 * Step forward one slide, wrapping at the end.
+	 */
+	function next() {
+		showSlide( ( currentIndex + 1 ) % slides.length );
+	}
+
+	/**
+	 * Step back one slide, wrapping at the start.
+	 */
+	function prev() {
+		showSlide( ( currentIndex - 1 + slides.length ) % slides.length );
+	}
+
+	/**
+	 * Make a slide the current one.
+	 *
+	 * @param {number} index Slide index.
+	 */
+	function show( index ) {
+		currentIndex = index;
+
+		slides.forEach( ( slide, position ) =>
+			slide.classList.toggle( 'is-active', position === index )
+		);
+
+		if ( counter ) {
+			counter.textContent = `${ index + 1 } / ${ slides.length }`;
+		}
+	}
+
+	/**
+	 * Navigate to a slide, waiting for its image so the outgoing slide stays
+	 * visible until the incoming one can paint — a crossfade, not a blank flash.
+	 *
+	 * @param {number} index Slide index to show.
+	 */
+	async function showSlide( index ) {
+		if ( index === currentIndex ) {
+			return;
+		}
+
+		warmAround( index );
+		showPlaceholder( index );
+
+		const token = ++navigation;
+		const img = images[ index ];
+
+		if ( img && ! img.complete ) {
+			try {
+				await img.decode();
+			} catch ( error ) {
+				// A failed load still switches slides; the alt text shows instead.
+			}
+		}
+
+		// A newer navigation superseded this one while the image was decoding.
+		if ( token !== navigation ) {
+			return;
+		}
+
+		show( index );
+		dispatchLightboxEvent( 'slideshow:slidechange' );
+	}
+
+	/**
+	 * Warm a slide image and its neighbors so next/prev is instant.
+	 *
+	 * @param {number} index Slide index about to be shown.
+	 */
+	function warmAround( index ) {
+		const total = slides.length;
+
+		warm( images[ index ], 'high' );
+
+		if ( total > 1 ) {
+			warm( images[ ( index + 1 ) % total ] );
+			warm( images[ ( index - 1 + total ) % total ] );
+		}
+	}
+
+	/**
+	 * Show a tiny blurred preview behind a slide's image while it loads, so
+	 * navigating to an unloaded slide reveals a soft preview instead of a blank
+	 * gap on a slow connection. Clears itself once the full image is ready.
+	 *
+	 * @param {number} index Slide index.
+	 */
+	function showPlaceholder( index ) {
+		const placeholder = placeholders[ index ];
+		const img = images[ index ];
+
+		if ( ! placeholder || ! img || img.complete ) {
+			return;
+		}
+
+		if ( ! placeholder.src ) {
+			const tiny = tinyPreviewSrc( img.getAttribute( 'src' ) );
+
+			if ( ! tiny ) {
+				return;
+			}
+
+			placeholder.src = tiny;
+		}
+
+		placeholder.classList.add( 'is-visible' );
+
+		img.decode()
+			.catch( () => {} )
+			.finally( () => placeholder.classList.remove( 'is-visible' ) );
+	}
+
+	/**
+	 * Notify outside integrations, such as the ad script, of gallery activity.
+	 *
+	 * Also mirrors the current slide into the URL hash as an ad refresh signal,
+	 * not a deep link. replaceState keeps history.state intact and adds no
+	 * entries, so back-button behavior — including infinite scroll's own
+	 * history entries — is unaffected.
+	 *
+	 * @param {string} name Event name, e.g. 'slideshow:open'.
+	 */
+	function dispatchLightboxEvent( name ) {
+		if ( 'slideshow:close' === name ) {
+			history.replaceState(
+				history.state,
+				'',
+				window.location.pathname + window.location.search
+			);
+		} else {
+			history.replaceState( history.state, '', `#slide-${ currentIndex + 1 }` );
+		}
+
+		document.dispatchEvent(
+			new CustomEvent( name, {
+				detail: {
+					currentIndex,
+					totalSlides: slides.length,
+					galleryId: dialog.id || null,
+					adContainerId,
+				},
+			} )
+		);
+	}
+
+	// The dialog's native close event covers the close button, backdrop clicks,
+	// and Escape.
+	dialog.addEventListener( 'close', () => {
+		clearTimeout( openEventTimer );
+		openEventTimer = null;
+		dispatchLightboxEvent( 'slideshow:close' );
+	} );
+
+	dialog.addEventListener( 'keydown', ( event ) => {
+		if ( 'ArrowRight' === event.key ) {
+			next();
+		} else if ( 'ArrowLeft' === event.key ) {
+			prev();
+		}
+	} );
+
+	// The panel covers the rest of the dialog, so a click that lands on the
+	// dialog itself landed on the backdrop.
+	dialog.addEventListener( 'click', ( event ) => {
+		if ( event.target === dialog ) {
+			close();
+		}
+	} );
+
+	region
+		.querySelector( '.wp-block-cata-image-lightbox__close' )
+		?.addEventListener( 'click', close );
+
+	region
+		.querySelectorAll(
+			'.wp-block-cata-image-lightbox__prev, .wp-block-cata-image-lightbox__navzone--prev'
+		)
+		.forEach( ( element ) => element.addEventListener( 'click', prev ) );
+
+	region
+		.querySelectorAll(
+			'.wp-block-cata-image-lightbox__next, .wp-block-cata-image-lightbox__navzone--next'
+		)
+		.forEach( ( element ) => element.addEventListener( 'click', next ) );
+
+	wireSwipeNavigation(
+		region.querySelector( '.wp-block-cata-image-lightbox__viewport' ),
+		next,
+		prev
+	);
+
+	return {
+		open,
+		total: slides.length,
+		warmSlide: ( index ) => warm( images[ index ], 'high' ),
+	};
+}
 
 /**
  * Wire swipe-to-navigate on the slide viewport.
@@ -179,8 +509,10 @@ const DIRECTION_LOCK = 10;
  * (swipe left = next, swipe right = previous), not text direction.
  *
  * @param {HTMLElement} viewport The slide viewport element.
+ * @param {Function}    next     Step forward one slide.
+ * @param {Function}    prev     Step back one slide.
  */
-function wireSwipeNavigation( viewport ) {
+function wireSwipeNavigation( viewport, next, prev ) {
 	if ( ! viewport ) {
 		return;
 	}
@@ -226,7 +558,7 @@ function wireSwipeNavigation( viewport ) {
 		}
 	} );
 
-	const release = ( event ) => {
+	viewport.addEventListener( 'pointerup', ( event ) => {
 		if ( event.pointerId !== pointerId ) {
 			return;
 		}
@@ -240,68 +572,19 @@ function wireSwipeNavigation( viewport ) {
 		}
 
 		if ( dx < 0 ) {
-			actions.next();
+			next();
 		} else {
-			actions.prev();
+			prev();
 		}
-	};
+	} );
 
-	viewport.addEventListener( 'pointerup', release );
 	viewport.addEventListener( 'pointercancel', () => {
 		pointerId = null;
 	} );
 }
 
 /**
- * Wire badge wrappers that render outside the content container.
- *
- * The featured image's wrapper sits above the content the delegated listeners
- * scan, so it gets its own listeners. Returns the total trigger count, wired
- * here or covered by the delegation.
- *
- * @param {HTMLElement} ref     The block wrapper, so its own markup is skipped.
- * @param {HTMLElement} content The container the delegated listeners cover.
- *
- * @return {number} How many triggers are wired in total.
- */
-function wireDetachedTriggers( ref, content ) {
-	let wired = 0;
-
-	document
-		.querySelectorAll( '.cata-image-lightbox-figure' )
-		.forEach( ( figure ) => {
-			if ( ref.contains( figure ) ) {
-				return;
-			}
-
-			wired++;
-
-			// The delegated listeners already cover the content container.
-			if ( content.contains( figure ) ) {
-				return;
-			}
-
-			const index = Number( figure.dataset.cataImageLightboxIndex );
-
-			if ( ! Number.isInteger( index ) ) {
-				return;
-			}
-
-			const warmSlide = () => warm( slideImages[ index ], 'high' );
-			figure.addEventListener( 'pointerover', warmSlide, { passive: true } );
-			figure.addEventListener( 'touchstart', warmSlide, { passive: true } );
-
-			figure.addEventListener( 'click', ( event ) => {
-				event.preventDefault();
-				actions.open( index, triggerImage( figure ) );
-			} );
-		} );
-
-	return wired;
-}
-
-/**
- * Get the trigger image to seed the target slide from.
+ * Get the content image to seed the target slide from.
  *
  * An excluded image opens the gallery without having a slide of its own, so
  * seeding from it would paint the wrong image; those triggers return null.
@@ -316,26 +599,6 @@ function triggerImage( figure ) {
 	}
 
 	return figure.querySelector( 'img' );
-}
-
-/**
- * Read the slide index from the badge wrapper around an event's target.
- *
- * @param {EventTarget} target Event target inside the content container.
- * @param {HTMLElement} ref    The block wrapper, so its own markup is skipped.
- *
- * @return {number|null} The slide index, or null when the target isn't a trigger.
- */
-function triggerIndex( target, ref ) {
-	const figure = target.closest?.( '.cata-image-lightbox-figure' );
-
-	if ( ! figure || ref.contains( figure ) ) {
-		return null;
-	}
-
-	const index = Number( figure.dataset.cataImageLightboxIndex );
-
-	return Number.isInteger( index ) ? index : null;
 }
 
 /**
@@ -354,22 +617,6 @@ function warm( img, priority = 'auto' ) {
 
 	if ( 'high' === priority ) {
 		img.setAttribute( 'fetchpriority', 'high' );
-	}
-}
-
-/**
- * Warm a slide image and its neighbors so next/prev is instant.
- *
- * @param {number} index Slide index about to be shown.
- */
-function warmAround( index ) {
-	const total = state.images.length;
-
-	warm( slideImages[ index ], 'high' );
-
-	if ( total > 1 ) {
-		warm( slideImages[ ( index + 1 ) % total ] );
-		warm( slideImages[ ( index - 1 + total ) % total ] );
 	}
 }
 
@@ -397,55 +644,11 @@ function seedSlide( img, src ) {
 
 	img.srcset = '';
 	img.src = src;
-	img
-		.decode()
+	img.decode()
 		.catch( () => {} )
 		.finally( () => {
 			img.srcset = srcset;
 		} );
-}
-
-/**
- * Show a tiny blurred preview behind a slide's image while it loads, so
- * navigating to an unloaded slide reveals a soft preview instead of a
- * blank gap on a slow connection. Clears itself once the full image is
- * ready.
- *
- * @param {number} index Slide index.
- */
-function showPlaceholder( index ) {
-	const placeholder = slidePlaceholders[ index ];
-	const img = slideImages[ index ];
-
-	if ( ! placeholder || ! img || img.complete ) {
-		return;
-	}
-
-	if ( ! placeholder.src ) {
-		const tiny = tinyPreviewSrc( img.getAttribute( 'src' ) );
-
-		if ( ! tiny ) {
-			return;
-		}
-
-		placeholder.src = tiny;
-	}
-
-	placeholder.classList.add( 'is-visible' );
-
-	img
-		.decode()
-		.catch( () => {} )
-		.finally( () => hidePlaceholder( index ) );
-}
-
-/**
- * Hide a slide's loading placeholder now that its full image is ready.
- *
- * @param {number} index Slide index.
- */
-function hidePlaceholder( index ) {
-	slidePlaceholders[ index ]?.classList.remove( 'is-visible' );
 }
 
 /**
@@ -469,74 +672,4 @@ function tinyPreviewSrc( src ) {
 	} catch ( error ) {
 		return null;
 	}
-}
-
-/**
- * Make a slide current, waiting for its image so the outgoing slide stays
- * visible until the incoming one can paint — a crossfade, not a blank flash.
- *
- * @param {number} index Slide index to show.
- */
-async function showSlide( index ) {
-	if ( index === state.currentIndex ) {
-		return;
-	}
-
-	warmAround( index );
-	showPlaceholder( index );
-
-	const token = ++navigation;
-	const img = slideImages[ index ];
-
-	if ( img && ! img.complete ) {
-		try {
-			await img.decode();
-		} catch ( error ) {
-			// A failed load still switches slides; the alt text shows instead.
-		}
-	}
-
-	// A newer navigation superseded this one while the image was decoding.
-	if ( token !== navigation ) {
-		return;
-	}
-
-	state.currentIndex = index;
-	dispatchLightboxEvent( 'slideshow:slidechange' );
-}
-
-/**
- * Notify outside integrations, such as the ad script, of lightbox activity.
- *
- * Also mirrors the current slide into the URL hash as an ad refresh signal,
- * not a deep link. replaceState keeps history.state intact and adds no
- * entries, so back-button behavior is unaffected.
- *
- * @param {string} name Event name, e.g. 'slideshow:open'.
- */
-function dispatchLightboxEvent( name ) {
-	if ( 'slideshow:close' === name ) {
-		history.replaceState(
-			history.state,
-			'',
-			window.location.pathname + window.location.search
-		);
-	} else {
-		history.replaceState(
-			history.state,
-			'',
-			`#slide-${ state.currentIndex + 1 }`
-		);
-	}
-
-	document.dispatchEvent(
-		new CustomEvent( name, {
-			detail: {
-				currentIndex: state.currentIndex,
-				totalSlides: state.images.length,
-				galleryId: dialog?.id || null,
-				adContainerId,
-			},
-		} )
-	);
 }

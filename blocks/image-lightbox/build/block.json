@@ -28,7 +28,6 @@
   "supports": {
     "html": false,
     "customClassName": false,
-    "interactivity": true,
     "color": {
       "text": true,
       "background": true,

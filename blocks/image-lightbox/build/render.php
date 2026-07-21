@@ -25,19 +25,7 @@ if ( empty( $images ) ) {
 	return;
 }
 
-wp_interactivity_state(
-	'cata-blocks-image-lightbox',
-	array(
-		'images'          => $images,
-		'currentIndex'    => 0,
-		// Scope for the clickable content images; falls back to the whole
-		// document client-side when no match is found.
-		'contentSelector' => apply_filters(
-			'cata_blocks_image_lightbox_content_selector',
-			'.wp-block-post-content, .entry-content'
-		),
-	)
-);
+$total = count( $images );
 
 // Editor color settings, emitted as the custom properties the styles consume.
 $styles = sprintf(
@@ -54,13 +42,10 @@ if ( in_array( $color_scheme, array( 'light only', 'dark only' ), true ) ) {
 	$styles .= sprintf( ' color-scheme: %s;', $color_scheme );
 }
 
-$wrapper_attributes = get_block_wrapper_attributes(
-	array(
-		'data-wp-interactive' => 'cata-blocks-image-lightbox',
-		'data-wp-init'        => 'callbacks.init',
-		'style'               => $styles,
-	)
-);
+// The gallery is wired up imperatively by the view script rather than with
+// Interactivity API directives: directives only bind while the page hydrates,
+// and an infinitely scrolled article's gallery arrives long after that.
+$wrapper_attributes = get_block_wrapper_attributes( array( 'style' => $styles ) );
 
 // Button contents; filter to swap the defaults for an SVG icon, etc.
 $close_icon = apply_filters( 'cata_blocks_image_lightbox_close_icon', '×' );
@@ -73,25 +58,19 @@ $next_icon  = apply_filters( 'cata_blocks_image_lightbox_next_icon', '→' );
 		class="wp-block-cata-image-lightbox__dialog"
 		id="<?php echo esc_attr( wp_unique_id( 'cata-image-lightbox-' ) ); ?>"
 		aria-label="<?php esc_attr_e( 'Image gallery', 'cata' ); ?>"
-		data-wp-on--keydown="actions.onKeydown"
-		data-wp-on--click="actions.onBackdropClick"
 	>
 		<div class="wp-block-cata-image-lightbox__panel">
 			<button
 				type="button"
 				class="wp-block-cata-image-lightbox__close"
 				aria-label="<?php esc_attr_e( 'Close gallery', 'cata' ); ?>"
-				data-wp-on--click="actions.close"
 			><?php echo $close_icon; ?></button>
 
 			<div class="wp-block-cata-image-lightbox__main">
 				<div class="wp-block-cata-image-lightbox__viewport">
 					<?php foreach ( $images as $index => $image ) : ?>
-						<figure
-							class="wp-block-cata-image-lightbox__slide"
-							data-wp-class--is-active="callbacks.isActive"
-							<?php echo wp_interactivity_data_wp_context( array( 'index' => $index ) ); ?>
-						>
+						<?php // The first slide starts active; the view script moves the class from there. ?>
+						<figure class="wp-block-cata-image-lightbox__slide<?php echo 0 === $index ? ' is-active' : ''; ?>">
 							<div class="wp-block-cata-image-lightbox__placeholder-frame" aria-hidden="true">
 								<img class="wp-block-cata-image-lightbox__placeholder" alt="" />
 							</div>
@@ -108,23 +87,21 @@ $next_icon  = apply_filters( 'cata_blocks_image_lightbox_next_icon', '→' );
 					<?php // Whole-image navigation: the left half of the image steps back, the
 					// right half steps forward. Redundant with the arrow buttons and arrow keys,
 					// so these are mouse-only affordances (aria-hidden, not focusable). ?>
-					<div class="wp-block-cata-image-lightbox__navzone wp-block-cata-image-lightbox__navzone--prev" data-wp-on--click="actions.prev" data-wp-bind--hidden="!state.hasMultiple" aria-hidden="true"></div>
-					<div class="wp-block-cata-image-lightbox__navzone wp-block-cata-image-lightbox__navzone--next" data-wp-on--click="actions.next" data-wp-bind--hidden="!state.hasMultiple" aria-hidden="true"></div>
+					<div class="wp-block-cata-image-lightbox__navzone wp-block-cata-image-lightbox__navzone--prev" aria-hidden="true" <?php echo $total > 1 ? '' : 'hidden'; ?>></div>
+					<div class="wp-block-cata-image-lightbox__navzone wp-block-cata-image-lightbox__navzone--next" aria-hidden="true" <?php echo $total > 1 ? '' : 'hidden'; ?>></div>
 				</div>
 
-				<div class="wp-block-cata-image-lightbox__nav" data-wp-bind--hidden="!state.hasMultiple">
+				<div class="wp-block-cata-image-lightbox__nav" <?php echo $total > 1 ? '' : 'hidden'; ?>>
 					<button
 						type="button"
 						class="wp-block-cata-image-lightbox__prev"
 						aria-label="<?php esc_attr_e( 'Previous image', 'cata' ); ?>"
-						data-wp-on--click="actions.prev"
 					><?php echo $prev_icon; ?></button>
-					<span class="wp-block-cata-image-lightbox__counter" data-wp-text="state.position"></span>
+					<span class="wp-block-cata-image-lightbox__counter"><?php echo esc_html( sprintf( '1 / %d', $total ) ); ?></span>
 					<button
 						type="button"
 						class="wp-block-cata-image-lightbox__next"
 						aria-label="<?php esc_attr_e( 'Next image', 'cata' ); ?>"
-						data-wp-on--click="actions.next"
 					><?php echo $next_icon; ?></button>
 				</div>
 			</div>
