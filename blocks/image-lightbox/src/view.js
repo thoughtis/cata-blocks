@@ -327,6 +327,24 @@ function createGallery( region ) {
 		'.wp-block-cata-image-lightbox__counter'
 	);
 
+	const panel = region.querySelector(
+		'.wp-block-cata-image-lightbox__panel'
+	);
+
+	// Thumbnail strip, keyed by the slide index each thumbnail carries rather
+	// than by position: an image the CDN can't resize renders no thumbnail.
+	const strip = region.querySelector(
+		'.wp-block-cata-image-lightbox__thumbs'
+	);
+	const thumbs = new Map(
+		Array.from(
+			region.querySelectorAll( '.wp-block-cata-image-lightbox__thumb' )
+		).map( ( thumb ) => [
+			Number( thumb.dataset.cataImageLightboxIndex ),
+			thumb,
+		] )
+	);
+
 	// The ad slot's element id, included in event details.
 	const adContainerId =
 		region.querySelector( '.wp-block-cata-image-lightbox__ad' )?.id ?? null;
@@ -339,6 +357,14 @@ function createGallery( region ) {
 	// Pending timer for the delayed open event; cleared when the dialog closes
 	// before it fires.
 	let openEventTimer = null;
+
+	// Whether this gallery owns a history entry pushed on open, so the back
+	// gesture closes the lightbox instead of leaving the article.
+	let historyEntry = false;
+
+	// Where the article stood when the gallery opened, put back once that entry
+	// is unwound.
+	let openScrollY = 0;
 
 	/**
 	 * Open the gallery on a slide.
@@ -355,14 +381,57 @@ function createGallery( region ) {
 		showPlaceholder( index );
 		navigation++;
 		show( index );
+		openScrollY = window.scrollY;
 		dialog.showModal();
+		pushHistoryEntry();
+
+		// showModal() focuses the first focusable element, which is the close
+		// button: an Enter-opener pressing Enter again would close what they
+		// just opened, and the ring would show for mouse and touch readers too.
+		panel?.focus();
+
+		// The strip has no geometry until the dialog is displayed, so the
+		// opening slide's thumbnail is centered here rather than in show().
+		scrollThumbIntoView( index, 'instant' );
 
 		// Delay the open event so the ad request it triggers doesn't compete
 		// with the active slide image download.
 		openEventTimer = setTimeout( () => {
 			openEventTimer = null;
+			setSlideHash();
 			dispatchLightboxEvent( 'slideshow:open' );
 		}, OPEN_EVENT_DELAY );
+	}
+
+	/**
+	 * Push a history entry the back gesture can pop to close the gallery.
+	 *
+	 * Without one, iOS Safari's back swipe leaves the article entirely while
+	 * the lightbox is open. Browsers with CloseWatcher already treat a back
+	 * gesture as a close request and dismiss the dialog themselves, so adding
+	 * an entry there would cost those readers a second back press to leave.
+	 */
+	function pushHistoryEntry() {
+		if ( 'CloseWatcher' in window ) {
+			return;
+		}
+
+		// Carry the existing state forward so infinite scroll's own title and
+		// article index survive on the entry this one sits above.
+		window.history.pushState( { ...window.history.state }, '' );
+		historyEntry = true;
+	}
+
+	/**
+	 * Put the article back where it stood before the gallery opened.
+	 *
+	 * Unwinding the pushed entry hands infinite scroll a popstate of its own,
+	 * which it answers by scrolling that article to the top of the viewport —
+	 * so closing the gallery would otherwise lose the reader's place. Deferred
+	 * a frame so it lands after every popstate listener has had its turn.
+	 */
+	function restoreScroll() {
+		window.requestAnimationFrame( () => window.scrollTo( 0, openScrollY ) );
 	}
 
 	/**
@@ -401,6 +470,69 @@ function createGallery( region ) {
 		if ( counter ) {
 			counter.textContent = `${ index + 1 } / ${ slides.length }`;
 		}
+
+		markThumb( index );
+		scrollThumbIntoView( index );
+	}
+
+	/**
+	 * Move the strip's marker and its single tab stop to a thumbnail.
+	 *
+	 * @param {number} index Slide index.
+	 */
+	function markThumb( index ) {
+		// Arrowing through slides while a thumbnail has focus would otherwise
+		// drop that focus as its tab stop moves away.
+		const focused = strip?.contains( dialog.ownerDocument.activeElement );
+
+		thumbs.forEach( ( thumb, position ) => {
+			const active = position === index;
+
+			thumb.classList.toggle( 'is-active', active );
+			thumb.tabIndex = active ? 0 : -1;
+
+			if ( active ) {
+				thumb.setAttribute( 'aria-current', 'true' );
+			} else {
+				thumb.removeAttribute( 'aria-current' );
+			}
+		} );
+
+		if ( focused ) {
+			// The scroll is ours to do; the browser's would move the panel too.
+			thumbs.get( index )?.focus( { preventScroll: true } );
+		}
+	}
+
+	/**
+	 * Center a thumbnail in the strip, scrolling the strip alone.
+	 *
+	 * @param {number} index    Slide index.
+	 * @param {string} behavior Scroll behavior. The default defers to the
+	 *                          stylesheet, which eases only when the reader
+	 *                          hasn't asked for reduced motion; pass 'instant'
+	 *                          to jump regardless.
+	 */
+	function scrollThumbIntoView( index, behavior = 'auto' ) {
+		const thumb = thumbs.get( index );
+
+		if ( ! strip || ! thumb ) {
+			return;
+		}
+
+		// Scrolled by a measured delta rather than to an absolute offset: where
+		// scrollLeft reads zero depends on the writing direction, but the
+		// distance between two boxes doesn't.
+		const thumbBox = thumb.getBoundingClientRect();
+		const stripBox = strip.getBoundingClientRect();
+
+		strip.scrollBy( {
+			left:
+				thumbBox.left -
+				stripBox.left -
+				( stripBox.width - thumbBox.width ) / 2,
+			behavior,
+		} );
 	}
 
 	/**
@@ -434,6 +566,7 @@ function createGallery( region ) {
 		}
 
 		show( index );
+		setSlideHash();
 		dispatchLightboxEvent( 'slideshow:slidechange' );
 	}
 
@@ -486,26 +619,36 @@ function createGallery( region ) {
 	}
 
 	/**
+	 * Mirror the current slide into the URL hash as an ad refresh signal, not a
+	 * deep link. replaceState keeps history.state intact and adds no entries, so
+	 * it leaves both the entry pushed on open and infinite scroll's own entries
+	 * alone.
+	 */
+	function setSlideHash() {
+		window.history.replaceState(
+			window.history.state,
+			'',
+			`#slide-${ currentIndex + 1 }`
+		);
+	}
+
+	/**
+	 * Drop the slide hash, restoring the article's own URL.
+	 */
+	function clearSlideHash() {
+		window.history.replaceState(
+			window.history.state,
+			'',
+			window.location.pathname + window.location.search
+		);
+	}
+
+	/**
 	 * Notify outside integrations, such as the ad script, of gallery activity.
-	 *
-	 * Also mirrors the current slide into the URL hash as an ad refresh signal,
-	 * not a deep link. replaceState keeps history.state intact and adds no
-	 * entries, so back-button behavior — including infinite scroll's own
-	 * history entries — is unaffected.
 	 *
 	 * @param {string} name Event name, e.g. 'slideshow:open'.
 	 */
 	function dispatchLightboxEvent( name ) {
-		if ( 'slideshow:close' === name ) {
-			history.replaceState(
-				history.state,
-				'',
-				window.location.pathname + window.location.search
-			);
-		} else {
-			history.replaceState( history.state, '', `#slide-${ currentIndex + 1 }` );
-		}
-
 		document.dispatchEvent(
 			new CustomEvent( name, {
 				detail: {
@@ -523,7 +666,35 @@ function createGallery( region ) {
 	dialog.addEventListener( 'close', () => {
 		clearTimeout( openEventTimer );
 		openEventTimer = null;
+
+		if ( historyEntry ) {
+			// Unwind the entry pushed on open, which also restores the URL the
+			// article had before the hash started tracking the slide.
+			historyEntry = false;
+			window.history.back();
+			restoreScroll();
+		} else {
+			clearSlideHash();
+		}
+
 		dispatchLightboxEvent( 'slideshow:close' );
+	} );
+
+	// The back gesture pops the entry open() pushed; close the gallery rather
+	// than let the reader leave the article. Closing any other way clears the
+	// flag first, so the popstate that follows history.back() is a no-op.
+	window.addEventListener( 'popstate', () => {
+		if ( ! historyEntry ) {
+			return;
+		}
+
+		historyEntry = false;
+
+		if ( dialog.open ) {
+			dialog.close();
+		}
+
+		restoreScroll();
 	} );
 
 	dialog.addEventListener( 'keydown', ( event ) => {
@@ -557,6 +728,17 @@ function createGallery( region ) {
 			'.wp-block-cata-image-lightbox__next, .wp-block-cata-image-lightbox__navzone--next'
 		)
 		.forEach( ( element ) => element.addEventListener( 'click', next ) );
+
+	// Delegated so the strip stays one listener however many photos it holds.
+	strip?.addEventListener( 'click', ( event ) => {
+		const thumb = event.target.closest(
+			'.wp-block-cata-image-lightbox__thumb'
+		);
+
+		if ( thumb ) {
+			showSlide( Number( thumb.dataset.cataImageLightboxIndex ) );
+		}
+	} );
 
 	wireSwipeNavigation(
 		region.querySelector( '.wp-block-cata-image-lightbox__viewport' ),
