@@ -131,8 +131,9 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 	background-color: var( --cata-image-lightbox-background, light-dark( #ffffff, #1a1a1a ) );
 	color: var( --cata-image-lightbox-text, light-dark( #1a1a1a, #ffffff ) );
 	border-radius: 4px;
-	// Add fixed padding to top so close button doesn't overlap image
-	padding-block-start: 3rem;
+	// Add fixed padding to top so close button doesn't overlap image; matches
+	// the close button's 0.25rem inset plus its height.
+	padding-block-start: 3.5rem;
 
 	// The open action focuses the panel so no button starts out focused; that
 	// focus is programmatic, never the reader's, so it shows no ring.
@@ -357,16 +358,17 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 	line-height: 1;
 }
 
-// 2.75rem square clears the ~44px touch target minimum; the panel's top
-// padding is sized to keep it off the image.
+// Well past the ~44px touch target minimum, and the one control a reader
+// reaches for in a hurry. The panel's top padding is sized to keep it off the
+// image.
 .wp-block-cata-image-lightbox__close {
 	position: absolute;
 	z-index: 1;
 	top: 0.25rem;
 	right: 0.25rem;
-	width: 2.75rem;
-	height: 2.75rem;
-	font-size: 2.25rem;
+	width: 3.25rem;
+	height: 3.25rem;
+	font-size: 2.75rem;
 }
 
 // Wide enough to aim at on a phone and heavy enough to read as the gallery's
@@ -391,11 +393,16 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 	flex: 0 0 auto;
 	gap: 0.5rem;
 	padding-block-start: 0.75rem;
-	// Room for the current thumbnail's ring and a focus outline, which a
-	// scroll container would otherwise clip at its edges.
-	padding-block-end: 2px;
-	padding-inline: 2px;
+	// Slack for the horizontal scrollbar, which is laid inside the padding box
+	// and would otherwise eat into the thumbnails now that the vertical axis
+	// clips rather than scrolls.
+	padding-block-end: 0.75rem;
 	overflow-x: auto;
+	// `overflow-x: auto` computes `overflow-y` to `auto` as well, so anything a
+	// thumbnail paints outside its border box — the current-slide ring, a focus
+	// outline — becomes something the strip can scroll down to. Both rings are
+	// drawn inside the thumbnail for that reason; this is the backstop.
+	overflow-y: hidden;
 	// Swiping the strip past its end shouldn't move anything behind it.
 	overscroll-behavior-x: contain;
 	scrollbar-width: thin;
@@ -414,6 +421,7 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 }
 
 .wp-block-cata-image-lightbox__thumb {
+	position: relative;
 	flex: 0 0 auto;
 	width: 4.5rem;
 	height: 3.25rem;
@@ -431,12 +439,26 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 		opacity: 1;
 	}
 
-	// Ring rather than an outline, so the keyboard focus outline stays legible
-	// on top of it.
+	// Pulled inside the button so the strip, a scroll container on both axes,
+	// has nothing to scroll to.
+	&:focus-visible {
+		outline-offset: -2px;
+	}
+
 	&.is-active {
 		opacity: 1;
-		box-shadow: 0 0 0 2px currentColor;
 	}
+}
+
+// Ring on the current thumbnail, drawn inside the button and over the image:
+// an outward box-shadow would sit outside the border box, which the strip
+// counts as scrollable overflow.
+.wp-block-cata-image-lightbox__thumb.is-active::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border: 2px solid currentColor;
+	border-radius: 2px;
 }
 
 .wp-block-cata-image-lightbox__thumb-image {
