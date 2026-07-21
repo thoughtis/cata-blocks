@@ -115,6 +115,21 @@ async function doInfiniteScroll( url, beaconElement ) {
 
 	element.dataset.cataInfiniteScroll = createPageIndex();
 
+	/**
+	 * Announce the new article, along with the document it came from.
+	 *
+	 * Only the infinite scroll element is inserted, so anything a block needs
+	 * from elsewhere on the fetched page — markup that renders outside this
+	 * wrapper, for instance — has to be taken from the document before it is
+	 * discarded.
+	 */
+
+	document.dispatchEvent(
+		new CustomEvent( 'cata-blocks:infinite-scroll:load', {
+			detail: { article: element, source: doc, url },
+		} )
+	);
+
 	// Change title early, before pushstate in hopes Google Analytics sees correct title.
 	window.document.title = getTitle( doc );
 
