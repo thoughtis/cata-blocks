@@ -474,6 +474,73 @@ function cata_image_lightbox_caption( string $inner_html ): string {
 }
 
 /**
+ * Base source
+ *
+ * The URL to build renditions from: the attachment's original when the image is
+ * one, the collected source otherwise.
+ *
+ * @param array $image
+ *
+ * @return string
+ */
+function cata_image_lightbox_base_src( array $image ): string {
+
+	if ( $image['id'] ) {
+		$full = wp_get_attachment_image_url( $image['id'], 'full' );
+
+		if ( false !== $full ) {
+			return $full;
+		}
+	}
+
+	return $image['src'];
+}
+
+/**
+ * Alt text
+ *
+ * The alt written in the post content wins, but an image published without one
+ * shouldn't lose the alt stored on its attachment.
+ *
+ * @param array $image
+ *
+ * @return string
+ */
+function cata_image_lightbox_alt( array $image ): string {
+
+	if ( '' !== $image['alt'] ) {
+		return $image['alt'];
+	}
+
+	if ( 0 === $image['id'] ) {
+		return '';
+	}
+
+	return (string) get_post_meta( $image['id'], '_wp_attachment_image_alt', true );
+}
+
+/**
+ * Thumbnail URL
+ *
+ * Source for a strip thumbnail, requested at twice the rendered box width so it
+ * stays sharp on a retina screen.
+ *
+ * @param array $image
+ *
+ * @return string
+ */
+function cata_image_lightbox_thumb_url( array $image ): string {
+
+	$base = cata_image_lightbox_base_src( $image );
+
+	if ( '' === $base ) {
+		return '';
+	}
+
+	return cata_image_lightbox_sized_url( $base, 144 );
+}
+
+/**
  * Image HTML
  *
  * Build the <img> for a slide. Attachment images get a srcset so the browser
@@ -493,16 +560,10 @@ function cata_image_lightbox_image_html( array $image ): string {
 
 	// Resolve the full-size source and the original width so srcset candidates
 	// never claim to be wider than the image the CDN can actually deliver.
-	$base     = $image['src'];
+	$base     = cata_image_lightbox_base_src( $image );
 	$original = 0;
 
 	if ( $image['id'] ) {
-		$full = wp_get_attachment_image_url( $image['id'], 'full' );
-
-		if ( false !== $full ) {
-			$base = $full;
-		}
-
 		$meta = wp_get_attachment_metadata( $image['id'] );
 
 		if ( is_array( $meta ) && ! empty( $meta['width'] ) ) {
@@ -514,6 +575,7 @@ function cata_image_lightbox_image_html( array $image ): string {
 		return '';
 	}
 
+	$alt    = cata_image_lightbox_alt( $image );
 	$srcset = cata_image_lightbox_srcset( $base, $original );
 
 	// No resizable candidates (e.g. a source the CDN can't resize): serve the
@@ -522,7 +584,7 @@ function cata_image_lightbox_image_html( array $image ): string {
 		return sprintf(
 			'<img class="wp-block-cata-image-lightbox__image" src="%s" alt="%s" loading="lazy" decoding="async" />',
 			esc_url( $image['src'] ),
-			esc_attr( $image['alt'] )
+			esc_attr( $alt )
 		);
 	}
 
@@ -531,7 +593,7 @@ function cata_image_lightbox_image_html( array $image ): string {
 		esc_url( cata_image_lightbox_sized_url( $base, 1280 ) ),
 		esc_attr( $srcset ),
 		esc_attr( $sizes ),
-		esc_attr( $image['alt'] )
+		esc_attr( $alt )
 	);
 }
 

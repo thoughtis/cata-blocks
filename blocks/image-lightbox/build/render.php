@@ -51,6 +51,9 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'style' => $styles ) 
 $close_icon = apply_filters( 'cata_blocks_image_lightbox_close_icon', '×' );
 $prev_icon  = apply_filters( 'cata_blocks_image_lightbox_prev_icon', '←' );
 $next_icon  = apply_filters( 'cata_blocks_image_lightbox_next_icon', '→' );
+
+// Strip of thumbnails below the photo; filter to false for a bare gallery.
+$show_thumbs = apply_filters( 'cata_blocks_image_lightbox_show_thumbnails', true );
 ?>
 
 <div <?php echo $wrapper_attributes; ?>>
@@ -59,7 +62,10 @@ $next_icon  = apply_filters( 'cata_blocks_image_lightbox_next_icon', '→' );
 		id="<?php echo esc_attr( wp_unique_id( 'cata-image-lightbox-' ) ); ?>"
 		aria-label="<?php esc_attr_e( 'Image gallery', 'cata' ); ?>"
 	>
-		<div class="wp-block-cata-image-lightbox__panel">
+		<?php // Focus target for the open action: focusing the panel rather than a
+		// button means an Enter-opener can't immediately Enter again to close, and
+		// no focus ring shows until the reader actually tabs. ?>
+		<div class="wp-block-cata-image-lightbox__panel" tabindex="-1">
 			<button
 				type="button"
 				class="wp-block-cata-image-lightbox__close"
@@ -97,13 +103,39 @@ $next_icon  = apply_filters( 'cata_blocks_image_lightbox_next_icon', '→' );
 						class="wp-block-cata-image-lightbox__prev"
 						aria-label="<?php esc_attr_e( 'Previous image', 'cata' ); ?>"
 					><?php echo $prev_icon; ?></button>
-					<span class="wp-block-cata-image-lightbox__counter"><?php echo esc_html( sprintf( '1 / %d', $total ) ); ?></span>
+					<?php // Live region so navigating announces the new position; the buttons
+					// themselves keep the same labels slide to slide. ?>
+					<span class="wp-block-cata-image-lightbox__counter" role="status"><?php echo esc_html( sprintf( '1 / %d', $total ) ); ?></span>
 					<button
 						type="button"
 						class="wp-block-cata-image-lightbox__next"
 						aria-label="<?php esc_attr_e( 'Next image', 'cata' ); ?>"
 					><?php echo $next_icon; ?></button>
 				</div>
+
+				<?php if ( $show_thumbs ) : ?>
+					<?php // Roving tabindex: only the current thumbnail is a tab stop, so a
+					// 30 photo gallery doesn't put 30 stops between the reader and the end
+					// of the dialog. The view script moves it along with the slide. ?>
+					<div class="wp-block-cata-image-lightbox__thumbs" <?php echo $total > 1 ? '' : 'hidden'; ?>>
+						<?php foreach ( $images as $index => $image ) : ?>
+							<?php $thumb_url = cata_image_lightbox_thumb_url( $image ); ?>
+							<?php if ( '' !== $thumb_url ) : ?>
+								<button
+									type="button"
+									class="wp-block-cata-image-lightbox__thumb<?php echo 0 === $index ? ' is-active' : ''; ?>"
+									data-cata-image-lightbox-index="<?php echo esc_attr( $index ); ?>"
+									tabindex="<?php echo 0 === $index ? '0' : '-1'; ?>"
+									<?php echo 0 === $index ? 'aria-current="true"' : ''; ?>
+									aria-label="<?php echo esc_attr( sprintf( /* translators: 1: slide number, 2: total slides */ __( 'Go to image %1$d of %2$d', 'cata' ), $index + 1, $total ) ); ?>"
+								><?php // Lazy: a closed dialog gives its thumbnails no geometry, so a
+								// 30 photo gallery fires nothing until it opens and then only for the
+								// part of the strip the reader has scrolled to. Empty alt because the
+								// button around it is already labeled. ?><img class="wp-block-cata-image-lightbox__thumb-image" src="<?php echo esc_url( $thumb_url ); ?>" alt="" loading="lazy" decoding="async" /></button>
+							<?php endif; ?>
+						<?php endforeach; ?>
+					</div>
+				<?php endif; ?>
 			</div>
 
 			<?php if ( apply_filters( 'cata_blocks_image_lightbox_show_ad', true ) ) : ?>

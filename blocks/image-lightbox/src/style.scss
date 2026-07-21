@@ -132,7 +132,13 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 	color: var( --cata-image-lightbox-text, light-dark( #1a1a1a, #ffffff ) );
 	border-radius: 4px;
 	// Add fixed padding to top so close button doesn't overlap image
-	padding-block-start: 2.5rem;
+	padding-block-start: 3rem;
+
+	// The open action focuses the panel so no button starts out focused; that
+	// focus is programmatic, never the reader's, so it shows no ring.
+	&:focus {
+		outline: none;
+	}
 }
 
 .wp-block-cata-image-lightbox__main {
@@ -241,6 +247,9 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 	gap: 0.75rem;
 	margin: 0;
 	overflow-y: auto;
+	// A slide scrolled to its limit shouldn't hand the rest of the gesture to
+	// the page behind the dialog.
+	overscroll-behavior: contain;
 	opacity: 0;
 
 	&.is-active {
@@ -348,25 +357,109 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 	line-height: 1;
 }
 
+// 2.75rem square clears the ~44px touch target minimum; the panel's top
+// padding is sized to keep it off the image.
 .wp-block-cata-image-lightbox__close {
 	position: absolute;
 	z-index: 1;
-	top: 0.5rem;
-	right: 0.5rem;
-	width: 2rem;
-	height: 2rem;
-	font-size: 2rem;
+	top: 0.25rem;
+	right: 0.25rem;
+	width: 2.75rem;
+	height: 2.75rem;
+	font-size: 2.25rem;
 }
 
+// Wide enough to aim at on a phone and heavy enough to read as the gallery's
+// primary controls rather than incidental text.
 .wp-block-cata-image-lightbox__prev,
 .wp-block-cata-image-lightbox__next {
-	width: 3rem;
-	height: 2rem;
-	font-size: 1.5rem;
+	width: 3.5rem;
+	height: 3rem;
+	font-size: 2.25rem;
 }
 
 .wp-block-cata-image-lightbox__counter {
 	min-width: 4ch;
 	font-size: 0.875rem;
 	text-align: center;
+}
+
+// Strip of every slide in the gallery, below the nav row. Scrolls on its own
+// so a long gallery never grows the panel.
+.wp-block-cata-image-lightbox__thumbs {
+	display: flex;
+	flex: 0 0 auto;
+	gap: 0.5rem;
+	padding-block-start: 0.75rem;
+	// Room for the current thumbnail's ring and a focus outline, which a
+	// scroll container would otherwise clip at its edges.
+	padding-block-end: 2px;
+	padding-inline: 2px;
+	overflow-x: auto;
+	// Swiping the strip past its end shouldn't move anything behind it.
+	overscroll-behavior-x: contain;
+	scrollbar-width: thin;
+
+	&[hidden] {
+		display: none;
+	}
+}
+
+// Ease the strip to the current thumbnail. The view script scrolls without an
+// explicit behavior, which defers to this.
+@media ( prefers-reduced-motion: no-preference ) {
+	.wp-block-cata-image-lightbox__thumbs {
+		scroll-behavior: smooth;
+	}
+}
+
+.wp-block-cata-image-lightbox__thumb {
+	flex: 0 0 auto;
+	width: 4.5rem;
+	height: 3.25rem;
+	padding: 0;
+	background-color: transparent;
+	border: none;
+	border-radius: 2px;
+	cursor: pointer;
+	// Dim the rest of the gallery so the current slide reads at a glance.
+	opacity: 0.5;
+	transition: opacity 150ms ease;
+
+	&:hover,
+	&:focus-visible {
+		opacity: 1;
+	}
+
+	// Ring rather than an outline, so the keyboard focus outline stays legible
+	// on top of it.
+	&.is-active {
+		opacity: 1;
+		box-shadow: 0 0 0 2px currentColor;
+	}
+}
+
+.wp-block-cata-image-lightbox__thumb-image {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 2px;
+}
+
+// Phones have the least room to give: shrink the strip rather than take the
+// height out of the photo.
+@media ( width < 600px ) {
+	.wp-block-cata-image-lightbox__thumb {
+		width: 3.25rem;
+		height: 2.5rem;
+	}
+}
+
+// A landscape phone has almost no height to start with; the nav row and swipe
+// are enough there.
+@media ( height < 500px ) {
+	.wp-block-cata-image-lightbox__thumbs {
+		display: none;
+	}
 }
