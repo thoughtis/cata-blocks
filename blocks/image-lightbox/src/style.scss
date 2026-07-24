@@ -91,18 +91,13 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 	overflow: hidden;
 }
 
-// Layout sizes a theme can retune, declared here rather than inline in
-// render.php so a theme stylesheet can win. Everything below is expressed
-// against the panel, so overriding one size keeps the rest in proportion.
+// Theme overridable sizes. Kept here not inline in render.php so a stylesheet can win.
 .wp-block-cata-image-lightbox {
 	--cata-image-lightbox-backdrop-gap: 2.5dvh;
 	--cata-image-lightbox-panel-inline-size: min( 95%, 96rem );
 	--cata-image-lightbox-panel-block-size: min( 95dvh, 66rem );
 	--cata-image-lightbox-row-gap: 1.5rem;
-	// Floor for the photo, so a small phone scrolls the dialog rather than
-	// squeezing the gallery down to a strip.
 	--cata-image-lightbox-gallery-block-size: min( 30dvh, 15rem );
-	// Bounded by the narrowest and widest creatives the slot is filled with.
 	--cata-image-lightbox-ad-inline-size: clamp( 18.75rem, 24%, 21rem );
 	--cata-image-lightbox-ad-block-size: calc( var( --cata-image-lightbox-panel-block-size ) * 0.36 );
 }
@@ -111,24 +106,19 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 .wp-block-cata-image-lightbox__dialog {
 	box-sizing: border-box;
 	width: 100%;
-	// A percentage measures the large viewport, which on a phone runs behind
-	// the address bar and clips the centred panel.
+	// dvh not % so mobile browser chrome does not clip the panel.
 	block-size: 100dvh;
 	max-width: 100%;
-	// Overrides the UA's `dialog:modal` cap, which is 6px and 2em short of the
-	// viewport and would leave the dialog scrolling its own padding.
+	// Beats the UA dialog:modal cap that would otherwise scroll the padding away.
 	max-block-size: 100dvh;
 	margin: 0;
-	// Keeps the backdrop showing above and below the panel once it outgrows
-	// the screen. The scroll padding stops the open action, which focuses the
-	// panel, from scrolling that gap away.
+	// Backdrop gap above and below. scroll-padding keeps focus-on-open from eating it.
 	padding: 0;
 	padding-block: var( --cata-image-lightbox-backdrop-gap );
 	scroll-padding-block: var( --cata-image-lightbox-backdrop-gap );
 	border: none;
 	background-color: transparent;
-	// A panel taller than the screen scrolls here rather than inside any one
-	// of its boxes, so a tall creative reads as more page, not a stuck widget.
+	// A tall panel scrolls here, not inside any inner box.
 	overflow: hidden auto;
 	// Keep scrolling inside the dialog from chaining to the page.
 	overscroll-behavior: contain;
@@ -154,14 +144,11 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 	// At least 1rem so the ad never sits flush against the slider.
 	column-gap: clamp( 1rem, 2%, 1.5rem );
 	row-gap: var( --cata-image-lightbox-row-gap );
-	// Centres the ad on its own row once it wraps below the slider.
 	justify-content: center;
 	box-sizing: border-box;
 	width: var( --cata-image-lightbox-panel-inline-size );
-	// Grows past the screen when the content needs it, which the dialog then
-	// scrolls. Auto margins centre it and collapse to zero once it overflows,
-	// where centring would put the top out of scroll reach.
 	min-block-size: var( --cata-image-lightbox-panel-block-size );
+	// Auto margins center the panel but collapse on overflow so the top stays reachable.
 	margin-block: auto;
 	padding: clamp( 1rem, 3%, 2.5rem );
 	background-color: var( --cata-image-lightbox-background, light-dark( #ffffff, #1a1a1a ) );
@@ -182,28 +169,16 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 	display: flex;
 	flex: 1 1 auto;
 	flex-direction: column;
-	// Wrap point measured on both axes, so a short landscape viewport (a phone
-	// at 844×390) keeps the ad beside the slider rather than stacking the two
-	// into slivers.
+	// Both axes, so a short landscape phone keeps the ad beside the gallery.
 	min-inline-size: min( 55dvh, 37.5rem, 100% );
-	// Wrapped flex lines split the leftover height evenly, which strands dead
-	// space under the ad. Claim everything the ad row doesn't so the slider
-	// stretches instead. The 6rem covers the panel padding; under counting it
-	// leaves slack the rows absorb, over counting it scrolls the dialog with
-	// nothing to show. Side by side this is a no-op: the single line already
-	// spans the full panel height.
+	// 6rem is the panel padding. Reserves the rest of the panel for the ad row.
 	min-block-size: calc( var( --cata-image-lightbox-panel-block-size ) - 6rem - var( --cata-image-lightbox-ad-block-size ) - var( --cata-image-lightbox-row-gap ) );
 }
 
-// Slot for an ad alongside the gallery; an ad is inserted into this element.
-// Sits beside the gallery on wide viewports and below it on narrow ones, and
-// is reserved up front so injection doesn't reflow the panel and shift the nav
-// controls. The box scales with the panel rather than holding a 300×250, so a
-// taller creative can be served where there is room for one; a creative taller
-// still grows the panel and scrolls the dialog.
+// Ad slot beside the gallery, wrapping below on a narrow panel. Scales with
+// the panel instead of holding a fixed 300x250.
 .wp-block-cata-image-lightbox__ad {
-	// Grid keeps a tall creative at its own height. A flex column would squash
-	// it to fit the box instead.
+	// Grid so a tall creative keeps its height instead of being squashed.
 	display: grid;
 	flex: 1 0 min( 18.75rem, 100% );
 	align-content: start;
@@ -261,8 +236,6 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 	display: none;
 	flex-direction: column;
 	align-items: center;
-	// The image is capped to the gallery height, so a slide never overflows
-	// and the dialog handles any panel overflow itself.
 	justify-content: center;
 	gap: 0.75rem;
 	margin: 0;
@@ -297,9 +270,7 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 .wp-block-cata-image-lightbox__image {
 	width: auto;
 	height: auto;
-	// Shrink to whatever the slide gives it. A floor here overflows the slide
-	// on a short gallery, and the scrollbar that produces sits under the
-	// navzones where no drag can reach it.
+	// No floor. A floor overflows a short slide and the scrollbar hides under the navzones.
 	min-block-size: 0;
 	max-width: 100%;
 	max-height: 100%;
