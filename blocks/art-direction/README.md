@@ -37,18 +37,24 @@ responses pay nothing.
 
 Three Query Loops replace the hand-maintained homepage hero markup. Each
 shows the Nth newest pinned post ("Only pinned posts" + offset); the first
-uses the query-filters pinned fallback so the top of the page is never empty.
-Title and date styling belong to the theme pattern, not the block.
+carries a `core/query-no-results` block so the top of the page is never empty
+when nothing is pinned. Title and date styling belong to the theme pattern,
+not the block.
 
 ```html
-<!-- wp:query {"query":{"perPage":1,"offset":0,"postType":"post","order":"desc","orderBy":"date","sticky":"only","inherit":false},"cataPinnedFallback":true,"cataPinnedFallbackCategories":[603230776,603203627,603230771,603230990,603230991],"align":"wide"} -->
+<!-- wp:query {"query":{"perPage":1,"offset":0,"postType":"post","order":"desc","orderBy":"date","sticky":"only","inherit":false},"align":"wide"} -->
 <div class="wp-block-query alignwide"><!-- wp:post-template -->
 <!-- wp:cata/art-direction {"layout":"auto"} /-->
 <!-- wp:post-title {"isLink":true,"level":3} /-->
 <!-- wp:cata/fresh-post-dot -->
 <!-- wp:post-date {"format":"human-diff","isLink":false} /-->
 <!-- /wp:cata/fresh-post-dot -->
-<!-- /wp:post-template --></div>
+<!-- /wp:post-template -->
+<!-- wp:query-no-results -->
+<!-- wp:paragraph -->
+<p>Fallback content shown when no posts are pinned.</p>
+<!-- /wp:paragraph -->
+<!-- /wp:query-no-results --></div>
 <!-- /wp:query -->
 
 <!-- wp:query {"query":{"perPage":1,"offset":1,"postType":"post","order":"desc","orderBy":"date","sticky":"only","inherit":false},"align":"wide"} -->
