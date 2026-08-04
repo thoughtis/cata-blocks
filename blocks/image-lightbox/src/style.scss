@@ -378,6 +378,11 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 .wp-block-cata-image-lightbox__thumbs {
 	display: flex;
 	flex: 0 0 auto;
+	// Keep the strip's content out of the panel's intrinsic sizing: without
+	// this, a long gallery widens the main column's flex base and wraps the ad
+	// below the slider. The strip still stretches to the column's width and
+	// scrolls the rest.
+	contain: inline-size;
 	gap: 0.5rem;
 	padding-block-start: 0.75rem;
 	// Slack for the horizontal scrollbar, which is laid inside the padding box
