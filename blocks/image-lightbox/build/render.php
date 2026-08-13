@@ -45,7 +45,15 @@ if ( in_array( $color_scheme, array( 'light only', 'dark only' ), true ) ) {
 // The gallery is wired up imperatively by the view script rather than with
 // Interactivity API directives: directives only bind while the page hydrates,
 // and an infinitely scrolled article's gallery arrives long after that.
-$wrapper_attributes = get_block_wrapper_attributes( array( 'style' => $styles ) );
+// The data attributes carry translated strings for the phone ad break the
+// view script builds client-side.
+$wrapper_attributes = get_block_wrapper_attributes(
+	array(
+		'style'                => $styles,
+		'data-cata-ad-label'   => __( 'Advertisement', 'cata' ),
+		'data-cata-ad-counter' => __( 'Ad', 'cata' ),
+	)
+);
 
 // Button contents; filter to swap the defaults for an SVG icon, etc.
 $close_icon = apply_filters( 'cata_blocks_image_lightbox_close_icon', '×' );
