@@ -308,6 +308,10 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 }
 
 .wp-block-cata-image-lightbox__caption {
+	// Above the tap zones: a caption tap expands the clamp (phones) or selects
+	// text (desktop) instead of stepping the gallery.
+	position: relative;
+	z-index: 3;
 	flex: 0 0 auto;
 	max-width: min( 100ch, 100% );
 	margin: 0;
@@ -475,5 +479,81 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 @media ( height < 500px ) {
 	.wp-block-cata-image-lightbox__thumbs {
 		display: none;
+	}
+}
+
+// ---------------------------------------------------------------------------
+// Phone in-stream gallery: the photo owns the screen, and the ad is a slide.
+// ---------------------------------------------------------------------------
+
+// The ad break: built by the view script on phones, holding the moved ad
+// container. Laid out (not display: none) while inactive so the ad script can
+// always measure the container; visibility carries the hiding instead.
+.wp-block-cata-image-lightbox__slide--ad {
+	display: flex;
+	visibility: hidden;
+	pointer-events: none;
+	justify-content: center;
+
+	&.is-active {
+		visibility: visible;
+		pointer-events: auto;
+	}
+
+	// Undo the sidecar box's panel-scaled reservation inside the break.
+	.wp-block-cata-image-lightbox__ad {
+		flex: 0 0 auto;
+		align-self: center;
+		max-inline-size: 100%;
+		min-block-size: 0;
+	}
+}
+
+.wp-block-cata-image-lightbox__ad-label {
+	font-size: 0.6875rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	opacity: 0.6;
+}
+
+// While the ad break is current, retire the whole-image tap zones so the
+// creative itself is tappable; swipe, the nav row, and the arrows still work.
+.is-cata-image-lightbox-ad-slide .wp-block-cata-image-lightbox__navzone {
+	display: none;
+}
+
+@media ( width < 600px ) {
+	// Full-bleed panel: every reserved band on a phone comes out of the photo.
+	.wp-block-cata-image-lightbox {
+		--cata-image-lightbox-backdrop-gap: 0px;
+		--cata-image-lightbox-panel-inline-size: 100%;
+		--cata-image-lightbox-panel-block-size: 100dvh;
+		--cata-image-lightbox-gallery-block-size: 55dvh;
+	}
+
+	.wp-block-cata-image-lightbox__panel {
+		padding: 0.5rem;
+		padding-block-start: 3.5rem;
+		border-radius: 0;
+	}
+
+	// The ad lives in the slide sequence here, not stacked below the gallery,
+	// so the gallery column claims the panel instead of reserving an ad row.
+	.wp-block-cata-image-lightbox__main {
+		min-block-size: calc( 100dvh - 4rem );
+	}
+
+	// Long editorial captions clamp to two lines so they stop crushing the
+	// photo; tapping the caption toggles the full text (see view script).
+	.wp-block-cata-image-lightbox__caption {
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		overflow: hidden;
+
+		&.is-expanded {
+			display: block;
+			-webkit-line-clamp: unset;
+		}
 	}
 }

@@ -18,6 +18,14 @@ const DIRECTION_LOCK = 10;
 // doesn't compete with the active slide image download.
 const OPEN_EVENT_DELAY = 300;
 
+// How many photos a phone reader sees before the in-stream ad break.
+const AD_SLIDE_AFTER = 4;
+
+// Viewports this narrow get the in-stream gallery: the ad becomes a slide of
+// its own instead of a box stacked under the photo. Matches the stylesheet's
+// phone breakpoint.
+const PHONE_QUERY = '( max-width: 599px )';
+
 // Galleries belonging to infinitely scrolled articles, keyed by the article
 // element their content images live in.
 const galleries = new Map();
@@ -235,9 +243,17 @@ function createGallery( region ) {
 		return null;
 	}
 
+	// On phones the ad joins the slide sequence as a full-attention ad break;
+	// inserted before the arrays below are built so their indices include it.
+	const adSlidePosition = insertAdSlide( region );
+
 	const slides = Array.from(
 		region.querySelectorAll( '.wp-block-cata-image-lightbox__slide' )
 	);
+
+	// Photos only; the counter, hash, thumbnails, badges, and events all speak
+	// photo numbers, so the ad break never shifts anything the reader can see.
+	const photoCount = slides.length - ( adSlidePosition >= 0 ? 1 : 0 );
 
 	// Slide images and their tiny blurred previews, ordered to match the slides.
 	const images = slides.map( ( slide ) =>
@@ -290,13 +306,54 @@ function createGallery( region ) {
 	// is unwound.
 	let openScrollY = 0;
 
+	// The photo most recently shown, so events fired from the ad break can
+	// still report a real photo position.
+	let currentPhotoIndex = 0;
+
+	/**
+	 * Slide position of a photo index; positions at or past the ad break sit
+	 * one further along.
+	 *
+	 * @param {number} photoIndex Photo index, as badges and thumbnails carry.
+	 *
+	 * @return {number} Slide position.
+	 */
+	function slidePositionFor( photoIndex ) {
+		if ( adSlidePosition >= 0 && photoIndex >= adSlidePosition ) {
+			return photoIndex + 1;
+		}
+
+		return photoIndex;
+	}
+
+	/**
+	 * Photo index of a slide position, or -1 for the ad break.
+	 *
+	 * @param {number} position Slide position.
+	 *
+	 * @return {number} Photo index, or -1.
+	 */
+	function photoIndexFor( position ) {
+		if ( adSlidePosition < 0 || position < adSlidePosition ) {
+			return position;
+		}
+
+		if ( position === adSlidePosition ) {
+			return -1;
+		}
+
+		return position - 1;
+	}
+
 	/**
 	 * Open the gallery on a slide.
 	 *
 	 * @param {number}                index   Slide index to open on.
 	 * @param {HTMLImageElement|null} trigger The content image that was clicked.
 	 */
-	function open( index, trigger ) {
+	function open( photoIndex, trigger ) {
+		const index = slidePositionFor( photoIndex );
+
 		// Warm first so the slide's load is no longer deferred, then paint the
 		// rendition the reader is already looking at while the full-size
 		// candidate downloads.
@@ -316,7 +373,7 @@ function createGallery( region ) {
 
 		// The strip has no geometry until the dialog is displayed, so the
 		// opening slide's thumbnail is centered here rather than in show().
-		scrollThumbIntoView( index, 'instant' );
+		scrollThumbIntoView( photoIndex, 'instant' );
 
 		// Delay the open event so the ad request it triggers doesn't compete
 		// with the active slide image download.
@@ -387,16 +444,32 @@ function createGallery( region ) {
 	function show( index ) {
 		currentIndex = index;
 
+		const photoIndex = photoIndexFor( index );
+
+		if ( photoIndex >= 0 ) {
+			currentPhotoIndex = photoIndex;
+		}
+
 		slides.forEach( ( slide, position ) =>
 			slide.classList.toggle( 'is-active', position === index )
 		);
 
+		// The ad break drops the whole-image tap zones (see stylesheet) so the
+		// creative is tappable; swipe and the nav row still navigate.
+		region.classList.toggle(
+			'is-cata-image-lightbox-ad-slide',
+			photoIndex < 0
+		);
+
 		if ( counter ) {
-			counter.textContent = `${ index + 1 } / ${ slides.length }`;
+			counter.textContent =
+				photoIndex < 0
+					? region.dataset.cataAdCounter || 'Ad'
+					: `${ photoIndex + 1 } / ${ photoCount }`;
 		}
 
-		markThumb( index );
-		scrollThumbIntoView( index );
+		markThumb( photoIndex );
+		scrollThumbIntoView( photoIndex );
 	}
 
 	/**
@@ -490,6 +563,14 @@ function createGallery( region ) {
 		}
 
 		show( index );
+
+		if ( photoIndexFor( index ) < 0 ) {
+			// Its own event, not slidechange: photo analytics stay photo-pure,
+			// and the ad script gets an unambiguous refresh moment to adopt.
+			dispatchLightboxEvent( 'slideshow:adslide' );
+			return;
+		}
+
 		setSlideHash();
 		dispatchLightboxEvent( 'slideshow:slidechange' );
 	}
@@ -505,9 +586,27 @@ function createGallery( region ) {
 		warm( images[ index ], 'high' );
 
 		if ( total > 1 ) {
-			warm( images[ ( index + 1 ) % total ] );
-			warm( images[ ( index - 1 + total ) % total ] );
+			warmNeighbor( index, 1, total );
+			warmNeighbor( index, -1, total );
 		}
+	}
+
+	/**
+	 * Warm the nearest photo in a direction, stepping past the imageless ad
+	 * break so approaching it never leaves the photo beyond it cold.
+	 *
+	 * @param {number} index     Slide position warming happens around.
+	 * @param {number} direction 1 for next, -1 for previous.
+	 * @param {number} total     Slide count.
+	 */
+	function warmNeighbor( index, direction, total ) {
+		let neighbor = ( index + direction + total ) % total;
+
+		if ( ! images[ neighbor ] ) {
+			neighbor = ( neighbor + direction + total ) % total;
+		}
+
+		warm( images[ neighbor ] );
 	}
 
 	/**
@@ -552,7 +651,7 @@ function createGallery( region ) {
 		window.history.replaceState(
 			window.history.state,
 			'',
-			`#slide-${ currentIndex + 1 }`
+			`#slide-${ currentPhotoIndex + 1 }`
 		);
 	}
 
@@ -576,8 +675,8 @@ function createGallery( region ) {
 		document.dispatchEvent(
 			new CustomEvent( name, {
 				detail: {
-					currentIndex,
-					totalSlides: slides.length,
+					currentIndex: currentPhotoIndex,
+					totalSlides: photoCount,
 					galleryId: dialog.id || null,
 					adContainerId,
 				},
@@ -660,7 +759,11 @@ function createGallery( region ) {
 		);
 
 		if ( thumb ) {
-			showSlide( Number( thumb.dataset.cataImageLightboxIndex ) );
+			showSlide(
+				slidePositionFor(
+					Number( thumb.dataset.cataImageLightboxIndex )
+				)
+			);
 		}
 	} );
 
@@ -670,11 +773,74 @@ function createGallery( region ) {
 		prev
 	);
 
+	// Caption tap on a phone toggles the two-line clamp (see stylesheet); the
+	// caption sits above the tap zones, so this never doubles as navigation.
+	region
+		.querySelector( '.wp-block-cata-image-lightbox__viewport' )
+		?.addEventListener( 'click', ( event ) => {
+			const caption = event.target.closest(
+				'.wp-block-cata-image-lightbox__caption'
+			);
+
+			if ( caption && window.matchMedia( PHONE_QUERY ).matches ) {
+				caption.classList.toggle( 'is-expanded' );
+			}
+		} );
+
 	return {
 		open,
-		total: slides.length,
-		warmSlide: ( index ) => warm( images[ index ], 'high' ),
+		total: photoCount,
+		warmSlide: ( index ) =>
+			warm( images[ slidePositionFor( index ) ], 'high' ),
 	};
+}
+
+/**
+ * Move the ad into the slide sequence as a phone reader's ad break.
+ *
+ * Runs once at wiring time, before the ad script has filled anything, so the
+ * container moves while it is still an empty box — reparenting a filled ad
+ * iframe would reload it blank. The break sits after the fourth photo and
+ * never first or last; galleries too short for that keep the stacked layout.
+ *
+ * @param {HTMLElement} region The gallery's block wrapper.
+ *
+ * @return {number} The ad break's slide position, or -1 when there is none.
+ */
+function insertAdSlide( region ) {
+	if ( ! window.matchMedia( PHONE_QUERY ).matches ) {
+		return -1;
+	}
+
+	const ad = region.querySelector( '.wp-block-cata-image-lightbox__ad' );
+	const viewport = region.querySelector(
+		'.wp-block-cata-image-lightbox__viewport'
+	);
+
+	if ( ! ad || ! viewport ) {
+		return -1;
+	}
+
+	const slides = viewport.querySelectorAll(
+		'.wp-block-cata-image-lightbox__slide'
+	);
+
+	if ( slides.length <= AD_SLIDE_AFTER ) {
+		return -1;
+	}
+
+	const figure = document.createElement( 'figure' );
+	figure.className =
+		'wp-block-cata-image-lightbox__slide wp-block-cata-image-lightbox__slide--ad';
+
+	const label = document.createElement( 'div' );
+	label.className = 'wp-block-cata-image-lightbox__ad-label';
+	label.textContent = region.dataset.cataAdLabel || 'Advertisement';
+
+	figure.append( label, ad );
+	viewport.insertBefore( figure, slides[ AD_SLIDE_AFTER ] );
+
+	return AD_SLIDE_AFTER;
 }
 
 /**
