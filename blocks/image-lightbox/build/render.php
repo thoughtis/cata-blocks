@@ -62,6 +62,7 @@ $next_icon  = apply_filters( 'cata_blocks_image_lightbox_next_icon', '→' );
 
 // Strip of thumbnails below the photo; filter to false for a bare gallery.
 $show_thumbs = apply_filters( 'cata_blocks_image_lightbox_show_thumbnails', true );
+$thumbs_id   = $show_thumbs ? wp_unique_id( 'cata-image-lightbox-thumbs-' ) : '';
 ?>
 
 <div <?php echo $wrapper_attributes; ?>>
@@ -74,6 +75,19 @@ $show_thumbs = apply_filters( 'cata_blocks_image_lightbox_show_thumbnails', true
 		// button means an Enter-opener can't immediately Enter again to close, and
 		// no focus ring shows until the reader actually tabs. ?>
 		<div class="wp-block-cata-image-lightbox__panel" tabindex="-1">
+			<?php if ( $show_thumbs ) : ?>
+				<button
+					type="button"
+					class="wp-block-cata-image-lightbox__all-photos"
+					aria-controls="<?php echo esc_attr( $thumbs_id ); ?>"
+					aria-expanded="false"
+					aria-label="<?php echo esc_attr( sprintf( /* translators: %d: total photos */ _n( 'Show all %d photo', 'Show all %d photos', $total, 'cata' ), $total ) ); ?>"
+				>
+					<span class="wp-block-cata-image-lightbox__all-photos-icon" aria-hidden="true">▦</span>
+					<?php echo esc_html( sprintf( /* translators: %d: total photos */ __( 'All %d', 'cata' ), $total ) ); ?>
+				</button>
+			<?php endif; ?>
+
 			<button
 				type="button"
 				class="wp-block-cata-image-lightbox__close"
@@ -84,14 +98,28 @@ $show_thumbs = apply_filters( 'cata_blocks_image_lightbox_show_thumbnails', true
 				<div class="wp-block-cata-image-lightbox__viewport">
 					<?php foreach ( $images as $index => $image ) : ?>
 						<?php // The first slide starts active; the view script moves the class from there. ?>
-						<figure class="wp-block-cata-image-lightbox__slide<?php echo 0 === $index ? ' is-active' : ''; ?>">
+						<figure
+							class="wp-block-cata-image-lightbox__slide<?php echo 0 === $index ? ' is-active' : ''; ?>"
+							role="group"
+							aria-roledescription="<?php esc_attr_e( 'slide', 'cata' ); ?>"
+							aria-label="<?php echo esc_attr( sprintf( /* translators: 1: image number, 2: total images */ __( 'Image %1$d of %2$d', 'cata' ), $index + 1, $total ) ); ?>"
+						>
 							<div class="wp-block-cata-image-lightbox__placeholder-frame" aria-hidden="true">
 								<img class="wp-block-cata-image-lightbox__placeholder" alt="" />
 							</div>
 							<?php echo cata_image_lightbox_image_html( $image ); ?>
 							<?php $caption = apply_filters( 'cata_blocks_image_lightbox_caption', $image['caption'], $image ); ?>
 							<?php if ( '' !== $caption ) : ?>
-								<figcaption class="wp-block-cata-image-lightbox__caption">
+								<?php $caption_id = wp_unique_id( 'cata-image-lightbox-caption-' ); ?>
+								<button
+									type="button"
+									class="wp-block-cata-image-lightbox__info"
+									aria-controls="<?php echo esc_attr( $caption_id ); ?>"
+									aria-expanded="false"
+									data-cata-open-label="<?php esc_attr_e( 'Info', 'cata' ); ?>"
+									data-cata-close-label="<?php esc_attr_e( 'Close info', 'cata' ); ?>"
+								><?php esc_html_e( 'Info', 'cata' ); ?></button>
+								<figcaption id="<?php echo esc_attr( $caption_id ); ?>" class="wp-block-cata-image-lightbox__caption">
 									<?php echo wp_kses_post( $caption ); ?>
 								</figcaption>
 							<?php endif; ?>
@@ -113,7 +141,16 @@ $show_thumbs = apply_filters( 'cata_blocks_image_lightbox_show_thumbnails', true
 					><?php echo $prev_icon; ?></button>
 					<?php // Live region so navigating announces the new position; the buttons
 					// themselves keep the same labels slide to slide. ?>
-					<span class="wp-block-cata-image-lightbox__counter" role="status"><?php echo esc_html( sprintf( '1 / %d', $total ) ); ?></span>
+					<div class="wp-block-cata-image-lightbox__progress">
+						<span class="wp-block-cata-image-lightbox__dots" aria-hidden="true">
+							<?php for ( $dot = 0; $dot < min( 7, $total ); $dot++ ) : ?>
+								<span class="wp-block-cata-image-lightbox__dot<?php echo 0 === $dot ? ' is-active' : ''; ?>"></span>
+							<?php endfor; ?>
+						</span>
+						<span class="wp-block-cata-image-lightbox__progress-label" aria-hidden="true"><?php esc_html_e( 'Advertisement', 'cata' ); ?></span>
+						<?php // Exact position remains the single polite live status; dots are visual only. ?>
+						<span class="wp-block-cata-image-lightbox__counter" role="status" aria-live="polite" aria-atomic="true"><?php echo esc_html( sprintf( '1 / %d', $total ) ); ?></span>
+					</div>
 					<button
 						type="button"
 						class="wp-block-cata-image-lightbox__next"
@@ -125,7 +162,12 @@ $show_thumbs = apply_filters( 'cata_blocks_image_lightbox_show_thumbnails', true
 					<?php // Roving tabindex: only the current thumbnail is a tab stop, so a
 					// 30 photo gallery doesn't put 30 stops between the reader and the end
 					// of the dialog. The view script moves it along with the slide. ?>
-					<div class="wp-block-cata-image-lightbox__thumbs" <?php echo $total > 1 ? '' : 'hidden'; ?>>
+					<div
+						class="wp-block-cata-image-lightbox__thumbs"
+						id="<?php echo esc_attr( $thumbs_id ); ?>"
+						aria-label="<?php esc_attr_e( 'All photos', 'cata' ); ?>"
+						<?php echo $total > 1 ? '' : 'hidden'; ?>
+					>
 						<?php foreach ( $images as $index => $image ) : ?>
 							<?php $thumb_url = cata_image_lightbox_thumb_url( $image ); ?>
 							<?php if ( '' !== $thumb_url ) : ?>

@@ -14,6 +14,10 @@ const SWIPE_THRESHOLD = 50;
 // (vs. a vertical scroll) and starts blocking the page's own touch handling.
 const DIRECTION_LOCK = 10;
 
+// Instagram-style pagination stays legible by showing only this many visual
+// positions; the exact counter remains the source of truth.
+const DOT_WINDOW_SIZE = 7;
+
 // How long the open event waits, in milliseconds, so the ad request it triggers
 // doesn't compete with the active slide image download.
 const OPEN_EVENT_DELAY = 300;
@@ -53,9 +57,14 @@ function wire() {
 	warnWhenUnwired( pageGallery, document );
 
 	document.addEventListener( 'click', onTriggerClick );
-	document.addEventListener( 'pointerover', onTriggerWarm, { passive: true } );
+	document.addEventListener( 'pointerover', onTriggerWarm, {
+		passive: true,
+	} );
 	document.addEventListener( 'touchstart', onTriggerWarm, { passive: true } );
-	document.addEventListener( 'cata-blocks:infinite-scroll:load', onArticleLoad );
+	document.addEventListener(
+		'cata-blocks:infinite-scroll:load',
+		onArticleLoad
+	);
 }
 
 /**
@@ -90,7 +99,9 @@ function onArticleLoad( event ) {
 		// The gallery goes on the body rather than into the article: it is a
 		// modal, and an empty wrapper in the article's flow would take on the
 		// content area's block spacing.
-		region = document.body.appendChild( document.importNode( fetched, true ) );
+		region = document.body.appendChild(
+			document.importNode( fetched, true )
+		);
 	}
 
 	articleCount++;
@@ -116,9 +127,41 @@ function onArticleLoad( event ) {
  * @param {number}      suffix Number that makes this article's ids its own.
  */
 function renameIds( region, suffix ) {
+	const renamed = new Map();
+
 	region.querySelectorAll( '[id]' ).forEach( ( element ) => {
-		element.id = `${ element.id }-${ suffix }`;
+		const oldId = element.id;
+		const newId = `${ oldId }-${ suffix }`;
+
+		renamed.set( oldId, newId );
+		element.id = newId;
 	} );
+
+	// Imported disclosure controls still point at the source page's ids unless
+	// every IDREF token is namespaced along with its target. Multiple ids are
+	// valid in labelledby/describedby, so rewrite token-by-token.
+	[ 'aria-controls', 'aria-labelledby', 'aria-describedby' ].forEach(
+		( attribute ) => {
+			region
+				.querySelectorAll( `[${ attribute }]` )
+				.forEach( ( element ) => {
+					const value = element.getAttribute( attribute );
+
+					if ( ! value ) {
+						return;
+					}
+
+					element.setAttribute(
+						attribute,
+						value
+							.trim()
+							.split( /\s+/ )
+							.map( ( id ) => renamed.get( id ) ?? id )
+							.join( ' ' )
+					);
+				} );
+		}
+	);
 }
 
 /**
@@ -145,7 +188,9 @@ function onTriggerClick( event ) {
 	if ( index >= gallery.total ) {
 		// eslint-disable-next-line no-console
 		console.warn(
-			`Image Lightbox: a content image asked for slide ${ index + 1 } of ${ gallery.total }.`
+			`Image Lightbox: a content image asked for slide ${
+				index + 1
+			} of ${ gallery.total }.`
 		);
 		return;
 	}
@@ -243,9 +288,17 @@ function createGallery( region ) {
 		return null;
 	}
 
-	// On phones the ad joins the slide sequence as a full-attention ad break;
-	// inserted before the arrays below are built so their indices include it.
-	const adSlidePosition = insertAdSlide( region );
+	const phoneMedia = window.matchMedia( PHONE_QUERY );
+
+	// Ad placement is an immutable wiring-time decision. This is the only call
+	// that may move the container; later breakpoint changes update controls but
+	// never reparent a potentially filled iframe.
+	const adSlidePosition = insertAdSlide( region, phoneMedia.matches );
+
+	region.classList.toggle(
+		'has-cata-image-lightbox-ad-slide',
+		adSlidePosition >= 0
+	);
 
 	const slides = Array.from(
 		region.querySelectorAll( '.wp-block-cata-image-lightbox__slide' )
@@ -270,6 +323,21 @@ function createGallery( region ) {
 	const panel = region.querySelector(
 		'.wp-block-cata-image-lightbox__panel'
 	);
+	const prevButton = region.querySelector(
+		'.wp-block-cata-image-lightbox__prev'
+	);
+	const nextButton = region.querySelector(
+		'.wp-block-cata-image-lightbox__next'
+	);
+	const prevZone = region.querySelector(
+		'.wp-block-cata-image-lightbox__navzone--prev'
+	);
+	const nextZone = region.querySelector(
+		'.wp-block-cata-image-lightbox__navzone--next'
+	);
+	const dots = Array.from(
+		region.querySelectorAll( '.wp-block-cata-image-lightbox__dot' )
+	);
 
 	// Thumbnail strip, keyed by the slide index each thumbnail carries rather
 	// than by position: an image the CDN can't resize renders no thumbnail.
@@ -282,6 +350,27 @@ function createGallery( region ) {
 		).map( ( thumb ) => [
 			Number( thumb.dataset.cataImageLightboxIndex ),
 			thumb,
+		] )
+	);
+	const thumbEntries = Array.from( thumbs.entries() ).sort(
+		( [ first ], [ second ] ) => first - second
+	);
+	const allPhotosButton = region.querySelector(
+		'.wp-block-cata-image-lightbox__all-photos'
+	);
+	const captionsById = new Map(
+		Array.from(
+			region.querySelectorAll(
+				'.wp-block-cata-image-lightbox__caption[id]'
+			)
+		).map( ( caption ) => [ caption.id, caption ] )
+	);
+	const infoPanels = new Map(
+		Array.from(
+			region.querySelectorAll( '.wp-block-cata-image-lightbox__info' )
+		).map( ( button ) => [
+			button,
+			captionsById.get( button.getAttribute( 'aria-controls' ) ) ?? null,
 		] )
 	);
 
@@ -309,6 +398,11 @@ function createGallery( region ) {
 	// The photo most recently shown, so events fired from the ad break can
 	// still report a real photo position.
 	let currentPhotoIndex = 0;
+
+	// Phone-only disclosure state. Keeping this separate from slide state makes
+	// breakpoint changes reversible without touching the fixed ad placement.
+	let indexOpen = false;
+	let openInfoButton = null;
 
 	/**
 	 * Slide position of a photo index; positions at or past the ad break sit
@@ -346,13 +440,251 @@ function createGallery( region ) {
 	}
 
 	/**
+	 * Update the visual, non-interactive dot window for a photo.
+	 *
+	 * @param {number} photoIndex Photo index, or -1 for the ad break.
+	 */
+	function updateDots( photoIndex ) {
+		const windowStart = Math.min(
+			Math.max( photoIndex - Math.floor( DOT_WINDOW_SIZE / 2 ), 0 ),
+			Math.max( photoCount - DOT_WINDOW_SIZE, 0 )
+		);
+
+		dots.forEach( ( dot, slot ) => {
+			const representedIndex = windowStart + slot;
+			const active = photoIndex >= 0 && representedIndex === photoIndex;
+
+			dot.classList.toggle( 'is-active', active );
+			dot.classList.toggle(
+				'is-overflow-start',
+				photoIndex >= 0 && 0 === slot && windowStart > 0 && ! active
+			);
+			dot.classList.toggle(
+				'is-overflow-end',
+				photoIndex >= 0 &&
+					slot === dots.length - 1 &&
+					windowStart + dots.length < photoCount &&
+					! active
+			);
+		} );
+	}
+
+	/**
+	 * Disable bounded phone controls at the sequence ends. Desktop wrapping is
+	 * restored whenever the live media query no longer matches.
+	 */
+	function updatePhoneNavigation() {
+		const atStart = phoneMedia.matches && 0 === currentIndex;
+		const atEnd = phoneMedia.matches && currentIndex === slides.length - 1;
+
+		if ( prevButton ) {
+			prevButton.disabled = atStart;
+		}
+
+		if ( nextButton ) {
+			nextButton.disabled = atEnd;
+		}
+
+		region.classList.toggle( 'is-cata-image-lightbox-at-start', atStart );
+		region.classList.toggle( 'is-cata-image-lightbox-at-end', atEnd );
+	}
+
+	/**
+	 * Find the rendered thumbnail nearest a photo index. Some images have no
+	 * thumbnail URL, so an exact button is not guaranteed.
+	 *
+	 * @param {number} photoIndex Photo index.
+	 *
+	 * @return {HTMLButtonElement|null} Closest thumbnail button.
+	 */
+	function nearestThumb( photoIndex ) {
+		if ( 0 === thumbEntries.length ) {
+			return null;
+		}
+
+		return thumbEntries.reduce( ( nearest, entry ) =>
+			Math.abs( entry[ 0 ] - photoIndex ) <
+			Math.abs( nearest[ 0 ] - photoIndex )
+				? entry
+				: nearest
+		)[ 1 ];
+	}
+
+	/**
+	 * Move the thumbnail index's one keyboard tab stop without selecting a
+	 * photo. Selection remains expressed separately by aria-current.
+	 *
+	 * @param {HTMLButtonElement|null} target Thumbnail receiving the tab stop.
+	 */
+	function setThumbTabStop( target ) {
+		thumbs.forEach( ( thumb ) => {
+			thumb.tabIndex = thumb === target ? 0 : -1;
+		} );
+	}
+
+	/**
+	 * Close the on-demand phone index.
+	 *
+	 * @param {boolean} restoreFocus Whether focus returns to its disclosure.
+	 *
+	 * @return {boolean} Whether an open index was closed.
+	 */
+	function closeIndex( restoreFocus = false ) {
+		if ( ! indexOpen ) {
+			return false;
+		}
+
+		indexOpen = false;
+		region.classList.remove( 'is-cata-image-lightbox-index-open' );
+		allPhotosButton?.setAttribute( 'aria-expanded', 'false' );
+		setThumbTabStop( nearestThumb( currentPhotoIndex ) );
+
+		if ( restoreFocus && dialog.open ) {
+			allPhotosButton?.focus( { preventScroll: true } );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Open the phone thumbnail grid and focus its current (or nearest) photo.
+	 */
+	function openIndex() {
+		if ( ! phoneMedia.matches || ! strip || ! allPhotosButton ) {
+			return;
+		}
+
+		closeInfo();
+		indexOpen = true;
+		region.classList.add( 'is-cata-image-lightbox-index-open' );
+		allPhotosButton.setAttribute( 'aria-expanded', 'true' );
+
+		const thumb = nearestThumb( currentPhotoIndex );
+		setThumbTabStop( thumb );
+
+		// The grid has no geometry until its open class paints. Focus and center
+		// after that layout exists, without letting the dialog itself scroll.
+		window.requestAnimationFrame( () => {
+			if ( ! indexOpen || ! thumb ) {
+				return;
+			}
+
+			strip.scrollTop = Math.max(
+				0,
+				thumb.offsetTop -
+					( strip.clientHeight - thumb.offsetHeight ) / 2
+			);
+			thumb.focus( { preventScroll: true } );
+		} );
+	}
+
+	/**
+	 * Close the active photo's Info sheet.
+	 *
+	 * @param {boolean} restoreFocus Whether focus returns to the Info button.
+	 *
+	 * @return {boolean} Whether an open sheet was closed.
+	 */
+	function closeInfo( restoreFocus = false ) {
+		if ( ! openInfoButton ) {
+			return false;
+		}
+
+		const button = openInfoButton;
+		const caption = infoPanels.get( button );
+
+		openInfoButton = null;
+		button.setAttribute( 'aria-expanded', 'false' );
+		button.textContent = button.dataset.cataOpenLabel || 'Info';
+		button
+			.closest( '.wp-block-cata-image-lightbox__slide' )
+			?.classList.remove( 'is-info-open' );
+
+		if ( caption ) {
+			caption.classList.remove( 'is-open' );
+			caption.hidden = phoneMedia.matches;
+		}
+
+		if ( restoreFocus && dialog.open ) {
+			button.focus( { preventScroll: true } );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Reveal a photo's full sanitized caption/credit sheet.
+	 *
+	 * @param {HTMLButtonElement} button The photo's Info disclosure.
+	 */
+	function openInfo( button ) {
+		const caption = infoPanels.get( button );
+
+		if ( ! phoneMedia.matches || ! caption ) {
+			return;
+		}
+
+		closeIndex();
+		closeInfo();
+		openInfoButton = button;
+		button.setAttribute( 'aria-expanded', 'true' );
+		button.textContent = button.dataset.cataCloseLabel || 'Close info';
+		button
+			.closest( '.wp-block-cata-image-lightbox__slide' )
+			?.classList.add( 'is-info-open' );
+		caption.hidden = false;
+		caption.classList.add( 'is-open' );
+	}
+
+	/**
+	 * Close phone overlays before a slide change. If focus lives in content
+	 * that is about to disappear, put it on the stable panel first.
+	 */
+	function closeOverlaysForNavigation() {
+		const activeElement = dialog.ownerDocument.activeElement;
+		const focusWillDisappear =
+			slides[ currentIndex ]?.contains( activeElement ) ||
+			( indexOpen && strip?.contains( activeElement ) );
+
+		closeInfo();
+		closeIndex();
+
+		if ( focusWillDisappear ) {
+			panel?.focus( { preventScroll: true } );
+		}
+	}
+
+	/**
+	 * Apply the live phone control mode without reconsidering ad placement.
+	 */
+	function syncPhoneMode() {
+		if ( ! phoneMedia.matches ) {
+			closeIndex();
+			closeInfo();
+		}
+
+		infoPanels.forEach( ( caption, button ) => {
+			if ( ! caption ) {
+				return;
+			}
+
+			caption.hidden = phoneMedia.matches && button !== openInfoButton;
+		} );
+
+		updatePhoneNavigation();
+	}
+
+	/**
 	 * Open the gallery on a slide.
 	 *
-	 * @param {number}                index   Slide index to open on.
-	 * @param {HTMLImageElement|null} trigger The content image that was clicked.
+	 * @param {number}                photoIndex Photo index to open on.
+	 * @param {HTMLImageElement|null} trigger    The content image that was clicked.
 	 */
 	function open( photoIndex, trigger ) {
 		const index = slidePositionFor( photoIndex );
+
+		closeIndex();
+		closeInfo();
 
 		// Warm first so the slide's load is no longer deferred, then paint the
 		// rendition the reader is already looking at while the full-size
@@ -423,16 +755,24 @@ function createGallery( region ) {
 	}
 
 	/**
-	 * Step forward one slide, wrapping at the end.
+	 * Step forward one slide. Phones stop at the end; desktop keeps wrapping.
 	 */
 	function next() {
+		if ( phoneMedia.matches && currentIndex === slides.length - 1 ) {
+			return;
+		}
+
 		showSlide( ( currentIndex + 1 ) % slides.length );
 	}
 
 	/**
-	 * Step back one slide, wrapping at the start.
+	 * Step back one slide. Phones stop at the start; desktop keeps wrapping.
 	 */
 	function prev() {
+		if ( phoneMedia.matches && 0 === currentIndex ) {
+			return;
+		}
+
 		showSlide( ( currentIndex - 1 + slides.length ) % slides.length );
 	}
 
@@ -468,6 +808,8 @@ function createGallery( region ) {
 					: `${ photoIndex + 1 } / ${ photoCount }`;
 		}
 
+		updateDots( photoIndex );
+		updatePhoneNavigation();
 		markThumb( photoIndex );
 		scrollThumbIntoView( photoIndex );
 	}
@@ -481,12 +823,16 @@ function createGallery( region ) {
 		// Arrowing through slides while a thumbnail has focus would otherwise
 		// drop that focus as its tab stop moves away.
 		const focused = strip?.contains( dialog.ownerDocument.activeElement );
+		const tabStop = nearestThumb( index >= 0 ? index : currentPhotoIndex );
 
 		thumbs.forEach( ( thumb, position ) => {
 			const active = position === index;
 
 			thumb.classList.toggle( 'is-active', active );
-			thumb.tabIndex = active ? 0 : -1;
+
+			if ( ! indexOpen ) {
+				thumb.tabIndex = thumb === tabStop ? 0 : -1;
+			}
 
 			if ( active ) {
 				thumb.setAttribute( 'aria-current', 'true' );
@@ -497,7 +843,7 @@ function createGallery( region ) {
 
 		if ( focused ) {
 			// The scroll is ours to do; the browser's would move the panel too.
-			thumbs.get( index )?.focus( { preventScroll: true } );
+			tabStop?.focus( { preventScroll: true } );
 		}
 	}
 
@@ -513,7 +859,7 @@ function createGallery( region ) {
 	function scrollThumbIntoView( index, behavior = 'auto' ) {
 		const thumb = thumbs.get( index );
 
-		if ( ! strip || ! thumb ) {
+		if ( ! strip || ! thumb || ( phoneMedia.matches && ! indexOpen ) ) {
 			return;
 		}
 
@@ -539,6 +885,8 @@ function createGallery( region ) {
 	 * @param {number} index Slide index to show.
 	 */
 	async function showSlide( index ) {
+		closeOverlaysForNavigation();
+
 		if ( index === currentIndex ) {
 			return;
 		}
@@ -600,10 +948,22 @@ function createGallery( region ) {
 	 * @param {number} total     Slide count.
 	 */
 	function warmNeighbor( index, direction, total ) {
-		let neighbor = ( index + direction + total ) % total;
+		let neighbor = index + direction;
+
+		if ( phoneMedia.matches && ( neighbor < 0 || neighbor >= total ) ) {
+			return;
+		}
+
+		neighbor = ( neighbor + total ) % total;
 
 		if ( ! images[ neighbor ] ) {
-			neighbor = ( neighbor + direction + total ) % total;
+			neighbor += direction;
+
+			if ( phoneMedia.matches && ( neighbor < 0 || neighbor >= total ) ) {
+				return;
+			}
+
+			neighbor = ( neighbor + total ) % total;
 		}
 
 		warm( images[ neighbor ] );
@@ -689,6 +1049,8 @@ function createGallery( region ) {
 	dialog.addEventListener( 'close', () => {
 		clearTimeout( openEventTimer );
 		openEventTimer = null;
+		closeIndex();
+		closeInfo();
 
 		if ( historyEntry ) {
 			// Unwind the entry pushed on open, which also restores the URL the
@@ -721,10 +1083,35 @@ function createGallery( region ) {
 	} );
 
 	dialog.addEventListener( 'keydown', ( event ) => {
+		if ( 'Escape' === event.key ) {
+			if ( closeIndex( true ) || closeInfo( true ) ) {
+				event.preventDefault();
+				event.stopPropagation();
+			}
+			return;
+		}
+
+		// The grid owns arrow keys while open. Caption links and scrollable text
+		// likewise keep their native arrow behavior.
+		if (
+			indexOpen ||
+			event.target.closest?.( '.wp-block-cata-image-lightbox__caption' )
+		) {
+			return;
+		}
+
 		if ( 'ArrowRight' === event.key ) {
 			next();
 		} else if ( 'ArrowLeft' === event.key ) {
 			prev();
+		}
+	} );
+
+	// Some browsers surface Escape as dialog cancel without a useful keydown.
+	// Consume it when an inner disclosure is open so the gallery stays open.
+	dialog.addEventListener( 'cancel', ( event ) => {
+		if ( closeIndex( true ) || closeInfo( true ) ) {
+			event.preventDefault();
 		}
 	} );
 
@@ -740,17 +1127,35 @@ function createGallery( region ) {
 		.querySelector( '.wp-block-cata-image-lightbox__close' )
 		?.addEventListener( 'click', close );
 
-	region
-		.querySelectorAll(
-			'.wp-block-cata-image-lightbox__prev, .wp-block-cata-image-lightbox__navzone--prev'
-		)
-		.forEach( ( element ) => element.addEventListener( 'click', prev ) );
+	[ prevButton, prevZone ].forEach( ( element ) =>
+		element?.addEventListener( 'click', prev )
+	);
 
-	region
-		.querySelectorAll(
-			'.wp-block-cata-image-lightbox__next, .wp-block-cata-image-lightbox__navzone--next'
-		)
-		.forEach( ( element ) => element.addEventListener( 'click', next ) );
+	[ nextButton, nextZone ].forEach( ( element ) =>
+		element?.addEventListener( 'click', next )
+	);
+
+	allPhotosButton?.addEventListener( 'click', () => {
+		if ( indexOpen ) {
+			closeIndex();
+		} else {
+			openIndex();
+		}
+	} );
+
+	infoPanels.forEach( ( caption, button ) => {
+		if ( ! caption ) {
+			return;
+		}
+
+		button.addEventListener( 'click', () => {
+			if ( button === openInfoButton ) {
+				closeInfo( true );
+			} else {
+				openInfo( button );
+			}
+		} );
+	} );
 
 	// Delegated so the strip stays one listener however many photos it holds.
 	strip?.addEventListener( 'click', ( event ) => {
@@ -759,33 +1164,80 @@ function createGallery( region ) {
 		);
 
 		if ( thumb ) {
-			showSlide(
-				slidePositionFor(
-					Number( thumb.dataset.cataImageLightboxIndex )
-				)
-			);
+			const photoIndex = Number( thumb.dataset.cataImageLightboxIndex );
+
+			if ( ! Number.isInteger( photoIndex ) ) {
+				return;
+			}
+
+			const restoreFocus = indexOpen;
+			closeIndex( restoreFocus );
+			showSlide( slidePositionFor( photoIndex ) );
 		}
+	} );
+
+	strip?.addEventListener( 'keydown', ( event ) => {
+		if ( ! phoneMedia.matches || ! indexOpen ) {
+			return;
+		}
+
+		const thumb = event.target.closest(
+			'.wp-block-cata-image-lightbox__thumb'
+		);
+		const position = thumbEntries.findIndex(
+			( [ , candidate ] ) => candidate === thumb
+		);
+
+		if ( position < 0 || ! event.key.startsWith( 'Arrow' ) ) {
+			return;
+		}
+
+		const firstTop = thumbEntries[ 0 ][ 1 ].offsetTop;
+		const firstDifferentRow = thumbEntries.findIndex(
+			( [ , candidate ] ) => candidate.offsetTop !== firstTop
+		);
+		const columns =
+			firstDifferentRow < 0 ? thumbEntries.length : firstDifferentRow;
+		let nextPosition = position;
+
+		if ( 'ArrowLeft' === event.key ) {
+			nextPosition--;
+		} else if ( 'ArrowRight' === event.key ) {
+			nextPosition++;
+		} else if ( 'ArrowUp' === event.key ) {
+			nextPosition -= columns;
+		} else if ( 'ArrowDown' === event.key ) {
+			nextPosition += columns;
+		}
+
+		nextPosition = Math.min(
+			Math.max( nextPosition, 0 ),
+			thumbEntries.length - 1
+		);
+		event.preventDefault();
+		event.stopPropagation();
+
+		const nextThumb = thumbEntries[ nextPosition ][ 1 ];
+		setThumbTabStop( nextThumb );
+		nextThumb.focus( { preventScroll: true } );
+		nextThumb.scrollIntoView( { block: 'nearest', inline: 'nearest' } );
 	} );
 
 	wireSwipeNavigation(
 		region.querySelector( '.wp-block-cata-image-lightbox__viewport' ),
 		next,
-		prev
+		prev,
+		( event ) =>
+			indexOpen ||
+			Boolean(
+				event.target.closest?.(
+					'.wp-block-cata-image-lightbox__caption, .wp-block-cata-image-lightbox__info'
+				)
+			)
 	);
 
-	// Caption tap on a phone toggles the two-line clamp (see stylesheet); the
-	// caption sits above the tap zones, so this never doubles as navigation.
-	region
-		.querySelector( '.wp-block-cata-image-lightbox__viewport' )
-		?.addEventListener( 'click', ( event ) => {
-			const caption = event.target.closest(
-				'.wp-block-cata-image-lightbox__caption'
-			);
-
-			if ( caption && window.matchMedia( PHONE_QUERY ).matches ) {
-				caption.classList.toggle( 'is-expanded' );
-			}
-		} );
+	phoneMedia.addEventListener( 'change', syncPhoneMode );
+	syncPhoneMode();
 
 	return {
 		open,
@@ -803,12 +1255,13 @@ function createGallery( region ) {
  * iframe would reload it blank. The break sits after the fourth photo and
  * never first or last; galleries too short for that keep the stacked layout.
  *
- * @param {HTMLElement} region The gallery's block wrapper.
+ * @param {HTMLElement} region      The gallery's block wrapper.
+ * @param {boolean}     useInStream Whether wiring began in phone mode.
  *
  * @return {number} The ad break's slide position, or -1 when there is none.
  */
-function insertAdSlide( region ) {
-	if ( ! window.matchMedia( PHONE_QUERY ).matches ) {
+function insertAdSlide( region, useInStream ) {
+	if ( ! useInStream ) {
 		return -1;
 	}
 
@@ -856,11 +1309,12 @@ function insertAdSlide( region ) {
  * Swipe direction follows the arrow buttons' fixed left-to-right sense
  * (swipe left = next, swipe right = previous), not text direction.
  *
- * @param {HTMLElement} viewport The slide viewport element.
- * @param {Function}    next     Step forward one slide.
- * @param {Function}    prev     Step back one slide.
+ * @param {HTMLElement} viewport     The slide viewport element.
+ * @param {Function}    next         Step forward one slide.
+ * @param {Function}    prev         Step back one slide.
+ * @param {Function}    shouldIgnore Whether an origin belongs to an overlay.
  */
-function wireSwipeNavigation( viewport, next, prev ) {
+function wireSwipeNavigation( viewport, next, prev, shouldIgnore ) {
 	if ( ! viewport ) {
 		return;
 	}
@@ -872,6 +1326,10 @@ function wireSwipeNavigation( viewport, next, prev ) {
 
 	viewport.addEventListener( 'pointerdown', ( event ) => {
 		if ( 'touch' !== event.pointerType && 'pen' !== event.pointerType ) {
+			return;
+		}
+
+		if ( shouldIgnore?.( event ) ) {
 			return;
 		}
 
@@ -895,7 +1353,11 @@ function wireSwipeNavigation( viewport, next, prev ) {
 		const dx = event.clientX - startX;
 		const dy = event.clientY - startY;
 
-		if ( ! horizontal && Math.abs( dx ) > DIRECTION_LOCK && Math.abs( dx ) > Math.abs( dy ) ) {
+		if (
+			! horizontal &&
+			Math.abs( dx ) > DIRECTION_LOCK &&
+			Math.abs( dx ) > Math.abs( dy )
+		) {
 			horizontal = true;
 		}
 

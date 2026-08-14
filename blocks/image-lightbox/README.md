@@ -1,6 +1,6 @@
 # Image Lightbox
 
-Turns a post's in-content images into a modal gallery: qualifying `core/image` blocks get a count badge and zoom cursor; clicking opens a full-screen `<dialog>` slider with arrows, thumbnails, captions, swipe navigation, and an ad slot. The template-level block itself renders only the dialog and slides.
+Turns a post's in-content images into a modal gallery: qualifying `core/image` blocks get a count badge and zoom cursor; clicking opens a full-screen `<dialog>` slider with accessible navigation, captions, a photo index, and an ad slot. The template-level block itself renders only the dialog and slides.
 
 ## How the gallery is assembled
 
@@ -17,11 +17,14 @@ A `render_block_core/image` filter wraps each collected image in a trigger — `
 
 The `viewScriptModule` is imperative, not Interactivity API directives — directives bind only at hydration, but articles appended by the site's infinite scroll need galleries too: it listens for `cata-blocks:infinite-scroll:load`, imports the fetched article's gallery markup, namespaces its ids, and routes triggers to the right gallery. Also in `view.js`:
 
-- Keyboard arrows, prev/next buttons, whole-image left/right click zones, touch/pen swipe with direction locking (vertical scrolls pass through).
-- Thumbnail strip with roving tabindex (one tab stop) and an `aria-live` counter.
+- Desktop keeps keyboard arrows, wrapping prev/next buttons, whole-image left/right click zones, and a persistent thumbnail strip. Phones stop at the sequence ends and use one compact footer with 44px prev/next controls, an exact live counter, and a visual seven-position sliding dot window.
+- Phone captions and credits are hidden from normal flow behind an explicit Info disclosure. The full sanitized caption opens in a scrollable sheet over the photo, so the image and footer do not move.
+- On phones, All photos opens the existing lazy thumbnails as an overlay grid with roving tabindex and arrow-key movement. The strip stays persistent and horizontal on desktop; disabling thumbnails with `cata_blocks_image_lightbox_show_thumbnails` also removes All photos.
+- Touch/pen swipe retains direction locking so vertical scrolling and pinch zoom pass through. Disclosure-origin gestures do not navigate, and mouse drag remains unused so desktop caption text stays selectable.
 - Lazy, inert slide images: trigger hover/touch pre-warms the image, neighbors prefetch, the clicked image's cached rendition seeds the slide, a blurred Photon preview covers slow loads.
 - Without `CloseWatcher`, opening pushes a history entry so the back gesture closes the lightbox, not the article; the slide number mirrors into the URL hash as an ad-refresh signal.
-- `slideshow:open`/`slideshow:slidechange`/`slideshow:close` CustomEvents (carrying the ad container id) drive the ad script; open fires 300 ms late so the ad request doesn't compete with the slide image.
+- A gallery wired below 600px moves the empty ad container exactly once into a break after photo four; that placement never changes on rotation. The break stays measurable while inactive, replaces the phone dot rail with an Advertisement state, remains absent from public photo numbering, and fires `slideshow:adslide` rather than `slideshow:slidechange`.
+- `slideshow:open`/`slideshow:slidechange`/`slideshow:adslide`/`slideshow:close` CustomEvents (carrying the ad container id) drive the ad script; open fires 300 ms late so the ad request doesn't compete with the slide image.
 
 Slide `srcset`s are built by hand against Photon/Jetpack resizing (640–2048 px candidates, capped at the original width) because the CDN setup leaves core's metadata-derived srcsets empty.
 
