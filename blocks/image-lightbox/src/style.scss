@@ -590,6 +590,43 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 		min-block-size: calc( 100svh - 4.75rem );
 	}
 
+	// A drag window consists of the current sequence item and at most one item
+	// on either side. Every other photo keeps display:none/no geometry; the ad's
+	// separate visibility-based rule remains laid out whether it is near or not.
+	.wp-block-cata-image-lightbox__viewport.is-cata-image-lightbox-dragging,
+	.wp-block-cata-image-lightbox__viewport.is-cata-image-lightbox-snapping {
+		overflow: hidden;
+	}
+
+	.wp-block-cata-image-lightbox__viewport {
+
+		.wp-block-cata-image-lightbox__slide.is-cata-image-lightbox-drag-current,
+		.wp-block-cata-image-lightbox__slide.is-cata-image-lightbox-drag-previous,
+		.wp-block-cata-image-lightbox__slide.is-cata-image-lightbox-drag-next {
+			display: flex;
+			flex-direction: column;
+			visibility: visible;
+			opacity: 1;
+			transition: none;
+			will-change: transform;
+		}
+
+		.wp-block-cata-image-lightbox__slide.is-cata-image-lightbox-drag-current {
+			z-index: 1;
+			transform: translate3d(var(--cata-image-lightbox-drag-offset, 0), 0, 0);
+		}
+
+		.wp-block-cata-image-lightbox__slide.is-cata-image-lightbox-drag-previous {
+			pointer-events: none;
+			transform: translate3d(calc(-100% + var(--cata-image-lightbox-drag-offset, 0)), 0, 0);
+		}
+
+		.wp-block-cata-image-lightbox__slide.is-cata-image-lightbox-drag-next {
+			pointer-events: none;
+			transform: translate3d(calc(100% + var(--cata-image-lightbox-drag-offset, 0)), 0, 0);
+		}
+	}
+
 	// Use the already-reserved top band for the on-demand photo index; it adds
 	// no height and stays opposite the existing Close control.
 	.wp-block-cata-image-lightbox__all-photos {
@@ -805,5 +842,14 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 
 	.wp-block-cata-image-lightbox__dot {
 		transition: opacity 150ms ease, transform 150ms ease;
+	}
+
+	.wp-block-cata-image-lightbox__viewport.is-cata-image-lightbox-snapping {
+
+		.wp-block-cata-image-lightbox__slide.is-cata-image-lightbox-drag-current,
+		.wp-block-cata-image-lightbox__slide.is-cata-image-lightbox-drag-previous,
+		.wp-block-cata-image-lightbox__slide.is-cata-image-lightbox-drag-next {
+			transition: transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1);
+		}
 	}
 }
