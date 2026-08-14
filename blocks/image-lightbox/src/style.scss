@@ -323,6 +323,15 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 	opacity: 0.8;
 }
 
+// Phone disclosures are removed from desktop layout entirely. Their media
+// query rules below opt them in without changing established desktop geometry.
+.wp-block-cata-image-lightbox__all-photos,
+.wp-block-cata-image-lightbox__info,
+.wp-block-cata-image-lightbox__dots,
+.wp-block-cata-image-lightbox__progress-label {
+	display: none;
+}
+
 .wp-block-cata-image-lightbox__nav {
 	display: flex;
 	align-items: center;
@@ -335,6 +344,14 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 	}
 }
 
+// On desktop this wrapper is layout-transparent, leaving the original
+// previous / counter / next flex items and spacing unchanged.
+.wp-block-cata-image-lightbox__progress {
+	display: contents;
+}
+
+.wp-block-cata-image-lightbox__all-photos,
+.wp-block-cata-image-lightbox__info,
 .wp-block-cata-image-lightbox__close,
 .wp-block-cata-image-lightbox__prev,
 .wp-block-cata-image-lightbox__next {
@@ -347,6 +364,15 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 	border: none;
 	cursor: pointer;
 	line-height: 1;
+}
+
+.wp-block-cata-image-lightbox__all-photos,
+.wp-block-cata-image-lightbox__info {
+	display: none;
+}
+
+.wp-block-cata-image-lightbox__all-photos-icon {
+	font-size: 1.125rem;
 }
 
 // Well past the ~44px touch target minimum, and the one control a reader
@@ -559,8 +585,35 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 	// the column's end must land inside the smallest state. 4.75rem is the
 	// panel's block padding.
 	.wp-block-cata-image-lightbox__main {
+		position: relative;
 		align-self: flex-start;
 		min-block-size: calc( 100svh - 4.75rem );
+	}
+
+	// Use the already-reserved top band for the on-demand photo index; it adds
+	// no height and stays opposite the existing Close control.
+	.wp-block-cata-image-lightbox__all-photos {
+		position: absolute;
+		z-index: 9;
+		top: 0.25rem;
+		left: 0.5rem;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.375rem;
+		min-width: 2.75rem;
+		height: 3.25rem;
+		padding-inline: 0.5rem;
+		font-size: 0.875rem;
+		font-weight: 600;
+		border-radius: 999px;
+
+		&[aria-expanded="true"] {
+			background-color: rgba(127, 127, 127, 0.15);
+		}
+	}
+
+	.wp-block-cata-image-lightbox__close {
+		z-index: 9;
 	}
 
 	// Top-anchor the photo instead of centring it in the viewport: a short
@@ -574,17 +627,183 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 		justify-content: flex-start;
 	}
 
-	// Long editorial captions clamp to two lines so they stop crushing the
-	// photo; tapping the caption toggles the full text (see view script).
-	.wp-block-cata-image-lightbox__caption {
-		display: -webkit-box;
-		-webkit-box-orient: vertical;
-		-webkit-line-clamp: 2;
-		overflow: hidden;
+	// Captions and credits leave normal flow entirely. An explicit 44px Info
+	// disclosure reveals the complete sanitized HTML in a scrollable sheet;
+	// neither state changes the viewport or footer geometry.
+	.wp-block-cata-image-lightbox__info {
+		position: absolute;
+		z-index: 6;
+		bottom: 0.5rem;
+		left: 0.5rem;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 2.75rem;
+		height: 2.75rem;
+		padding-inline: 0.75rem;
+		font-size: 0.8125rem;
+		font-weight: 600;
+		background-color: rgba(0, 0, 0, 0.72);
+		color: #fff;
+		border-radius: 999px;
+	}
 
-		&.is-expanded {
+	.wp-block-cata-image-lightbox__caption {
+		position: absolute;
+		z-index: 5;
+		inset-inline: 0;
+		bottom: 0;
+		display: none;
+		box-sizing: border-box;
+		width: 100%;
+		max-width: none;
+		max-block-size: 45svh;
+		margin: 0;
+		padding: 1rem 1rem 4rem;
+		color: inherit;
+		background-color: var(--cata-image-lightbox-background);
+		box-shadow: 0 -0.25rem 1rem rgba(0, 0, 0, 0.2);
+		text-align: start;
+		overflow: hidden auto;
+		overscroll-behavior: contain;
+		opacity: 0.98;
+
+		&.is-open:not([hidden]) {
 			display: block;
-			-webkit-line-clamp: unset;
 		}
+	}
+
+	.is-info-open .wp-block-cata-image-lightbox__navzone,
+	.is-cata-image-lightbox-index-open .wp-block-cata-image-lightbox__navzone {
+		display: none;
+	}
+
+	// One compact 48px footer replaces the old 64px nav plus 64px persistent
+	// strip. Its middle carries visual dots and the exact live counter.
+	.wp-block-cata-image-lightbox__nav {
+		flex: 0 0 3rem;
+		justify-content: space-between;
+		gap: 0;
+		min-block-size: 3rem;
+		padding-block-start: 0;
+	}
+
+	.wp-block-cata-image-lightbox__prev,
+	.wp-block-cata-image-lightbox__next {
+		flex: 0 0 3rem;
+		width: 3rem;
+		height: 3rem;
+		font-size: 2rem;
+
+		&:disabled {
+			cursor: default;
+			opacity: 0.3;
+		}
+	}
+
+	.is-cata-image-lightbox-at-start .wp-block-cata-image-lightbox__navzone--prev,
+	.is-cata-image-lightbox-at-end .wp-block-cata-image-lightbox__navzone--next {
+		display: none;
+	}
+
+	.wp-block-cata-image-lightbox__progress {
+		display: flex;
+		flex: 1 1 auto;
+		align-items: center;
+		justify-content: center;
+		gap: 0.625rem;
+		min-width: 0;
+	}
+
+	.wp-block-cata-image-lightbox__dots {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.375rem;
+		min-width: 4.75rem;
+	}
+
+	.wp-block-cata-image-lightbox__dot {
+		display: block;
+		width: 0.375rem;
+		height: 0.375rem;
+		background-color: currentcolor;
+		border-radius: 50%;
+		opacity: 0.38;
+		transform: scale(1);
+
+		&.is-active {
+			opacity: 1;
+			transform: scale(1.333);
+		}
+
+		&.is-overflow-start,
+		&.is-overflow-end {
+			transform: scale(0.667);
+		}
+	}
+
+	.wp-block-cata-image-lightbox__counter {
+		min-width: 5ch;
+		white-space: nowrap;
+	}
+
+	.wp-block-cata-image-lightbox__progress-label {
+		font-size: 0.6875rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		opacity: 0.7;
+	}
+
+	.is-cata-image-lightbox-ad-slide {
+
+		.wp-block-cata-image-lightbox__progress {
+			flex-direction: column;
+			gap: 0.0625rem;
+		}
+
+		.wp-block-cata-image-lightbox__dots {
+			display: none;
+		}
+
+		.wp-block-cata-image-lightbox__progress-label {
+			display: block;
+		}
+	}
+
+	// The existing lazy thumbnail buttons become a grid only on request. The
+	// overlay is a sibling of the viewport, so the ad slide and its ancestors
+	// remain laid out and measurable underneath it.
+	.wp-block-cata-image-lightbox__thumbs {
+		position: absolute;
+		z-index: 8;
+		inset: 0 0 3rem;
+		display: none;
+		grid-template-columns: repeat(auto-fill, minmax(4rem, 1fr));
+		align-content: start;
+		gap: 0.5rem;
+		contain: inline-size;
+		padding: 0.75rem;
+		background-color: var(--cata-image-lightbox-background);
+		overflow: hidden auto;
+		overscroll-behavior: contain;
+		scrollbar-width: thin;
+	}
+
+	.is-cata-image-lightbox-index-open .wp-block-cata-image-lightbox__thumbs:not([hidden]) {
+		display: grid;
+	}
+
+	.wp-block-cata-image-lightbox__thumb {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 4 / 3;
+	}
+}
+
+@media (width < 600px) and (prefers-reduced-motion: no-preference) {
+
+	.wp-block-cata-image-lightbox__dot {
+		transition: opacity 150ms ease, transform 150ms ease;
 	}
 }
