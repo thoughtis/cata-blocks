@@ -524,23 +524,54 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 
 @media ( width < 600px ) {
 	// Full-bleed panel: every reserved band on a phone comes out of the photo.
+	// Minimums are svh, not dvh: iPhone Safari lays the scroll-locked dialog
+	// out against the large viewport, so dvh minimums can push the nav row and
+	// thumbs under the URL bar; svh is the one height every chrome state can
+	// actually show. The dialog itself stays dvh so the backdrop still covers
+	// the biggest the viewport can get.
 	.wp-block-cata-image-lightbox {
 		--cata-image-lightbox-backdrop-gap: 0px;
 		--cata-image-lightbox-panel-inline-size: 100%;
-		--cata-image-lightbox-panel-block-size: 100dvh;
-		--cata-image-lightbox-gallery-block-size: 55dvh;
+		--cata-image-lightbox-panel-block-size: 100svh;
+		--cata-image-lightbox-gallery-block-size: 55svh;
 	}
 
+	// Stretch instead of the auto-margin centring: when the dialog's dvh box
+	// outgrows the visible viewport, centring would sink the close button below
+	// the top edge, while stretching keeps the panel's background covering the
+	// whole box with the content anchored to the top. The bottom padding keeps
+	// the thumb strip clear of the home indicator; env() reads 0 until the
+	// theme opts into viewport-fit=cover, so the 1.25rem fallback carries the
+	// URL-bar clearance either way.
 	.wp-block-cata-image-lightbox__panel {
+		align-self: stretch;
+		margin-block: 0;
 		padding: 0.5rem;
 		padding-block-start: 3.5rem;
+		padding-block-end: max( 1.25rem, env( safe-area-inset-bottom ) );
 		border-radius: 0;
 	}
 
 	// The ad lives in the slide sequence here, not stacked below the gallery,
 	// so the gallery column claims the panel instead of reserving an ad row.
+	// Top-anchored and svh-sized rather than stretched to the panel: the panel
+	// can be taller than the visible viewport (see above), and the controls at
+	// the column's end must land inside the smallest state. 4.75rem is the
+	// panel's block padding.
 	.wp-block-cata-image-lightbox__main {
-		min-block-size: calc( 100dvh - 4rem );
+		align-self: flex-start;
+		min-block-size: calc( 100svh - 4.75rem );
+	}
+
+	// Top-anchor the photo instead of centring it in the viewport: a short
+	// landscape image centred there strands a huge blank band above itself,
+	// while portrait images already sit flush with the top whenever they fill
+	// the space. The letterbox leftover pools between the caption and the nav
+	// row, where it reads as the control area's own band. The ad break keeps
+	// the centring its own rule gives it — a creative pinned to the top of an
+	// otherwise empty screen reads broken.
+	.wp-block-cata-image-lightbox__slide:not( .wp-block-cata-image-lightbox__slide--ad ) {
+		justify-content: flex-start;
 	}
 
 	// Long editorial captions clamp to two lines so they stop crushing the
