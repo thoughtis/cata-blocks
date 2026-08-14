@@ -14,6 +14,17 @@ const SWIPE_THRESHOLD = 50;
 // (vs. a vertical scroll) and starts blocking the page's own touch handling.
 const DIRECTION_LOCK = 10;
 
+// A phone drag commits after a deliberate distance or a short, fast flick.
+// The minimum keeps tiny motions from qualifying on velocity alone.
+const DRAG_COMMIT_RATIO = 0.2;
+const DRAG_MIN_DISTANCE = 20;
+const DRAG_FLICK_VELOCITY = 0.35;
+
+// Matches the transform transition in style.scss; the small buffer is a
+// fallback for browsers that fail to deliver transitionend.
+const DRAG_SNAP_DURATION = 220;
+const DRAG_SNAP_BUFFER = 50;
+
 // Instagram-style pagination stays legible by showing only this many visual
 // positions; the exact counter remains the source of truth.
 const DOT_WINDOW_SIZE = 7;
@@ -29,6 +40,8 @@ const AD_SLIDE_AFTER = 4;
 // its own instead of a box stacked under the photo. Matches the stylesheet's
 // phone breakpoint.
 const PHONE_QUERY = '( max-width: 599px )';
+
+const REDUCED_MOTION_QUERY = '( prefers-reduced-motion: reduce )';
 
 // Galleries belonging to infinitely scrolled articles, keyed by the article
 // element their content images live in.
@@ -323,6 +336,9 @@ function createGallery( region ) {
 	const panel = region.querySelector(
 		'.wp-block-cata-image-lightbox__panel'
 	);
+	const viewport = region.querySelector(
+		'.wp-block-cata-image-lightbox__viewport'
+	);
 	const prevButton = region.querySelector(
 		'.wp-block-cata-image-lightbox__prev'
 	);
@@ -403,6 +419,18 @@ function createGallery( region ) {
 	// breakpoint changes reversible without touching the fixed ad placement.
 	let indexOpen = false;
 	let openInfoButton = null;
+
+	// Gesture state is deliberately separate from slide state. Only the
+	// current slide and its immediate sequence neighbors ever receive live
+	// layout classes; the ad's own always-laid-out rule remains untouched.
+	const reducedMotion = window.matchMedia( REDUCED_MOTION_QUERY );
+	let dragWindow = null;
+	let dragTimer = null;
+	let dragTransitionSlide = null;
+	let dragTransitionEnd = null;
+	let finishDragPromise = null;
+	let finishDragResolve = null;
+	let swipeNavigation = null;
 
 	/**
 	 * Slide position of a photo index; positions at or past the ad break sit
@@ -659,6 +687,7 @@ function createGallery( region ) {
 	 */
 	function syncPhoneMode() {
 		if ( ! phoneMedia.matches ) {
+			swipeNavigation?.cancel();
 			closeIndex();
 			closeInfo();
 		}
@@ -683,6 +712,7 @@ function createGallery( region ) {
 	function open( photoIndex, trigger ) {
 		const index = slidePositionFor( photoIndex );
 
+		swipeNavigation?.cancel();
 		closeIndex();
 		closeInfo();
 
@@ -882,9 +912,19 @@ function createGallery( region ) {
 	 * Navigate to a slide, waiting for its image so the outgoing slide stays
 	 * visible until the incoming one can paint — a crossfade, not a blank flash.
 	 *
-	 * @param {number} index Slide index to show.
+	 * @param {number}  index                Slide index to show.
+	 * @param {Object}  options              Navigation behavior.
+	 * @param {boolean} options.waitForImage Keep the outgoing slide until decode.
+	 * @param {boolean} options.fromDrag     Whether a live snap owns cleanup.
 	 */
-	async function showSlide( index ) {
+	async function showSlide(
+		index,
+		{ waitForImage = true, fromDrag = false } = {}
+	) {
+		if ( ! fromDrag ) {
+			swipeNavigation?.cancel();
+		}
+
 		closeOverlaysForNavigation();
 
 		if ( index === currentIndex ) {
@@ -897,7 +937,7 @@ function createGallery( region ) {
 		const token = ++navigation;
 		const img = images[ index ];
 
-		if ( img && ! img.complete ) {
+		if ( waitForImage && img && ! img.complete ) {
 			try {
 				await img.decode();
 			} catch ( error ) {
@@ -1002,6 +1042,278 @@ function createGallery( region ) {
 	}
 
 	/**
+	 * Lay out the current slide and only its immediate sequence neighbors for a
+	 * direct phone drag. Other photo slides retain display:none and no geometry;
+	 * the ad retains its independent visibility-based measurability contract.
+	 *
+	 * @return {Object|null} The live window, or null when layout is unavailable.
+	 */
+	function startDragWindow() {
+		if ( ! viewport || dragWindow ) {
+			return null;
+		}
+
+		const width =
+			viewport.getBoundingClientRect().width || viewport.clientWidth;
+
+		if ( width <= 0 ) {
+			return null;
+		}
+
+		// A direct gesture supersedes a button navigation still waiting on decode.
+		navigation++;
+		closeOverlaysForNavigation();
+
+		const previousIndex = currentIndex > 0 ? currentIndex - 1 : null;
+		const nextIndex =
+			currentIndex < slides.length - 1 ? currentIndex + 1 : null;
+
+		dragWindow = {
+			currentIndex,
+			previousIndex,
+			nextIndex,
+			width,
+			neighborState: new Map(),
+		};
+
+		slides[ currentIndex ].classList.add(
+			'is-cata-image-lightbox-drag-current'
+		);
+
+		[ previousIndex, nextIndex ].forEach( ( index, direction ) => {
+			if ( null === index ) {
+				return;
+			}
+
+			dragWindow.neighborState.set( index, {
+				ariaHidden: slides[ index ].getAttribute( 'aria-hidden' ),
+				inert: slides[ index ].inert,
+			} );
+			slides[ index ].setAttribute( 'aria-hidden', 'true' );
+			slides[ index ].inert = true;
+			slides[ index ].classList.add(
+				0 === direction
+					? 'is-cata-image-lightbox-drag-previous'
+					: 'is-cata-image-lightbox-drag-next'
+			);
+			warm( images[ index ] );
+			showPlaceholder( index );
+		} );
+
+		viewport.style.setProperty(
+			'--cata-image-lightbox-drag-offset',
+			'0px'
+		);
+		viewport.classList.add( 'is-cata-image-lightbox-dragging' );
+
+		return dragWindow;
+	}
+
+	/**
+	 * Track a horizontal pointer within the live slide window, with a small
+	 * resistance at bounded sequence ends.
+	 *
+	 * @param {number} offset Raw distance from pointer-down, in CSS pixels.
+	 */
+	function moveDragWindow( offset ) {
+		if ( ! viewport || ! dragWindow ) {
+			return;
+		}
+
+		let constrained = offset;
+
+		if (
+			( offset > 0 && null === dragWindow.previousIndex ) ||
+			( offset < 0 && null === dragWindow.nextIndex )
+		) {
+			constrained *= 0.22;
+		}
+
+		constrained = Math.max(
+			-dragWindow.width,
+			Math.min( dragWindow.width, constrained )
+		);
+		viewport.style.setProperty(
+			'--cata-image-lightbox-drag-offset',
+			`${ constrained }px`
+		);
+	}
+
+	/**
+	 * Remove transition listeners/timers for the active snap.
+	 */
+	function clearDragTransition() {
+		clearTimeout( dragTimer );
+		dragTimer = null;
+
+		if ( dragTransitionSlide && dragTransitionEnd ) {
+			dragTransitionSlide.removeEventListener(
+				'transitionend',
+				dragTransitionEnd
+			);
+		}
+
+		dragTransitionSlide = null;
+		dragTransitionEnd = null;
+	}
+
+	/**
+	 * Remove every temporary live-window class without touching is-active or
+	 * the ad slide's permanent layout rule.
+	 */
+	function cleanDragWindow() {
+		if ( ! viewport || ! dragWindow ) {
+			return;
+		}
+
+		const windowIndices = [
+			dragWindow.currentIndex,
+			dragWindow.previousIndex,
+			dragWindow.nextIndex,
+		];
+
+		windowIndices.forEach( ( index ) => {
+			if ( null === index ) {
+				return;
+			}
+
+			const neighborState = dragWindow.neighborState.get( index );
+
+			if ( neighborState ) {
+				if ( null === neighborState.ariaHidden ) {
+					slides[ index ].removeAttribute( 'aria-hidden' );
+				} else {
+					slides[ index ].setAttribute(
+						'aria-hidden',
+						neighborState.ariaHidden
+					);
+				}
+
+				slides[ index ].inert = neighborState.inert;
+			}
+
+			slides[ index ].classList.remove(
+				'is-cata-image-lightbox-drag-current',
+				'is-cata-image-lightbox-drag-previous',
+				'is-cata-image-lightbox-drag-next'
+			);
+		} );
+
+		viewport.classList.remove(
+			'is-cata-image-lightbox-dragging',
+			'is-cata-image-lightbox-snapping'
+		);
+		viewport.style.removeProperty( '--cata-image-lightbox-drag-offset' );
+		dragWindow = null;
+	}
+
+	/**
+	 * Complete or cancel a snap, resolving the pointer engine's settling state.
+	 *
+	 * @param {number|null} targetIndex Target slide, or null for snap-back.
+	 */
+	function completeDragWindow( targetIndex ) {
+		const resolve = finishDragResolve;
+
+		clearDragTransition();
+		finishDragPromise = null;
+		finishDragResolve = null;
+
+		if ( null !== targetIndex ) {
+			showSlide( targetIndex, {
+				waitForImage: false,
+				fromDrag: true,
+			} );
+		}
+
+		cleanDragWindow();
+		resolve?.();
+	}
+
+	/**
+	 * Snap a tracked drag to its neighbor or back to the current slide.
+	 *
+	 * @param {number} offset   Raw distance from pointer-down.
+	 * @param {number} velocity Recent horizontal velocity in pixels/ms.
+	 *
+	 * @return {Promise<void>} Resolves when the live window is cleaned up.
+	 */
+	function finishDragWindow( offset, velocity ) {
+		if ( ! viewport || ! dragWindow ) {
+			return Promise.resolve();
+		}
+
+		const farEnough =
+			Math.abs( offset ) >= dragWindow.width * DRAG_COMMIT_RATIO;
+		const fastEnough =
+			Math.abs( offset ) >= DRAG_MIN_DISTANCE &&
+			Math.abs( velocity ) >= DRAG_FLICK_VELOCITY;
+		let targetIndex = null;
+
+		if ( farEnough || fastEnough ) {
+			targetIndex =
+				offset < 0 ? dragWindow.nextIndex : dragWindow.previousIndex;
+		}
+
+		let targetOffset = 0;
+
+		if ( null !== targetIndex ) {
+			targetOffset = offset < 0 ? -dragWindow.width : dragWindow.width;
+		}
+
+		viewport.classList.remove( 'is-cata-image-lightbox-dragging' );
+		viewport.classList.add( 'is-cata-image-lightbox-snapping' );
+
+		if ( reducedMotion.matches ) {
+			moveDragWindow( targetOffset );
+			completeDragWindow( targetIndex );
+			return Promise.resolve();
+		}
+
+		// Flush the tracked position before enabling the snap transition. This is
+		// important for a fast flick whose pointermove and pointerup share a frame.
+		slides[ dragWindow.currentIndex ].getBoundingClientRect();
+
+		finishDragPromise = new Promise( ( resolve ) => {
+			finishDragResolve = resolve;
+		} );
+		dragTransitionSlide = slides[ dragWindow.currentIndex ];
+		dragTransitionEnd = ( event ) => {
+			if ( 'transform' === event.propertyName ) {
+				completeDragWindow( targetIndex );
+			}
+		};
+		dragTransitionSlide.addEventListener(
+			'transitionend',
+			dragTransitionEnd
+		);
+		dragTimer = setTimeout(
+			() => completeDragWindow( targetIndex ),
+			DRAG_SNAP_DURATION + DRAG_SNAP_BUFFER
+		);
+		window.requestAnimationFrame( () => moveDragWindow( targetOffset ) );
+
+		return finishDragPromise;
+	}
+
+	/**
+	 * Immediately abandon any direct drag/snap without changing slides.
+	 */
+	function cancelDragWindow() {
+		if ( ! dragWindow ) {
+			return;
+		}
+
+		const resolve = finishDragResolve;
+
+		clearDragTransition();
+		finishDragPromise = null;
+		finishDragResolve = null;
+		cleanDragWindow();
+		resolve?.();
+	}
+
+	/**
 	 * Mirror the current slide into the URL hash as an ad refresh signal, not a
 	 * deep link. replaceState keeps history.state intact and adds no entries, so
 	 * it leaves both the entry pushed on open and infinite scroll's own entries
@@ -1049,6 +1361,7 @@ function createGallery( region ) {
 	dialog.addEventListener( 'close', () => {
 		clearTimeout( openEventTimer );
 		openEventTimer = null;
+		swipeNavigation?.cancel();
 		closeIndex();
 		closeInfo();
 
@@ -1223,8 +1536,8 @@ function createGallery( region ) {
 		nextThumb.scrollIntoView( { block: 'nearest', inline: 'nearest' } );
 	} );
 
-	wireSwipeNavigation(
-		region.querySelector( '.wp-block-cata-image-lightbox__viewport' ),
+	swipeNavigation = wireSwipeNavigation(
+		viewport,
 		next,
 		prev,
 		( event ) =>
@@ -1233,7 +1546,15 @@ function createGallery( region ) {
 				event.target.closest?.(
 					'.wp-block-cata-image-lightbox__caption, .wp-block-cata-image-lightbox__info'
 				)
-			)
+			),
+		{
+			enabled: () => phoneMedia.matches,
+			busy: () => Boolean( dragWindow ),
+			start: startDragWindow,
+			move: moveDragWindow,
+			finish: finishDragWindow,
+			cancel: cancelDragWindow,
+		}
 	);
 
 	phoneMedia.addEventListener( 'change', syncPhoneMode );
@@ -1297,14 +1618,12 @@ function insertAdSlide( region, useInStream ) {
 }
 
 /**
- * Wire swipe-to-navigate on the slide viewport.
+ * Wire touch/pen navigation on the slide viewport.
  *
- * Touch and pen only — mouse users already have the tap-to-navigate zones,
- * the arrow buttons, and the arrow keys, and a mouse-drag gesture would
- * collide with selecting the caption text. `touch-action: pan-y` on the
- * viewport (see style.scss) leaves vertical scrolling (for a slide taller
- * than the viewport) to the browser and hands horizontal movement to this
- * gesture instead of the OS's edge-swipe-back gesture.
+ * Phones use a direct, finger-tracking live window supplied by `drag`; wider
+ * layouts retain the original threshold-then-crossfade swipe. Touch and pen
+ * only — mouse drag would collide with selecting caption text. `touch-action:
+ * pan-y pinch-zoom` leaves vertical scrolling and pinch zoom to the browser.
  *
  * Swipe direction follows the arrow buttons' fixed left-to-right sense
  * (swipe left = next, swipe right = previous), not text direction.
@@ -1313,8 +1632,11 @@ function insertAdSlide( region, useInStream ) {
  * @param {Function}    next         Step forward one slide.
  * @param {Function}    prev         Step back one slide.
  * @param {Function}    shouldIgnore Whether an origin belongs to an overlay.
+ * @param {Object}      drag         Direct-drag lifecycle callbacks.
+ *
+ * @return {Object|undefined} A controller that can abandon active gesture UI.
  */
-function wireSwipeNavigation( viewport, next, prev, shouldIgnore ) {
+function wireSwipeNavigation( viewport, next, prev, shouldIgnore, drag = {} ) {
 	if ( ! viewport ) {
 		return;
 	}
@@ -1322,10 +1644,80 @@ function wireSwipeNavigation( viewport, next, prev, shouldIgnore ) {
 	let pointerId = null;
 	let startX = 0;
 	let startY = 0;
+	let lastX = 0;
+	let lastTime = 0;
+	let velocity = 0;
 	let horizontal = false;
+	let direct = false;
+	let dragStarted = false;
+	let suppressClick = false;
+	let suppressClickTimer = null;
+
+	/**
+	 * Release capture defensively; a browser may already have canceled it.
+	 *
+	 * @param {number|null} id Pointer id to release.
+	 */
+	function releasePointer( id ) {
+		if ( null === id || ! viewport.releasePointerCapture ) {
+			return;
+		}
+
+		try {
+			if (
+				! viewport.hasPointerCapture ||
+				viewport.hasPointerCapture( id )
+			) {
+				viewport.releasePointerCapture( id );
+			}
+		} catch ( error ) {
+			// Pointer capture can disappear between the guard and release.
+		}
+	}
+
+	/**
+	 * Clear the tracked pointer, optionally abandoning direct-drag layout.
+	 *
+	 * @param {boolean} cancelDrag Whether the live slide window is canceled.
+	 */
+	function resetPointer( cancelDrag = false ) {
+		const id = pointerId;
+
+		pointerId = null;
+		releasePointer( id );
+
+		if ( cancelDrag && dragStarted ) {
+			drag.cancel?.();
+		}
+
+		horizontal = false;
+		direct = false;
+		dragStarted = false;
+		velocity = 0;
+	}
+
+	/**
+	 * Prevent the compatibility click after a horizontal drag from also
+	 * activating a whole-photo tap zone.
+	 */
+	function suppressCompatibilityClick() {
+		suppressClick = true;
+		clearTimeout( suppressClickTimer );
+		suppressClickTimer = setTimeout( () => {
+			suppressClick = false;
+			suppressClickTimer = null;
+		}, 0 );
+	}
 
 	viewport.addEventListener( 'pointerdown', ( event ) => {
 		if ( 'touch' !== event.pointerType && 'pen' !== event.pointerType ) {
+			return;
+		}
+
+		// A second finger means pinch zoom. Drop the first pointer and its live
+		// window immediately so neither custom movement nor snapping fights it.
+		if ( null !== pointerId ) {
+			resetPointer( true );
 			return;
 		}
 
@@ -1333,16 +1725,19 @@ function wireSwipeNavigation( viewport, next, prev, shouldIgnore ) {
 			return;
 		}
 
-		// A second finger landing mid-gesture (e.g. a pinch) abandons the swipe
-		// rather than reading its position as a continuation of the first.
-		if ( null !== pointerId ) {
+		if ( drag.busy?.() ) {
 			return;
 		}
 
 		pointerId = event.pointerId;
 		startX = event.clientX;
 		startY = event.clientY;
+		lastX = event.clientX;
+		lastTime = event.timeStamp;
+		velocity = 0;
 		horizontal = false;
+		direct = Boolean( drag.enabled?.() );
+		dragStarted = false;
 	} );
 
 	viewport.addEventListener( 'pointermove', ( event ) => {
@@ -1353,17 +1748,62 @@ function wireSwipeNavigation( viewport, next, prev, shouldIgnore ) {
 		const dx = event.clientX - startX;
 		const dy = event.clientY - startY;
 
+		// Once a gesture is clearly vertical, stop observing it and leave its
+		// entire lifetime to native scrolling.
+		if (
+			! horizontal &&
+			Math.abs( dy ) > DIRECTION_LOCK &&
+			Math.abs( dy ) >= Math.abs( dx )
+		) {
+			resetPointer();
+			return;
+		}
+
 		if (
 			! horizontal &&
 			Math.abs( dx ) > DIRECTION_LOCK &&
 			Math.abs( dx ) > Math.abs( dy )
 		) {
 			horizontal = true;
+
+			if ( direct ) {
+				dragStarted = Boolean( drag.start?.() );
+
+				if ( ! dragStarted ) {
+					resetPointer();
+					return;
+				}
+			}
+
+			try {
+				viewport.setPointerCapture?.( pointerId );
+			} catch ( error ) {
+				// Cancellation between lock and capture is harmless.
+			}
+		}
+
+		if ( ! horizontal ) {
+			return;
+		}
+
+		const elapsed = event.timeStamp - lastTime;
+
+		if ( elapsed > 0 && elapsed <= 100 ) {
+			velocity = ( event.clientX - lastX ) / elapsed;
+		} else if ( elapsed > 100 ) {
+			velocity = 0;
+		}
+
+		lastX = event.clientX;
+		lastTime = event.timeStamp;
+
+		if ( direct ) {
+			drag.move?.( dx );
 		}
 
 		// Once committed to a horizontal swipe, stop the browser from also
 		// rubber-banding or interpreting the same gesture as edge-swipe-back.
-		if ( horizontal && event.cancelable ) {
+		if ( event.cancelable ) {
 			event.preventDefault();
 		}
 	} );
@@ -1374,10 +1814,34 @@ function wireSwipeNavigation( viewport, next, prev, shouldIgnore ) {
 		}
 
 		const dx = event.clientX - startX;
+		const elapsed = event.timeStamp - lastTime;
+		const wasHorizontal = horizontal;
+		const wasDirect = direct;
+		const hadDragWindow = dragStarted;
 
-		pointerId = null;
+		if ( elapsed > 100 ) {
+			velocity = 0;
+		} else if ( elapsed > 0 && event.clientX !== lastX ) {
+			velocity = ( event.clientX - lastX ) / elapsed;
+		}
 
-		if ( ! horizontal || Math.abs( dx ) < SWIPE_THRESHOLD ) {
+		const releaseVelocity = velocity;
+		resetPointer();
+
+		if ( ! wasHorizontal ) {
+			return;
+		}
+
+		suppressCompatibilityClick();
+
+		if ( wasDirect && hadDragWindow ) {
+			Promise.resolve( drag.finish?.( dx, releaseVelocity ) ).catch( () =>
+				drag.cancel?.()
+			);
+			return;
+		}
+
+		if ( Math.abs( dx ) < SWIPE_THRESHOLD ) {
 			return;
 		}
 
@@ -1388,9 +1852,43 @@ function wireSwipeNavigation( viewport, next, prev, shouldIgnore ) {
 		}
 	} );
 
-	viewport.addEventListener( 'pointercancel', () => {
-		pointerId = null;
+	viewport.addEventListener( 'pointercancel', ( event ) => {
+		if ( event.pointerId === pointerId ) {
+			resetPointer( true );
+		}
 	} );
+
+	viewport.addEventListener( 'lostpointercapture', ( event ) => {
+		if ( event.pointerId === pointerId ) {
+			resetPointer( true );
+		}
+	} );
+
+	viewport.addEventListener(
+		'click',
+		( event ) => {
+			if ( ! suppressClick ) {
+				return;
+			}
+
+			suppressClick = false;
+			clearTimeout( suppressClickTimer );
+			suppressClickTimer = null;
+			event.preventDefault();
+			event.stopPropagation();
+		},
+		true
+	);
+
+	return {
+		cancel: () => {
+			resetPointer( true );
+			drag.cancel?.();
+			suppressClick = false;
+			clearTimeout( suppressClickTimer );
+			suppressClickTimer = null;
+		},
+	};
 }
 
 /**
