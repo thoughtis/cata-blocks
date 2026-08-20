@@ -380,11 +380,12 @@ function createGallery( region ) {
 	}
 
 	const phoneMedia = window.matchMedia( PHONE_QUERY );
+	const wiredForPhone = phoneMedia.matches;
 
 	// Ad placement is an immutable wiring-time decision. This is the only call
 	// that may move the container; later breakpoint changes update controls but
 	// never reparent a potentially filled iframe.
-	const adSlidePosition = insertAdSlide( region, phoneMedia.matches );
+	const adSlidePosition = insertAdSlide( region, wiredForPhone );
 
 	region.classList.toggle(
 		'has-cata-image-lightbox-ad-slide',
@@ -480,6 +481,18 @@ function createGallery( region ) {
 			button,
 			captionsById.get( button.getAttribute( 'aria-controls' ) ) ?? null,
 		] )
+	);
+	const relatedContent = region.querySelector(
+		'.wp-block-cata-image-lightbox__related'
+	);
+	const relatedSlide = relatedContent?.closest(
+		'.wp-block-cata-image-lightbox__slide'
+	);
+	const relatedPhoto = relatedSlide?.querySelector(
+		'.wp-block-cata-image-lightbox__image'
+	);
+	const relatedImage = relatedContent?.querySelector(
+		'.wp-block-cata-image-lightbox__related-image'
 	);
 
 	// The ad slot's element id, included in event details.
@@ -763,6 +776,117 @@ function createGallery( region ) {
 	}
 
 	/**
+	 * Remove the final-slide recommendation from layout and focus order.
+	 *
+	 * If a resize invalidates the fit while its link owns focus, move focus to
+	 * the stable panel before hiding that control.
+	 */
+	function hideRelatedContent() {
+		if ( ! relatedContent ) {
+			return;
+		}
+
+		if ( relatedContent.contains( dialog.ownerDocument.activeElement ) ) {
+			panel?.focus( { preventScroll: true } );
+		}
+
+		relatedContent.hidden = true;
+		relatedContent.classList.remove( 'is-measuring', 'is-visible' );
+		relatedContent.style.removeProperty(
+			'--cata-image-lightbox-related-top'
+		);
+	}
+
+	/**
+	 * Start the related card's deferred image only after the card earns a visible
+	 * slot. A portrait/short viewport therefore downloads no recommendation art.
+	 */
+	function loadRelatedImage() {
+		if ( ! relatedImage || relatedImage.getAttribute( 'src' ) ) {
+			return;
+		}
+
+		const source = relatedImage.dataset.cataRelatedSrc;
+
+		if ( source ) {
+			relatedImage.src = source;
+		}
+	}
+
+	/**
+	 * Fit the one end-of-gallery recommendation into actual surplus beneath the
+	 * final photo. The card is absolute, so this solve can only reveal or hide
+	 * it; it never participates in flex sizing and cannot shrink the image.
+	 */
+	function layoutRelatedContent() {
+		if (
+			! relatedContent ||
+			! relatedSlide ||
+			! relatedPhoto ||
+			! wiredForPhone ||
+			! phoneMedia.matches ||
+			! dialog.open ||
+			slides[ currentIndex ] !== relatedSlide ||
+			indexOpen ||
+			openInfoButton
+		) {
+			hideRelatedContent();
+			return;
+		}
+
+		const slideBox = relatedSlide.getBoundingClientRect();
+		const photoBox = relatedPhoto.getBoundingClientRect();
+
+		if (
+			slideBox.width <= 0 ||
+			slideBox.height <= 0 ||
+			photoBox.height <= 0
+		) {
+			hideRelatedContent();
+			return;
+		}
+
+		relatedContent.hidden = false;
+		relatedContent.classList.add( 'is-measuring' );
+		relatedContent.classList.remove( 'is-visible' );
+
+		const pixels = ( value ) => {
+			const parsed = Number.parseFloat( value );
+
+			return Number.isFinite( parsed ) ? parsed : 0;
+		};
+		const photoGap = pixels(
+			window.getComputedStyle( relatedSlide ).rowGap
+		);
+		const infoButton = relatedSlide.querySelector(
+			'.wp-block-cata-image-lightbox__info'
+		);
+		const infoBox = infoButton?.getBoundingClientRect();
+		const bottomLimit = infoBox?.height
+			? infoBox.top - slideBox.top
+			: slideBox.height;
+		const top = photoBox.bottom - slideBox.top + photoGap;
+
+		relatedContent.style.setProperty(
+			'--cata-image-lightbox-related-top',
+			`${ top }px`
+		);
+
+		const relatedBox = relatedContent.getBoundingClientRect();
+		const fits =
+			relatedBox.height > 0 && top + relatedBox.height <= bottomLimit;
+
+		if ( ! fits ) {
+			hideRelatedContent();
+			return;
+		}
+
+		relatedContent.classList.remove( 'is-measuring' );
+		relatedContent.classList.add( 'is-visible' );
+		loadRelatedImage();
+	}
+
+	/**
 	 * Close the on-demand phone index.
 	 *
 	 * @param {boolean} restoreFocus Whether focus returns to its disclosure.
@@ -778,6 +902,7 @@ function createGallery( region ) {
 		region.classList.remove( 'is-cata-image-lightbox-index-open' );
 		allPhotosButton?.setAttribute( 'aria-expanded', 'false' );
 		setThumbTabStop( nearestThumb( currentPhotoIndex ) );
+		layoutRelatedContent();
 
 		if ( restoreFocus && dialog.open ) {
 			allPhotosButton?.focus( { preventScroll: true } );
@@ -798,6 +923,7 @@ function createGallery( region ) {
 		indexOpen = true;
 		region.classList.add( 'is-cata-image-lightbox-index-open' );
 		allPhotosButton.setAttribute( 'aria-expanded', 'true' );
+		hideRelatedContent();
 		// Adding the class gives the absolute grid its real slot immediately; the
 		// forced read inside the solve prevents a frame of fallback-sized tiles.
 		layoutThumbnailGrid();
@@ -848,6 +974,8 @@ function createGallery( region ) {
 			caption.hidden = phoneMedia.matches;
 		}
 
+		layoutRelatedContent();
+
 		if ( restoreFocus && dialog.open ) {
 			button.focus( { preventScroll: true } );
 		}
@@ -877,6 +1005,7 @@ function createGallery( region ) {
 			?.classList.add( 'is-info-open' );
 		caption.hidden = false;
 		caption.classList.add( 'is-open' );
+		hideRelatedContent();
 	}
 
 	/**
@@ -917,6 +1046,7 @@ function createGallery( region ) {
 
 		updatePhoneNavigation();
 		updateDesktopThumbnailSources();
+		layoutRelatedContent();
 	}
 
 	/**
@@ -943,6 +1073,7 @@ function createGallery( region ) {
 		openScrollY = window.scrollY;
 		dialog.showModal();
 		updateDesktopThumbnailSources();
+		layoutRelatedContent();
 		pushHistoryEntry();
 
 		// showModal() focuses the first focusable element, which is the close
@@ -1059,6 +1190,7 @@ function createGallery( region ) {
 		updatePhoneNavigation();
 		markThumb( photoIndex );
 		scrollThumbIntoView( photoIndex );
+		layoutRelatedContent();
 	}
 
 	/**
@@ -1581,6 +1713,7 @@ function createGallery( region ) {
 		swipeNavigation?.cancel();
 		closeIndex();
 		closeInfo();
+		hideRelatedContent();
 
 		if ( historyEntry ) {
 			// Unwind the entry pushed on open, which also restores the URL the
@@ -1761,7 +1894,7 @@ function createGallery( region ) {
 			indexOpen ||
 			Boolean(
 				event.target.closest?.(
-					'.wp-block-cata-image-lightbox__caption, .wp-block-cata-image-lightbox__info'
+					'.wp-block-cata-image-lightbox__caption, .wp-block-cata-image-lightbox__info, .wp-block-cata-image-lightbox__related'
 				)
 			),
 		{
@@ -1790,6 +1923,23 @@ function createGallery( region ) {
 	if ( ! thumbnailGridObserver ) {
 		window.addEventListener( 'resize', layoutThumbnailGrid );
 	}
+
+	// The decision belongs to the rendered slot and photo, not the window or an
+	// orientation label. Observe both boxes so rotation, browser chrome, theme
+	// changes, and a late image decode all run the same fit calculation.
+	const relatedContentObserver =
+		relatedContent && viewport && relatedPhoto && 'ResizeObserver' in window
+			? new window.ResizeObserver( layoutRelatedContent )
+			: null;
+
+	if ( relatedContentObserver ) {
+		relatedContentObserver.observe( viewport );
+		relatedContentObserver.observe( relatedPhoto );
+	} else if ( relatedContent ) {
+		window.addEventListener( 'resize', layoutRelatedContent );
+	}
+
+	relatedPhoto?.addEventListener( 'load', layoutRelatedContent );
 
 	syncPhoneMode();
 

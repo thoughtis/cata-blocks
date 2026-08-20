@@ -10,6 +10,8 @@ namespace Cata\Blocks;
 use WP_HTML_Tag_Processor;
 use WP_Post;
 
+require_once __DIR__ . '/includes/trending.php';
+
 /**
  * Register Image Lightbox Block
  */

@@ -10,6 +10,7 @@
 namespace Cata\Blocks;
 
 use WP_Post;
+use function Cata\Blocks\Image_Lightbox\Trending\get_trending_post;
 
 $post = get_queried_object();
 
@@ -26,6 +27,16 @@ if ( empty( $images ) ) {
 }
 
 $total = count( $images );
+
+/**
+ * Filter whether a cached trending card may be rendered into the final photo.
+ * Client-side geometry still decides whether the phone has room to reveal it.
+ *
+ * @param bool    $show_related Whether to query and render the card. Default true.
+ * @param WP_Post $post         Current gallery post.
+ */
+$show_related = apply_filters( 'cata_blocks_image_lightbox_show_related_content', true, $post );
+$related_post = $show_related ? get_trending_post( $post->ID ) : null;
 
 // Editor color settings, emitted as the custom properties the styles consume.
 $styles = sprintf(
@@ -122,6 +133,58 @@ $thumbs_id   = $show_thumbs ? wp_unique_id( 'cata-image-lightbox-thumbs-' ) : ''
 								<figcaption id="<?php echo esc_attr( $caption_id ); ?>" class="wp-block-cata-image-lightbox__caption">
 									<?php echo wp_kses_post( $caption ); ?>
 								</figcaption>
+							<?php endif; ?>
+
+							<?php // One exit, at the natural end of the gallery. Repeating the same
+							// global trend on every landscape slide would compete with both the
+							// photos and the in-stream ad before a reader reaches either endpoint. ?>
+							<?php if ( $related_post instanceof WP_Post && $index === $total - 1 ) : ?>
+								<?php
+								$related_permalink  = get_permalink( $related_post );
+								$related_image_id   = get_post_thumbnail_id( $related_post );
+								$related_image      = $related_image_id ? wp_get_attachment_image_src( $related_image_id, 'full' ) : false;
+								$related_src        = '';
+								$related_src_width  = 0;
+								$related_src_height = 0;
+
+								if ( is_array( $related_image ) && (int) $related_image[1] > 0 ) {
+									// The card paints at 6rem (96px); 288px covers that slot through
+									// DPR 3 without loading a full feed-card image.
+									$related_src_width  = min( 288, (int) $related_image[1] );
+									$related_src_height = (int) round( $related_image[2] * $related_src_width / $related_image[1] );
+									$related_src        = cata_image_lightbox_sized_url( $related_image[0], $related_src_width );
+								}
+								?>
+								<aside
+									class="wp-block-cata-image-lightbox__related"
+									aria-label="<?php esc_attr_e( 'Trending now', 'cata' ); ?>"
+									hidden
+								>
+									<a class="wp-block-cata-image-lightbox__related-link" href="<?php echo esc_url( $related_permalink ); ?>">
+										<?php // The source stays inert until runtime geometry proves the card fits. ?>
+										<?php if ( '' !== $related_src ) : ?>
+											<span class="wp-block-cata-image-lightbox__related-media" aria-hidden="true">
+												<img
+													class="wp-block-cata-image-lightbox__related-image"
+													data-cata-related-src="<?php echo esc_url( $related_src ); ?>"
+													width="<?php echo esc_attr( $related_src_width ); ?>"
+													height="<?php echo esc_attr( $related_src_height ); ?>"
+													alt=""
+													loading="lazy"
+													decoding="async"
+												/>
+											</span>
+										<?php endif; ?>
+										<span class="wp-block-cata-image-lightbox__related-copy">
+											<span class="wp-block-cata-image-lightbox__related-label" aria-hidden="true">
+												<?php esc_html_e( 'Trending now', 'cata' ); ?>
+											</span>
+											<span class="wp-block-cata-image-lightbox__related-title">
+												<?php echo esc_html( get_the_title( $related_post ) ); ?>
+											</span>
+										</span>
+									</a>
+								</aside>
 							<?php endif; ?>
 						</figure>
 					<?php endforeach; ?>
