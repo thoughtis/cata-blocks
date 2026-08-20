@@ -327,6 +327,7 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 // query rules below opt them in without changing established desktop geometry.
 .wp-block-cata-image-lightbox__all-photos,
 .wp-block-cata-image-lightbox__info,
+.wp-block-cata-image-lightbox__related,
 .wp-block-cata-image-lightbox__dots,
 .wp-block-cata-image-lightbox__progress-label {
 	display: none;
@@ -708,6 +709,95 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 		&.is-open:not([hidden]) {
 			display: block;
 		}
+	}
+
+	// A single, quiet next-read card can occupy real surplus on the final photo.
+	// It is absolutely positioned from measured image geometry, so revealing it
+	// cannot enter flex sizing or take a pixel from the photo. JavaScript reads
+	// the slide's computed 0.75rem row gap, while bottom padding structurally
+	// reserves the same 0.5rem clearance as the Info pill's inset.
+	.wp-block-cata-image-lightbox__related:not([hidden]) {
+		position: absolute;
+		z-index: 4;
+		top: var(--cata-image-lightbox-related-top, 0);
+		inset-inline: 0.5rem;
+		display: block;
+		box-sizing: border-box;
+		padding-block-end: 0.5rem;
+	}
+
+	.wp-block-cata-image-lightbox__related.is-measuring {
+		visibility: hidden;
+		pointer-events: none;
+	}
+
+	.wp-block-cata-image-lightbox__related-link {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		align-items: center;
+		gap: 0.75rem;
+		box-sizing: border-box;
+		min-block-size: 4.5rem;
+		padding: 0.625rem;
+		color: inherit;
+		background-color: rgba(127, 127, 127, 0.12);
+		border: 1px solid rgba(127, 127, 127, 0.28);
+		border-radius: 4px;
+		text-decoration: none;
+	}
+
+	.wp-block-cata-image-lightbox__related-link:hover,
+	.wp-block-cata-image-lightbox__related-link:focus-visible {
+		background-color: rgba(127, 127, 127, 0.2);
+	}
+
+	.wp-block-cata-image-lightbox__related-media {
+		display: block;
+		width: 6rem;
+		aspect-ratio: 4 / 3;
+		overflow: hidden;
+		background-color: rgba(127, 127, 127, 0.16);
+		border-radius: 2px;
+	}
+
+	.wp-block-cata-image-lightbox__related-image {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.wp-block-cata-image-lightbox__related-copy {
+		display: flex;
+		min-width: 0;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+
+	.wp-block-cata-image-lightbox__related-label {
+		font-size: 0.6875rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		line-height: 1.1;
+		text-transform: uppercase;
+		opacity: 0.65;
+	}
+
+	.wp-block-cata-image-lightbox__related-title {
+		display: -webkit-box;
+		font-size: 0.9375rem;
+		font-weight: 600;
+		line-height: 1.25;
+		overflow: hidden;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+	}
+
+	// The grid and caption sheet replace the photo surface while open. Keep the
+	// card out of both the paint and accessibility trees beneath those overlays.
+	.is-cata-image-lightbox-index-open .wp-block-cata-image-lightbox__related,
+	.is-info-open .wp-block-cata-image-lightbox__related {
+		display: none;
 	}
 
 	.is-info-open .wp-block-cata-image-lightbox__navzone,
