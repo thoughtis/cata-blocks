@@ -43,6 +43,19 @@ const PHONE_QUERY = '( max-width: 599px )';
 
 const REDUCED_MOTION_QUERY = '( prefers-reduced-motion: reduce )';
 
+// The overlay starts from its established 4:3 crop and may grow continuously
+// toward square to spend a tall slot. It never turns portrait, so rotation can
+// improve coverage without making the same index feel like a different crop
+// system. Size limits are structural shares of the slot: two columns is the
+// ceiling (no tile owns more than half), while four columns is the readable
+// floor. Past that floor the grid scrolls instead of turning photos into dots.
+const THUMB_GRID_WIDEST_ASPECT_RATIO = 4 / 3;
+const THUMB_GRID_SQUARE_ASPECT_RATIO = 1;
+const THUMB_GRID_MIN_COLUMNS = 2;
+const THUMB_GRID_MAX_COLUMNS = 4;
+const THUMB_GRID_COLUMNS_PROPERTY = '--cata-image-lightbox-grid-columns';
+const THUMB_GRID_ASPECT_PROPERTY = '--cata-image-lightbox-grid-aspect-ratio';
+
 // Galleries belonging to infinitely scrolled articles, keyed by the article
 // element their content images live in.
 const galleries = new Map();
@@ -53,6 +66,67 @@ let articleCount = 0;
 // The gallery that rendered with the page, serving every content image that
 // isn't inside an article added later.
 let pageGallery = null;
+
+/**
+ * Choose the largest slot-derived thumbnail that fits every row, bounded by
+ * the grid's two-to-four-column density range. Column count is the discrete
+ * structure; CSS derives the continuous tile dimensions from the slot.
+ *
+ * When even four columns cannot fit, keeping four is the scrolling policy: a
+ * phone-width tile remains roughly one quarter of its own component instead
+ * of shrinking with an arbitrary pixel minimum.
+ *
+ * @param {number} inlineSize Available content-box width.
+ * @param {number} blockSize  Available content-box height.
+ * @param {number} columnGap  Horizontal gap between tiles.
+ * @param {number} rowGap     Vertical gap between tiles.
+ * @param {number} count      Number of rendered thumbnail buttons.
+ *
+ * @return {Object|null} Column count and aspect ratio, or null when unsolved.
+ */
+function solveThumbnailGrid( inlineSize, blockSize, columnGap, rowGap, count ) {
+	if ( inlineSize <= 0 || blockSize <= 0 || count <= 0 ) {
+		return null;
+	}
+
+	const firstCandidate = THUMB_GRID_MIN_COLUMNS;
+	// A gallery can render fewer buttons than photos when Photon cannot make a
+	// thumbnail. Preserve the half-slot ceiling even when only one survives.
+	const lastCandidate = Math.max(
+		firstCandidate,
+		Math.min( THUMB_GRID_MAX_COLUMNS, count )
+	);
+
+	for ( let columns = firstCandidate; columns <= lastCandidate; columns++ ) {
+		const tileInlineSize =
+			( inlineSize - columnGap * ( columns - 1 ) ) / columns;
+		const rows = Math.ceil( count / columns );
+		const contentBlockSize =
+			( tileInlineSize / THUMB_GRID_WIDEST_ASPECT_RATIO ) * rows +
+			rowGap * ( rows - 1 );
+
+		if ( contentBlockSize <= blockSize ) {
+			// Grow 4:3 rows into unused height, but stop at square: any space
+			// beyond that is a deliberate crop limit rather than an accidental cap.
+			const fillingBlockSize =
+				( blockSize - rowGap * ( rows - 1 ) ) / rows;
+			const tileBlockSize = Math.min(
+				tileInlineSize / THUMB_GRID_SQUARE_ASPECT_RATIO,
+				fillingBlockSize
+			);
+
+			return {
+				columns,
+				aspectRatio: tileInlineSize / tileBlockSize,
+			};
+		}
+	}
+
+	return {
+		columns: lastCandidate,
+		aspectRatio: THUMB_GRID_WIDEST_ASPECT_RATIO,
+	};
+}
 
 wire();
 
@@ -551,6 +625,55 @@ function createGallery( region ) {
 	}
 
 	/**
+	 * Solve the phone index from its own rendered content box. Padding and gaps
+	 * come from computed CSS so themes can restyle the slot without making the
+	 * JavaScript's geometry stale.
+	 */
+	function layoutThumbnailGrid() {
+		if (
+			! phoneMedia.matches ||
+			! indexOpen ||
+			! strip ||
+			0 === thumbEntries.length
+		) {
+			return;
+		}
+
+		const styles = window.getComputedStyle( strip );
+		const pixels = ( value ) => {
+			const parsed = Number.parseFloat( value );
+
+			return Number.isFinite( parsed ) ? parsed : 0;
+		};
+		const inlineSize =
+			strip.clientWidth -
+			pixels( styles.paddingLeft ) -
+			pixels( styles.paddingRight );
+		const blockSize =
+			strip.clientHeight -
+			pixels( styles.paddingTop ) -
+			pixels( styles.paddingBottom );
+		const layout = solveThumbnailGrid(
+			inlineSize,
+			blockSize,
+			pixels( styles.columnGap ),
+			pixels( styles.rowGap ),
+			thumbEntries.length
+		);
+
+		if ( layout ) {
+			strip.style.setProperty(
+				THUMB_GRID_COLUMNS_PROPERTY,
+				String( layout.columns )
+			);
+			strip.style.setProperty(
+				THUMB_GRID_ASPECT_PROPERTY,
+				String( layout.aspectRatio )
+			);
+		}
+	}
+
+	/**
 	 * Close the on-demand phone index.
 	 *
 	 * @param {boolean} restoreFocus Whether focus returns to its disclosure.
@@ -586,6 +709,9 @@ function createGallery( region ) {
 		indexOpen = true;
 		region.classList.add( 'is-cata-image-lightbox-index-open' );
 		allPhotosButton.setAttribute( 'aria-expanded', 'true' );
+		// Adding the class gives the absolute grid its real slot immediately; the
+		// forced read inside the solve prevents a frame of fallback-sized tiles.
+		layoutThumbnailGrid();
 
 		const thumb = nearestThumb( currentPhotoIndex );
 		setThumbTabStop( thumb );
@@ -1558,6 +1684,22 @@ function createGallery( region ) {
 	);
 
 	phoneMedia.addEventListener( 'change', syncPhoneMode );
+
+	// The grid owns a slot, not the window. Observe that box directly so browser
+	// chrome, rotation, and any surrounding layout change all trigger the same
+	// solve without guessing which global resize event caused it.
+	const thumbnailGridObserver =
+		strip && 'ResizeObserver' in window
+			? new window.ResizeObserver( layoutThumbnailGrid )
+			: null;
+
+	thumbnailGridObserver?.observe( strip );
+
+	// ResizeObserver is the exact path; this fallback keeps older engines usable.
+	if ( ! thumbnailGridObserver ) {
+		window.addEventListener( 'resize', layoutThumbnailGrid );
+	}
+
 	syncPhoneMode();
 
 	return {

@@ -816,7 +816,10 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 		z-index: 8;
 		inset: 0 0 3rem;
 		display: none;
-		grid-template-columns: repeat(auto-fill, minmax(4rem, 1fr));
+		// JavaScript chooses only the discrete structure; `1fr` makes the actual
+		// tile size a continuous function of this component's own inner width.
+		$grid-columns: var(--cata-image-lightbox-grid-columns, 4);
+		grid-template-columns: repeat($grid-columns, minmax(0, 1fr));
 		align-content: start;
 		gap: 0.5rem;
 		contain: inline-size;
@@ -834,7 +837,9 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 	.wp-block-cata-image-lightbox__thumb {
 		width: 100%;
 		height: auto;
-		aspect-ratio: 4 / 3;
+		// The slot solve can spend spare height until the established landscape
+		// crop reaches square; object-fit keeps the image itself undistorted.
+		aspect-ratio: var(--cata-image-lightbox-grid-aspect-ratio, 4 / 3);
 	}
 }
 
