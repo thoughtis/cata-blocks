@@ -520,10 +520,33 @@ function cata_image_lightbox_alt( array $image ): string {
 }
 
 /**
+ * Original width
+ *
+ * Read an attachment's true source width so CDN candidate lists never promise
+ * pixels the source cannot supply.
+ *
+ * @param array $image
+ *
+ * @return int Original width in pixels, or 0 when unknown.
+ */
+function cata_image_lightbox_original_width( array $image ): int {
+
+	if ( 0 === $image['id'] ) {
+		return 0;
+	}
+
+	$meta = wp_get_attachment_metadata( $image['id'] );
+
+	return is_array( $meta ) && ! empty( $meta['width'] )
+		? (int) $meta['width']
+		: 0;
+}
+
+/**
  * Thumbnail URL
  *
- * Source for a strip thumbnail, requested at twice the rendered box width so it
- * stays sharp on a retina screen.
+ * Fallback source for a thumbnail. The smallest responsive candidate stays at
+ * 144px because that is exactly 2x the persistent desktop strip's 72px tile.
  *
  * @param array $image
  *
@@ -538,6 +561,27 @@ function cata_image_lightbox_thumb_url( array $image ): string {
 	}
 
 	return cata_image_lightbox_sized_url( $base, 144 );
+}
+
+/**
+ * Thumbnail widths
+ *
+ * Build candidates around the widths the two layouts actually paint. The
+ * desktop tile needs 144px at DPR 2 and 224px at DPR 3. The solved phone grid's
+ * measured 64-191px range needs up to 576px at DPR 3; the middle candidates
+ * cover its common 24/30-, 14-, and 6-photo tile sizes without making every
+ * long gallery download the largest rendition.
+ *
+ * @param array $image
+ *
+ * @return int[] Candidate widths in pixels.
+ */
+function cata_image_lightbox_thumb_widths( array $image ): array {
+
+	return cata_image_lightbox_candidate_widths(
+		cata_image_lightbox_original_width( $image ),
+		array( 144, 224, 288, 384, 576 )
+	);
 }
 
 /**
@@ -561,15 +605,7 @@ function cata_image_lightbox_image_html( array $image ): string {
 	// Resolve the full-size source and the original width so srcset candidates
 	// never claim to be wider than the image the CDN can actually deliver.
 	$base     = cata_image_lightbox_base_src( $image );
-	$original = 0;
-
-	if ( $image['id'] ) {
-		$meta = wp_get_attachment_metadata( $image['id'] );
-
-		if ( is_array( $meta ) && ! empty( $meta['width'] ) ) {
-			$original = (int) $meta['width'];
-		}
-	}
+	$original = cata_image_lightbox_original_width( $image );
 
 	if ( '' === $base ) {
 		return '';
@@ -632,11 +668,62 @@ function cata_image_lightbox_sized_url( string $url, int $width ): string {
  */
 function cata_image_lightbox_srcset( string $url, int $original ): string {
 
-	$widths = array( 640, 960, 1280, 1600, 2048 );
+	return cata_image_lightbox_width_srcset(
+		$url,
+		$original,
+		array( 640, 960, 1280, 1600, 2048 )
+	);
+}
+
+/**
+ * Width srcset
+ *
+ * Turn a width ladder into honest CDN candidates. When the original falls
+ * between ladder rungs, include it as the sharpest available rendition rather
+ * than either omitting useful pixels or claiming an upscale the CDN will not
+ * perform.
+ *
+ * @param string $url      Full-size image URL.
+ * @param int    $original Original width in pixels, or 0 when unknown.
+ * @param int[]  $widths   Candidate widths in pixels.
+ *
+ * @return string Srcset value, or '' when no candidates apply.
+ */
+function cata_image_lightbox_width_srcset( string $url, int $original, array $widths ): string {
+
+	$widths     = cata_image_lightbox_candidate_widths( $original, $widths );
+	$candidates = array();
+
+	foreach ( $widths as $width ) {
+		$candidates[] = esc_url( cata_image_lightbox_sized_url( $url, $width ) ) . ' ' . $width . 'w';
+	}
+
+	return implode( ', ', $candidates );
+}
+
+/**
+ * Candidate widths
+ *
+ * Cap a width ladder at the source's true width. When the original falls
+ * between rungs, include it as the sharpest available candidate rather than
+ * either omitting useful pixels or claiming an upscale the CDN will not make.
+ *
+ * @param int   $original Original width in pixels, or 0 when unknown.
+ * @param int[] $widths   Candidate widths in pixels.
+ *
+ * @return int[] Honest candidate widths in pixels.
+ */
+function cata_image_lightbox_candidate_widths( int $original, array $widths ): array {
+
+	if ( empty( $widths ) ) {
+		return array();
+	}
+
+	$largest = max( $widths );
 
 	// Offer the original itself when it lands between candidates, so the
 	// sharpest honest width is always available.
-	if ( $original > 0 && $original < 2048 && ! in_array( $original, $widths, true ) ) {
+	if ( $original > 0 && $original < $largest && ! in_array( $original, $widths, true ) ) {
 		$widths[] = $original;
 		sort( $widths );
 	}
@@ -644,14 +731,12 @@ function cata_image_lightbox_srcset( string $url, int $original ): string {
 	$candidates = array();
 
 	foreach ( $widths as $width ) {
-		if ( $original > 0 && $width > $original ) {
-			continue;
+		if ( 0 === $original || $width <= $original ) {
+			$candidates[] = $width;
 		}
-
-		$candidates[] = esc_url( cata_image_lightbox_sized_url( $url, $width ) ) . ' ' . $width . 'w';
 	}
 
-	return implode( ', ', $candidates );
+	return $candidates;
 }
 
 /**

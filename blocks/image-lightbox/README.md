@@ -28,6 +28,8 @@ The `viewScriptModule` is imperative, not Interactivity API directives — direc
 
 Slide `srcset`s are built by hand against Photon/Jetpack resizing (640–2048 px candidates, capped at the original width) because the CDN setup leaves core's metadata-derived srcsets empty.
 
+Thumbnails use their own 144–576px candidate ladder. The server renders the 144px desktop fallback plus inert, original-width-capped candidate data; once a thumbnail layout has geometry, `view.js` points each image directly at the smallest candidate that covers its CSS width at the current DPR. The phone grid does that synchronously when All photos reveals it, preserving zero thumbnail requests both on page load and on the initial gallery open.
+
 ## Attributes and supports
 
 Backdrop color/opacity (`backdropColor`/`customBackdropColor`, `backdropOpacity`, default 80), native text/background color supports (skip-serialized; emitted as CSS custom properties by `render.php`), and the per-block Color Scheme control (`cataBlocksColorScheme`, from `block-editor/color-scheme`) honored as a `color-scheme` style. The editor shows a labeled placeholder.
