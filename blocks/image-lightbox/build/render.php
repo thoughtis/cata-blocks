@@ -171,6 +171,7 @@ $thumbs_id   = $show_thumbs ? wp_unique_id( 'cata-image-lightbox-thumbs-' ) : ''
 						<?php foreach ( $images as $index => $image ) : ?>
 							<?php $thumb_url = cata_image_lightbox_thumb_url( $image ); ?>
 							<?php if ( '' !== $thumb_url ) : ?>
+								<?php $thumb_widths = cata_image_lightbox_thumb_widths( $image ); ?>
 								<button
 									type="button"
 									class="wp-block-cata-image-lightbox__thumb<?php echo 0 === $index ? ' is-active' : ''; ?>"
@@ -179,9 +180,11 @@ $thumbs_id   = $show_thumbs ? wp_unique_id( 'cata-image-lightbox-thumbs-' ) : ''
 									<?php echo 0 === $index ? 'aria-current="true"' : ''; ?>
 									aria-label="<?php echo esc_attr( sprintf( /* translators: 1: slide number, 2: total slides */ __( 'Go to image %1$d of %2$d', 'cata' ), $index + 1, $total ) ); ?>"
 								><?php // Lazy: a closed dialog gives its thumbnails no geometry, so a
-								// 30 photo gallery fires nothing until it opens and then only for the
-								// part of the strip the reader has scrolled to. Empty alt because the
-								// button around it is already labeled. ?><img class="wp-block-cata-image-lightbox__thumb-image" src="<?php echo esc_url( $thumb_url ); ?>" alt="" loading="lazy" decoding="async" /></button>
+								// 30 photo gallery fires nothing on page load. On phones the strip stays
+								// geometry-free through gallery open and loads only when All photos opens.
+								// Empty alt because the button is labeled. Candidate widths are inert data:
+								// the phone solver chooses one before the grid's first lazy request, and
+								// desktop keeps the sharp 144px fallback unless DPR needs more. ?><img class="wp-block-cata-image-lightbox__thumb-image" src="<?php echo esc_url( $thumb_url ); ?>" data-cata-image-lightbox-widths="<?php echo esc_attr( implode( ',', $thumb_widths ) ); ?>" alt="" loading="lazy" decoding="async" /></button>
 							<?php endif; ?>
 						<?php endforeach; ?>
 					</div>

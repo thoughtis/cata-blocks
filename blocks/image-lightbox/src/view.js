@@ -82,7 +82,8 @@ let pageGallery = null;
  * @param {number} rowGap     Vertical gap between tiles.
  * @param {number} count      Number of rendered thumbnail buttons.
  *
- * @return {Object|null} Column count and aspect ratio, or null when unsolved.
+ * @return {Object|null} Column count, aspect ratio, and tile width, or null
+ *                       when unsolved.
  */
 function solveThumbnailGrid( inlineSize, blockSize, columnGap, rowGap, count ) {
 	if ( inlineSize <= 0 || blockSize <= 0 || count <= 0 ) {
@@ -118,6 +119,7 @@ function solveThumbnailGrid( inlineSize, blockSize, columnGap, rowGap, count ) {
 			return {
 				columns,
 				aspectRatio: tileInlineSize / tileBlockSize,
+				tileInlineSize,
 			};
 		}
 	}
@@ -125,6 +127,8 @@ function solveThumbnailGrid( inlineSize, blockSize, columnGap, rowGap, count ) {
 	return {
 		columns: lastCandidate,
 		aspectRatio: THUMB_GRID_WIDEST_ASPECT_RATIO,
+		tileInlineSize:
+			( inlineSize - columnGap * ( lastCandidate - 1 ) ) / lastCandidate,
 	};
 }
 
@@ -445,6 +449,20 @@ function createGallery( region ) {
 	const thumbEntries = Array.from( thumbs.entries() ).sort(
 		( [ first ], [ second ] ) => first - second
 	);
+	const thumbnailImages = thumbEntries
+		.map( ( [ , thumb ] ) =>
+			thumb.querySelector( '.wp-block-cata-image-lightbox__thumb-image' )
+		)
+		.filter( Boolean );
+	const thumbnailWidths = new Map(
+		thumbnailImages.map( ( image ) => [
+			image,
+			( image.dataset.cataImageLightboxWidths || '' )
+				.split( ',' )
+				.map( Number )
+				.filter( ( width ) => Number.isFinite( width ) && width > 0 ),
+		] )
+	);
 	const allPhotosButton = region.querySelector(
 		'.wp-block-cata-image-lightbox__all-photos'
 	);
@@ -625,6 +643,72 @@ function createGallery( region ) {
 	}
 
 	/**
+	 * Point each thumbnail at the smallest honest rendition that covers its
+	 * device-pixel width. Sources only grow after their first choice, so rotation
+	 * never pays for a second, smaller download.
+	 *
+	 * @param {number} inlineSize Rendered tile width in CSS pixels.
+	 */
+	function updateThumbnailSources( inlineSize ) {
+		if ( inlineSize <= 0 ) {
+			return;
+		}
+
+		const requiredWidth = Math.ceil( inlineSize * window.devicePixelRatio );
+
+		thumbnailWidths.forEach( ( widths, image ) => {
+			if ( 0 === widths.length ) {
+				return;
+			}
+
+			const nextWidth =
+				widths.find( ( width ) => width >= requiredWidth ) ??
+				widths[ widths.length - 1 ];
+			let source;
+
+			try {
+				source = new URL(
+					image.getAttribute( 'src' ),
+					window.location.href
+				);
+			} catch ( error ) {
+				return;
+			}
+
+			const currentWidth = Number( source.searchParams.get( 'w' ) );
+
+			if (
+				Number.isFinite( currentWidth ) &&
+				currentWidth >= nextWidth
+			) {
+				return;
+			}
+
+			source.searchParams.set( 'w', String( nextWidth ) );
+			image.src = source.toString();
+		} );
+	}
+
+	/**
+	 * Upgrade the fixed desktop strip after showModal() gives it geometry. The
+	 * layout itself stays at its established 72x52px; only DPR can raise its
+	 * selected source above the 144px server fallback.
+	 */
+	function updateDesktopThumbnailSources() {
+		if (
+			phoneMedia.matches ||
+			! dialog.open ||
+			0 === thumbEntries.length
+		) {
+			return;
+		}
+
+		updateThumbnailSources(
+			thumbEntries[ 0 ][ 1 ].getBoundingClientRect().width
+		);
+	}
+
+	/**
 	 * Solve the phone index from its own rendered content box. Padding and gaps
 	 * come from computed CSS so themes can restyle the slot without making the
 	 * JavaScript's geometry stale.
@@ -670,6 +754,11 @@ function createGallery( region ) {
 				THUMB_GRID_ASPECT_PROPERTY,
 				String( layout.aspectRatio )
 			);
+
+			// This runs synchronously in the task that reveals the lazy grid, so
+			// the first request uses the solved device-pixel width rather than the
+			// 144px desktop fallback.
+			updateThumbnailSources( layout.tileInlineSize );
 		}
 	}
 
@@ -827,6 +916,7 @@ function createGallery( region ) {
 		} );
 
 		updatePhoneNavigation();
+		updateDesktopThumbnailSources();
 	}
 
 	/**
@@ -852,6 +942,7 @@ function createGallery( region ) {
 		show( index );
 		openScrollY = window.scrollY;
 		dialog.showModal();
+		updateDesktopThumbnailSources();
 		pushHistoryEntry();
 
 		// showModal() focuses the first focusable element, which is the close
