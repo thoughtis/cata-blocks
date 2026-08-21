@@ -746,6 +746,20 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 		text-decoration: none;
 	}
 
+	// `color: inherit` above does NOT reach a visited link: browsers resolve
+	// :visited on a separate privacy-restricted path that cannot inherit, so a
+	// previously-read post fell back to the UA's purple against the dark panel.
+	// getComputedStyle deliberately reports the unvisited colour, so this is
+	// invisible to measurement and only shows in pixels. Restate the panel's own
+	// text colour as a concrete value.
+	.wp-block-cata-image-lightbox__related-link:visited,
+	.wp-block-cata-image-lightbox__related-link:visited
+		.wp-block-cata-image-lightbox__related-title,
+	.wp-block-cata-image-lightbox__related-link:visited
+		.wp-block-cata-image-lightbox__related-label {
+		color: var( --cata-image-lightbox-text, light-dark( #1a1a1a, #ffffff ) );
+	}
+
 	.wp-block-cata-image-lightbox__related-link:hover,
 	.wp-block-cata-image-lightbox__related-link:focus-visible {
 		background-color: rgba(127, 127, 127, 0.2);
