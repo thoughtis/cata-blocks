@@ -746,18 +746,25 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 		text-decoration: none;
 	}
 
-	// `color: inherit` above does NOT reach a visited link: browsers resolve
-	// :visited on a separate privacy-restricted path that cannot inherit, so a
-	// previously-read post fell back to the UA's purple against the dark panel.
-	// getComputedStyle deliberately reports the unvisited colour, so this is
-	// invisible to measurement and only shows in pixels. Restate the panel's own
-	// text colour as a concrete value.
-	.wp-block-cata-image-lightbox__related-link:visited,
-	.wp-block-cata-image-lightbox__related-link:visited
-		.wp-block-cata-image-lightbox__related-title,
-	.wp-block-cata-image-lightbox__related-link:visited
-		.wp-block-cata-image-lightbox__related-label {
+	// The theme's global link styling is element-level, which outranks a single
+	// block class: it was beating the `color: inherit` / `text-decoration: none`
+	// set above and painting the card as a plain hyperlink — measured live at
+	// rgb(182,194,250) with an underline. Scope through two ancestors so the
+	// block wins, and state every link state explicitly: :visited cannot inherit
+	// (browsers resolve it on a privacy-restricted path that also makes
+	// getComputedStyle report the unvisited colour), so without its own concrete
+	// value it falls back to the UA's purple.
+	.wp-block-cata-image-lightbox__panel
+		.wp-block-cata-image-lightbox__related
+		.wp-block-cata-image-lightbox__related-link,
+	.wp-block-cata-image-lightbox__panel
+		.wp-block-cata-image-lightbox__related
+		.wp-block-cata-image-lightbox__related-link:link,
+	.wp-block-cata-image-lightbox__panel
+		.wp-block-cata-image-lightbox__related
+		.wp-block-cata-image-lightbox__related-link:visited {
 		color: var( --cata-image-lightbox-text, light-dark( #1a1a1a, #ffffff ) );
+		text-decoration: none;
 	}
 
 	.wp-block-cata-image-lightbox__related-link:hover,
