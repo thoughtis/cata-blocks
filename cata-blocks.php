@@ -12,7 +12,7 @@
  * Description: Block Editor components for use with the Cata theme.
  * Author:      Thought & Expression Co. <devjobs@thought.is>
  * Author URI:  https://thought.is
- * Version:     0.19.2
+ * Version:     0.19.3
  * License:     GPL v3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.txt
  */
@@ -216,11 +216,18 @@ require_once __DIR__ . '/formats/overhang/overhang.php';
 require_once __DIR__ . '/variations/social-link/substack/substack.php';
 
 /**
+ * Extended Modified Date Post Date Variation
+ */
+require_once __DIR__ . '/variations/post-date/extended-modified/extended-modified.php';
+
+/**
  * Block Filters
  */
+require_once __DIR__ . '/block-filters/post-date/class-post-date.php';
 require_once __DIR__ . '/block-filters/post-excerpt/class-post-excerpt.php';
 require_once __DIR__ . '/block-filters/svg-icon/class-svg-icon.php';
 
+new Block_Filters\Post_Date();
 new Block_Filters\Post_Excerpt();
 new Block_Filters\SVG_Icon();
 
@@ -228,6 +235,7 @@ new Block_Filters\SVG_Icon();
  * Block Editor 
  */
 require_once __DIR__ . '/block-editor/app/block-editor.php';
+require_once __DIR__ . '/block-editor/post-date/post-date.php';
 require_once __DIR__ . '/block-editor/query-filters/query-filters.php';
 require_once __DIR__ . '/block-editor/text-decoration-color/text-decoration-color.php';
 require_once __DIR__ . '/block-editor/color-scheme/color-scheme.php';
