@@ -26,7 +26,7 @@ export default function Edit( { attributes, setAttributes } ) {
 	const gap = __experimentalGetGapCSSValue( attributes.style?.spacing?.blockGap );
 
 	const units = useCustomUnits( {
-		availableUnits: useSettings( 'spacing.units' )[0] ?? [
+		availableUnits: useSettings( 'spacing.units' )[0] || [
 			'px',
 			'em',
 			'rem'

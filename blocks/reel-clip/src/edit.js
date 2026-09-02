@@ -26,7 +26,7 @@ import { __experimentalUseCustomUnits as useCustomUnits, PanelBody, __experiment
 export default function Edit( { attributes: { inlineSize }, setAttributes } ) {
 
 	const units = useCustomUnits( {
-		availableUnits: useSettings( 'spacing.units' )[0] ?? [
+		availableUnits: useSettings( 'spacing.units' )[0] || [
 			'%',
 			'px',
 			'em',

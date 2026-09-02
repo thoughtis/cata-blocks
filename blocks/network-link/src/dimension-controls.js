@@ -16,7 +16,7 @@ const DimensionControls = ( {
 } ) => {
 	const defaultUnits = [ 'px', '%', 'vw', 'em', 'rem' ];
 	const units = useCustomUnits( {
-		availableUnits: useSettings( 'spacing.units' )[0] ?? defaultUnits,
+		availableUnits: useSettings( 'spacing.units' )[0] || defaultUnits,
 	} );
 	const onDimensionChange = ( dimension, nextValue ) => {
 		const parsedValue = parseFloat( nextValue );
