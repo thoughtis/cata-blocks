@@ -19,6 +19,12 @@
 	vertical-align: bottom;
 }
 
+// The metadata-only gallery's opener is a normal button in document flow,
+// rather than a badge anchored to a photo that does not exist.
+.cata-image-lightbox-gallery-link {
+	line-height: normal;
+}
+
 // Count badge: total number of images in the gallery. Doubles
 // as the keyboard-accessible button that opens the lightbox.
 .cata-image-lightbox-badge {

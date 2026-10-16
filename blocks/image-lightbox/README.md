@@ -9,6 +9,12 @@ Rendering is fully server-side (`render.php` plus the badge filter below). On si
 - **Minimum count**: fewer than 6 in-content images (filter `cata_blocks_image_lightbox_minimum_images`) means no gallery and no badges. The featured image is never a slide and doesn't count.
 - **Lightbox-only images**: `cata_lightbox_image_ids` post meta (REST-exposed on `wp/v2/posts`) holds attachment ids appended as extra slides not in the content; curated ids also force the gallery on below the minimum.
 
+Curated attachments also work when the article has **no in-content images**.
+In that case the template block renders a visible “View N photos” button using
+the same gallery opener as the image badges. The featured image is still never
+a slide. Invalid, duplicate or non-image attachment ids do not create slides;
+an entirely unusable selection renders neither an empty dialog nor an opener.
+
 `excludeFromLightbox`, an Inspector toggle added to `core/image` by the companion plugin `block-editor/image-lightbox-exclude`, opts an image out of a slide; it still opens the gallery at slide one.
 
 A `render_block_core/image` filter wraps each collected image in a trigger — `.cata-image-lightbox-figure` with slide index, plus an accessible badge button showing the total — in the initial HTML, so triggers exist even without JavaScript; images with existing click behavior (core's "enlarge on click", a wrapping link) are left alone.
@@ -37,4 +43,16 @@ Backdrop color/opacity (`backdropColor`/`customBackdropColor`, `backdropOpacity`
 
 ## Usage
 
-Place once in the single-post template (targets `get_queried_object()`); renders nothing on unqualifying posts. The stylesheet enqueues early on gallery posts so badges are styled at first paint, with a content-hash `?ver` for cache busting. Filters: `cata_blocks_support_image_lightbox_block` (kill switch), `cata_blocks_image_lightbox_images` (add/alter slides), `_minimum_images`, `_show_thumbnails`, `_show_ad`, `_show_related_content`, `_trending_window_days`, `_trending_candidate_pool`, `_trending_minimum_views`, `_badge_icon`, `_badge_text`, `_caption`, plus the close/prev/next icon filters. The plugin ships complete dialog styles; themes restyle only for a different look.
+Place once in the single-post template (targets `get_queried_object()`); renders nothing on unqualifying posts. The stylesheet enqueues early on gallery posts so badges are styled at first paint, with a content-hash `?ver` for cache busting. Registering the metadata alone does not install the template block. Filters: `cata_blocks_support_image_lightbox_block` (kill switch), `cata_blocks_image_lightbox_images` (add/alter slides), `_minimum_images`, `_show_thumbnails`, `_show_ad`, `_show_related_content`, `_trending_window_days`, `_trending_candidate_pool`, `_trending_minimum_views`, `_badge_icon`, `_badge_text`, `_caption`, plus the close/prev/next icon filters. The plugin ships complete dialog styles; themes restyle only for a different look.
+
+## Regression check
+
+Run `php blocks/image-lightbox/tests/meta-only.php` from the plugin root. The
+database-free harness executes the real collector and PHP renderer against
+stubbed WordPress attachment reads: metadata-only and mixed galleries, stable
+ordering, duplicate/featured/unavailable attachment exclusions, a visible
+opener, and the unchanged minimum for uncurated articles. Set
+`CATA_LIGHTBOX_FIXTURE=/path/gallery.html` to retain the generated gallery
+markup for a browser check with the built stylesheet and view script. A live
+site check must also confirm that its active single-post template contains
+`cata/image-lightbox` and that the selected slide images load when opened.

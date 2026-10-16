@@ -74,9 +74,21 @@ $next_icon  = apply_filters( 'cata_blocks_image_lightbox_next_icon', '→' );
 // Strip of thumbnails below the photo; filter to false for a bare gallery.
 $show_thumbs = apply_filters( 'cata_blocks_image_lightbox_show_thumbnails', true );
 $thumbs_id   = $show_thumbs ? wp_unique_id( 'cata-image-lightbox-thumbs-' ) : '';
+
+// A curated gallery can exist without a body image. The featured photo is
+// deliberately not a slide or trigger, so give these galleries an ordinary
+// button that uses the same delegated opener as the in-content badges.
+$has_content_images = array() !== cata_image_lightbox_get_images( parse_blocks( $post->post_content ) );
 ?>
 
 <div <?php echo $wrapper_attributes; ?>>
+	<?php if ( ! $has_content_images ) : ?>
+		<div class="cata-image-lightbox-figure cata-image-lightbox-gallery-link" data-cata-image-lightbox-index="0">
+			<button type="button" class="wp-element-button">
+				<?php echo esc_html( sprintf( /* translators: %d: number of gallery photos */ _n( 'View %d photo', 'View %d photos', $total, 'cata' ), $total ) ); ?>
+			</button>
+		</div>
+	<?php endif; ?>
 	<dialog
 		class="wp-block-cata-image-lightbox__dialog"
 		id="<?php echo esc_attr( wp_unique_id( 'cata-image-lightbox-' ) ); ?>"

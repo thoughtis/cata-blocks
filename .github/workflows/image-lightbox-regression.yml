@@ -1,0 +1,28 @@
+name: Image lightbox regression
+
+on:
+  pull_request:
+    paths:
+      - 'blocks/image-lightbox/**'
+      - '.github/workflows/image-lightbox-regression.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'blocks/image-lightbox/**'
+      - '.github/workflows/image-lightbox-regression.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  meta-only-gallery:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check PHP and generated renderer
+        run: |
+          php -l blocks/image-lightbox/image-lightbox.php
+          php -l blocks/image-lightbox/src/render.php
+          cmp blocks/image-lightbox/src/render.php blocks/image-lightbox/build/render.php
+      - name: Exercise collection and server rendering
+        run: php blocks/image-lightbox/tests/meta-only.php
