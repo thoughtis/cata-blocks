@@ -23,6 +23,7 @@ A `render_block_core/image` filter wraps each collected image in a trigger — `
 
 The `viewScriptModule` is imperative, not Interactivity API directives — directives bind only at hydration, but articles appended by the site's infinite scroll need galleries too: it listens for `cata-blocks:infinite-scroll:load`, imports the fetched article's gallery markup, namespaces its ids, and routes triggers to the right gallery. Also in `view.js`:
 
+- The opening click listener sits on each trigger, wired at load and again for each appended article, never on the document: Safari on iPhone and iPad synthesizes a click from a tap only for an element below `body` that listens for clicks, so a document listener heard mice but never fingers. Keyboard readers reach each photo through its badge, a real `<button>`.
 - Desktop keeps keyboard arrows, wrapping prev/next buttons, whole-image left/right click zones, and a persistent thumbnail strip. Phones stop at the sequence ends and use one compact footer with 44px prev/next controls, an exact live counter, and a visual seven-position sliding dot window.
 - Phone captions and credits are hidden from normal flow behind an explicit Info disclosure. The full sanitized caption opens in a scrollable sheet over the photo, so the image and footer do not move.
 - On phones, All photos opens the existing lazy thumbnails as an overlay grid with roving tabindex and arrow-key movement. The strip stays persistent and horizontal on desktop; disabling thumbnails with `cata_blocks_image_lightbox_show_thumbnails` also removes All photos.

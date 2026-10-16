@@ -1,0 +1,83 @@
+
+## WebKit 18.4 · iPhone 15 (393×659) · branch (0.19.6)
+      tap 3rd photo: touchend 1, pointerup 1, click → [IMG.wp-image-9]
+PASS  iPhone 15: tap on 3rd photo opens the gallery  — dialog[open], counter "3 / 8"
+PASS  iPhone 15: opens at photo 3 of 8
+PASS  iPhone 15: dialog is modal
+PASS  iPhone 15: one slideshow:open per tap  — 1 open event(s)
+PASS  iPhone 15: Next → 4 / 8  — 4 / 8
+PASS  iPhone 15: Close closes the gallery
+      scrollY 488 → 0 (history.back() reloaded the document 1×; same on main, see probe)
+PASS  iPhone 15: second tap reopens at 3 / 8  — 3 / 8
+PASS  iPhone 15: tap on 1st photo → 1 / 8  — 1 / 8
+PASS  iPhone 15: badge tap on 6th photo → 6 / 8  — 6 / 8
+PASS  iPhone 15: infinite scroll appended the next article and its gallery
+PASS  iPhone 15: tap on the appended article's 3rd photo opens ITS gallery at 3 / 7  — counter "3 / 7", dialog #cata-image-lightbox-3-1
+PASS  iPhone 15: with the appended article present, the first article's 3rd photo still opens 3 / 8 in the page gallery  — 2 articles, counter "3 / 8", dialog #cata-image-lightbox-3
+PASS  iPhone 15: no page errors
+
+## WebKit 18.4 · iPad Pro 11 (834×1194) · branch (0.19.6)
+      tap 3rd photo: touchend 1, pointerup 1, click → [IMG.wp-image-9]
+PASS  iPad Pro 11: tap on 3rd photo opens the gallery  — dialog[open], counter "3 / 8"
+PASS  iPad Pro 11: opens at photo 3 of 8
+PASS  iPad Pro 11: dialog is modal
+PASS  iPad Pro 11: one slideshow:open per tap  — 1 open event(s)
+PASS  iPad Pro 11: Next → 4 / 8  — 4 / 8
+PASS  iPad Pro 11: Close closes the gallery
+      scrollY 186 → 0 (history.back() reloaded the document 1×; same on main, see probe)
+PASS  iPad Pro 11: second tap reopens at 3 / 8  — 3 / 8
+PASS  iPad Pro 11: tap on 1st photo → 1 / 8  — 1 / 8
+PASS  iPad Pro 11: badge tap on 6th photo → 6 / 8  — 6 / 8
+PASS  iPad Pro 11: infinite scroll appended the next article and its gallery
+PASS  iPad Pro 11: tap on the appended article's 3rd photo opens ITS gallery at 3 / 7  — counter "3 / 7", dialog #cata-image-lightbox-3-1
+PASS  iPad Pro 11: with the appended article present, the first article's 3rd photo still opens 3 / 8 in the page gallery  — 2 articles, counter "3 / 8", dialog #cata-image-lightbox-3
+PASS  iPad Pro 11: no page errors
+
+## WebKit 18.4 · iPhone 15 (393×659) · main (0.19.5)
+      tap 3rd photo: touchend 1, pointerup 1, click → []
+PASS  [main] iPhone 15: tap on 3rd photo does NOT open (bug reproduced)  — no click was synthesized, no dialog
+PASS  [main] iPhone 15: badge tap opens  — 3 / 8
+
+## WebKit 18.4 · iPad Pro 11 (834×1194) · main (0.19.5)
+      tap 3rd photo: touchend 1, pointerup 1, click → []
+PASS  [main] iPad Pro 11: tap on 3rd photo does NOT open (bug reproduced)  — no click was synthesized, no dialog
+PASS  [main] iPad Pro 11: badge tap opens  — 3 / 8
+
+## Phone layout (#293), WebKit iPhone 15, photo 3 open
+PASS  iPhone 15 phone walk: 3 / 8 → 4 / 8 → Ad → 5 / 8  — 3 / 8 → 4 / 8 → Ad → 5 / 8
+      hash after each Next: #slide-4, #slide-4, #slide-5
+PASS  Phone layout identical to main (main opened by badge, branch by photo tap)
+      viewport 393×659; photo top − viewport top = 0px; nav bottom 639 ≤ 659; close 52×52; thumbs strip display none; html overflow hidden; scrollWidth 393
+PASS  Phone: footer nav inside the visible height
+PASS  Phone: no horizontal overflow
+
+## Chrome 155.0.8059.82 · desktop 1440×900 · branch (0.19.6)
+PASS  [fix] desktop: mouse click on 3rd photo → 3 / 8  — 3 / 8
+PASS  [fix] desktop: one slideshow:open per click  — 1
+      Tab #18 focuses BUTTON.cata-image-lightbox-badge "Click to open the image gallery" on photo 3 (badge opacity 0.594123)
+PASS  [fix] desktop: keyboard (Tab to the 3rd photo's badge, Enter) → 3 / 8  — 3 / 8
+PASS  [fix] desktop: ArrowRight → 4 / 8  — 4 / 8
+PASS  [fix] desktop: Escape returns focus to the 3rd photo's badge  — focus on figure 2
+PASS  [fix] desktop: Space on the focused badge → 3 / 8  — 3 / 8
+PASS  [fix] desktop: badge click on 5th photo → 5 / 8  — 5 / 8
+PASS  [fix] desktop: appended article's 3rd photo → its own gallery at 3 / 7  — counter "3 / 7", dialog #cata-image-lightbox-3-1
+PASS  [fix] desktop: no page errors
+
+## Chrome 155.0.8059.82 · desktop 1440×900 · main (0.19.5)
+PASS  [main] desktop: mouse click on 3rd photo → 3 / 8  — 3 / 8
+PASS  [main] desktop: one slideshow:open per click  — 1
+      Tab #18 focuses BUTTON.cata-image-lightbox-badge "Click to open the image gallery" on photo 3 (badge opacity 0.898067)
+PASS  [main] desktop: keyboard (Tab to the 3rd photo's badge, Enter) → 3 / 8  — 3 / 8
+PASS  [main] desktop: ArrowRight → 4 / 8  — 4 / 8
+PASS  [main] desktop: Escape returns focus to the 3rd photo's badge  — focus on figure 2
+PASS  [main] desktop: Space on the focused badge → 3 / 8  — 3 / 8
+PASS  [main] desktop: badge click on 5th photo → 5 / 8  — 5 / 8
+PASS  [main] desktop: appended article's 3rd photo → its own gallery at 3 / 7  — counter "3 / 7", dialog #cata-image-lightbox-3-1
+PASS  [main] desktop: no page errors
+PASS  Desktop: tab order unchanged (same Tab count to the 3rd photo on main and branch)  — 18 on main, 18 on branch
+
+## Chrome 155.0.8059.82 · Pixel 7 touch emulation · branch (0.19.6)
+PASS  Chrome touch: tap on 3rd photo → 3 / 8  — 3 / 8
+PASS  Chrome touch: one slideshow:open per tap  — 1
+
+55/55 checks passed

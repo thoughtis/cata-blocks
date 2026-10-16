@@ -137,8 +137,9 @@ wire();
 /**
  * Wire the page's own gallery and listen for the articles infinite scroll adds.
  *
- * The badges and trigger classes are rendered server-side, so a few delegated
- * listeners cover every content image on the page, however it arrived.
+ * The badges and trigger classes are rendered server-side. Clicks are heard on
+ * each trigger (see wireTriggers()); warming stays delegated, so it covers
+ * every content image on the page, however it arrived.
  */
 function wire() {
 	pageGallery = createGallery(
@@ -147,7 +148,7 @@ function wire() {
 
 	warnWhenUnwired( pageGallery, document );
 
-	document.addEventListener( 'click', onTriggerClick );
+	wireTriggers( document );
 	document.addEventListener( 'pointerover', onTriggerWarm, {
 		passive: true,
 	} );
@@ -176,6 +177,8 @@ function onArticleLoad( event ) {
 		return;
 	}
 
+	wireTriggers( article );
+
 	let region = article.querySelector( '.wp-block-cata-image-lightbox' );
 
 	if ( ! region ) {
@@ -193,6 +196,9 @@ function onArticleLoad( event ) {
 		region = document.body.appendChild(
 			document.importNode( fetched, true )
 		);
+
+		// A metadata-only gallery brings its "View N photos" opener with it.
+		wireTriggers( region );
 	}
 
 	articleCount++;
@@ -256,17 +262,30 @@ function renameIds( region, suffix ) {
 }
 
 /**
+ * Listen for clicks on each trigger itself rather than on the document.
+ *
+ * Safari on iPhone and iPad turns a tap into a click only when the tapped
+ * element, or an ancestor below the body, listens for clicks. The image is not
+ * a control, so with one listener on the document a tap fired touch and
+ * pointer events but never a click: a mouse opened the gallery, a finger never
+ * did. Adding the same listener twice is a no-op, so wiring a root again is
+ * safe.
+ *
+ * @param {Document|HTMLElement} root Where the triggers are.
+ */
+function wireTriggers( root ) {
+	root.querySelectorAll( '.cata-image-lightbox-figure' ).forEach(
+		( figure ) => figure.addEventListener( 'click', onTriggerClick )
+	);
+}
+
+/**
  * Open the gallery a clicked content image belongs to.
  *
- * @param {MouseEvent} event A click anywhere on the page.
+ * @param {MouseEvent} event A click on a content image or its badge.
  */
 function onTriggerClick( event ) {
-	const figure = event.target.closest?.( '.cata-image-lightbox-figure' );
-
-	if ( ! figure ) {
-		return;
-	}
-
+	const figure = event.currentTarget;
 	const gallery = galleryFor( figure );
 	const index = triggerIndex( figure );
 
