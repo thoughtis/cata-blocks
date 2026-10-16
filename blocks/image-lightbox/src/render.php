@@ -77,7 +77,7 @@ $thumbs_id   = $show_thumbs ? wp_unique_id( 'cata-image-lightbox-thumbs-' ) : ''
 
 // A curated gallery can exist without a body image. The featured photo is
 // deliberately not a slide or trigger, so give these galleries an ordinary
-// button that uses the same delegated opener as the in-content badges.
+// button that uses the same opener as the in-content badges.
 $has_content_images = array() !== cata_image_lightbox_get_images( parse_blocks( $post->post_content ) );
 ?>
 
