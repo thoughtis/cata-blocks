@@ -261,12 +261,6 @@ function cata_image_lightbox_attachment_image( int $id ): ?array {
  */
 function cata_image_lightbox_add_meta_images( array $images, WP_Post $post ): array {
 
-	// Extras extend a gallery the reader can already open; without other
-	// slides there is no trigger on the page, so add nothing.
-	if ( empty( $images ) ) {
-		return $images;
-	}
-
 	$ids = get_post_meta( $post->ID, 'cata_lightbox_image_ids', true );
 
 	if ( ! is_array( $ids ) ) {
@@ -274,12 +268,13 @@ function cata_image_lightbox_add_meta_images( array $images, WP_Post $post ): ar
 	}
 
 	$existing = array_map( 'intval', array_column( $images, 'id' ) );
+	$featured = (int) get_post_thumbnail_id( $post );
 
 	foreach ( $ids as $id ) {
 		$id = (int) $id;
 
-		// Skip duplicates of slides already collected from the page.
-		if ( in_array( $id, $existing, true ) ) {
+		// The featured photo is never a slide; skip existing slides as well.
+		if ( $id === $featured || in_array( $id, $existing, true ) ) {
 			continue;
 		}
 
