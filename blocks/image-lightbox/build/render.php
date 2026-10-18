@@ -19,7 +19,8 @@ if ( ! $post instanceof WP_Post ) {
 	return;
 }
 
-$images = cata_image_lightbox_get_post_images( $post );
+$images = cata_image_lightbox_get_post_slides( $post );
+$has_videos = array() !== cata_image_lightbox_get_post_videos( $post );
 
 // Nothing to show without images; render nothing rather than an empty dialog.
 if ( empty( $images ) ) {
@@ -85,14 +86,14 @@ $has_content_images = array() !== cata_image_lightbox_get_images( parse_blocks( 
 	<?php if ( ! $has_content_images ) : ?>
 		<div class="cata-image-lightbox-figure cata-image-lightbox-gallery-link" data-cata-image-lightbox-index="0">
 			<button type="button" class="wp-element-button">
-				<?php echo esc_html( sprintf( /* translators: %d: number of gallery photos */ _n( 'View %d photo', 'View %d photos', $total, 'cata' ), $total ) ); ?>
+				<?php echo esc_html( sprintf( /* translators: %d: number of gallery photos */ ( $has_videos ? _n( 'View %d item', 'View %d items', $total, 'cata' ) : _n( 'View %d photo', 'View %d photos', $total, 'cata' ) ), $total ) ); ?>
 			</button>
 		</div>
 	<?php endif; ?>
 	<dialog
 		class="wp-block-cata-image-lightbox__dialog"
 		id="<?php echo esc_attr( wp_unique_id( 'cata-image-lightbox-' ) ); ?>"
-		aria-label="<?php esc_attr_e( 'Image gallery', 'cata' ); ?>"
+		aria-label="<?php echo esc_attr( $has_videos ? __( 'Gallery', 'cata' ) : __( 'Image gallery', 'cata' ) ); ?>"
 	>
 		<?php // Focus target for the open action: focusing the panel rather than a
 		// button means an Enter-opener can't immediately Enter again to close, and
@@ -104,7 +105,7 @@ $has_content_images = array() !== cata_image_lightbox_get_images( parse_blocks( 
 					class="wp-block-cata-image-lightbox__all-photos"
 					aria-controls="<?php echo esc_attr( $thumbs_id ); ?>"
 					aria-expanded="false"
-					aria-label="<?php echo esc_attr( sprintf( /* translators: %d: total photos */ _n( 'Show all %d photo', 'Show all %d photos', $total, 'cata' ), $total ) ); ?>"
+					aria-label="<?php echo esc_attr( sprintf( /* translators: %d: total photos */ ( $has_videos ? _n( 'Show all %d item', 'Show all %d items', $total, 'cata' ) : _n( 'Show all %d photo', 'Show all %d photos', $total, 'cata' ) ), $total ) ); ?>"
 				>
 					<span class="wp-block-cata-image-lightbox__all-photos-icon" aria-hidden="true">▦</span>
 					<?php echo esc_html( sprintf( /* translators: %d: total photos */ __( 'All %d', 'cata' ), $total ) ); ?>
@@ -120,17 +121,26 @@ $has_content_images = array() !== cata_image_lightbox_get_images( parse_blocks( 
 			<div class="wp-block-cata-image-lightbox__main">
 				<div class="wp-block-cata-image-lightbox__viewport">
 					<?php foreach ( $images as $index => $image ) : ?>
+						<?php $is_video = 'video' === ( $image['media_type'] ?? '' ); ?>
 						<?php // The first slide starts active; the view script moves the class from there. ?>
 						<figure
-							class="wp-block-cata-image-lightbox__slide<?php echo 0 === $index ? ' is-active' : ''; ?>"
+							class="wp-block-cata-image-lightbox__slide<?php echo $is_video ? ' wp-block-cata-image-lightbox__slide--video' : ''; ?><?php echo 0 === $index ? ' is-active' : ''; ?>"
 							role="group"
 							aria-roledescription="<?php esc_attr_e( 'slide', 'cata' ); ?>"
-							aria-label="<?php echo esc_attr( sprintf( /* translators: 1: image number, 2: total images */ __( 'Image %1$d of %2$d', 'cata' ), $index + 1, $total ) ); ?>"
+							aria-label="<?php echo esc_attr( sprintf( /* translators: 1: image number, 2: total images */ ( $has_videos ? __( 'Item %1$d of %2$d', 'cata' ) : __( 'Image %1$d of %2$d', 'cata' ) ), $index + 1, $total ) ); ?>"
 						>
 							<div class="wp-block-cata-image-lightbox__placeholder-frame" aria-hidden="true">
 								<img class="wp-block-cata-image-lightbox__placeholder" alt="" />
 							</div>
-							<?php echo cata_image_lightbox_image_html( $image ); ?>
+							<?php if ( $is_video ) : ?>
+								<div class="wp-block-cata-image-lightbox__motion">
+									<?php echo cata_image_lightbox_image_html( cata_image_lightbox_video_poster( $image ) ); ?>
+									<video class="wp-block-cata-image-lightbox__video" data-becoming-loop-gallery muted loop playsinline preload="none" poster="<?php echo esc_url( $image['poster'] ); ?>" data-src="<?php echo esc_url( $image['src'] ); ?>" data-type="<?php echo esc_attr( $image['type'] ); ?>" width="<?php echo esc_attr( $image['width'] ); ?>" height="<?php echo esc_attr( $image['height'] ); ?>" aria-hidden="true" tabindex="-1"></video>
+								</div>
+								<button type="button" class="wp-block-cata-image-lightbox__motion-toggle" data-cata-play-label="<?php esc_attr_e( 'Play motion', 'cata' ); ?>" data-cata-pause-label="<?php esc_attr_e( 'Pause motion', 'cata' ); ?>" hidden><?php esc_html_e( 'Pause motion', 'cata' ); ?></button>
+							<?php else : ?>
+								<?php echo cata_image_lightbox_image_html( $image ); ?>
+							<?php endif; ?>
 							<?php $caption = apply_filters( 'cata_blocks_image_lightbox_caption', $image['caption'], $image ); ?>
 							<?php if ( '' !== $caption ) : ?>
 								<?php $caption_id = wp_unique_id( 'cata-image-lightbox-caption-' ); ?>
@@ -212,7 +222,7 @@ $has_content_images = array() !== cata_image_lightbox_get_images( parse_blocks( 
 					<button
 						type="button"
 						class="wp-block-cata-image-lightbox__prev"
-						aria-label="<?php esc_attr_e( 'Previous image', 'cata' ); ?>"
+						aria-label="<?php echo esc_attr( $has_videos ? __( 'Previous item', 'cata' ) : __( 'Previous image', 'cata' ) ); ?>"
 					><?php echo $prev_icon; ?></button>
 					<?php // Live region so navigating announces the new position; the buttons
 					// themselves keep the same labels slide to slide. ?>
@@ -229,7 +239,7 @@ $has_content_images = array() !== cata_image_lightbox_get_images( parse_blocks( 
 					<button
 						type="button"
 						class="wp-block-cata-image-lightbox__next"
-						aria-label="<?php esc_attr_e( 'Next image', 'cata' ); ?>"
+						aria-label="<?php echo esc_attr( $has_videos ? __( 'Next item', 'cata' ) : __( 'Next image', 'cata' ) ); ?>"
 					><?php echo $next_icon; ?></button>
 				</div>
 
@@ -240,26 +250,30 @@ $has_content_images = array() !== cata_image_lightbox_get_images( parse_blocks( 
 					<div
 						class="wp-block-cata-image-lightbox__thumbs"
 						id="<?php echo esc_attr( $thumbs_id ); ?>"
-						aria-label="<?php esc_attr_e( 'All photos', 'cata' ); ?>"
+						aria-label="<?php echo esc_attr( $has_videos ? __( 'All items', 'cata' ) : __( 'All photos', 'cata' ) ); ?>"
 						<?php echo $total > 1 ? '' : 'hidden'; ?>
 					>
 						<?php foreach ( $images as $index => $image ) : ?>
-							<?php $thumb_url = cata_image_lightbox_thumb_url( $image ); ?>
+							<?php
+							$is_video = 'video' === ( $image['media_type'] ?? '' );
+							$thumb_image = $is_video ? cata_image_lightbox_video_poster( $image ) : $image;
+							$thumb_url = cata_image_lightbox_thumb_url( $thumb_image );
+							?>
 							<?php if ( '' !== $thumb_url ) : ?>
-								<?php $thumb_widths = cata_image_lightbox_thumb_widths( $image ); ?>
+								<?php $thumb_widths = cata_image_lightbox_thumb_widths( $thumb_image ); ?>
 								<button
 									type="button"
 									class="wp-block-cata-image-lightbox__thumb<?php echo 0 === $index ? ' is-active' : ''; ?>"
 									data-cata-image-lightbox-index="<?php echo esc_attr( $index ); ?>"
 									tabindex="<?php echo 0 === $index ? '0' : '-1'; ?>"
 									<?php echo 0 === $index ? 'aria-current="true"' : ''; ?>
-									aria-label="<?php echo esc_attr( sprintf( /* translators: 1: slide number, 2: total slides */ __( 'Go to image %1$d of %2$d', 'cata' ), $index + 1, $total ) ); ?>"
+									aria-label="<?php echo esc_attr( sprintf( /* translators: 1: slide number, 2: total slides */ ( $is_video ? __( 'Go to item %1$d of %2$d, motion', 'cata' ) : ( $has_videos ? __( 'Go to item %1$d of %2$d, photo', 'cata' ) : __( 'Go to image %1$d of %2$d', 'cata' ) ) ), $index + 1, $total ) ); ?>"
 								><?php // Lazy: a closed dialog gives its thumbnails no geometry, so a
 								// 30 photo gallery fires nothing on page load. On phones the strip stays
 								// geometry-free through gallery open and loads only when All photos opens.
 								// Empty alt because the button is labeled. Candidate widths are inert data:
 								// the phone solver chooses one before the grid's first lazy request, and
-								// desktop keeps the sharp 144px fallback unless DPR needs more. ?><img class="wp-block-cata-image-lightbox__thumb-image" src="<?php echo esc_url( $thumb_url ); ?>" data-cata-image-lightbox-widths="<?php echo esc_attr( implode( ',', $thumb_widths ) ); ?>" alt="" loading="lazy" decoding="async" /></button>
+								// desktop keeps the sharp 144px fallback unless DPR needs more. ?><img class="wp-block-cata-image-lightbox__thumb-image" src="<?php echo esc_url( $thumb_url ); ?>" data-cata-image-lightbox-widths="<?php echo esc_attr( implode( ',', $thumb_widths ) ); ?>" alt="" loading="lazy" decoding="async" /><?php if ( $is_video ) : ?><span class="wp-block-cata-image-lightbox__motion-glyph" aria-hidden="true">▷</span><?php endif; ?></button>
 							<?php endif; ?>
 						<?php endforeach; ?>
 					</div>

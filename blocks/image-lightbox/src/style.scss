@@ -975,3 +975,82 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 		}
 	}
 }
+
+// A still owns the accessible description and stays beneath the motion layer.
+.wp-block-cata-image-lightbox__motion {
+	position: relative;
+	display: flex;
+	flex: 1;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	min-height: 0;
+	overflow: hidden;
+}
+
+.wp-block-cata-image-lightbox__video {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 180ms ease;
+
+	&.is-playing {
+		opacity: 1;
+	}
+}
+
+.wp-block-cata-image-lightbox__motion-toggle {
+	position: absolute;
+	z-index: 6;
+	inset-inline-end: 0.5rem;
+	bottom: 0.5rem;
+	min-height: 2.75rem;
+	padding: 0.5rem 0.75rem;
+	border: 0;
+	border-radius: 999px;
+	background: rgba(0, 0, 0, 0.72);
+	color: #fff;
+	font: inherit;
+	font-size: 0.875rem;
+	cursor: pointer;
+
+	&[hidden] {
+		display: none;
+	}
+
+	&:focus-visible {
+		outline: 2px solid currentColor;
+		outline-offset: 3px;
+	}
+}
+
+.wp-block-cata-image-lightbox__motion-glyph {
+	position: absolute;
+	inset-inline-end: 0.25rem;
+	bottom: 0.25rem;
+	padding: 0.125rem 0.25rem;
+	background: rgba(0, 0, 0, 0.72);
+	color: #fff;
+	font-size: 0.875rem;
+	line-height: 1;
+	border-radius: 0.125rem;
+}
+
+@media (max-width: 599px) {
+	.wp-block-cata-image-lightbox__motion {
+		align-items: flex-start;
+	}
+	.wp-block-cata-image-lightbox__video {
+		object-position: center top;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.wp-block-cata-image-lightbox__video {
+		transition: none;
+	}
+}

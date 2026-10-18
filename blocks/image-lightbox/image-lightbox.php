@@ -11,6 +11,7 @@ use WP_HTML_Tag_Processor;
 use WP_Post;
 
 require_once __DIR__ . '/includes/trending.php';
+require_once __DIR__ . '/includes/videos.php';
 
 /**
  * Register Image Lightbox Block
@@ -69,24 +70,39 @@ function register_image_lightbox_meta() {
 	$post_types = apply_filters( 'cata_blocks_image_lightbox_meta_post_types', array( 'post' ) );
 
 	foreach ( $post_types as $post_type ) {
-		register_post_meta(
-			$post_type,
-			'cata_lightbox_image_ids',
-			array(
-				'type'              => 'array',
-				'single'            => true,
-				'default'           => array(),
-				'show_in_rest'      => array(
-					'schema' => array(
-						'type'  => 'array',
-						'items' => array( 'type' => 'integer' ),
+		foreach ( array( 'image', 'video' ) as $media_type ) {
+			register_post_meta(
+				$post_type,
+				'cata_lightbox_' . $media_type . '_ids',
+				array(
+					'type'              => 'array',
+					'single'            => true,
+					'default'           => array(),
+					'show_in_rest'      => array(
+						'schema' => array(
+							'type'  => 'array',
+							'items' => array( 'type' => 'integer' ),
+						),
 					),
-				),
-				'sanitize_callback' => __NAMESPACE__ . '\\cata_image_lightbox_sanitize_image_ids',
-				'auth_callback'     => __NAMESPACE__ . '\\cata_image_lightbox_meta_auth',
-			)
-		);
+					'sanitize_callback' => __NAMESPACE__ . '\\cata_image_lightbox_sanitize_' . $media_type . '_ids',
+					'auth_callback'     => __NAMESPACE__ . '\\cata_image_lightbox_meta_auth',
+				)
+			);
+		}
 	}
+
+	register_post_meta(
+		'attachment',
+		'cata_lightbox_poster_id',
+		array(
+			'type'              => 'integer',
+			'single'            => true,
+			'default'           => 0,
+			'show_in_rest'      => true,
+			'sanitize_callback' => __NAMESPACE__ . '\\cata_image_lightbox_sanitize_poster_id',
+			'auth_callback'     => __NAMESPACE__ . '\\cata_image_lightbox_meta_auth',
+		)
+	);
 }
 add_action( 'init', __NAMESPACE__ . '\\register_image_lightbox_meta' );
 
@@ -112,7 +128,7 @@ function cata_image_lightbox_sanitize_image_ids( $ids ): array {
 /**
  * Meta auth
  *
- * Allow editing the lightbox image ids for anyone who can edit the post.
+ * Allow editing lightbox media ids or posters for anyone who can edit the object.
  *
  * @param bool   $allowed
  * @param string $meta_key
@@ -197,7 +213,8 @@ function cata_image_lightbox_get_post_images( WP_Post $post ): array {
 
 		// Curated lightbox images (the cata_lightbox_image_ids meta) force the
 		// gallery on no matter how few in-content photos the post has.
-		$forced = array() !== (array) get_post_meta( $post->ID, 'cata_lightbox_image_ids', true );
+		$forced = array() !== (array) get_post_meta( $post->ID, 'cata_lightbox_image_ids', true )
+			|| array() !== cata_image_lightbox_get_post_videos( $post );
 
 		if ( count( $images ) < $minimum && ! $forced ) {
 			$cache[ $post->ID ] = array();
@@ -775,7 +792,7 @@ function cata_image_lightbox_badge_html( int $total ): string {
 
 	// Optional text below the icon and count; rendered only when a filter
 	// supplies it.
-	$text      = apply_filters( 'cata_blocks_image_lightbox_badge_text', '' );
+	$text      = apply_filters( 'cata_blocks_image_lightbox_badge_text', '', get_queried_object() );
 	$text_html = '' === $text
 		? ''
 		: sprintf( '<span class="cata-image-lightbox-badge__text">%s</span>', esc_html( $text ) );
@@ -849,7 +866,7 @@ function cata_image_lightbox_add_badge( string $block_content, array $block ): s
 		return $block_content;
 	}
 
-	$images = cata_image_lightbox_get_post_images( $post );
+	$images = cata_image_lightbox_get_post_slides( $post );
 
 	if ( empty( $images ) ) {
 		return $block_content;
@@ -983,7 +1000,7 @@ function cata_image_lightbox_enqueue_badge_styles() {
 		return;
 	}
 
-	if ( empty( cata_image_lightbox_get_post_images( $post ) ) ) {
+	if ( empty( cata_image_lightbox_get_post_slides( $post ) ) ) {
 		return;
 	}
 

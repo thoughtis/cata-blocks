@@ -415,14 +415,18 @@ function createGallery( region ) {
 		region.querySelectorAll( '.wp-block-cata-image-lightbox__slide' )
 	);
 
-	// Photos only; the counter, hash, thumbnails, badges, and events all speak
-	// photo numbers, so the ad break never shifts anything the reader can see.
+	// Media items only: each photo or loop counts once. The ad break never
+	// shifts the counter, hash, thumbnails, badges or public event positions.
 	const photoCount = slides.length - ( adSlidePosition >= 0 ? 1 : 0 );
 
 	// Slide images and their tiny blurred previews, ordered to match the slides.
 	const images = slides.map( ( slide ) =>
 		slide.querySelector( '.wp-block-cata-image-lightbox__image' )
 	);
+	const videos = slides.map( ( slide ) =>
+		slide.querySelector( '.wp-block-cata-image-lightbox__video' )
+	);
+	const userPausedVideos = new WeakSet();
 	const placeholders = slides.map( ( slide ) =>
 		slide.querySelector( '.wp-block-cata-image-lightbox__placeholder' )
 	);
@@ -555,6 +559,100 @@ function createGallery( region ) {
 	let finishDragPromise = null;
 	let finishDragResolve = null;
 	let swipeNavigation = null;
+
+	/**
+	 * Only the current, visible gallery item may move. The theme's optional
+	 * shared manager owns the page-wide two-loop limit; other themes keep the
+	 * same gallery behavior without loading Becoming's assets.
+	 */
+	function syncMotion( requestedVideo = null ) {
+		videos.forEach( ( video, index ) => {
+			if ( ! video ) {
+				return;
+			}
+			const button = slides[index].querySelector(
+				'.wp-block-cata-image-lightbox__motion-toggle'
+			);
+			const stillOnly = reducedMotion.matches || navigator.connection?.saveData;
+			const active =
+				dialog.open && index === currentIndex && ! document.hidden && ! indexOpen;
+			const userPaused = userPausedVideos.has( video );
+			button.hidden = Boolean( stillOnly || video.error );
+			video.muted = true;
+
+			if ( window.BecomingLoops ) {
+				window.BecomingLoops.setGalleryVideo( video, active, userPaused, video === requestedVideo );
+			} else if ( ! active || stillOnly || userPaused ) {
+				video.pause();
+			} else if ( video.paused ) {
+				if ( ! video.getAttribute( 'src' ) ) {
+					video.src = video.dataset.src;
+				}
+				video.play()?.catch( () => {
+					// Autoplay denial leaves the poster and an explicit Play button.
+					updateMotionButton( video, button );
+				} );
+			}
+			updateMotionButton( video, button );
+		} );
+	}
+
+	function updateMotionButton( video, button ) {
+		button.textContent = video.paused
+			? button.dataset.cataPlayLabel
+			: button.dataset.cataPauseLabel;
+	}
+
+	videos.forEach( ( video, index ) => {
+		if ( ! video ) {
+			return;
+		}
+		const button = slides[index].querySelector(
+			'.wp-block-cata-image-lightbox__motion-toggle'
+		);
+		button.addEventListener( 'click', () => {
+			if ( video.paused ) {
+				userPausedVideos.delete( video );
+			} else {
+				userPausedVideos.add( video );
+			}
+			syncMotion( video );
+		} );
+		video.addEventListener( 'playing', () => {
+			// A pending play may resolve after navigation, close or preference change.
+			if (
+				! dialog.open ||
+				index !== currentIndex ||
+				document.hidden ||
+				reducedMotion.matches ||
+				navigator.connection?.saveData ||
+				userPausedVideos.has( video ) ||
+				indexOpen
+			) {
+				video.pause();
+				return;
+			}
+			video.classList.add( 'is-playing' );
+			updateMotionButton( video, button );
+		} );
+		video.addEventListener( 'pause', () => {
+			video.classList.remove( 'is-playing' );
+			updateMotionButton( video, button );
+		} );
+		video.addEventListener( 'error', () => {
+			video.classList.remove( 'is-playing' );
+			button.hidden = true;
+		} );
+	} );
+	if ( videos.some( Boolean ) ) {
+		document.addEventListener( 'becoming:loops:ready', () => {
+			videos.forEach( ( video ) => video?.pause() );
+			syncMotion();
+		} );
+		document.addEventListener( 'visibilitychange', syncMotion );
+		reducedMotion.addEventListener( 'change', syncMotion );
+		navigator.connection?.addEventListener( 'change', syncMotion );
+	}
 
 	/**
 	 * Slide position of a photo index; positions at or past the ad break sit
@@ -918,6 +1016,7 @@ function createGallery( region ) {
 		}
 
 		indexOpen = false;
+		syncMotion();
 		region.classList.remove( 'is-cata-image-lightbox-index-open' );
 		allPhotosButton?.setAttribute( 'aria-expanded', 'false' );
 		setThumbTabStop( nearestThumb( currentPhotoIndex ) );
@@ -940,6 +1039,7 @@ function createGallery( region ) {
 
 		closeInfo();
 		indexOpen = true;
+		syncMotion();
 		region.classList.add( 'is-cata-image-lightbox-index-open' );
 		allPhotosButton.setAttribute( 'aria-expanded', 'true' );
 		hideRelatedContent();
@@ -1085,12 +1185,15 @@ function createGallery( region ) {
 		// rendition the reader is already looking at while the full-size
 		// candidate downloads.
 		warmAround( index );
-		seedSlide( images[ index ], trigger?.currentSrc );
+		if ( ! videos[ index ] ) {
+			seedSlide( images[ index ], trigger?.currentSrc );
+		}
 		showPlaceholder( index );
 		navigation++;
 		show( index );
 		openScrollY = window.scrollY;
 		dialog.showModal();
+		syncMotion();
 		updateDesktopThumbnailSources();
 		layoutRelatedContent();
 		pushHistoryEntry();
@@ -1149,6 +1252,7 @@ function createGallery( region ) {
 	 */
 	function close() {
 		dialog.close();
+		syncMotion();
 	}
 
 	/**
@@ -1180,6 +1284,7 @@ function createGallery( region ) {
 	 */
 	function show( index ) {
 		currentIndex = index;
+		syncMotion();
 
 		const photoIndex = photoIndexFor( index );
 
@@ -1727,6 +1832,7 @@ function createGallery( region ) {
 	// The dialog's native close event covers the close button, backdrop clicks,
 	// and Escape.
 	dialog.addEventListener( 'close', () => {
+		syncMotion();
 		clearTimeout( openEventTimer );
 		openEventTimer = null;
 		swipeNavigation?.cancel();
@@ -1913,7 +2019,7 @@ function createGallery( region ) {
 			indexOpen ||
 			Boolean(
 				event.target.closest?.(
-					'.wp-block-cata-image-lightbox__caption, .wp-block-cata-image-lightbox__info, .wp-block-cata-image-lightbox__related'
+					'.wp-block-cata-image-lightbox__caption, .wp-block-cata-image-lightbox__info, .wp-block-cata-image-lightbox__related, .wp-block-cata-image-lightbox__motion-toggle'
 				)
 			),
 		{
@@ -2001,7 +2107,10 @@ function insertAdSlide( region, useInStream ) {
 		'.wp-block-cata-image-lightbox__slide'
 	);
 
-	if ( slides.length <= AD_SLIDE_AFTER ) {
+	const photoSlides = Array.from( slides ).filter( ( slide ) =>
+		! slide.classList.contains( 'wp-block-cata-image-lightbox__slide--video' )
+	);
+	if ( photoSlides.length <= AD_SLIDE_AFTER ) {
 		return -1;
 	}
 
@@ -2014,9 +2123,11 @@ function insertAdSlide( region, useInStream ) {
 	label.textContent = region.dataset.cataAdLabel || 'Advertisement';
 
 	figure.append( label, ad );
-	viewport.insertBefore( figure, slides[ AD_SLIDE_AFTER ] );
+	const nextPhoto = photoSlides[ AD_SLIDE_AFTER ];
+	const position = Array.from( slides ).indexOf( nextPhoto );
+	viewport.insertBefore( figure, nextPhoto );
 
-	return AD_SLIDE_AFTER;
+	return position;
 }
 
 /**
