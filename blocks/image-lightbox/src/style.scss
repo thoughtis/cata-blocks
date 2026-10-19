@@ -555,6 +555,22 @@ html:has( .wp-block-cata-image-lightbox__dialog:modal ) {
 	display: none;
 }
 
+// Theme end cards own their links and any overflow; whole-photo click zones
+// must never cover them. The card is outside the media-only dot/index count.
+.wp-block-cata-image-lightbox__slide--end {
+	align-items: stretch;
+	justify-content: flex-start;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+}
+
+.is-cata-image-lightbox-end-slide {
+	.wp-block-cata-image-lightbox__navzone,
+	.wp-block-cata-image-lightbox__dots {
+		display: none;
+	}
+}
+
 @media ( width < 600px ) {
 	// Full-bleed panel: every reserved band on a phone comes out of the photo.
 	// Minimums are svh, not dvh: iPhone Safari lays the scroll-locked dialog

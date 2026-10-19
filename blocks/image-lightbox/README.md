@@ -86,6 +86,36 @@ playback limit. `userRequested` is true only for an explicit pause/play click,
 allowing a reader to retry a denied autoplay within their gesture. Without that theme module the plugin manages its current video
 itself. No video metadata means no video markup or playback listeners.
 
+## Optional end card
+
+`cata_blocks_image_lightbox_end_content( $html, WP_Post $post )` defaults to an
+empty string. A theme may return its own escaped HTML to append one final
+destination after every photo/video. Existing filters can change media or
+icons, but none can append an uncounted destination; this hook and the small
+view-script extension provide that missing lifecycle without theme-side
+navigation code. Empty/whitespace content preserves the existing sequence.
+
+The end card is a navigable slide but **not a media item**. Next, touch swipe
+and arrow keys reach it; Previous returns to the last media item. The footer
+says “End of gallery”, the photo/item total, badges, dots and All N grid stay
+media-only, and no thumbnail is selected at the end. Phone navigation remains
+bounded and desktop navigation retains wrapping. A theme button carrying
+`data-cata-image-lightbox-restart` returns to the first media item, including
+a leading video, and restores focus to the stable gallery panel.
+
+The wrapper gets `is-cata-image-lightbox-end-slide`; content lives inside
+`.wp-block-cata-image-lightbox__slide--end`. The plugin provides scrolling and
+removes whole-photo tap zones so theme links work, while themes own the card
+styling and any preview playback. Generic theme loops are never treated as
+gallery media videos. `slideshow:endslide` carries the existing event detail
+shape with the last media index and true media total; the end card does not
+fire an ad refresh or advance the media hash. Ad placement still counts
+actual photos only, excluding videos and the end card.
+
+There is no direct-entry gallery URL contract: `#slide-N` is an ad-refresh
+signal written after opening, not parsed on load; no query parameter opens a
+gallery. Related gallery links should therefore point to their articles.
+
 ## Attributes and supports
 
 Backdrop color/opacity (`backdropColor`/`customBackdropColor`, `backdropOpacity`, default 80), native text/background color supports (skip-serialized; emitted as CSS custom properties by `render.php`), and the per-block Color Scheme control (`cataBlocksColorScheme`, from `block-editor/color-scheme`) honored as a `color-scheme` style. The editor shows a labeled placeholder.
@@ -118,3 +148,15 @@ view script in jsdom with media and geometry stubs: no video bytes while closed,
 current-slide playback, pause/reopen intent, navigation, ad placement after four
 photos, reduced motion, Save-Data and late shared-manager handoff. It does not
 prove native video decoding or iPhone behavior.
+
+Set `CATA_LIGHTBOX_END_FIXTURE=/path/end-gallery.html` in the PHP check, then
+run `node blocks/image-lightbox/tests/end-card.mjs /path/end-gallery.html`.
+This exercises both viewport modes through the actual view script: Next,
+keyboard and swipe entry/return, restart focus, Close, exact counts/events,
+unchanged no-end behavior, and exclusion from the four-photo ad threshold.
+Touch capture transferring from a hit child to the viewport must preserve the
+gesture; only loss of the viewport's own capture cancels it. Native Chrome
+touch acceptance exposed this boundary that direct synthetic viewport events
+did not exercise; both transfer and real-loss cases are now covered.
+The PHP checks also cover the filter's post argument, one-item navigation,
+empty content, media-only markup and template global safety.
