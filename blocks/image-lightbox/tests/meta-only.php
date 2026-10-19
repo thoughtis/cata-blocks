@@ -76,7 +76,11 @@ function wp_get_attachment_caption( $id ) { return wp_attachment_is( 'video', $i
 function wp_get_attachment_metadata( $id ) { return 2135 === $id ? array( 'width' => 720, 'height' => 1280 ) : array( 'width' => 1280, 'height' => 720 ); }
 function parse_blocks() { return $GLOBALS['parsed_blocks']; }
 function get_queried_object() { return $GLOBALS['post']; }
-function get_block_wrapper_attributes() { return 'class="wp-block-cata-image-lightbox"'; }
+function get_block_wrapper_attributes( $attributes = array() ) {
+	$html = 'class="wp-block-cata-image-lightbox"';
+	foreach ( $attributes as $name => $value ) $html .= ' ' . esc_attr( $name ) . '="' . esc_attr( $value ) . '"';
+	return $html;
+}
 function wp_unique_id( $prefix ) { static $id = 0; return $prefix . ++$id; }
 function __( $text, $domain = '' ) { return $text; }
 function _n( $one, $many, $count, $domain = '' ) { return 1 === $count ? $one : $many; }
@@ -101,7 +105,7 @@ function check( $condition, $message ) {
 function render_gallery() {
 	$attributes = array();
 	ob_start();
-	require dirname( __DIR__ ) . '/src/render.php';
+	require getenv( 'CATA_LIGHTBOX_RENDER_SOURCE' ) ?: dirname( __DIR__ ) . '/src/render.php';
 	return ob_get_clean();
 }
 
@@ -228,6 +232,34 @@ check( 1 === count( $rest_videos ) && 1951 === $rest_videos[0]['poster_id'], 'A 
 unset( $meta[2135]['cata_lightbox_poster_id'] );
 $post = new WP_Post( 2140 );
 check( array() === Cata\Blocks\cata_image_lightbox_get_post_slides( $post ), 'Other sites and child themes without video metadata keep the existing minimum.' );
+
+// Theme end content is a destination, never another photo or video.
+check( ! str_contains( $video_html, 'wp-block-cata-image-lightbox__slide--end' ), 'No theme content must preserve the existing gallery sequence.' );
+add_filter( 'cata_blocks_image_lightbox_end_content', function ( $content, $gallery_post ) {
+	check( $gallery_post instanceof WP_Post, 'The end-content filter must receive the gallery post.' );
+	return '<section class="test-end-card"><a href="/watch/#sabrina">Watch the reel →</a><button type="button" data-cata-image-lightbox-restart>Back to start</button></section>';
+}, 10, 2 );
+$post = new WP_Post( 2111 );
+$parsed_blocks = array();
+$end_html = render_gallery();
+check( 1 === substr_count( $end_html, 'wp-block-cata-image-lightbox__slide--end' ), 'Theme content must add one final navigation destination.' );
+check( strpos( $end_html, 'test-end-card' ) > strrpos( $end_html, '</figure>' ), 'The end card must follow every photo and video.' );
+check( 4 === substr_count( $end_html, 'aria-roledescription="slide"' ) && str_contains( $end_html, 'View 4 items' ) && str_contains( $end_html, 'All 4' ) && str_contains( $end_html, '1 / 4' ), 'End content must not inflate opener, media, grid or counter totals.' );
+check( 4 === preg_match_all( '/class="wp-block-cata-image-lightbox__thumb(?:\s|")/', $end_html ), 'The end card must have no media thumbnail.' );
+check( str_contains( $end_html, 'data-cata-end-counter="End of gallery"' ) && str_contains( $end_html, 'href="/watch/#sabrina"' ) && str_contains( $end_html, 'data-cata-image-lightbox-restart' ), 'End content must preserve theme links, restart action and translated end status.' );
+$post = new WP_Post( 2134 );
+check( ! preg_match( '/class="wp-block-cata-image-lightbox__nav"\s+hidden/', render_gallery() ), 'A one-item gallery still needs Next to reach its end card.' );
+$post = new WP_Post( 2140 );
+check( '' === render_gallery(), 'Theme end content must never create a gallery with no usable media.' );
+$filters['cata_blocks_image_lightbox_end_content'] = array( fn() => " \n\t" );
+$post = new WP_Post( 2111 );
+check( ! str_contains( render_gallery(), 'wp-block-cata-image-lightbox__slide--end' ), 'Whitespace-only end content must not create an empty destination.' );
+unset( $filters['cata_blocks_image_lightbox_end_content'] );
+check( ! preg_match( '/\$(?:post|wp_query|wp_the_query|authordata|pages|page|more|multipage|numpages)\s*=/', file_get_contents( dirname( __DIR__ ) . '/src/render.php' ) ), 'The render template must not overwrite WordPress globals.' );
+
+if ( getenv( 'CATA_LIGHTBOX_END_FIXTURE' ) ) {
+	file_put_contents( getenv( 'CATA_LIGHTBOX_END_FIXTURE' ), $end_html );
+}
 
 if ( getenv( 'CATA_LIGHTBOX_VIDEO_FIXTURE' ) ) {
 	file_put_contents( getenv( 'CATA_LIGHTBOX_VIDEO_FIXTURE' ), $video_html );

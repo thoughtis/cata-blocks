@@ -25,4 +25,16 @@ jobs:
           php -l blocks/image-lightbox/src/render.php
           cmp blocks/image-lightbox/src/render.php blocks/image-lightbox/build/render.php
       - name: Exercise collection and server rendering
-        run: php blocks/image-lightbox/tests/meta-only.php
+        run: |
+          CATA_LIGHTBOX_VIDEO_FIXTURE="$RUNNER_TEMP/lightbox-video.html" \
+          CATA_LIGHTBOX_END_FIXTURE="$RUNNER_TEMP/lightbox-end.html" \
+          php blocks/image-lightbox/tests/meta-only.php
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Exercise video and end-card navigation
+        run: |
+          node blocks/image-lightbox/tests/video-playback.mjs "$RUNNER_TEMP/lightbox-video.html"
+          node blocks/image-lightbox/tests/end-card.mjs "$RUNNER_TEMP/lightbox-end.html"

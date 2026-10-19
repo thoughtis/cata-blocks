@@ -414,10 +414,15 @@ function createGallery( region ) {
 	const slides = Array.from(
 		region.querySelectorAll( '.wp-block-cata-image-lightbox__slide' )
 	);
+	const endSlidePosition = slides.findIndex( ( slide ) =>
+		slide.classList.contains( 'wp-block-cata-image-lightbox__slide--end' )
+	);
 
-	// Media items only: each photo or loop counts once. The ad break never
-	// shifts the counter, hash, thumbnails, badges or public event positions.
-	const photoCount = slides.length - ( adSlidePosition >= 0 ? 1 : 0 );
+	// Media items only: each photo or loop counts once. The ad and end card never
+	// shift the counter, hash, thumbnails, badges or public event positions.
+	const photoCount = slides.length -
+		( adSlidePosition >= 0 ? 1 : 0 ) -
+		( endSlidePosition >= 0 ? 1 : 0 );
 
 	// Slide images and their tiny blurred previews, ordered to match the slides.
 	const images = slides.map( ( slide ) =>
@@ -671,13 +676,17 @@ function createGallery( region ) {
 	}
 
 	/**
-	 * Photo index of a slide position, or -1 for the ad break.
+	 * Photo index of a slide position, or -1 for the ad break or end card.
 	 *
 	 * @param {number} position Slide position.
 	 *
 	 * @return {number} Photo index, or -1.
 	 */
 	function photoIndexFor( position ) {
+		if ( position === endSlidePosition ) {
+			return -1;
+		}
+
 		if ( adSlidePosition < 0 || position < adSlidePosition ) {
 			return position;
 		}
@@ -1300,14 +1309,20 @@ function createGallery( region ) {
 		// creative is tappable; swipe and the nav row still navigate.
 		region.classList.toggle(
 			'is-cata-image-lightbox-ad-slide',
-			photoIndex < 0
+			index === adSlidePosition
+		);
+		region.classList.toggle(
+			'is-cata-image-lightbox-end-slide',
+			index === endSlidePosition
 		);
 
 		if ( counter ) {
 			counter.textContent =
-				photoIndex < 0
-					? region.dataset.cataAdCounter || 'Ad'
-					: `${ photoIndex + 1 } / ${ photoCount }`;
+				index === endSlidePosition
+					? region.dataset.cataEndCounter || 'End of gallery'
+					: photoIndex < 0
+						? region.dataset.cataAdCounter || 'Ad'
+						: `${ photoIndex + 1 } / ${ photoCount }`;
 		}
 
 		updateDots( photoIndex );
@@ -1424,6 +1439,12 @@ function createGallery( region ) {
 		}
 
 		show( index );
+
+		if ( index === endSlidePosition ) {
+			// The end card is outside the media count and must not refresh an ad.
+			dispatchLightboxEvent( 'slideshow:endslide' );
+			return;
+		}
 
 		if ( photoIndexFor( index ) < 0 ) {
 			// Its own event, not slidechange: photo analytics stay photo-pure,
@@ -1923,6 +1944,10 @@ function createGallery( region ) {
 		element?.addEventListener( 'click', next )
 	);
 
+	region.querySelectorAll( '[data-cata-image-lightbox-restart]' ).forEach(
+		( button ) => button.addEventListener( 'click', () => showSlide( 0 ) )
+	);
+
 	allPhotosButton?.addEventListener( 'click', () => {
 		if ( indexOpen ) {
 			closeIndex();
@@ -2019,7 +2044,7 @@ function createGallery( region ) {
 			indexOpen ||
 			Boolean(
 				event.target.closest?.(
-					'.wp-block-cata-image-lightbox__caption, .wp-block-cata-image-lightbox__info, .wp-block-cata-image-lightbox__related, .wp-block-cata-image-lightbox__motion-toggle'
+					'.wp-block-cata-image-lightbox__caption, .wp-block-cata-image-lightbox__info, .wp-block-cata-image-lightbox__related, .wp-block-cata-image-lightbox__motion-toggle, .wp-block-cata-image-lightbox__slide--end a, .wp-block-cata-image-lightbox__slide--end button'
 				)
 			),
 		{
@@ -2108,7 +2133,8 @@ function insertAdSlide( region, useInStream ) {
 	);
 
 	const photoSlides = Array.from( slides ).filter( ( slide ) =>
-		! slide.classList.contains( 'wp-block-cata-image-lightbox__slide--video' )
+		! slide.classList.contains( 'wp-block-cata-image-lightbox__slide--video' ) &&
+		! slide.classList.contains( 'wp-block-cata-image-lightbox__slide--end' )
 	);
 	if ( photoSlides.length <= AD_SLIDE_AFTER ) {
 		return -1;
@@ -2372,7 +2398,10 @@ function wireSwipeNavigation( viewport, next, prev, shouldIgnore, drag = {} ) {
 	} );
 
 	viewport.addEventListener( 'lostpointercapture', ( event ) => {
-		if ( event.pointerId === pointerId ) {
+		// Touch starts with implicit capture on the hit child (often a navzone).
+		// Taking capture above deliberately makes that child's loss bubble here;
+		// only losing the viewport's own capture cancels its drag.
+		if ( event.target === viewport && event.pointerId === pointerId ) {
 			resetPointer( true );
 		}
 	} );

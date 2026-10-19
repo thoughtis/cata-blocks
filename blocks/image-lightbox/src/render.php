@@ -12,15 +12,15 @@ namespace Cata\Blocks;
 use WP_Post;
 use function Cata\Blocks\Image_Lightbox\Trending\get_trending_post;
 
-$post = get_queried_object();
+$cata_lightbox_post = get_queried_object();
 
 // Bail unless we're on a singular post-type view with content to scan.
-if ( ! $post instanceof WP_Post ) {
+if ( ! $cata_lightbox_post instanceof WP_Post ) {
 	return;
 }
 
-$images = cata_image_lightbox_get_post_slides( $post );
-$has_videos = array() !== cata_image_lightbox_get_post_videos( $post );
+$images = cata_image_lightbox_get_post_slides( $cata_lightbox_post );
+$has_videos = array() !== cata_image_lightbox_get_post_videos( $cata_lightbox_post );
 
 // Nothing to show without images; render nothing rather than an empty dialog.
 if ( empty( $images ) ) {
@@ -30,14 +30,25 @@ if ( empty( $images ) ) {
 $total = count( $images );
 
 /**
+ * Render an optional theme-owned end card after every photo and video.
+ * This is a navigation destination, never a counted media item. The theme
+ * escapes its own HTML, including any links, images or deferred loop markup.
+ *
+ * @param string  $end_content Trusted end-card HTML; empty disables the card.
+ * @param WP_Post $post        Current gallery post.
+ */
+$end_content = apply_filters( 'cata_blocks_image_lightbox_end_content', '', $cata_lightbox_post );
+$has_end_content = is_string( $end_content ) && '' !== trim( $end_content );
+
+/**
  * Filter whether a cached trending card may be rendered into the final photo.
  * Client-side geometry still decides whether the phone has room to reveal it.
  *
  * @param bool    $show_related Whether to query and render the card. Default true.
  * @param WP_Post $post         Current gallery post.
  */
-$show_related = apply_filters( 'cata_blocks_image_lightbox_show_related_content', true, $post );
-$related_post = $show_related ? get_trending_post( $post->ID ) : null;
+$show_related = apply_filters( 'cata_blocks_image_lightbox_show_related_content', true, $cata_lightbox_post );
+$related_post = $show_related ? get_trending_post( $cata_lightbox_post->ID ) : null;
 
 // Editor color settings, emitted as the custom properties the styles consume.
 $styles = sprintf(
@@ -64,6 +75,7 @@ $wrapper_attributes = get_block_wrapper_attributes(
 		'style'                => $styles,
 		'data-cata-ad-label'   => __( 'Advertisement', 'cata' ),
 		'data-cata-ad-counter' => __( 'Ad', 'cata' ),
+		'data-cata-end-counter' => __( 'End of gallery', 'cata' ),
 	)
 );
 
@@ -79,7 +91,7 @@ $thumbs_id   = $show_thumbs ? wp_unique_id( 'cata-image-lightbox-thumbs-' ) : ''
 // A curated gallery can exist without a body image. The featured photo is
 // deliberately not a slide or trigger, so give these galleries an ordinary
 // button that uses the same opener as the in-content badges.
-$has_content_images = array() !== cata_image_lightbox_get_images( parse_blocks( $post->post_content ) );
+$has_content_images = array() !== cata_image_lightbox_get_images( parse_blocks( $cata_lightbox_post->post_content ) );
 ?>
 
 <div <?php echo $wrapper_attributes; ?>>
@@ -211,6 +223,12 @@ $has_content_images = array() !== cata_image_lightbox_get_images( parse_blocks( 
 						</figure>
 					<?php endforeach; ?>
 
+					<?php if ( $has_end_content ) : ?>
+						<div class="wp-block-cata-image-lightbox__slide wp-block-cata-image-lightbox__slide--end" role="group" aria-label="<?php esc_attr_e( 'End of gallery', 'cata' ); ?>">
+							<?php echo $end_content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted theme filter owns escaping. ?>
+						</div>
+					<?php endif; ?>
+
 					<?php // Whole-image navigation: the left half of the image steps back, the
 					// right half steps forward. Redundant with the arrow buttons and arrow keys,
 					// so these are mouse-only affordances (aria-hidden, not focusable). ?>
@@ -218,7 +236,7 @@ $has_content_images = array() !== cata_image_lightbox_get_images( parse_blocks( 
 					<div class="wp-block-cata-image-lightbox__navzone wp-block-cata-image-lightbox__navzone--next" aria-hidden="true" <?php echo $total > 1 ? '' : 'hidden'; ?>></div>
 				</div>
 
-				<div class="wp-block-cata-image-lightbox__nav" <?php echo $total > 1 ? '' : 'hidden'; ?>>
+				<div class="wp-block-cata-image-lightbox__nav" <?php echo $total > 1 || $has_end_content ? '' : 'hidden'; ?>>
 					<button
 						type="button"
 						class="wp-block-cata-image-lightbox__prev"
