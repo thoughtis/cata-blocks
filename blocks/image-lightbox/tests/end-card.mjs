@@ -13,7 +13,7 @@ let checks = 0;
 const check = (condition, message) => { assert.ok(condition, message); checks++; };
 const tick = () => new Promise(resolve => setTimeout(resolve, 0));
 
-function setup({ phone = true, end = true, extraPhotos = 0, ad = false } = {}) {
+function setup({ phone = true, end = true, extraPhotos = 0, ad = false, photos = null, shortAd = false } = {}) {
 	const dom = new JSDOM(fixture, { url: 'https://example.test/article/', pretendToBeVisual: true, runScripts: 'outside-only' });
 	const { window } = dom;
 	const { document } = window;
@@ -34,6 +34,13 @@ function setup({ phone = true, end = true, extraPhotos = 0, ad = false } = {}) {
 	if (!end) endSlide.remove();
 	const photo = viewport.querySelector('.wp-block-cata-image-lightbox__slide:not(.wp-block-cata-image-lightbox__slide--video)');
 	for (let i = 0; i < extraPhotos; i++) viewport.insertBefore(photo.cloneNode(true), end ? endSlide : null);
+	if (null !== photos) {
+		// The fixture has two photos after its two loops; reach an exact photo count.
+		const rendered = [...viewport.querySelectorAll('.wp-block-cata-image-lightbox__slide:not(.wp-block-cata-image-lightbox__slide--video):not(.wp-block-cata-image-lightbox__slide--end)')];
+		rendered.slice(photos).forEach(slide => slide.remove());
+		for (let i = rendered.length; i < photos; i++) viewport.insertBefore(photo.cloneNode(true), end ? endSlide : null);
+	}
+	if (shortAd) region.dataset.cataShortGalleryAd = 'true';
 	if (ad) {
 		const slot = document.createElement('aside'); slot.className = 'wp-block-cata-image-lightbox__ad'; slot.id = 'test-ad';
 		region.querySelector('.wp-block-cata-image-lightbox__panel').append(slot);
@@ -111,6 +118,73 @@ check(adIndex === 6 && sequence.at(-1) === fivePhotos.endSlide, 'An eligible ad 
 for (let i = 0; i < sequence.length - 1; i++) fivePhotos.next();
 check(fivePhotos.counter() === 'End of gallery' && fivePhotos.events.at(-1).detail.totalSlides === 7, 'Ad and end destinations must both stay outside the media total.');
 fivePhotos.dom.window.close();
+
+// A theme may opt one to four photos into a break after the last photo and in
+// front of its end card. The break is never first or last, the counter, hash,
+// dots and events stay media-only, and the position maps need no shift.
+for (const photos of [1, 2, 3, 4]) {
+	const items = 2 + photos;
+	const page = setup({ photos, ad: true, shortAd: true });
+	const sequence = [...page.viewport.querySelectorAll('.wp-block-cata-image-lightbox__slide')];
+	const adSlide = sequence.find(slide => slide.classList.contains('wp-block-cata-image-lightbox__slide--ad'));
+	check(adSlide && sequence.indexOf(adSlide) === items && sequence.at(-1) === page.endSlide && sequence.length === items + 2, `${photos} photo(s) opted in must put the break after the last photo and before the end card.`);
+	check(page.region.classList.contains('has-cata-image-lightbox-ad-slide') && adSlide.contains(page.document.getElementById('test-ad')), 'The opted-in break must hold the moved ad container.');
+	check(page.counter() === `1 / ${items}`, 'The opted-in break must not inflate the media total.');
+	for (let i = 1; i < items; i++) page.next();
+	check(page.counter() === `${items} / ${items}` && page.window.location.hash === `#slide-${items}`, 'Every media item must keep its own number before the break.');
+	page.next();
+	check(page.active() === adSlide && page.counter() === 'Ad' && page.region.classList.contains('is-cata-image-lightbox-ad-slide'), 'Next after the last photo must land on the ad break.');
+	check(!page.region.querySelector('.wp-block-cata-image-lightbox__dot.is-active') && page.window.location.hash === `#slide-${items}`, 'The ad break must have no dot and must not move the media hash.');
+	let event = page.events.at(-1);
+	check(event.name === 'slideshow:adslide' && event.detail.currentIndex === items - 1 && event.detail.totalSlides === items && event.detail.adContainerId === 'test-ad', 'The ad event must report the last photo and the true media total.');
+	check(!page.region.querySelector('.wp-block-cata-image-lightbox__next').disabled, 'Next must stay available on the break, because the end card follows.');
+	page.next();
+	event = page.events.at(-1);
+	check(page.active() === page.endSlide && page.counter() === 'End of gallery' && event.name === 'slideshow:endslide' && event.detail.currentIndex === items - 1, 'The end card must still follow the break with the last photo as its position.');
+	page.prev();
+	check(page.active() === adSlide && page.counter() === 'Ad', 'Previous from the end card must return to the break.');
+	page.prev();
+	check(page.counter() === `${items} / ${items}`, 'Previous from the break must return to the last photo.');
+	page.key('ArrowRight');
+	check(page.active() === adSlide, 'ArrowRight must reach the break.');
+	page.swipe(-1);
+	await tick();
+	check(page.active() === page.endSlide, 'A swipe must carry the reader from the break to the end card.');
+	page.swipe(1);
+	await tick();
+	page.swipe(1);
+	await tick();
+	check(page.counter() === `${items} / ${items}`, 'Reverse swipes must step back through the break to the last photo.');
+	check(page.events.filter(e => e.name === 'slideshow:adslide').length === 4 && page.events.filter(e => e.name === 'slideshow:slidechange').every(e => e.detail.currentIndex >= 0), 'Each of the four arrivals on the break fires its own event and never a slidechange.');
+	page.endSlide.querySelector('[data-cata-image-lightbox-restart]').click();
+	check(page.counter() === `1 / ${items}`, 'Back to start must still return to the first item.');
+	page.region.querySelector('.wp-block-cata-image-lightbox__close').click();
+	page.document.querySelector('.cata-image-lightbox-gallery-link').dataset.cataImageLightboxIndex = String(items - 1);
+	page.document.querySelector('.cata-image-lightbox-gallery-link button').click();
+	check(page.counter() === `${items} / ${items}` && page.active() !== adSlide, 'Opening on the last photo must land on the photo, not the break after it.');
+	page.dom.window.close();
+}
+
+for (const [options, message] of [
+	[{ photos: 2, ad: true }, 'Without the opt-in a short gallery keeps the stacked layout.'],
+	[{ photos: 2, ad: true, shortAd: true, end: false }, 'The opt-in needs an end card, or the break would be last.'],
+	[{ photos: 0, ad: true, shortAd: true }, 'A video-only gallery gets no break.'],
+	[{ photos: 2, ad: true, shortAd: true, phone: false }, 'Desktop keeps the box beside the photos whatever the opt-in says.'],
+	[{ photos: 2, shortAd: true }, 'No ad container, no break.'],
+]) {
+	const page = setup(options);
+	check(!page.viewport.querySelector('.wp-block-cata-image-lightbox__slide--ad') && !page.region.classList.contains('has-cata-image-lightbox-ad-slide'), message);
+	page.dom.window.close();
+}
+
+const optedInLong = setup({ photos: 5, ad: true, shortAd: true });
+const longSequence = [...optedInLong.viewport.querySelectorAll('.wp-block-cata-image-lightbox__slide')];
+check(longSequence.findIndex(slide => slide.classList.contains('wp-block-cata-image-lightbox__slide--ad')) === 6 && longSequence.at(-1) === optedInLong.endSlide, 'Five photos keep the break after photo four with the opt-in on.');
+for (let i = 0; i < 6; i++) optedInLong.next();
+check(optedInLong.counter() === 'Ad' && optedInLong.window.location.hash === '#slide-6', 'The long gallery break still follows the fourth photo.');
+optedInLong.next();
+check(optedInLong.counter() === '7 / 7', 'The fifth photo still follows the long gallery break.');
+optedInLong.dom.window.close();
 
 // Real touch uses implicit capture on the hit child, then transfers to the
 // viewport at direction lock. Its bubbling loss is not a lost gallery drag.
