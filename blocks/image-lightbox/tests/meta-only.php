@@ -247,6 +247,19 @@ check( strpos( $end_html, 'test-end-card' ) > strrpos( $end_html, '</figure>' ),
 check( 4 === substr_count( $end_html, 'aria-roledescription="slide"' ) && str_contains( $end_html, 'View 4 items' ) && str_contains( $end_html, 'All 4' ) && str_contains( $end_html, '1 / 4' ), 'End content must not inflate opener, media, grid or counter totals.' );
 check( 4 === preg_match_all( '/class="wp-block-cata-image-lightbox__thumb(?:\s|")/', $end_html ), 'The end card must have no media thumbnail.' );
 check( str_contains( $end_html, 'data-cata-end-counter="End of gallery"' ) && str_contains( $end_html, 'href="/watch/#sabrina"' ) && str_contains( $end_html, 'data-cata-image-lightbox-restart' ), 'End content must preserve theme links, restart action and translated end status.' );
+
+// The short-gallery ad break is a theme opt-in carried on the wrapper; the
+// server never renders the break itself and emits nothing without the opt-in.
+check( ! str_contains( $end_html, 'data-cata-short-gallery-ad' ) && ! str_contains( $video_html, 'data-cata-short-gallery-ad' ), 'Without the opt-in the wrapper must carry no short-gallery attribute.' );
+add_filter( 'cata_blocks_image_lightbox_short_gallery_ad', function ( $on, $gallery_post ) {
+	check( false === $on && $gallery_post instanceof WP_Post, 'The short-gallery filter must default to off and receive the gallery post.' );
+	return true;
+}, 10, 2 );
+$short_html = render_gallery();
+check( 1 === substr_count( $short_html, ' data-cata-short-gallery-ad="true"' ) && str_contains( $short_html, 'class="wp-block-cata-image-lightbox" ' ), 'The opt-in must ride the gallery wrapper as one data attribute.' );
+check( ! str_contains( $short_html, 'wp-block-cata-image-lightbox__slide--ad' ) && 4 === substr_count( $short_html, 'aria-roledescription="slide"' ) && str_contains( $short_html, '1 / 4' ), 'The opt-in must add no server-rendered slide and change no total; the view script places the break.' );
+unset( $filters['cata_blocks_image_lightbox_short_gallery_ad'] );
+check( ! str_contains( render_gallery(), 'data-cata-short-gallery-ad' ), 'Removing the opt-in must remove the attribute.' );
 $post = new WP_Post( 2134 );
 check( ! preg_match( '/class="wp-block-cata-image-lightbox__nav"\s+hidden/', render_gallery() ), 'A one-item gallery still needs Next to reach its end card.' );
 $post = new WP_Post( 2140 );

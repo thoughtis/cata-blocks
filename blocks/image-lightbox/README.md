@@ -31,7 +31,7 @@ The `viewScriptModule` is imperative, not Interactivity API directives — direc
 - Phone touch/pen swipes track the finger and snap between a live three-item window (current sequence item plus immediate neighbors); every other photo keeps no layout geometry, preserving lazy loading. Direction locking leaves vertical scrolling and pinch zoom native, reduced motion snaps instantly, disclosure-origin gestures do not navigate, and mouse drag remains unused so caption text stays selectable. Wider layouts retain the established threshold-then-crossfade swipe.
 - Lazy, inert slide images: trigger hover/touch pre-warms the image, neighbors prefetch, the clicked image's cached rendition seeds the slide, a blurred Photon preview covers slow loads.
 - Without `CloseWatcher`, opening pushes a history entry so the back gesture closes the lightbox, not the article; the slide number mirrors into the URL hash as an ad-refresh signal.
-- A gallery wired below 600px moves the empty ad container exactly once into a break after photo four; that placement never changes on rotation. The break stays measurable while inactive, replaces the phone dot rail with an Advertisement state, remains absent from public photo numbering, and fires `slideshow:adslide` rather than `slideshow:slidechange`.
+- A gallery wired below 600px moves the empty ad container exactly once into a break after photo four; that placement never changes on rotation. The break stays measurable while inactive, replaces the phone dot rail with an Advertisement state, remains absent from public photo numbering, and fires `slideshow:adslide` rather than `slideshow:slidechange`. A gallery of one to four photos gets no break and keeps the ad container stacked under the photo, unless the theme opts in with `cata_blocks_image_lightbox_short_gallery_ad` (default false; `render.php` carries it as `data-cata-short-gallery-ad` on the wrapper): then, on phones and only when the theme also renders an end card, the break sits after the last photo and before the end card, so it is still never first or last. Leading loops do not count, a video-only gallery gets no break, and five or more photos keep the break after photo four whichever way the filter is set (0.19.9).
 - When the theme's pageview-stats class is available, the final phone photo can show one low-prominence "Trending now" card. Recent posts come from the owner's 15-day window, their object-meta totals are ranked in PHP and cached for 45 minutes, and the class's 100-view display threshold gates inclusion. The card is absolutely positioned only when runtime slot geometry proves it fits beneath the photo, so it never shrinks the image; it stays absent on desktop, portrait/full-height photos, the ad slide, and every earlier photo.
 - `slideshow:open`/`slideshow:slidechange`/`slideshow:adslide`/`slideshow:close` CustomEvents (carrying the ad container id) drive the ad script; open fires 300 ms late so the ad request doesn't compete with the slide image.
 
@@ -122,7 +122,7 @@ Backdrop color/opacity (`backdropColor`/`customBackdropColor`, `backdropOpacity`
 
 ## Usage
 
-Place once in the single-post template (targets `get_queried_object()`); renders nothing on unqualifying posts. The stylesheet enqueues early on gallery posts so badges are styled at first paint, with a content-hash `?ver` for cache busting. Registering the metadata alone does not install the template block. Filters: `cata_blocks_support_image_lightbox_block` (kill switch), `cata_blocks_image_lightbox_images` (add/alter slides), `_minimum_images`, `_show_thumbnails`, `_show_ad`, `_show_related_content`, `_trending_window_days`, `_trending_candidate_pool`, `_trending_minimum_views`, `_badge_icon`, `_badge_text`, `_caption`, plus the close/prev/next icon filters. The plugin ships complete dialog styles; themes restyle only for a different look.
+Place once in the single-post template (targets `get_queried_object()`); renders nothing on unqualifying posts. The stylesheet enqueues early on gallery posts so badges are styled at first paint, with a content-hash `?ver` for cache busting. Registering the metadata alone does not install the template block. Filters: `cata_blocks_support_image_lightbox_block` (kill switch), `cata_blocks_image_lightbox_images` (add/alter slides), `_minimum_images`, `_show_thumbnails`, `_show_ad`, `_short_gallery_ad` (phone ad break for one to four photos, needs an end card; default false), `_show_related_content`, `_trending_window_days`, `_trending_candidate_pool`, `_trending_minimum_views`, `_badge_icon`, `_badge_text`, `_caption`, plus the close/prev/next icon filters. The plugin ships complete dialog styles; themes restyle only for a different look.
 
 ## Regression check
 
@@ -153,7 +153,12 @@ Set `CATA_LIGHTBOX_END_FIXTURE=/path/end-gallery.html` in the PHP check, then
 run `node blocks/image-lightbox/tests/end-card.mjs /path/end-gallery.html`.
 This exercises both viewport modes through the actual view script: Next,
 keyboard and swipe entry/return, restart focus, Close, exact counts/events,
-unchanged no-end behavior, and exclusion from the four-photo ad threshold.
+unchanged no-end behavior, exclusion from the four-photo ad threshold, and
+the opted-in short-gallery break (`data-cata-short-gallery-ad`): one to four
+photos put it after the last photo and before the end card with media-only
+counter, hash, dots and events; no opt-in, no end card, no ad container, no
+photo or a desktop viewport leaves the sequence as it was, and five photos keep
+the break after photo four.
 Touch capture transferring from a hit child to the viewport must preserve the
 gesture; only loss of the viewport's own capture cancels it. Native Chrome
 touch acceptance exposed this boundary that direct synthetic viewport events

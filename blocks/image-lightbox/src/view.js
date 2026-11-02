@@ -33,7 +33,8 @@ const DOT_WINDOW_SIZE = 7;
 // doesn't compete with the active slide image download.
 const OPEN_EVENT_DELAY = 300;
 
-// How many photos a phone reader sees before the in-stream ad break.
+// How many photos a phone reader sees before the in-stream ad break. A
+// shorter gallery gets no break unless the theme opts in (see insertAdSlide).
 const AD_SLIDE_AFTER = 4;
 
 // Viewports this narrow get the in-stream gallery: the ad becomes a slide of
@@ -2107,7 +2108,12 @@ function createGallery( region ) {
  * Runs once at wiring time, before the ad script has filled anything, so the
  * container moves while it is still an empty box — reparenting a filled ad
  * iframe would reload it blank. The break sits after the fourth photo and
- * never first or last; galleries too short for that keep the stacked layout.
+ * never first or last; galleries too short for that keep the stacked layout,
+ * unless the theme has opted them in (render.php's
+ * `cata_blocks_image_lightbox_short_gallery_ad` filter, carried on the wrapper
+ * as `data-cata-short-gallery-ad`): then one to four photos get the break
+ * after the last photo, in front of the theme's end card, which keeps it off
+ * the last position. Without an end card nothing changes.
  *
  * @param {HTMLElement} region      The gallery's block wrapper.
  * @param {boolean}     useInStream Whether wiring began in phone mode.
@@ -2136,8 +2142,24 @@ function insertAdSlide( region, useInStream ) {
 		! slide.classList.contains( 'wp-block-cata-image-lightbox__slide--video' ) &&
 		! slide.classList.contains( 'wp-block-cata-image-lightbox__slide--end' )
 	);
+	const endSlide = Array.from( slides ).find( ( slide ) =>
+		slide.classList.contains( 'wp-block-cata-image-lightbox__slide--end' )
+	);
+
+	// The slide the break goes in front of: the fifth photo, or, for an opted-in
+	// short gallery, the end card after its last photo.
+	let nextSlide = photoSlides[ AD_SLIDE_AFTER ];
+
 	if ( photoSlides.length <= AD_SLIDE_AFTER ) {
-		return -1;
+		if (
+			'true' !== region.dataset.cataShortGalleryAd ||
+			! endSlide ||
+			0 === photoSlides.length
+		) {
+			return -1;
+		}
+
+		nextSlide = endSlide;
 	}
 
 	const figure = document.createElement( 'figure' );
@@ -2149,9 +2171,8 @@ function insertAdSlide( region, useInStream ) {
 	label.textContent = region.dataset.cataAdLabel || 'Advertisement';
 
 	figure.append( label, ad );
-	const nextPhoto = photoSlides[ AD_SLIDE_AFTER ];
-	const position = Array.from( slides ).indexOf( nextPhoto );
-	viewport.insertBefore( figure, nextPhoto );
+	const position = Array.from( slides ).indexOf( nextSlide );
+	viewport.insertBefore( figure, nextSlide );
 
 	return position;
 }

@@ -41,6 +41,19 @@ $end_content = apply_filters( 'cata_blocks_image_lightbox_end_content', '', $cat
 $has_end_content = is_string( $end_content ) && '' !== trim( $end_content );
 
 /**
+ * Filter whether a phone gallery of one to four photos gets an ad break of its
+ * own, after its last photo and before the theme's end card. Off by default:
+ * without an end card the break would be the last slide, and a site whose ad
+ * network does not target the gallery container would show an empty slide.
+ * Galleries of five or more photos keep their break after photo four either
+ * way. The view script applies it only in phone mode and only with an end card.
+ *
+ * @param bool    $short_gallery_ad Whether short galleries get an ad break. Default false.
+ * @param WP_Post $post             Current gallery post.
+ */
+$short_gallery_ad = (bool) apply_filters( 'cata_blocks_image_lightbox_short_gallery_ad', false, $cata_lightbox_post );
+
+/**
  * Filter whether a cached trending card may be rendered into the final photo.
  * Client-side geometry still decides whether the phone has room to reveal it.
  *
@@ -69,15 +82,18 @@ if ( in_array( $color_scheme, array( 'light only', 'dark only' ), true ) ) {
 // Interactivity API directives: directives only bind while the page hydrates,
 // and an infinitely scrolled article's gallery arrives long after that.
 // The data attributes carry translated strings for the phone ad break the
-// view script builds client-side.
-$wrapper_attributes = get_block_wrapper_attributes(
-	array(
-		'style'                => $styles,
-		'data-cata-ad-label'   => __( 'Advertisement', 'cata' ),
-		'data-cata-ad-counter' => __( 'Ad', 'cata' ),
-		'data-cata-end-counter' => __( 'End of gallery', 'cata' ),
-	)
+// view script builds client-side, and the short-gallery opt-in when a theme
+// has taken it; the attribute is absent everywhere else.
+$wrapper_data = array(
+	'style'                 => $styles,
+	'data-cata-ad-label'    => __( 'Advertisement', 'cata' ),
+	'data-cata-ad-counter'  => __( 'Ad', 'cata' ),
+	'data-cata-end-counter' => __( 'End of gallery', 'cata' ),
 );
+if ( $short_gallery_ad ) {
+	$wrapper_data['data-cata-short-gallery-ad'] = 'true';
+}
+$wrapper_attributes = get_block_wrapper_attributes( $wrapper_data );
 
 // Button contents; filter to swap the defaults for an SVG icon, etc.
 $close_icon = apply_filters( 'cata_blocks_image_lightbox_close_icon', '×' );
