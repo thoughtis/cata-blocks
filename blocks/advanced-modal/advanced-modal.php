@@ -41,6 +41,8 @@ function render_advanced_modal_block( array $attributes, string $content ): stri
 	$backdrop_color_custom = $attributes['customBackdropColor'] ?? '';
 	$backdrop_color        = $backdrop_color_slug ? "var( --wp--preset--color--$backdrop_color_slug, #000000 )" : $backdrop_color_custom;
 	$icon                  = $attributes['icon'] ?? '';
+	$open_icon             = get_open_icon( $icon );
+	$open_label            = 'search' === $icon ? __( 'Open search', 'cata' ) : __( 'Open menu', 'cata' );
 
 	$additional_attr = array(
 		'data-wp-interactive' => 'cata-blocks-advanced-modal',
@@ -53,10 +55,22 @@ function render_advanced_modal_block( array $attributes, string $content ): stri
 			<?php echo get_block_wrapper_attributes( $additional_attr ); ?>
 			<?php echo wp_interactivity_data_wp_context( array( 'dialogElementId' => $unique_id, 'isOpen' => false ) ); ?>
 		>
-			<button data-wp-on--click="actions.toggle">
-				<?php echo get_open_icon( $icon ); ?>
+			<button
+				<?php if ( ! icon_has_label( $open_icon ) ) : ?>
+					aria-label="<?php echo esc_attr( $open_label ); ?>"
+				<?php endif; ?>
+				aria-controls="<?php echo esc_attr( $unique_id ); ?>"
+				data-wp-bind--aria-expanded="context.isOpen"
+				data-wp-on--click="actions.toggle"
+			>
+				<?php echo $open_icon; ?>
 			</button>
-			<dialog id="<?php echo esc_attr($unique_id); ?>">
+			<dialog
+				id="<?php echo esc_attr( $unique_id ); ?>"
+				tabindex="-1"
+				data-wp-on--keydown="actions.handleKeydown"
+				data-wp-on--click="actions.handleBackdropClick"
+			>
 				<?php echo $content; ?>
 			</dialog>
 		</div>
@@ -65,8 +79,27 @@ function render_advanced_modal_block( array $attributes, string $content ): stri
 }
 
 /**
+ * Icon Has Label
+ *
+ * @param string $icon
+ *
+ * @return bool
+ */
+function icon_has_label( string $icon ): bool {
+	$processor = new \WP_HTML_Tag_Processor( $icon );
+
+	while ( $processor->next_tag() ) {
+		if ( null !== $processor->get_attribute( 'aria-label' ) ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/**
  * Get Open Icon
- * 
+ *
  * @param string $icon
  * 
  * @return string
