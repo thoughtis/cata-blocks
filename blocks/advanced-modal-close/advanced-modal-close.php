@@ -35,11 +35,18 @@ add_action( 'init', __NAMESPACE__ . '\\register_advanced_modal_close_block' );
  * @return string
  */
 function render_advanced_modal_close_block( array $attributes, string $content ): string {
+	$close_icon = get_close_icon();
+
 	ob_start();
 	?>
 		<div <?php echo get_block_wrapper_attributes(); ?>>
-			<button data-wp-on--click="actions.toggle">
-				<?php echo get_close_icon(); ?>
+			<button
+				<?php if ( ! icon_has_label( $close_icon ) ) : ?>
+					aria-label="<?php esc_attr_e( 'Close', 'cata' ); ?>"
+				<?php endif; ?>
+				data-wp-on--click="actions.toggle"
+			>
+				<?php echo $close_icon; ?>
 			</button>
 		</div>
 	<?php
