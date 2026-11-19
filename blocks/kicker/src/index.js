@@ -9,6 +9,7 @@ import { registerBlockType, createBlock } from '@wordpress/blocks';
  */
 import Edit from './edit';
 import Save from './save';
+import deprecated from './deprecated';
 
 /**
  * Style shared between editor and content
@@ -18,6 +19,7 @@ import './style.scss';
 registerBlockType( 'cata/kicker', {
 	edit: Edit,
 	save: Save,
+	deprecated,
 	icon: <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="6" width="15" height="4" /><rect x="0" y="12" width="24" height="4" /></svg>,
 	transforms: {
 		from: [

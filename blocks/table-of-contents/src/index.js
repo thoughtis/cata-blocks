@@ -10,6 +10,7 @@ import { registerBlockType } from '@wordpress/blocks';
  */
 import Edit from './edit';
 import save from './save';
+import deprecated from './deprecated';
 
 /**
  * Style shared between editor and content
@@ -31,4 +32,6 @@ registerBlockType( 'cata/toc', {
 	 * @see ./save.js
 	 */
 	save,
+
+	deprecated,
 } );
