@@ -30,17 +30,28 @@ function register_substack_social_link_assets(): void {
 		$asset_file['version']
 	);
 }
-add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\\register_substack_social_link_assets' );
-add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\\register_substack_social_link_assets' );
+add_action( 'init', __NAMESPACE__ . '\\register_substack_social_link_assets' );
 
 /**
- * Enqueue Substack Social Link Editor Assets
+ * Enqueue Substack Social Link Editor Script
  */
 function enqueue_substack_social_link_variation_editor_assets(): void {
 	wp_enqueue_script('cata-substack-social-link-variation');
-	wp_enqueue_style('cata-substack-social-link-variation');
 }
 add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\enqueue_substack_social_link_variation_editor_assets' );
+
+/**
+ * Enqueue Substack Social Link Editor Style
+ * Runs on enqueue_block_assets so the style loads inside the editor iframe.
+ * The front end enqueues it on render instead.
+ */
+function enqueue_substack_social_link_variation_editor_style(): void {
+	if ( ! is_admin() ) {
+		return;
+	}
+	wp_enqueue_style('cata-substack-social-link-variation');
+}
+add_action( 'enqueue_block_assets', __NAMESPACE__ . '\\enqueue_substack_social_link_variation_editor_style' );
 
 /**
  * Render Block Substack Social Link Variation
